@@ -156,17 +156,14 @@ useHead({
             >Preview</span
           >
           <UBadge
-            v-if="previewWidth !== 'desktop'"
             :label="
               previewWidthOptions.find((o) => o.value === previewWidth)!.width
             "
             variant="subtle"
-            size="xs"
+            size="sm"
           />
         </div>
         <div class="flex items-center gap-1">
-          <UColorModeSwitch />
-          <USeparator orientation="vertical" class="h-4 mx-1" />
           <UTooltip
             v-for="option in previewWidthOptions"
             :key="option.value"
@@ -180,6 +177,8 @@ useHead({
               @click="previewWidth = option.value"
             />
           </UTooltip>
+          <USeparator orientation="vertical" class="h-6 mx-1" />
+          <UColorModeSwitch />
         </div>
       </div>
 
