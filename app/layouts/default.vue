@@ -88,6 +88,86 @@ const items: NavigationMenuItem[][] = [
   ],
 ];
 
+// Search groups - Editor settings and Preview pages
+const searchGroups = [
+  {
+    key: "pages",
+    label: "Preview Pages",
+    commands: items.flat().map((item) => ({
+      id: item.to,
+      label: item.label,
+      icon: item.icon,
+      to: item.to,
+    })),
+  },
+  {
+    key: "editor",
+    label: "Editor Settings",
+    commands: [
+      {
+        id: "presets",
+        label: "Presets",
+        icon: "i-lucide-layers",
+        description: "Load or save theme presets",
+      },
+      {
+        id: "color-mode",
+        label: "Color Mode",
+        icon: "i-lucide-sun-moon",
+        description: "Toggle light/dark mode",
+      },
+      {
+        id: "font",
+        label: "Font Family",
+        icon: "i-lucide-type",
+        description: "Change the font family",
+      },
+      {
+        id: "radius",
+        label: "Border Radius",
+        icon: "i-lucide-sliders-horizontal",
+        description: "Adjust component border radius",
+      },
+      {
+        id: "semantic-colors",
+        label: "Semantic Colors",
+        icon: "i-lucide-palette",
+        description: "Configure primary, success, warning, error, info colors",
+      },
+      {
+        id: "neutral",
+        label: "Neutral Color",
+        icon: "i-lucide-contrast",
+        description: "Choose the neutral color palette",
+      },
+      {
+        id: "text-colors",
+        label: "Text Colors",
+        icon: "i-lucide-type",
+        description: "Customize text color shades",
+      },
+      {
+        id: "bg-colors",
+        label: "Background Colors",
+        icon: "i-lucide-paintbrush",
+        description: "Customize background color shades",
+      },
+      {
+        id: "border-colors",
+        label: "Border Colors",
+        icon: "i-lucide-frame",
+        description: "Customize border color shades",
+      },
+      {
+        id: "export",
+        label: "Export / Import",
+        icon: "i-lucide-share-2",
+        description: "Export or import your theme configuration",
+      },
+    ],
+  },
+];
+
 const customWidth = ref<number | null>(null);
 const isDragging = ref(false);
 const previewArea = ref<HTMLElement>();
@@ -250,6 +330,18 @@ useHead({
     },
   ],
 });
+
+// Handle search command selection
+function onSearchSelect(option: any) {
+  // If it has a 'to' property, navigate to that page
+  if (option.to) {
+    navigateTo(option.to);
+  }
+  // Otherwise scroll to editor section (sidebar must be open)
+  // Note: This is a placeholder - actual implementation would need
+  // refs to the collapsible sections or event bus
+}
+
 </script>
 
 <template>
@@ -328,6 +420,12 @@ useHead({
         </template>
 
         <template #right>
+          <UDashboardSearchButton
+            placeholder="Search settings..."
+            :groups="searchGroups"
+            :ui="{ root: 'me-2' }"
+            @select="onSearchSelect"
+          />
           <UBadge
             :label="displayWidth"
             variant="subtle"
