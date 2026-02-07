@@ -1,118 +1,147 @@
 <script setup lang="ts">
-import { z } from "zod";
+import * as z from "zod";
+import type { FormSubmitEvent, AuthFormField } from "@nuxt/ui";
 
+definePageMeta({ layout: "preview" });
+
+const toast = useToast();
+
+const activeTab = ref<"login" | "register">("login");
+
+// ---------- Login ----------
 const loginSchema = z.object({
-  email: z.string().email("Please enter a valid email"),
-  password: z.string().min(8, "Password must be at least 8 characters"),
+  email: z.string("Email is required").email("Please enter a valid email"),
+  password: z
+    .string("Password is required")
+    .min(8, "Password must be at least 8 characters"),
 });
+type LoginSchema = z.output<typeof loginSchema>;
 
+const loginFields: AuthFormField[] = [
+  {
+    name: "email",
+    type: "email",
+    label: "Email",
+    placeholder: "you@example.com",
+    required: true,
+  },
+  {
+    name: "password",
+    type: "password",
+    label: "Password",
+    placeholder: "Enter your password",
+    required: true,
+  },
+  {
+    name: "remember",
+    type: "checkbox",
+    label: "Remember me",
+  },
+];
+
+// ---------- Register ----------
 const registerSchema = z
   .object({
-    name: z.string().min(2, "Name must be at least 2 characters"),
-    email: z.string().email("Please enter a valid email"),
-    password: z.string().min(8, "Password must be at least 8 characters"),
-    confirmPassword: z.string(),
+    name: z
+      .string("Name is required")
+      .min(2, "Name must be at least 2 characters"),
+    email: z.string("Email is required").email("Please enter a valid email"),
+    password: z
+      .string("Password is required")
+      .min(8, "Password must be at least 8 characters"),
+    confirmPassword: z.string("Please confirm your password"),
   })
   .refine((data) => data.password === data.confirmPassword, {
     message: "Passwords don't match",
     path: ["confirmPassword"],
   });
+type RegisterSchema = z.output<typeof registerSchema>;
 
-const activeTab = ref<"login" | "register">("login");
-
-const loginFields = [
-  {
-    name: "email",
-    label: "Email",
-    type: "email" as const,
-    placeholder: "you@example.com",
-    icon: "i-lucide-mail",
-  },
-  {
-    name: "password",
-    label: "Password",
-    type: "password" as const,
-    placeholder: "Enter your password",
-    icon: "i-lucide-lock",
-  },
-];
-
-const registerFields = [
+const registerFields: AuthFormField[] = [
   {
     name: "name",
+    type: "text",
     label: "Full Name",
-    type: "text" as const,
     placeholder: "John Doe",
-    icon: "i-lucide-user",
+    required: true,
   },
   {
     name: "email",
+    type: "email",
     label: "Email",
-    type: "email" as const,
     placeholder: "you@example.com",
-    icon: "i-lucide-mail",
+    required: true,
   },
   {
     name: "password",
+    type: "password",
     label: "Password",
-    type: "password" as const,
     placeholder: "Create a password",
-    icon: "i-lucide-lock",
+    required: true,
   },
   {
     name: "confirmPassword",
+    type: "password",
     label: "Confirm Password",
-    type: "password" as const,
     placeholder: "Confirm your password",
-    icon: "i-lucide-lock",
+    required: true,
   },
 ];
 
+// ---------- Providers ----------
 const providers = [
   {
     label: "GitHub",
     icon: "i-lucide-github",
     color: "neutral" as const,
-    variant: "outline" as const,
+    variant: "subtle" as const,
+    onClick: () => {
+      toast.add({ title: "GitHub", description: "Login with GitHub" });
+    },
   },
   {
     label: "Google",
     icon: "i-lucide-chrome",
     color: "neutral" as const,
-    variant: "outline" as const,
+    variant: "subtle" as const,
+    onClick: () => {
+      toast.add({ title: "Google", description: "Login with Google" });
+    },
   },
 ];
 
-function onLoginSubmit(event: any) {
-  console.log("Login submitted:", event.data);
+// ---------- Handlers ----------
+function onLoginSubmit(payload: FormSubmitEvent<LoginSchema>) {
+  toast.add({
+    title: "Signed in",
+    description: `Welcome back, ${payload.data.email}`,
+    color: "success",
+  });
 }
 
-function onRegisterSubmit(event: any) {
-  console.log("Register submitted:", event.data);
+function onRegisterSubmit(payload: FormSubmitEvent<RegisterSchema>) {
+  toast.add({
+    title: "Account created",
+    description: `Welcome, ${payload.data.name}!`,
+    color: "success",
+  });
 }
 </script>
 
 <template>
-  <div class="min-h-[80vh] flex items-center justify-center py-12 px-4">
-    <div class="w-full max-w-md space-y-6">
-      <!-- Logo / Brand -->
-      <div class="text-center space-y-2">
-        <div class="flex items-center justify-center gap-2">
-          <UIcon name="i-lucide-palette" class="size-8 text-(--ui-primary)" />
-          <span class="text-2xl font-bold text-(--ui-text-highlighted)"
-            >Acme Inc</span
-          >
-        </div>
-        <p class="text-sm text-(--ui-text-muted)">
-          {{
-            activeTab === "login"
-              ? "Welcome back! Sign in to your account."
-              : "Create your account to get started."
-          }}
-        </p>
-      </div>
+  <div
+    class="min-h-screen flex flex-col items-center justify-center px-4 py-12 sm:px-6 lg:px-8"
+  >
+    <!-- Brand header -->
+    <div class="mb-8 flex items-center gap-2">
+      <UIcon name="i-lucide-palette" class="size-8 text-(--ui-primary)" />
+      <span class="text-2xl font-bold text-(--ui-text-highlighted)"
+        >Acme Inc</span
+      >
+    </div>
 
-      <!-- Tab switcher -->
+    <!-- Tab switcher -->
+    <div class="w-full max-w-sm sm:max-w-md mb-6">
       <UTabs
         :items="[
           { label: 'Sign In', value: 'login' },
@@ -122,139 +151,67 @@ function onRegisterSubmit(event: any) {
         @update:model-value="activeTab = $event as 'login' | 'register'"
         class="w-full"
       />
-
-      <!-- Login Form -->
-      <UCard v-if="activeTab === 'login'">
-        <div class="space-y-6">
-          <!-- OAuth -->
-          <div class="grid grid-cols-2 gap-3">
-            <UButton
-              v-for="provider in providers"
-              :key="provider.label"
-              v-bind="provider"
-              block
-            />
-          </div>
-
-          <USeparator label="or continue with" />
-
-          <!-- Form -->
-          <UForm
-            :schema="loginSchema"
-            :state="{ email: '', password: '' }"
-            @submit="onLoginSubmit"
-            class="space-y-4"
-          >
-            <UFormField
-              v-for="field in loginFields"
-              :key="field.name"
-              :label="field.label"
-              :name="field.name"
-            >
-              <template #hint>
-                <ULink
-                  v-if="field.name === 'password'"
-                  class="text-xs text-(--ui-primary)"
-                >
-                  Forgot password?
-                </ULink>
-              </template>
-              <UInput
-                :type="field.type"
-                :placeholder="field.placeholder"
-                :icon="field.icon"
-                size="lg"
-                class="w-full"
-              />
-            </UFormField>
-
-            <div class="flex items-center gap-2">
-              <UCheckbox label="Remember me" />
-            </div>
-
-            <UButton
-              type="submit"
-              label="Sign In"
-              icon="i-lucide-log-in"
-              block
-              size="lg"
-              color="primary"
-            />
-          </UForm>
-        </div>
-      </UCard>
-
-      <!-- Register Form -->
-      <UCard v-else>
-        <div class="space-y-6">
-          <!-- OAuth -->
-          <div class="grid grid-cols-2 gap-3">
-            <UButton
-              v-for="provider in providers"
-              :key="provider.label"
-              v-bind="provider"
-              block
-            />
-          </div>
-
-          <USeparator label="or continue with" />
-
-          <!-- Form -->
-          <UForm
-            :schema="registerSchema"
-            :state="{ name: '', email: '', password: '', confirmPassword: '' }"
-            @submit="onRegisterSubmit"
-            class="space-y-4"
-          >
-            <UFormField
-              v-for="field in registerFields"
-              :key="field.name"
-              :label="field.label"
-              :name="field.name"
-            >
-              <UInput
-                :type="field.type"
-                :placeholder="field.placeholder"
-                :icon="field.icon"
-                size="lg"
-                class="w-full"
-              />
-            </UFormField>
-
-            <div class="flex items-center gap-2">
-              <UCheckbox>
-                <template #label>
-                  <span class="text-sm">
-                    I agree to the
-                    <ULink class="text-(--ui-primary) font-medium"
-                      >Terms of Service</ULink
-                    >
-                    and
-                    <ULink class="text-(--ui-primary) font-medium"
-                      >Privacy Policy</ULink
-                    >
-                  </span>
-                </template>
-              </UCheckbox>
-            </div>
-
-            <UButton
-              type="submit"
-              label="Create Account"
-              icon="i-lucide-user-plus"
-              block
-              size="lg"
-              color="primary"
-            />
-          </UForm>
-        </div>
-      </UCard>
-
-      <!-- Footer -->
-      <p class="text-center text-xs text-(--ui-text-dimmed)">
-        By continuing, you acknowledge that you have read and agree to our Terms
-        of Service and Privacy Policy.
-      </p>
     </div>
+
+    <!-- Sign In -->
+    <UPageCard v-if="activeTab === 'login'" class="w-full max-w-sm sm:max-w-md">
+      <UAuthForm
+        :schema="loginSchema"
+        :fields="loginFields"
+        :providers="providers"
+        title="Welcome back!"
+        description="Sign in to your account to continue."
+        icon="i-lucide-lock"
+        separator="or continue with email"
+        :submit="{ label: 'Sign In', icon: 'i-lucide-log-in', block: true }"
+        @submit="onLoginSubmit"
+      >
+        <template #password-hint>
+          <ULink to="#" class="text-primary font-medium text-xs" tabindex="-1"
+            >Forgot password?</ULink
+          >
+        </template>
+
+        <template #footer>
+          By signing in, you agree to our
+          <ULink to="#" class="text-primary font-medium">Terms of Service</ULink
+          >.
+        </template>
+      </UAuthForm>
+    </UPageCard>
+
+    <!-- Sign Up -->
+    <UPageCard v-else class="w-full max-w-sm sm:max-w-md">
+      <UAuthForm
+        :schema="registerSchema"
+        :fields="registerFields"
+        :providers="providers"
+        title="Create an account"
+        description="Get started with Acme Inc today."
+        icon="i-lucide-user-plus"
+        separator="or continue with email"
+        :submit="{
+          label: 'Create Account',
+          icon: 'i-lucide-user-plus',
+          block: true,
+        }"
+        @submit="onRegisterSubmit"
+      >
+        <template #footer>
+          By signing up, you agree to our
+          <ULink to="#" class="text-primary font-medium"
+            >Terms of Service</ULink
+          >
+          and
+          <ULink to="#" class="text-primary font-medium">Privacy Policy</ULink>.
+        </template>
+      </UAuthForm>
+    </UPageCard>
+
+    <!-- Bottom text -->
+    <p class="mt-8 text-center text-xs text-(--ui-text-dimmed) max-w-sm">
+      Protected by reCAPTCHA and subject to the Acme Inc Privacy Policy and
+      Terms of Service.
+    </p>
   </div>
 </template>
