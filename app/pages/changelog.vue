@@ -1,15 +1,48 @@
 <script setup lang="ts">
-const versions = [
+definePageMeta({ layout: "preview" });
+
+interface ChangeItem {
+  type: "feature" | "improvement" | "fix";
+  items: string[];
+}
+
+interface Release {
+  title: string;
+  date: string;
+  badge: string | { label: string; color: string; variant: string };
+  description: string;
+  authors: {
+    name: string;
+    description?: string;
+    avatar: { src?: string; alt?: string; text?: string };
+  }[];
+  changes: ChangeItem[];
+}
+
+const versions: Release[] = [
   {
-    version: "v4.4.0",
-    date: "January 30, 2026",
-    badge: "Latest",
-    badgeColor: "primary",
+    title: "v4.4.0",
+    date: "2026-01-30",
+    badge: { label: "Latest", color: "primary", variant: "solid" },
     description:
       "A major update with new Editor components, AI Chat improvements, and Pricing plan components.",
     authors: [
-      { name: "Sébastien Chopin", avatar: "SC" },
-      { name: "Benjamin Canac", avatar: "BC" },
+      {
+        name: "Sébastien Chopin",
+        description: "@atinux",
+        avatar: {
+          src: "https://github.com/atinux.png",
+          alt: "Sébastien Chopin",
+        },
+      },
+      {
+        name: "Benjamin Canac",
+        description: "@benjamincanac",
+        avatar: {
+          src: "https://github.com/benjamincanac.png",
+          alt: "Benjamin Canac",
+        },
+      },
     ],
     changes: [
       {
@@ -45,13 +78,21 @@ const versions = [
     ],
   },
   {
-    version: "v4.3.0",
-    date: "January 15, 2026",
-    badge: "Stable",
-    badgeColor: "success",
+    title: "v4.3.0",
+    date: "2026-01-15",
+    badge: { label: "Stable", color: "success", variant: "solid" },
     description:
       "Introduced the Dashboard component suite and significant performance improvements.",
-    authors: [{ name: "Benjamin Canac", avatar: "BC" }],
+    authors: [
+      {
+        name: "Benjamin Canac",
+        description: "@benjamincanac",
+        avatar: {
+          src: "https://github.com/benjamincanac.png",
+          alt: "Benjamin Canac",
+        },
+      },
+    ],
     changes: [
       {
         type: "feature",
@@ -83,15 +124,25 @@ const versions = [
     ],
   },
   {
-    version: "v4.2.0",
-    date: "December 20, 2025",
-    badge: "Minor",
-    badgeColor: "info",
+    title: "v4.2.0",
+    date: "2025-12-20",
+    badge: { label: "Minor", color: "info", variant: "subtle" },
     description:
       "Added marketing and content page components for building landing pages.",
     authors: [
-      { name: "Sébastien Chopin", avatar: "SC" },
-      { name: "Alex Kim", avatar: "AK" },
+      {
+        name: "Sébastien Chopin",
+        description: "@atinux",
+        avatar: {
+          src: "https://github.com/atinux.png",
+          alt: "Sébastien Chopin",
+        },
+      },
+      {
+        name: "Alex Kim",
+        description: "@alexkim",
+        avatar: { text: "AK" },
+      },
     ],
     changes: [
       {
@@ -109,7 +160,7 @@ const versions = [
       {
         type: "improvement",
         items: [
-          "UButton now supports the `block` prop for full-width buttons",
+          'UButton now supports the "block" prop for full-width buttons',
           "UCard header and footer slots improved",
           "Better responsive behavior for all page components",
         ],
@@ -117,12 +168,20 @@ const versions = [
     ],
   },
   {
-    version: "v4.1.0",
-    date: "November 28, 2025",
-    badge: "Minor",
-    badgeColor: "info",
+    title: "v4.1.0",
+    date: "2025-11-28",
+    badge: { label: "Minor", color: "info", variant: "subtle" },
     description: "Introduced AI Chat components and improved form validation.",
-    authors: [{ name: "Benjamin Canac", avatar: "BC" }],
+    authors: [
+      {
+        name: "Benjamin Canac",
+        description: "@benjamincanac",
+        avatar: {
+          src: "https://github.com/benjamincanac.png",
+          alt: "Benjamin Canac",
+        },
+      },
+    ],
     changes: [
       {
         type: "feature",
@@ -152,10 +211,65 @@ const versions = [
       },
     ],
   },
+  {
+    title: "v4.0.0",
+    date: "2025-10-01",
+    badge: { label: "Major", color: "warning", variant: "solid" },
+    description:
+      "The initial v4 release — a ground-up rewrite built on Reka UI, Tailwind CSS v4, and Tailwind Variants.",
+    authors: [
+      {
+        name: "Sébastien Chopin",
+        description: "@atinux",
+        avatar: {
+          src: "https://github.com/atinux.png",
+          alt: "Sébastien Chopin",
+        },
+      },
+      {
+        name: "Benjamin Canac",
+        description: "@benjamincanac",
+        avatar: {
+          src: "https://github.com/benjamincanac.png",
+          alt: "Benjamin Canac",
+        },
+      },
+      {
+        name: "Hugo Richard",
+        description: "@hugorcd__",
+        avatar: {
+          src: "https://github.com/hugorcd.png",
+          alt: "Hugo Richard",
+        },
+      },
+    ],
+    changes: [
+      {
+        type: "feature",
+        items: [
+          "Complete rewrite with Reka UI primitives (55+ accessible primitives)",
+          "Tailwind CSS v4 with CSS-first configuration",
+          "Tailwind Variants for dynamic component styling",
+          "Full Vue 3 compatibility without Nuxt requirement",
+          "New theming system with design tokens and CSS variables",
+          "60+ production-ready components",
+        ],
+      },
+      {
+        type: "improvement",
+        items: [
+          "5× faster full builds, 100× faster incremental builds",
+          "Full TypeScript support with intelligent auto-completion",
+          "First-class accessibility built into every component",
+          "Zero-config import handling, vendor prefixing, and syntax transforms",
+        ],
+      },
+    ],
+  },
 ];
 
 const typeConfig: Record<
-  string,
+  ChangeItem["type"],
   { label: string; icon: string; color: string }
 > = {
   feature: {
@@ -168,160 +282,226 @@ const typeConfig: Record<
     icon: "i-lucide-trending-up",
     color: "success",
   },
-  fix: { label: "Bug Fixes", icon: "i-lucide-bug", color: "error" },
+  fix: {
+    label: "Bug Fixes",
+    icon: "i-lucide-bug",
+    color: "error",
+  },
 };
+
+type ChangeType = "all" | "feature" | "improvement" | "fix";
+const activeFilter = ref<ChangeType>("all");
+
+const filterOptions = [
+  { label: "All Changes", value: "all" as ChangeType, icon: "i-lucide-layers" },
+  {
+    label: "Features",
+    value: "feature" as ChangeType,
+    icon: "i-lucide-sparkles",
+  },
+  {
+    label: "Improvements",
+    value: "improvement" as ChangeType,
+    icon: "i-lucide-trending-up",
+  },
+  { label: "Bug Fixes", value: "fix" as ChangeType, icon: "i-lucide-bug" },
+];
+
+const filteredVersions = computed(() => {
+  if (activeFilter.value === "all") return versions;
+  return versions
+    .map((v) => ({
+      ...v,
+      changes: v.changes.filter((c) => c.type === activeFilter.value),
+    }))
+    .filter((v) => v.changes.length > 0);
+});
+
+const totalChanges = computed(() =>
+  versions.reduce(
+    (acc, v) => acc + v.changes.reduce((a, c) => a + c.items.length, 0),
+    0,
+  ),
+);
+
+const totalFeatures = computed(() =>
+  versions.reduce(
+    (acc, v) =>
+      acc +
+      v.changes
+        .filter((c) => c.type === "feature")
+        .reduce((a, c) => a + c.items.length, 0),
+    0,
+  ),
+);
+
+const totalFixes = computed(() =>
+  versions.reduce(
+    (acc, v) =>
+      acc +
+      v.changes
+        .filter((c) => c.type === "fix")
+        .reduce((a, c) => a + c.items.length, 0),
+    0,
+  ),
+);
 </script>
 
 <template>
-  <div class="p-6 sm:p-8 space-y-8 max-w-4xl mx-auto">
-    <!-- Header -->
-    <div
-      class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4"
+  <UPage>
+    <!-- Hero -->
+    <UPageHero
+      title="Changelog"
+      description="All the latest updates, improvements, and fixes to Nuxt UI."
     >
-      <div>
-        <h1 class="text-3xl sm:text-4xl font-bold text-(--ui-text-highlighted)">
-          Changelog
-        </h1>
-        <p class="text-lg text-(--ui-text-muted) mt-1">
-          All the latest updates, improvements, and fixes.
-        </p>
-      </div>
-      <div class="flex items-center gap-2">
-        <UButton
-          label="RSS Feed"
-          icon="i-lucide-rss"
-          variant="outline"
-          color="neutral"
-          size="sm"
-        />
-        <UButton
-          label="Subscribe"
-          icon="i-lucide-bell"
-          variant="outline"
-          color="primary"
-          size="sm"
-        />
-      </div>
-    </div>
+      <template #links>
+        <div class="flex flex-wrap items-center gap-2">
+          <UButton
+            label="RSS Feed"
+            icon="i-lucide-rss"
+            variant="outline"
+            color="neutral"
+            size="md"
+          />
+          <UButton
+            label="Subscribe"
+            icon="i-lucide-bell"
+            variant="solid"
+            color="primary"
+            size="md"
+          />
+        </div>
+      </template>
+    </UPageHero>
 
-    <USeparator />
+    <UPageBody>
+      <div class="max-w-4xl mx-auto space-y-8 px-6">
+        <!-- Stats bar -->
+        <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
+          <UCard :ui="{ root: 'text-center', body: 'p-3 sm:p-4 sm:gap-1' }">
+            <div class="text-2xl font-bold text-(--ui-primary)">
+              {{ versions.length }}
+            </div>
+            <div class="text-xs text-(--ui-text-muted)">Releases</div>
+          </UCard>
+          <UCard :ui="{ root: 'text-center', body: 'p-3 sm:p-4 sm:gap-1' }">
+            <div class="text-2xl font-bold text-(--ui-text-highlighted)">
+              {{ totalChanges }}
+            </div>
+            <div class="text-xs text-(--ui-text-muted)">Total Changes</div>
+          </UCard>
+          <UCard :ui="{ root: 'text-center', body: 'p-3 sm:p-4 sm:gap-1' }">
+            <div class="text-2xl font-bold text-(--ui-success)">
+              {{ totalFeatures }}
+            </div>
+            <div class="text-xs text-(--ui-text-muted)">Features Added</div>
+          </UCard>
+          <UCard :ui="{ root: 'text-center', body: 'p-3 sm:p-4 sm:gap-1' }">
+            <div class="text-2xl font-bold text-(--ui-error)">
+              {{ totalFixes }}
+            </div>
+            <div class="text-xs text-(--ui-text-muted)">Bugs Fixed</div>
+          </UCard>
+        </div>
 
-    <!-- Timeline -->
-    <div class="relative">
-      <!-- Timeline line -->
-      <div
-        class="absolute left-[15px] sm:left-[19px] top-0 bottom-0 w-px bg-(--ui-border)"
-      />
-
-      <div class="space-y-12">
+        <!-- Category filter -->
         <div
-          v-for="release in versions"
-          :key="release.version"
-          class="relative pl-10 sm:pl-14"
+          class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3"
         >
-          <!-- Timeline dot -->
-          <div
-            class="absolute left-0 sm:left-1 top-1 size-[30px] sm:size-[38px] rounded-full border-4 border-(--ui-bg) flex items-center justify-center z-10"
-            :class="`bg-(--ui-${release.badgeColor})`"
-          >
-            <UIcon name="i-lucide-tag" class="size-3.5 sm:size-4 text-white" />
-          </div>
-
-          <div class="space-y-4">
-            <!-- Version header -->
-            <div
-              class="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-3"
-            >
-              <h2 class="text-2xl font-bold text-(--ui-text-highlighted)">
-                {{ release.version }}
-              </h2>
-              <UBadge
-                :label="release.badge"
-                :color="release.badgeColor as any"
-                variant="subtle"
-                size="xs"
-              />
-              <span class="text-sm text-(--ui-text-dimmed)">{{
-                release.date
-              }}</span>
-            </div>
-
-            <!-- Description -->
-            <p class="text-(--ui-text-muted)">{{ release.description }}</p>
-
-            <!-- Authors -->
-            <div class="flex items-center gap-2">
-              <UAvatarGroup :max="3" size="xs">
-                <UAvatar
-                  v-for="author in release.authors"
-                  :key="author.name"
-                  :text="author.avatar"
-                  color="primary"
-                />
-              </UAvatarGroup>
-              <span class="text-sm text-(--ui-text-muted)">
-                {{ release.authors.map((a) => a.name).join(", ") }}
-              </span>
-            </div>
-
-            <!-- Changes by type -->
-            <div class="space-y-4 pt-2">
-              <div
-                v-for="changeGroup in release.changes"
-                :key="changeGroup.type"
-                class="space-y-2"
-              >
-                <div class="flex items-center gap-2">
-                  <UIcon
-                    :name="typeConfig[changeGroup.type].icon"
-                    class="size-4"
-                    :class="`text-(--ui-${typeConfig[changeGroup.type].color})`"
-                  />
-                  <h3
-                    class="text-sm font-semibold text-(--ui-text-highlighted)"
-                  >
-                    {{ typeConfig[changeGroup.type].label }}
-                  </h3>
-                  <UBadge
-                    :label="String(changeGroup.items.length)"
-                    :color="typeConfig[changeGroup.type].color as any"
-                    variant="subtle"
-                    size="xs"
-                  />
-                </div>
-                <ul class="space-y-1.5 ml-6">
-                  <li
-                    v-for="item in changeGroup.items"
-                    :key="item"
-                    class="flex items-start gap-2"
-                  >
-                    <UIcon
-                      name="i-lucide-check"
-                      class="size-4 text-(--ui-success) shrink-0 mt-0.5"
-                    />
-                    <span class="text-sm text-(--ui-text)">{{ item }}</span>
-                  </li>
-                </ul>
-              </div>
-            </div>
-
-            <USeparator
-              v-if="release !== versions[versions.length - 1]"
-              class="!mt-8"
+          <div class="flex flex-wrap gap-1.5">
+            <UButton
+              v-for="opt in filterOptions"
+              :key="opt.value"
+              :label="opt.label"
+              :icon="opt.icon"
+              :variant="activeFilter === opt.value ? 'solid' : 'ghost'"
+              :color="activeFilter === opt.value ? 'primary' : 'neutral'"
+              size="sm"
+              @click="activeFilter = opt.value"
             />
           </div>
+          <UBadge
+            :label="`Showing ${filteredVersions.length} of ${versions.length} releases`"
+            variant="subtle"
+            color="neutral"
+            size="md"
+          />
+        </div>
+
+        <USeparator />
+
+        <!-- Changelog timeline -->
+        <UChangelogVersions>
+          <UChangelogVersion
+            v-for="release in filteredVersions"
+            :key="release.title"
+            :title="release.title"
+            :description="release.description"
+            :date="release.date"
+            :badge="release.badge as any"
+            :authors="release.authors as any[]"
+            :ui="{
+              container: 'sm:max-w-2/3',
+            }"
+          >
+            <template #body>
+              <div class="space-y-5">
+                <div
+                  v-for="changeGroup in release.changes"
+                  :key="changeGroup.type"
+                >
+                  <!-- Change type heading -->
+                  <div class="flex items-center gap-2 mb-2.5">
+                    <UIcon
+                      :name="typeConfig[changeGroup.type].icon"
+                      class="size-4"
+                      :class="`text-(--ui-${typeConfig[changeGroup.type].color})`"
+                    />
+                    <span
+                      class="text-sm font-semibold text-(--ui-text-highlighted)"
+                    >
+                      {{ typeConfig[changeGroup.type].label }}
+                    </span>
+                    <UBadge
+                      :label="String(changeGroup.items.length)"
+                      :color="typeConfig[changeGroup.type].color as any"
+                      variant="subtle"
+                      size="xs"
+                    />
+                  </div>
+
+                  <!-- Change items -->
+                  <ul class="space-y-1.5 ml-1">
+                    <li
+                      v-for="item in changeGroup.items"
+                      :key="item"
+                      class="flex items-start gap-2.5"
+                    >
+                      <UIcon
+                        name="i-lucide-check"
+                        class="size-4 shrink-0 mt-0.5"
+                        :class="`text-(--ui-${typeConfig[changeGroup.type].color})`"
+                      />
+                      <span class="text-sm text-(--ui-text)">{{ item }}</span>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </template>
+          </UChangelogVersion>
+        </UChangelogVersions>
+
+        <!-- Load more -->
+        <div class="text-center py-6">
+          <UButton
+            label="Load Older Versions"
+            icon="i-lucide-chevron-down"
+            variant="outline"
+            color="neutral"
+            size="lg"
+          />
         </div>
       </div>
-    </div>
-
-    <!-- Load more -->
-    <div class="text-center pt-4 pl-10 sm:pl-14">
-      <UButton
-        label="Load Older Versions"
-        icon="i-lucide-chevron-down"
-        variant="outline"
-        color="neutral"
-      />
-    </div>
-  </div>
+    </UPageBody>
+  </UPage>
 </template>
