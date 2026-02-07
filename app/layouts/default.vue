@@ -264,8 +264,9 @@ useHead({
       <template #header="{ collapsed }">
         <h1
           v-if="!collapsed"
-          class="text-lg font-bold text-[var(--ui-text-highlighted)] truncate"
+          class="text-lg font-bold text-[var(--ui-text-highlighted)] truncate flex items-center gap-2"
         >
+          <UIcon name="i-lucide-palette" class="size-5 text-(--ui-primary)" />
           Nuxt UI Theme Builder
         </h1>
         <UIcon
