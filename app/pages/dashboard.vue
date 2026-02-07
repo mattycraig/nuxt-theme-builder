@@ -1,4 +1,23 @@
 <script setup lang="ts">
+import { h, resolveComponent } from "vue";
+import type { NavigationMenuItem, TableColumn } from "@nuxt/ui";
+
+const UBadge = resolveComponent("UBadge");
+const UAvatar = resolveComponent("UAvatar");
+
+type Order = {
+  id: string;
+  customer: string;
+  email: string;
+  amount: string;
+  status: string;
+  date: string;
+};
+
+// ---------------------------------------------------------------------------
+// Data
+// ---------------------------------------------------------------------------
+
 const statsCards = [
   {
     label: "Total Revenue",
@@ -34,14 +53,44 @@ const statsCards = [
   },
 ];
 
-const sideNavItems = [
+const sideNavItems: NavigationMenuItem[][] = [
   [
     { label: "Overview", icon: "i-lucide-home", active: true },
     { label: "Analytics", icon: "i-lucide-bar-chart-2" },
     { label: "Customers", icon: "i-lucide-users" },
     { label: "Products", icon: "i-lucide-package" },
-    { label: "Orders", icon: "i-lucide-shopping-cart" },
-    { label: "Settings", icon: "i-lucide-settings" },
+    { label: "Orders", icon: "i-lucide-shopping-cart", badge: "12" },
+    {
+      label: "Settings",
+      icon: "i-lucide-settings",
+      defaultOpen: true,
+      children: [
+        { label: "General" },
+        { label: "Members" },
+        { label: "Billing" },
+        { label: "Notifications" },
+      ],
+    },
+  ],
+  [
+    {
+      label: "Documentation",
+      icon: "i-lucide-book-open",
+      target: "_blank",
+    },
+    {
+      label: "Help & Support",
+      icon: "i-lucide-life-buoy",
+      target: "_blank",
+    },
+  ],
+];
+
+const toolbarNavItems: NavigationMenuItem[][] = [
+  [
+    { label: "General", icon: "i-lucide-layout-dashboard", active: true },
+    { label: "Reports", icon: "i-lucide-file-bar-chart" },
+    { label: "Notifications", icon: "i-lucide-bell" },
   ],
 ];
 
@@ -119,12 +168,48 @@ const statusColor: Record<string, string> = {
   Failed: "error",
 };
 
-const tableColumns = [
-  { key: "id", header: "Order" },
-  { key: "customer", header: "Customer" },
-  { key: "amount", header: "Amount" },
-  { key: "status", header: "Status" },
-  { key: "date", header: "Date" },
+const tableColumns: TableColumn<Order>[] = [
+  { accessorKey: "id", header: "Order" },
+  {
+    accessorKey: "customer",
+    header: "Customer",
+    cell: ({ row }) => {
+      const initials = row.original.customer
+        .split(" ")
+        .map((n: string) => n[0])
+        .join("");
+      return h("div", { class: "flex items-center gap-2" }, [
+        h(UAvatar, { text: initials, size: "xs" }),
+        h("div", { class: "min-w-0" }, [
+          h(
+            "p",
+            { class: "text-sm font-medium truncate" },
+            row.original.customer,
+          ),
+          h(
+            "p",
+            { class: "text-xs text-(--ui-text-dimmed) truncate" },
+            row.original.email,
+          ),
+        ]),
+      ]);
+    },
+  },
+  { accessorKey: "amount", header: "Amount" },
+  {
+    accessorKey: "status",
+    header: "Status",
+    cell: ({ row }) => {
+      const color = (statusColor[row.original.status] as any) || "neutral";
+      return h(UBadge, {
+        label: row.original.status,
+        color,
+        variant: "subtle",
+        size: "xs",
+      });
+    },
+  },
+  { accessorKey: "date", header: "Date" },
 ];
 
 const recentActivity = [
@@ -187,410 +272,498 @@ const paginatedOrders = computed(() => {
   const start = (currentPage.value - 1) * itemsPerPage;
   return recentOrders.slice(start, start + itemsPerPage);
 });
+
+// ---------------------------------------------------------------------------
+// Search
+// ---------------------------------------------------------------------------
+
+const searchGroups = [
+  {
+    id: "pages",
+    label: "Pages",
+    items: [
+      {
+        label: "Overview",
+        icon: "i-lucide-home",
+      },
+      {
+        label: "Analytics",
+        icon: "i-lucide-bar-chart-2",
+      },
+      {
+        label: "Customers",
+        icon: "i-lucide-users",
+      },
+      {
+        label: "Products",
+        icon: "i-lucide-package",
+      },
+      {
+        label: "Orders",
+        icon: "i-lucide-shopping-cart",
+      },
+      {
+        label: "Settings",
+        icon: "i-lucide-settings",
+      },
+    ],
+  },
+  {
+    id: "recent",
+    label: "Recent Orders",
+    items: recentOrders.slice(0, 4).map((o) => ({
+      label: `${o.id} — ${o.customer}`,
+      suffix: o.amount,
+      icon: "i-lucide-receipt",
+    })),
+  },
+];
+
+// Only render the full dashboard shell inside the iframe preview.
+// In the default layout the page is mounted in a hidden <slot /> — rendering
+// a nested UDashboardGroup/UDashboardSidebar there causes its mobile
+// slideover to portal out and conflict with the editor sidebar toggle.
+const route = useRoute();
+const isPreview = computed(() => "preview" in route.query);
 </script>
 
 <template>
-  <div class="flex h-full min-h-[80vh]">
-    <!-- Sidebar Navigation -->
-    <aside
-      class="hidden lg:flex flex-col w-56 shrink-0 border-r border-(--ui-border) bg-(--ui-bg) py-4"
+  <div v-if="!isPreview" />
+  <UDashboardGroup v-else>
+    <!-- ================================================================= -->
+    <!-- Sidebar — collapsible & resizable, responsive mobile slideover    -->
+    <!-- ================================================================= -->
+    <UDashboardSidebar
+      id="dashboard-sidebar"
+      collapsible
+      resizable
+      :ui="{ footer: 'border-t border-default' }"
     >
-      <div class="px-4 mb-4">
-        <div class="flex items-center gap-2">
+      <template #header="{ collapsed }">
+        <div v-if="!collapsed" class="flex items-center gap-2 min-w-0">
           <UIcon
             name="i-lucide-layout-dashboard"
-            class="size-5 text-(--ui-primary)"
+            class="size-5 text-(--ui-primary) shrink-0"
           />
-          <span class="font-bold text-(--ui-text-highlighted)">Dashboard</span>
+          <span class="font-bold text-(--ui-text-highlighted) truncate">
+            Dashboard
+          </span>
         </div>
-      </div>
-      <UNavigationMenu
-        :items="sideNavItems"
-        orientation="vertical"
-        class="px-2 flex-1"
-      />
-      <div class="px-4 pt-4 border-t border-(--ui-border)">
-        <div class="flex items-center gap-3">
-          <UAvatar text="JD" size="sm" color="primary" />
-          <div class="min-w-0">
-            <p
-              class="text-sm font-medium text-(--ui-text-highlighted) truncate"
-            >
-              John Doe
-            </p>
-            <p class="text-xs text-(--ui-text-dimmed) truncate">
-              admin@example.com
-            </p>
-          </div>
-        </div>
-      </div>
-    </aside>
+        <UIcon
+          v-else
+          name="i-lucide-layout-dashboard"
+          class="size-5 text-(--ui-primary) mx-auto"
+        />
+      </template>
 
-    <!-- Main Content -->
-    <div class="flex-1 overflow-y-auto">
-      <div class="p-4 sm:p-6 lg:p-8 space-y-6 max-w-7xl">
-        <!-- Breadcrumb -->
-        <UBreadcrumb
-          :items="[
-            { label: 'Home', icon: 'i-lucide-home', to: '/' },
-            { label: 'Dashboard' },
-            { label: 'Analytics' },
-          ]"
+      <template #default="{ collapsed }">
+        <!-- Search button -->
+        <UDashboardSearchButton :collapsed="collapsed" />
+
+        <!-- Primary navigation -->
+        <UNavigationMenu
+          :collapsed="collapsed"
+          :items="sideNavItems[0]"
+          orientation="vertical"
         />
 
-        <!-- Page Header -->
-        <div
-          class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4"
+        <!-- Secondary / footer navigation -->
+        <UNavigationMenu
+          :collapsed="collapsed"
+          :items="sideNavItems[1]"
+          orientation="vertical"
+          class="mt-auto"
+        />
+      </template>
+
+      <template #footer="{ collapsed }">
+        <UButton
+          :avatar="{ text: 'JD' }"
+          :label="collapsed ? undefined : 'John Doe'"
+          color="neutral"
+          variant="ghost"
+          class="w-full"
+          :block="collapsed"
+        />
+      </template>
+    </UDashboardSidebar>
+
+    <!-- =================================================================
+         Search modal — opens via DashboardSearchButton or ⌘K
+         ================================================================= -->
+    <UDashboardSearch :groups="searchGroups" :color-mode="false" />
+
+    <!-- ================================================================= -->
+    <!-- Main Panel                                                        -->
+    <!-- ================================================================= -->
+    <UDashboardPanel id="dashboard-main">
+      <!-- Navbar -->
+      <template #header>
+        <UDashboardNavbar
+          title="Analytics Overview"
+          icon="i-lucide-bar-chart-2"
         >
-          <div>
-            <h1 class="text-2xl font-bold text-(--ui-text-highlighted)">
+          <template #leading>
+            <UDashboardSidebarCollapse />
+          </template>
+
+          <template #right>
+            <div class="flex items-center gap-2">
+              <UButton
+                label="Export"
+                icon="i-lucide-download"
+                variant="outline"
+                color="neutral"
+                size="sm"
+                class="hidden sm:inline-flex"
+              />
+              <UButton
+                label="Add Widget"
+                icon="i-lucide-plus"
+                color="primary"
+                size="sm"
+              />
+            </div>
+          </template>
+        </UDashboardNavbar>
+
+        <!-- Toolbar -->
+        <UDashboardToolbar>
+          <template #left>
+            <UNavigationMenu :items="toolbarNavItems[0]" highlight />
+          </template>
+
+          <template #right>
+            <UBreadcrumb
+              :items="[
+                { label: 'Home', icon: 'i-lucide-home' },
+                { label: 'Dashboard' },
+                { label: 'Analytics' },
+              ]"
+              class="hidden sm:flex"
+            />
+          </template>
+        </UDashboardToolbar>
+      </template>
+
+      <!-- Panel scrollable body -->
+      <template #body>
+        <div class="space-y-6">
+          <!-- Page Header (visible on mobile where navbar title may be small) -->
+          <div class="sm:hidden">
+            <h1 class="text-xl font-bold text-(--ui-text-highlighted)">
               Analytics Overview
             </h1>
             <p class="text-sm text-(--ui-text-muted)">
               Track your business metrics and performance.
             </p>
           </div>
-          <div class="flex items-center gap-2">
-            <UButton
-              label="Export"
-              icon="i-lucide-download"
-              variant="outline"
-              color="neutral"
-              size="sm"
-            />
-            <UButton
-              label="Add Widget"
-              icon="i-lucide-plus"
-              color="primary"
-              size="sm"
-            />
-          </div>
-        </div>
 
-        <!-- Stats Cards -->
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-          <UCard v-for="stat in statsCards" :key="stat.label">
-            <div class="flex items-start justify-between">
-              <div class="space-y-1">
-                <p class="text-sm text-(--ui-text-muted)">{{ stat.label }}</p>
-                <p class="text-2xl font-bold text-(--ui-text-highlighted)">
-                  {{ stat.value }}
-                </p>
-              </div>
-              <div
-                class="size-10 rounded-lg flex items-center justify-center"
-                :class="`bg-(--ui-${stat.color})/10`"
-              >
-                <UIcon
-                  :name="stat.icon"
-                  class="size-5"
-                  :class="`text-(--ui-${stat.color})`"
-                />
-              </div>
-            </div>
-            <div class="mt-3 flex items-center gap-1">
-              <UBadge
-                :label="stat.change"
-                :color="stat.trend === 'up' ? 'success' : 'error'"
-                variant="subtle"
-                size="xs"
-              />
-              <span class="text-xs text-(--ui-text-dimmed)">vs last month</span>
-            </div>
-          </UCard>
-        </div>
-
-        <!-- Charts Row -->
-        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          <!-- Revenue Chart -->
-          <UCard class="lg:col-span-2">
-            <template #header>
-              <div class="flex items-center justify-between">
-                <div>
-                  <h3 class="font-semibold text-(--ui-text-highlighted)">
-                    Revenue Overview
-                  </h3>
-                  <p class="text-sm text-(--ui-text-muted)">
-                    Monthly revenue for the current year
+          <!-- Stats Cards -->
+          <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4">
+            <UCard v-for="stat in statsCards" :key="stat.label">
+              <div class="flex items-start justify-between">
+                <div class="space-y-1 min-w-0">
+                  <p class="text-sm text-(--ui-text-muted) truncate">
+                    {{ stat.label }}
+                  </p>
+                  <p class="text-2xl font-bold text-(--ui-text-highlighted)">
+                    {{ stat.value }}
                   </p>
                 </div>
-                <UButton
-                  icon="i-lucide-more-horizontal"
-                  variant="ghost"
-                  color="neutral"
-                  size="xs"
-                />
-              </div>
-            </template>
-
-            <!-- Simple bar chart using CSS -->
-            <div class="flex items-end gap-2 h-48 pt-4">
-              <div
-                v-for="bar in chartData"
-                :key="bar.month"
-                class="flex-1 flex flex-col items-center gap-1"
-              >
                 <div
-                  class="w-full rounded-t-sm bg-(--ui-primary) transition-all duration-300 min-h-[4px]"
-                  :style="{ height: `${bar.value * 1.6}px` }"
-                />
-                <span class="text-[10px] text-(--ui-text-dimmed)">{{
-                  bar.month
-                }}</span>
-              </div>
-            </div>
-          </UCard>
-
-          <!-- Recent Activity -->
-          <UCard>
-            <template #header>
-              <h3 class="font-semibold text-(--ui-text-highlighted)">
-                Recent Activity
-              </h3>
-            </template>
-
-            <div class="space-y-4">
-              <div
-                v-for="activity in recentActivity"
-                :key="activity.title"
-                class="flex items-start gap-3"
-              >
-                <div
-                  class="size-8 rounded-full flex items-center justify-center shrink-0"
-                  :class="`bg-(--ui-${activity.color})/10`"
+                  class="size-10 rounded-lg flex items-center justify-center shrink-0"
+                  :class="`bg-(--ui-${stat.color})/10`"
                 >
                   <UIcon
-                    :name="activity.icon"
-                    class="size-4"
-                    :class="`text-(--ui-${activity.color})`"
+                    :name="stat.icon"
+                    class="size-5"
+                    :class="`text-(--ui-${stat.color})`"
                   />
                 </div>
-                <div class="min-w-0 flex-1">
-                  <p
-                    class="text-sm font-medium text-(--ui-text-highlighted) truncate"
-                  >
-                    {{ activity.title }}
-                  </p>
-                  <p class="text-xs text-(--ui-text-muted) truncate">
-                    {{ activity.description }}
-                  </p>
-                </div>
-                <span class="text-xs text-(--ui-text-dimmed) shrink-0">{{
-                  activity.time
-                }}</span>
               </div>
-            </div>
-          </UCard>
-        </div>
-
-        <!-- Orders Table -->
-        <UCard>
-          <template #header>
-            <div
-              class="flex flex-col sm:flex-row sm:items-center justify-between gap-3"
-            >
-              <div>
-                <h3 class="font-semibold text-(--ui-text-highlighted)">
-                  Recent Orders
-                </h3>
-                <p class="text-sm text-(--ui-text-muted)">
-                  Manage and track customer orders
-                </p>
-              </div>
-              <div class="flex items-center gap-2">
-                <UInput
-                  placeholder="Search orders..."
-                  icon="i-lucide-search"
-                  size="sm"
-                  class="w-48"
-                />
-                <UButton
-                  icon="i-lucide-filter"
-                  variant="outline"
-                  color="neutral"
-                  size="sm"
-                />
-              </div>
-            </div>
-          </template>
-
-          <UTable :data="paginatedOrders" :columns="tableColumns">
-            <template #status-cell="{ row }">
-              <UBadge
-                :label="row.original.status"
-                :color="(statusColor[row.original.status] as any) || 'neutral'"
-                variant="subtle"
-                size="xs"
-              />
-            </template>
-            <template #customer-cell="{ row }">
-              <div class="flex items-center gap-2">
-                <UAvatar
-                  :text="
-                    row.original.customer
-                      .split(' ')
-                      .map((n: string) => n[0])
-                      .join('')
-                  "
+              <div class="mt-3 flex items-center gap-1">
+                <UBadge
+                  :label="stat.change"
+                  :color="stat.trend === 'up' ? 'success' : 'error'"
+                  variant="subtle"
                   size="xs"
                 />
-                <div>
-                  <p class="text-sm font-medium">{{ row.original.customer }}</p>
-                  <p class="text-xs text-(--ui-text-dimmed)">
-                    {{ row.original.email }}
-                  </p>
-                </div>
+                <span class="text-xs text-(--ui-text-dimmed)">
+                  vs last month
+                </span>
               </div>
-            </template>
-          </UTable>
+            </UCard>
+          </div>
 
-          <template #footer>
-            <div class="flex items-center justify-between">
-              <p class="text-sm text-(--ui-text-muted)">
-                Showing {{ (currentPage - 1) * itemsPerPage + 1 }}–{{
-                  Math.min(currentPage * itemsPerPage, recentOrders.length)
-                }}
-                of {{ recentOrders.length }} orders
-              </p>
-              <UPagination
-                v-model:page="currentPage"
-                :total="recentOrders.length"
-                :items-per-page="itemsPerPage"
-                :show-edges="true"
-              />
-            </div>
-          </template>
-        </UCard>
-
-        <!-- Bottom Row -->
-        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 pb-6">
-          <!-- Progress Cards -->
-          <UCard>
-            <template #header>
-              <h3 class="font-semibold text-(--ui-text-highlighted)">
-                Goals Progress
-              </h3>
-            </template>
-            <div class="space-y-5">
-              <div
-                v-for="goal in [
-                  {
-                    label: 'Revenue Target',
-                    value: 72,
-                    target: '$50K',
-                    color: 'primary',
-                  },
-                  {
-                    label: 'New Customers',
-                    value: 45,
-                    target: '500',
-                    color: 'secondary',
-                  },
-                  {
-                    label: 'Retention Rate',
-                    value: 89,
-                    target: '95%',
-                    color: 'success',
-                  },
-                  {
-                    label: 'Support Tickets',
-                    value: 35,
-                    target: '< 50',
-                    color: 'warning',
-                  },
-                ]"
-                :key="goal.label"
-                class="space-y-2"
-              >
-                <div class="flex items-center justify-between text-sm">
-                  <span class="text-(--ui-text)">{{ goal.label }}</span>
-                  <span class="text-(--ui-text-muted)"
-                    >{{ goal.value }}% — Target: {{ goal.target }}</span
-                  >
-                </div>
-                <UProgress
-                  :value="goal.value"
-                  :color="goal.color as any"
-                  size="sm"
-                />
-              </div>
-            </div>
-          </UCard>
-
-          <!-- Top Products -->
-          <UCard>
-            <template #header>
-              <h3 class="font-semibold text-(--ui-text-highlighted)">
-                Top Products
-              </h3>
-            </template>
-            <div class="space-y-3">
-              <div
-                v-for="(product, i) in [
-                  {
-                    name: 'Theme Builder Pro',
-                    sales: 1234,
-                    revenue: '$24,680',
-                    growth: '+12%',
-                  },
-                  {
-                    name: 'Component Library',
-                    sales: 856,
-                    revenue: '$17,120',
-                    growth: '+8%',
-                  },
-                  {
-                    name: 'Dashboard Kit',
-                    sales: 543,
-                    revenue: '$10,860',
-                    growth: '+23%',
-                  },
-                  {
-                    name: 'Icon Pack Premium',
-                    sales: 321,
-                    revenue: '$3,210',
-                    growth: '+5%',
-                  },
-                  {
-                    name: 'Starter Template',
-                    sales: 210,
-                    revenue: '$2,100',
-                    growth: '+15%',
-                  },
-                ]"
-                :key="product.name"
-                class="flex items-center gap-3 py-2"
-                :class="i < 4 ? 'border-b border-(--ui-border)' : ''"
-              >
-                <span class="text-sm font-medium text-(--ui-text-dimmed) w-6"
-                  >{{ i + 1 }}.</span
-                >
-                <div class="flex-1 min-w-0">
-                  <p
-                    class="text-sm font-medium text-(--ui-text-highlighted) truncate"
-                  >
-                    {{ product.name }}
-                  </p>
-                  <p class="text-xs text-(--ui-text-dimmed)">
-                    {{ product.sales }} sales
-                  </p>
-                </div>
-                <div class="text-right">
-                  <p class="text-sm font-semibold text-(--ui-text-highlighted)">
-                    {{ product.revenue }}
-                  </p>
-                  <UBadge
-                    :label="product.growth"
-                    color="success"
-                    variant="subtle"
+          <!-- Charts Row -->
+          <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <!-- Revenue Chart -->
+            <UCard class="lg:col-span-2">
+              <template #header>
+                <div class="flex items-center justify-between">
+                  <div>
+                    <h3 class="font-semibold text-(--ui-text-highlighted)">
+                      Revenue Overview
+                    </h3>
+                    <p class="text-sm text-(--ui-text-muted)">
+                      Monthly revenue for the current year
+                    </p>
+                  </div>
+                  <UButton
+                    icon="i-lucide-more-horizontal"
+                    variant="ghost"
+                    color="neutral"
                     size="xs"
                   />
                 </div>
+              </template>
+
+              <!-- Simple bar chart using CSS -->
+              <div class="flex items-end gap-1 sm:gap-2 h-48 pt-4">
+                <div
+                  v-for="bar in chartData"
+                  :key="bar.month"
+                  class="flex-1 flex flex-col items-center gap-1"
+                >
+                  <div
+                    class="w-full rounded-t-sm bg-(--ui-primary) transition-all duration-300 min-h-[4px]"
+                    :style="{ height: `${bar.value * 1.6}px` }"
+                  />
+                  <span class="text-[10px] text-(--ui-text-dimmed)">
+                    {{ bar.month }}
+                  </span>
+                </div>
               </div>
-            </div>
+            </UCard>
+
+            <!-- Recent Activity -->
+            <UCard>
+              <template #header>
+                <h3 class="font-semibold text-(--ui-text-highlighted)">
+                  Recent Activity
+                </h3>
+              </template>
+
+              <div class="space-y-4">
+                <div
+                  v-for="activity in recentActivity"
+                  :key="activity.title"
+                  class="flex items-start gap-3"
+                >
+                  <div
+                    class="size-8 rounded-full flex items-center justify-center shrink-0"
+                    :class="`bg-(--ui-${activity.color})/10`"
+                  >
+                    <UIcon
+                      :name="activity.icon"
+                      class="size-4"
+                      :class="`text-(--ui-${activity.color})`"
+                    />
+                  </div>
+                  <div class="min-w-0 flex-1">
+                    <p
+                      class="text-sm font-medium text-(--ui-text-highlighted) truncate"
+                    >
+                      {{ activity.title }}
+                    </p>
+                    <p class="text-xs text-(--ui-text-muted) truncate">
+                      {{ activity.description }}
+                    </p>
+                  </div>
+                  <span class="text-xs text-(--ui-text-dimmed) shrink-0">
+                    {{ activity.time }}
+                  </span>
+                </div>
+              </div>
+            </UCard>
+          </div>
+
+          <!-- Orders Table -->
+          <UCard>
+            <template #header>
+              <div
+                class="flex flex-col sm:flex-row sm:items-center justify-between gap-3"
+              >
+                <div>
+                  <h3 class="font-semibold text-(--ui-text-highlighted)">
+                    Recent Orders
+                  </h3>
+                  <p class="text-sm text-(--ui-text-muted)">
+                    Manage and track customer orders
+                  </p>
+                </div>
+                <div class="flex items-center gap-2">
+                  <UInput
+                    placeholder="Search orders..."
+                    icon="i-lucide-search"
+                    size="sm"
+                    class="w-full sm:w-48"
+                  />
+                  <UButton
+                    icon="i-lucide-filter"
+                    variant="outline"
+                    color="neutral"
+                    size="sm"
+                  />
+                </div>
+              </div>
+            </template>
+
+            <UTable :data="paginatedOrders" :columns="tableColumns" />
+
+            <template #footer>
+              <div
+                class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3"
+              >
+                <p class="text-sm text-(--ui-text-muted)">
+                  Showing {{ (currentPage - 1) * itemsPerPage + 1 }}–{{
+                    Math.min(currentPage * itemsPerPage, recentOrders.length)
+                  }}
+                  of {{ recentOrders.length }} orders
+                </p>
+                <UPagination
+                  v-model:page="currentPage"
+                  :total="recentOrders.length"
+                  :items-per-page="itemsPerPage"
+                  :show-edges="true"
+                />
+              </div>
+            </template>
           </UCard>
+
+          <!-- Bottom Row -->
+          <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 pb-6">
+            <!-- Progress Cards -->
+            <UCard>
+              <template #header>
+                <h3 class="font-semibold text-(--ui-text-highlighted)">
+                  Goals Progress
+                </h3>
+              </template>
+              <div class="space-y-5">
+                <div
+                  v-for="goal in [
+                    {
+                      label: 'Revenue Target',
+                      value: 72,
+                      target: '$50K',
+                      color: 'primary',
+                    },
+                    {
+                      label: 'New Customers',
+                      value: 45,
+                      target: '500',
+                      color: 'secondary',
+                    },
+                    {
+                      label: 'Retention Rate',
+                      value: 89,
+                      target: '95%',
+                      color: 'success',
+                    },
+                    {
+                      label: 'Support Tickets',
+                      value: 35,
+                      target: '< 50',
+                      color: 'warning',
+                    },
+                  ]"
+                  :key="goal.label"
+                  class="space-y-2"
+                >
+                  <div class="flex items-center justify-between text-sm">
+                    <span class="text-(--ui-text)">{{ goal.label }}</span>
+                    <span class="text-(--ui-text-muted)">
+                      {{ goal.value }}% — Target: {{ goal.target }}
+                    </span>
+                  </div>
+                  <UProgress
+                    :value="goal.value"
+                    :color="goal.color as any"
+                    size="sm"
+                  />
+                </div>
+              </div>
+            </UCard>
+
+            <!-- Top Products -->
+            <UCard>
+              <template #header>
+                <h3 class="font-semibold text-(--ui-text-highlighted)">
+                  Top Products
+                </h3>
+              </template>
+              <div class="space-y-3">
+                <div
+                  v-for="(product, i) in [
+                    {
+                      name: 'Theme Builder Pro',
+                      sales: 1234,
+                      revenue: '$24,680',
+                      growth: '+12%',
+                    },
+                    {
+                      name: 'Component Library',
+                      sales: 856,
+                      revenue: '$17,120',
+                      growth: '+8%',
+                    },
+                    {
+                      name: 'Dashboard Kit',
+                      sales: 543,
+                      revenue: '$10,860',
+                      growth: '+23%',
+                    },
+                    {
+                      name: 'Icon Pack Premium',
+                      sales: 321,
+                      revenue: '$3,210',
+                      growth: '+5%',
+                    },
+                    {
+                      name: 'Starter Template',
+                      sales: 210,
+                      revenue: '$2,100',
+                      growth: '+15%',
+                    },
+                  ]"
+                  :key="product.name"
+                  class="flex items-center gap-3 py-2"
+                  :class="i < 4 ? 'border-b border-(--ui-border)' : ''"
+                >
+                  <span class="text-sm font-medium text-(--ui-text-dimmed) w-6">
+                    {{ i + 1 }}.
+                  </span>
+                  <div class="flex-1 min-w-0">
+                    <p
+                      class="text-sm font-medium text-(--ui-text-highlighted) truncate"
+                    >
+                      {{ product.name }}
+                    </p>
+                    <p class="text-xs text-(--ui-text-dimmed)">
+                      {{ product.sales }} sales
+                    </p>
+                  </div>
+                  <div class="text-right shrink-0">
+                    <p
+                      class="text-sm font-semibold text-(--ui-text-highlighted)"
+                    >
+                      {{ product.revenue }}
+                    </p>
+                    <UBadge
+                      :label="product.growth"
+                      color="success"
+                      variant="subtle"
+                      size="xs"
+                    />
+                  </div>
+                </div>
+              </div>
+            </UCard>
+          </div>
         </div>
-      </div>
-    </div>
-  </div>
+      </template>
+    </UDashboardPanel>
+  </UDashboardGroup>
 </template>
