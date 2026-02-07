@@ -259,7 +259,7 @@ useHead({
       collapsible
       :min-size="300"
       :max-size="600"
-      :default-size="360"
+      :default-size="300"
     >
       <template #header="{ collapsed }">
         <h1

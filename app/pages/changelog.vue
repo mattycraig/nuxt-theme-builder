@@ -471,7 +471,7 @@ const totalFixes = computed(() =>
                   </div>
 
                   <!-- Change items -->
-                  <ul class="space-y-1.5 ml-1">
+                  <ul class="space-y-1.5 ml-1 mb-6">
                     <li
                       v-for="item in changeGroup.items"
                       :key="item"
