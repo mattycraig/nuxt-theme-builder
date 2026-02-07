@@ -1,11 +1,13 @@
 <script setup lang="ts">
+import type { PricingPlanProps } from "#ui/types";
+
 const billingCycle = ref<"monthly" | "annual">("monthly");
 
-const plans = computed(() => [
+const plans = computed<PricingPlanProps[]>(() => [
   {
     title: "Starter",
     description: "Perfect for side projects and small teams getting started.",
-    price: billingCycle.value === "monthly" ? "$0" : "$0",
+    price: "$0",
     billingCycle: billingCycle.value === "monthly" ? "/month" : "/year",
     features: [
       { title: "Up to 3 projects", icon: "i-lucide-folder" },
@@ -19,7 +21,6 @@ const plans = computed(() => [
       color: "neutral" as const,
       variant: "outline" as const,
     },
-    highlight: false,
   },
   {
     title: "Pro",
@@ -28,6 +29,8 @@ const plans = computed(() => [
     price: billingCycle.value === "monthly" ? "$29" : "$290",
     discount: billingCycle.value === "annual" ? "$348" : undefined,
     billingCycle: billingCycle.value === "monthly" ? "/month" : "/year",
+    billingPeriod:
+      billingCycle.value === "annual" ? "billed annually" : undefined,
     features: [
       { title: "Unlimited projects", icon: "i-lucide-folder" },
       { title: "All 125+ components", icon: "i-lucide-component" },
@@ -43,12 +46,12 @@ const plans = computed(() => [
       variant: "solid" as const,
     },
     highlight: true,
+    scale: true,
   },
   {
     title: "Enterprise",
     description: "For large organizations with custom requirements.",
     price: "Custom",
-    billingCycle: "",
     features: [
       { title: "Everything in Pro", icon: "i-lucide-check" },
       { title: "Unlimited team members", icon: "i-lucide-users" },
@@ -63,35 +66,102 @@ const plans = computed(() => [
       color: "neutral" as const,
       variant: "outline" as const,
     },
-    highlight: false,
   },
 ]);
 
-const comparisonFeatures = [
-  { name: "Projects", starter: "3", pro: "Unlimited", enterprise: "Unlimited" },
-  { name: "Team Members", starter: "1", pro: "10", enterprise: "Unlimited" },
+const comparisonTiers = computed(() => [
   {
-    name: "Components",
-    starter: "Basic",
-    pro: "All 125+",
-    enterprise: "All 125+",
+    id: "starter",
+    title: "Starter",
+    description: "For side projects.",
+    price: "$0",
+    billingCycle: billingCycle.value === "monthly" ? "/month" : "/year",
+    button: {
+      label: "Get Started",
+      color: "neutral" as const,
+      variant: "outline" as const,
+    },
   },
   {
-    name: "Support",
-    starter: "Community",
-    pro: "Priority",
-    enterprise: "Dedicated",
+    id: "pro",
+    title: "Pro",
+    description: "For growing teams.",
+    price: billingCycle.value === "monthly" ? "$29" : "$290",
+    discount: billingCycle.value === "annual" ? "$348" : undefined,
+    billingCycle: billingCycle.value === "monthly" ? "/month" : "/year",
+    badge: "Most Popular",
+    button: { label: "Start Free Trial" },
+    highlight: true,
   },
   {
-    name: "Analytics",
-    starter: "Basic",
-    pro: "Advanced",
-    enterprise: "Advanced",
+    id: "enterprise",
+    title: "Enterprise",
+    description: "For large organizations.",
+    price: "Custom",
+    button: {
+      label: "Contact Sales",
+      color: "neutral" as const,
+      variant: "outline" as const,
+    },
   },
-  { name: "Custom Themes", starter: "—", pro: "✓", enterprise: "✓" },
-  { name: "API Access", starter: "—", pro: "✓", enterprise: "✓" },
-  { name: "SSO / SAML", starter: "—", pro: "—", enterprise: "✓" },
-  { name: "SLA", starter: "—", pro: "—", enterprise: "99.99%" },
+]);
+
+const comparisonSections = [
+  {
+    title: "Usage",
+    features: [
+      {
+        title: "Projects",
+        tiers: { starter: "3", pro: "Unlimited", enterprise: "Unlimited" },
+      },
+      {
+        title: "Team Members",
+        tiers: { starter: "1", pro: "10", enterprise: "Unlimited" },
+      },
+      {
+        title: "Components",
+        tiers: { starter: "Basic", pro: "All 125+", enterprise: "All 125+" },
+      },
+    ],
+  },
+  {
+    title: "Features",
+    features: [
+      {
+        title: "Analytics",
+        tiers: { starter: "Basic", pro: "Advanced", enterprise: "Advanced" },
+      },
+      {
+        title: "Custom Themes",
+        tiers: { starter: false, pro: true, enterprise: true },
+      },
+      {
+        title: "API Access",
+        tiers: { starter: false, pro: true, enterprise: true },
+      },
+    ],
+  },
+  {
+    title: "Support & Security",
+    features: [
+      {
+        title: "Support",
+        tiers: {
+          starter: "Community",
+          pro: "Priority",
+          enterprise: "Dedicated",
+        },
+      },
+      {
+        title: "SSO / SAML",
+        tiers: { starter: false, pro: false, enterprise: true },
+      },
+      {
+        title: "SLA",
+        tiers: { starter: false, pro: false, enterprise: "99.99%" },
+      },
+    ],
+  },
 ];
 
 const faqItems = [
@@ -124,172 +194,120 @@ const faqItems = [
 </script>
 
 <template>
-  <div class="p-6 sm:p-8 space-y-12 max-w-6xl mx-auto">
+  <div class="py-12 sm:py-16 space-y-16 sm:space-y-24">
     <!-- Header -->
-    <div class="text-center space-y-4 max-w-2xl mx-auto">
-      <UBadge label="Pricing" variant="subtle" color="primary" />
-      <h1 class="text-3xl sm:text-4xl font-bold text-(--ui-text-highlighted)">
-        Simple, transparent pricing
-      </h1>
-      <p class="text-lg text-(--ui-text-muted)">
-        Choose the plan that's right for your team. All plans include a 14-day
-        free trial.
-      </p>
-
-      <!-- Billing toggle -->
-      <div class="flex items-center justify-center gap-3 pt-2">
-        <span
-          class="text-sm font-medium"
-          :class="
-            billingCycle === 'monthly'
-              ? 'text-(--ui-text-highlighted)'
-              : 'text-(--ui-text-muted)'
-          "
+    <UContainer>
+      <div class="text-center space-y-4 max-w-2xl mx-auto">
+        <UBadge label="Pricing" variant="subtle" color="primary" />
+        <h1
+          class="text-3xl sm:text-4xl lg:text-5xl font-bold text-(--ui-text-highlighted)"
         >
-          Monthly
-        </span>
-        <USwitch
-          :model-value="billingCycle === 'annual'"
-          @update:model-value="billingCycle = $event ? 'annual' : 'monthly'"
-        />
-        <span
-          class="text-sm font-medium"
-          :class="
-            billingCycle === 'annual'
-              ? 'text-(--ui-text-highlighted)'
-              : 'text-(--ui-text-muted)'
-          "
-        >
-          Annual
-        </span>
-        <UBadge
-          v-if="billingCycle === 'annual'"
-          label="Save 17%"
-          variant="subtle"
-          color="success"
-          size="xs"
-        />
-      </div>
-    </div>
+          Simple, transparent pricing
+        </h1>
+        <p class="text-lg text-(--ui-text-muted)">
+          Choose the plan that's right for your team. All plans include a 14-day
+          free trial.
+        </p>
 
-    <!-- Plans Grid -->
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 lg:gap-8">
-      <UCard
-        v-for="plan in plans"
-        :key="plan.title"
-        :class="[
-          plan.highlight
-            ? 'ring-2 ring-(--ui-primary) scale-[1.02] shadow-xl'
-            : 'shadow-sm',
-        ]"
-      >
-        <div class="space-y-6 p-2">
-          <!-- Header -->
-          <div class="space-y-2">
-            <div class="flex items-center gap-2">
-              <h3 class="text-lg font-semibold text-(--ui-text-highlighted)">
-                {{ plan.title }}
-              </h3>
-              <UBadge
-                v-if="plan.badge"
-                :label="plan.badge"
-                color="primary"
-                size="xs"
-              />
-            </div>
-            <p class="text-sm text-(--ui-text-muted)">{{ plan.description }}</p>
-          </div>
-
-          <!-- Price -->
-          <div class="flex items-baseline gap-1">
-            <span
-              class="text-4xl font-extrabold text-(--ui-text-highlighted)"
-              >{{ plan.price }}</span
-            >
-            <span class="text-sm text-(--ui-text-muted)">{{
-              plan.billingCycle
-            }}</span>
-            <span
-              v-if="plan.discount"
-              class="text-sm text-(--ui-text-dimmed) line-through ml-2"
-            >
-              {{ plan.discount }}
-            </span>
-          </div>
-
-          <!-- CTA Button -->
-          <UButton v-bind="plan.button" block size="lg" />
-
-          <USeparator />
-
-          <!-- Features -->
-          <ul class="space-y-3">
-            <li
-              v-for="feature in plan.features"
-              :key="feature.title"
-              class="flex items-center gap-3"
-            >
-              <UIcon
-                :name="feature.icon"
-                class="size-4 shrink-0"
-                :class="
-                  plan.highlight
-                    ? 'text-(--ui-primary)'
-                    : 'text-(--ui-text-muted)'
-                "
-              />
-              <span class="text-sm text-(--ui-text)">{{ feature.title }}</span>
-            </li>
-          </ul>
+        <!-- Billing toggle -->
+        <div class="flex items-center justify-center gap-3 pt-2">
+          <span
+            class="text-sm font-medium"
+            :class="
+              billingCycle === 'monthly'
+                ? 'text-(--ui-text-highlighted)'
+                : 'text-(--ui-text-muted)'
+            "
+          >
+            Monthly
+          </span>
+          <USwitch
+            :model-value="billingCycle === 'annual'"
+            @update:model-value="billingCycle = $event ? 'annual' : 'monthly'"
+          />
+          <span
+            class="text-sm font-medium"
+            :class="
+              billingCycle === 'annual'
+                ? 'text-(--ui-text-highlighted)'
+                : 'text-(--ui-text-muted)'
+            "
+          >
+            Annual
+          </span>
+          <UBadge
+            v-if="billingCycle === 'annual'"
+            label="Save 17%"
+            variant="subtle"
+            color="success"
+            size="xs"
+          />
         </div>
-      </UCard>
-    </div>
+      </div>
+    </UContainer>
+
+    <!-- Plans -->
+    <UContainer>
+      <UPricingPlans :plans="plans" compact />
+    </UContainer>
 
     <!-- Comparison Table -->
-    <div class="space-y-6">
-      <h2 class="text-2xl font-bold text-(--ui-text-highlighted) text-center">
-        Compare Plans
-      </h2>
+    <UContainer>
+      <div class="space-y-8">
+        <div class="text-center">
+          <h2
+            class="text-2xl sm:text-3xl font-bold text-(--ui-text-highlighted)"
+          >
+            Compare Plans
+          </h2>
+          <p class="mt-2 text-(--ui-text-muted)">
+            See which plan is right for you with a detailed feature breakdown.
+          </p>
+        </div>
 
-      <UTable
-        :data="comparisonFeatures"
-        :columns="[
-          { key: 'name', header: 'Feature' },
-          { key: 'starter', header: 'Starter' },
-          { key: 'pro', header: 'Pro' },
-          { key: 'enterprise', header: 'Enterprise' },
-        ]"
-      />
-    </div>
+        <UPricingTable
+          :tiers="comparisonTiers"
+          :sections="comparisonSections"
+        />
+      </div>
+    </UContainer>
 
-    <USeparator />
+    <UContainer>
+      <USeparator />
+    </UContainer>
 
     <!-- FAQ -->
-    <div class="space-y-6 max-w-3xl mx-auto">
-      <div class="text-center">
-        <h2 class="text-2xl font-bold text-(--ui-text-highlighted) mb-2">
-          Frequently Asked Questions
-        </h2>
-        <p class="text-(--ui-text-muted)">
-          Can't find what you're looking for? Contact our support team.
-        </p>
-      </div>
+    <UContainer>
+      <div class="space-y-8 max-w-3xl mx-auto">
+        <div class="text-center">
+          <h2
+            class="text-2xl sm:text-3xl font-bold text-(--ui-text-highlighted) mb-2"
+          >
+            Frequently Asked Questions
+          </h2>
+          <p class="text-(--ui-text-muted)">
+            Can't find what you're looking for? Contact our support team.
+          </p>
+        </div>
 
-      <UAccordion :items="faqItems" />
-    </div>
+        <UAccordion :items="faqItems" />
+      </div>
+    </UContainer>
 
     <!-- Bottom CTA -->
-    <div class="text-center space-y-4 pb-4">
-      <p class="text-(--ui-text-muted)">
-        Need a custom plan for your organization?
-      </p>
-      <UButton
-        label="Contact Sales"
-        icon="i-lucide-mail"
-        size="lg"
-        variant="outline"
-        color="primary"
-      />
-    </div>
+    <UContainer>
+      <div class="text-center space-y-4 pb-4">
+        <p class="text-(--ui-text-muted)">
+          Need a custom plan for your organization?
+        </p>
+        <UButton
+          label="Contact Sales"
+          icon="i-lucide-mail"
+          size="lg"
+          variant="outline"
+          color="primary"
+        />
+      </div>
+    </UContainer>
   </div>
 </template>

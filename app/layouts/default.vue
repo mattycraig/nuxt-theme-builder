@@ -86,42 +86,122 @@ const items: NavigationMenuItem[][] = [
       to: "/error-page",
     },
   ],
-  [
-    {
-      label: "Documentation",
-      icon: "i-lucide-book-open",
-      to: "https://ui.nuxt.com/docs",
-      target: "_blank",
-    },
-    {
-      label: "GitHub",
-      icon: "i-lucide-github",
-      to: "https://github.com/nuxt/ui",
-      target: "_blank",
-    },
-  ],
 ];
 
-/** Pages that should render full-width without the card wrapper */
-// const fullWidthPages = [
-//   "/landing",
-//   "/login",
-//   "/error-page",
-//   "/chat",
-//   "/editor",
-//   "/dashboard",
-// ];
-// const isFullWidth = computed(() => fullWidthPages.includes(route.path));
-const isFullWidth = false;
+const customWidth = ref<number | null>(null);
+const isDragging = ref(false);
+const previewArea = ref<HTMLElement>();
 
-const currentPreviewWidth = computed(
-  () => previewWidthOptions.find((o) => o.value === previewWidth.value)!.width,
-);
+const currentPreviewWidth = computed(() => {
+  if (customWidth.value !== null) return `${customWidth.value}px`;
+  return previewWidthOptions.find((o) => o.value === previewWidth.value)!.width;
+});
+
+const displayWidth = computed(() => {
+  if (customWidth.value !== null) return `${customWidth.value}px`;
+  return previewWidthOptions.find((o) => o.value === previewWidth.value)!.width;
+});
+
+// When a preset is clicked, clear custom width
+watch(previewWidth, () => {
+  customWidth.value = null;
+});
+
+// Drag-to-resize logic — each handle drags independently, both edges move symmetrically
+function startResize(e: MouseEvent, side: "left" | "right") {
+  e.preventDefault();
+  isDragging.value = true;
+
+  const area = previewArea.value;
+  if (!area) return;
+
+  const startX = e.clientX;
+  // Resolve current rendered width (works for both pixel and 100%)
+  const iframeWrapper = area.querySelector(
+    "[data-preview-wrapper]",
+  ) as HTMLElement | null;
+  if (!iframeWrapper) return;
+  const startWidth = iframeWrapper.getBoundingClientRect().width;
+  const maxW = area.clientWidth;
+
+  function onMouseMove(ev: MouseEvent) {
+    const dx = ev.clientX - startX;
+    // Multiply by 2 so dragging one side keeps the preview centered
+    const delta = side === "right" ? dx * 2 : -dx * 2;
+    const newWidth = Math.round(
+      Math.max(320, Math.min(startWidth + delta, maxW)),
+    );
+    customWidth.value = newWidth;
+  }
+
+  function onMouseUp() {
+    isDragging.value = false;
+    document.removeEventListener("mousemove", onMouseMove);
+    document.removeEventListener("mouseup", onMouseUp);
+  }
+
+  document.addEventListener("mousemove", onMouseMove);
+  document.addEventListener("mouseup", onMouseUp);
+}
 
 const currentPageLabel = computed(() => {
   const flat = items.flat().flatMap((g) => (Array.isArray(g) ? g : [g]));
   return flat.find((i) => i.to === route.path)?.label ?? "Preview";
 });
+
+// --- Iframe preview ---
+const previewFrame = ref<HTMLIFrameElement>();
+const iframeSrc = computed(() => `${route.path}?preview`);
+const colorMode = useColorMode();
+
+// Sync theme config to iframe on every change
+watch(
+  () => store.config,
+  (newConfig) => {
+    previewFrame.value?.contentWindow?.postMessage(
+      {
+        type: "theme-sync",
+        config: JSON.parse(JSON.stringify(newConfig)),
+      },
+      "*",
+    );
+  },
+  { deep: true },
+);
+
+// Sync color mode preference to iframe
+watch(
+  () => colorMode.preference,
+  (pref) => {
+    previewFrame.value?.contentWindow?.postMessage(
+      {
+        type: "colormode-sync",
+        mode: pref,
+      },
+      "*",
+    );
+  },
+);
+
+// When iframe signals it's ready, push full state
+function handleIframeMessage(event: MessageEvent) {
+  if (event.data?.type === "preview-ready") {
+    previewFrame.value?.contentWindow?.postMessage(
+      {
+        type: "theme-sync",
+        config: JSON.parse(JSON.stringify(store.config)),
+      },
+      "*",
+    );
+    previewFrame.value?.contentWindow?.postMessage(
+      {
+        type: "colormode-sync",
+        mode: colorMode.preference,
+      },
+      "*",
+    );
+  }
+}
 
 function handleKeydown(e: KeyboardEvent) {
   if ((e.ctrlKey || e.metaKey) && !e.shiftKey && e.key === "z") {
@@ -135,11 +215,16 @@ function handleKeydown(e: KeyboardEvent) {
 }
 
 onMounted(() => {
-  if (import.meta.client) document.addEventListener("keydown", handleKeydown);
+  if (import.meta.client) {
+    document.addEventListener("keydown", handleKeydown);
+    window.addEventListener("message", handleIframeMessage);
+  }
 });
 onUnmounted(() => {
-  if (import.meta.client)
+  if (import.meta.client) {
     document.removeEventListener("keydown", handleKeydown);
+    window.removeEventListener("message", handleIframeMessage);
+  }
 });
 
 onMounted(() => {
@@ -243,9 +328,7 @@ useHead({
 
         <template #right>
           <UBadge
-            :label="
-              previewWidthOptions.find((o) => o.value === previewWidth)!.width
-            "
+            :label="displayWidth"
             variant="subtle"
             size="xs"
             color="neutral"
@@ -273,25 +356,57 @@ useHead({
         <UNavigationMenu :items="items" highlight class="flex-1 min-w-max" />
       </UDashboardToolbar>
 
-      <!-- Preview area -->
-      <div class="flex-1 overflow-y-auto bg-(--ui-bg-muted) p-4 sm:p-6">
-        <!-- Full width pages (Landing, Login, Error, Chat, Editor, Dashboard) -->
+      <!-- Preview area (iframe-based for true viewport responsive behavior) -->
+      <div
+        ref="previewArea"
+        class="flex-1 overflow-hidden bg-(--ui-bg-muted) p-4 sm:p-6 flex justify-center items-stretch"
+      >
         <div
-          v-if="isFullWidth"
-          class="mx-auto transition-[max-width] duration-300 ease-in-out"
-          :style="{ maxWidth: currentPreviewWidth }"
+          data-preview-wrapper
+          class="relative h-full mx-auto"
+          :class="[
+            isDragging ? '' : 'transition-[width] duration-300 ease-in-out',
+          ]"
+          :style="{ width: currentPreviewWidth, maxWidth: '100%' }"
         >
-          <slot />
-        </div>
-        <!-- Card-wrapped pages (Components, Pricing, Blog, Changelog) -->
-        <div
-          v-else
-          class="mx-auto rounded-xl bg-(--ui-bg) transition-[max-width] duration-300 ease-in-out border border-(--ui-border) shadow-xl"
-          :style="{ maxWidth: currentPreviewWidth }"
-        >
-          <slot />
+          <!-- Left drag handle -->
+          <div
+            class="absolute -left-3 top-0 bottom-0 w-3 cursor-col-resize group flex items-center justify-center z-10"
+            @mousedown.prevent="startResize($event, 'left')"
+          >
+            <div
+              class="w-1 h-16 rounded-full bg-(--ui-border) group-hover:bg-(--ui-primary) transition-colors"
+            />
+          </div>
+
+          <!-- Iframe -->
+          <div
+            class="h-full rounded-xl border border-(--ui-border) shadow-xl overflow-hidden"
+          >
+            <iframe
+              ref="previewFrame"
+              :src="iframeSrc"
+              title="Theme preview"
+              class="w-full h-full border-0"
+              :class="{ 'pointer-events-none': isDragging }"
+            />
+          </div>
+
+          <!-- Right drag handle -->
+          <div
+            class="absolute -right-3 top-0 bottom-0 w-3 cursor-col-resize group flex items-center justify-center z-10"
+            @mousedown.prevent="startResize($event, 'right')"
+          >
+            <div
+              class="w-1 h-16 rounded-full bg-(--ui-border) group-hover:bg-(--ui-primary) transition-colors"
+            />
+          </div>
         </div>
       </div>
     </main>
+    <!-- Hidden slot keeps NuxtPage mounted so Vue Router reactivity works -->
+    <div class="hidden">
+      <slot />
+    </div>
   </UDashboardGroup>
 </template>

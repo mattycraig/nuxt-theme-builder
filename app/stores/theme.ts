@@ -119,6 +119,11 @@ export const useThemeStore = defineStore(
       _pushHistory();
     }
 
+    /** Silently update config from iframe sync — no history push */
+    function _syncConfig(newConfig: ThemeConfig) {
+      config.value = cloneTheme(newConfig);
+    }
+
     // --- Presets ---
     function savePreset(name: string) {
       const existing = savedPresets.value.findIndex((p) => p.name === name);
@@ -157,6 +162,7 @@ export const useThemeStore = defineStore(
       setBorderOverride,
       resetToDefaults,
       loadConfig,
+      _syncConfig,
       // Presets
       savePreset,
       deletePreset,
