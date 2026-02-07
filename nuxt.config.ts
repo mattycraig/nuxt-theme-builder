@@ -2,6 +2,8 @@
 export default defineNuxtConfig({
   modules: [
     "@nuxt/ui",
+    "@nuxt/image",
+    "@nuxtjs/mdc",
     "@pinia/nuxt",
     "pinia-plugin-persistedstate/nuxt",
     "@vueuse/nuxt",
@@ -39,4 +41,15 @@ export default defineNuxtConfig({
       pathPrefix: false,
     },
   ],
+
+  vite: {
+    optimizeDeps: {
+      include: [
+        "@nuxt/ui > prosemirror-state",
+        "@nuxt/ui > prosemirror-transform",
+        "@nuxt/ui > prosemirror-model",
+        "@nuxt/ui > prosemirror-view",
+      ],
+    },
+  },
 });

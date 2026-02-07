@@ -366,6 +366,8 @@ function onBorderOverride(token: string, shade: NeutralShade) {
       </template>
     </UCollapsible>
 
+    <USeparator />
+
     <!-- Color Mode -->
     <UCollapsible default-open>
       <UButton
@@ -395,6 +397,8 @@ function onBorderOverride(token: string, shade: NeutralShade) {
         </div>
       </template>
     </UCollapsible>
+
+    <USeparator />
 
     <!-- Layout -->
     <UCollapsible default-open>
@@ -428,6 +432,8 @@ function onBorderOverride(token: string, shade: NeutralShade) {
       </template>
     </UCollapsible>
 
+    <USeparator />
+
     <!-- Semantic Colors -->
     <UCollapsible default-open>
       <UButton
@@ -459,6 +465,8 @@ function onBorderOverride(token: string, shade: NeutralShade) {
       </template>
     </UCollapsible>
 
+    <USeparator />
+
     <!-- Neutral Color -->
     <UCollapsible default-open>
       <UButton
@@ -487,6 +495,8 @@ function onBorderOverride(token: string, shade: NeutralShade) {
         </div>
       </template>
     </UCollapsible>
+
+    <USeparator />
 
     <!-- Text Colors -->
     <UCollapsible>
@@ -521,6 +531,8 @@ function onBorderOverride(token: string, shade: NeutralShade) {
       </template>
     </UCollapsible>
 
+    <USeparator />
+
     <!-- Background Colors -->
     <UCollapsible>
       <UButton
@@ -553,6 +565,8 @@ function onBorderOverride(token: string, shade: NeutralShade) {
         </div>
       </template>
     </UCollapsible>
+
+    <USeparator />
 
     <!-- Border Colors -->
     <UCollapsible>
@@ -587,8 +601,10 @@ function onBorderOverride(token: string, shade: NeutralShade) {
       </template>
     </UCollapsible>
 
+    <USeparator />
+
     <!-- Export / Import -->
-    <UCollapsible default-open>
+    <UCollapsible>
       <UButton
         icon="i-lucide-share-2"
         variant="ghost"
