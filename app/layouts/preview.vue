@@ -6,6 +6,7 @@ useThemeApply();
 
 const store = useThemeStore();
 const colorMode = useColorMode();
+const router = useRouter();
 
 // Listen for theme & color-mode sync messages from parent frame
 function handleMessage(event: MessageEvent) {
@@ -14,6 +15,12 @@ function handleMessage(event: MessageEvent) {
   }
   if (event.data?.type === "colormode-sync") {
     colorMode.preference = event.data.mode;
+  }
+  if (event.data?.type === "navigate") {
+    router.push(event.data.path).then(() => {
+      // Signal parent that navigation is complete
+      window.parent?.postMessage({ type: "preview-ready" }, "*");
+    });
   }
 }
 

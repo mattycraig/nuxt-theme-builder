@@ -108,7 +108,8 @@ const searchGroups = computed(() => [
       {
         label: "Toggle Color Mode",
         icon: colorMode.value === "dark" ? "i-lucide-sun" : "i-lucide-moon",
-        suffix: colorMode.value === "dark" ? "Switch to light" : "Switch to dark",
+        suffix:
+          colorMode.value === "dark" ? "Switch to light" : "Switch to dark",
         onSelect() {
           colorMode.preference = colorMode.value === "dark" ? "light" : "dark";
         },
@@ -208,7 +209,22 @@ const currentPageLabel = computed(() => {
 
 // --- Iframe preview ---
 const previewFrame = ref<HTMLIFrameElement>();
+const iframeLoading = ref(true);
+const iframeReady = ref(false);
+
+// Load the iframe once with the initial route; subsequent navigation happens via postMessage
 const iframeSrc = computed(() => `${route.path}?preview`);
+const iframeInitialSrc = ref(`${route.path}?preview`);
+
+// Navigate iframe internally via postMessage instead of reloading
+watch(iframeSrc, (newSrc) => {
+  if (!iframeReady.value) return;
+  iframeLoading.value = true;
+  previewFrame.value?.contentWindow?.postMessage(
+    { type: "navigate", path: newSrc },
+    "*",
+  );
+});
 
 // Sync theme config to iframe on every change
 watch(
@@ -242,6 +258,8 @@ watch(
 // When iframe signals it's ready, push full state
 function handleIframeMessage(event: MessageEvent) {
   if (event.data?.type === "preview-ready") {
+    iframeReady.value = true;
+    iframeLoading.value = false;
     previewFrame.value?.contentWindow?.postMessage(
       {
         type: "theme-sync",
@@ -313,8 +331,6 @@ function onSearchSelect(option: any) {
     navigateTo(option.to);
   }
 }
-
-
 </script>
 
 <template>
@@ -332,7 +348,7 @@ function onSearchSelect(option: any) {
           class="text-lg font-bold text-[var(--ui-text-highlighted)] truncate flex items-center gap-2"
         >
           <UIcon name="i-lucide-palette" class="size-5 text-(--ui-primary)" />
-          Nuxt UI Theme Builder
+          Nuxt UI Builder
         </h1>
         <UIcon
           v-else
@@ -379,7 +395,7 @@ function onSearchSelect(option: any) {
           v-if="!collapsed"
           class="text-xs text-(--ui-text-dimmed) ms-auto truncate"
         >
-          Nuxt UI Theme Builder
+          Nuxt UI Builder
         </span>
       </template>
     </UDashboardSidebar>
@@ -448,15 +464,37 @@ function onSearchSelect(option: any) {
 
           <!-- Iframe -->
           <div
-            class="h-full rounded-xl border border-(--ui-border) shadow-xl overflow-hidden"
+            class="relative h-full rounded-xl border border-(--ui-border) shadow-xl overflow-hidden"
           >
             <iframe
               ref="previewFrame"
-              :src="iframeSrc"
+              :src="iframeInitialSrc"
               title="Theme preview"
               class="w-full h-full border-0"
               :class="{ 'pointer-events-none': isDragging }"
             />
+            <!-- Loading overlay -->
+            <Transition
+              enter-active-class="transition-opacity duration-200"
+              leave-active-class="transition-opacity duration-200"
+              enter-from-class="opacity-0"
+              leave-to-class="opacity-0"
+            >
+              <div
+                v-if="iframeLoading"
+                class="absolute inset-0 flex items-center justify-center bg-(--ui-bg)/60 backdrop-blur-sm z-10"
+              >
+                <div class="flex flex-col items-center gap-3">
+                  <UIcon
+                    name="i-lucide-loader-2"
+                    class="size-8 text-(--ui-primary) animate-spin"
+                  />
+                  <span class="text-sm text-(--ui-text-muted)"
+                    >Loading preview…</span
+                  >
+                </div>
+              </div>
+            </Transition>
           </div>
 
           <!-- Right drag handle -->
