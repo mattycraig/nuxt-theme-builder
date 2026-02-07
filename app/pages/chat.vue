@@ -66,7 +66,7 @@ const messages = ref<ChatMsg[]>([
     parts: [
       {
         type: "text",
-        text: "Hello! I'm your AI assistant. I can help you with building Nuxt UI themes, writing code, answering questions, and much more. How can I help you today?",
+        text: "Hello! I'm your AI assistant. I can help you with:\n\n- 🎨 **Building Nuxt UI themes** — colors, fonts, radius\n- 💻 **Writing code** — components, composables, configs\n- ❓ **Answering questions** — about Nuxt, Tailwind, and more\n\nHow can I help you today?",
       },
     ],
   },
@@ -86,7 +86,7 @@ const messages = ref<ChatMsg[]>([
     parts: [
       {
         type: "text",
-        text: "Of course! Here are some tips for choosing a great color palette:\n\n**1. Start with your primary color** — Pick one that represents your brand. Blue conveys trust, green signals growth, purple hints at creativity.\n\n**2. Complementary secondary** — Contrast with your primary. Blue → orange, violet → cyan.\n\n**3. Semantic colors** — Keep them intuitive: green for success, amber for warning, red for error, sky for info.\n\n**4. Neutral palette** — Slate, zinc or gray for text and backgrounds.\n\nWould you like me to suggest a specific palette?",
+        text: "Of course! Here are some tips for choosing a great color palette:\n\n### 1. Start with your primary color\n\nPick one that represents your brand:\n\n| Color | Conveys |\n|---|---|\n| **Blue** | Trust & stability |\n| **Green** | Growth & health |\n| **Purple** | Creativity & luxury |\n| **Red** | Energy & urgency |\n\n### 2. Complementary secondary\n\nContrast with your primary: `blue → orange`, `violet → cyan`, `green → rose`.\n\n### 3. Semantic colors\n\nKeep them intuitive:\n- ✅ **Success** — green / emerald\n- ⚠️ **Warning** — amber / yellow\n- ❌ **Error** — red / rose\n- ℹ️ **Info** — sky / blue\n\n### 4. Neutral palette\n\nSlate, zinc, or gray for text and backgrounds.\n\n> **Pro tip:** A good neutral is just as important as your primary color — it makes up most of your UI.\n\nWould you like me to suggest a specific palette?",
       },
     ],
   },
@@ -106,7 +106,7 @@ const messages = ref<ChatMsg[]>([
     parts: [
       {
         type: "text",
-        text: "Great choice! Violet is perfect for dev tools — modern and technical. Here's my recommendation:\n\n• **Primary**: violet\n• **Secondary**: cyan\n• **Success**: emerald\n• **Info**: sky\n• **Warning**: amber\n• **Error**: rose\n• **Neutral**: zinc\n\n**Why this works:**\n- Violet + Cyan creates a vibrant, tech-forward feel\n- Zinc neutral keeps things clean and professional\n- Emerald for success is more sophisticated than plain green\n- Rose for errors is softer than pure red but still noticeable\n\nYou can try this right now in the Theme Builder sidebar!",
+        text: "Great choice! Violet is perfect for dev tools — modern and technical.\n\n### Recommended palette\n\n| Role | Color | Why |\n|---|---|---|\n| **Primary** | `violet` | Modern, tech-forward |\n| **Secondary** | `cyan` | High contrast complement |\n| **Success** | `emerald` | Sophisticated green |\n| **Info** | `sky` | Calm, informational |\n| **Warning** | `amber` | Clear without alarm |\n| **Error** | `rose` | Softer than pure red |\n| **Neutral** | `zinc` | Clean & professional |\n\n### Why this works\n\n- **Violet + Cyan** creates a vibrant, tech-forward feel\n- **Zinc** neutral keeps things clean and professional\n- **Emerald** for success is more sophisticated than plain green\n- **Rose** for errors is softer than pure red but still noticeable\n\n```ts\n// app.config.ts\nexport default defineAppConfig({\n  ui: {\n    colors: {\n      primary: 'violet',\n      secondary: 'cyan',\n      success: 'emerald',\n      info: 'sky',\n      warning: 'amber',\n      error: 'rose',\n      neutral: 'zinc'\n    }\n  }\n})\n```\n\n> You can try this right now in the **Theme Builder** sidebar!",
       },
     ],
   },
@@ -158,10 +158,10 @@ function onSubmit() {
     chatStatus.value = "streaming";
     setTimeout(() => {
       const responses = [
-        "That's a great question! In the Theme Builder, you can adjust the border radius using the slider in the sidebar. The `--ui-radius` CSS variable controls the roundness of all components globally.",
-        "You can export your theme in multiple formats:\n\n1. **app.config.ts** — Drop-in config for Nuxt\n2. **CSS Variables** — Use in any project\n3. **JSON** — For programmatic use\n\nJust click the Export button in the sidebar!",
-        "The font picker supports several carefully selected fonts: Public Sans, DM Sans, Geist, Inter, Poppins, Outfit, and Raleway. Each is loaded from Google Fonts and applied across all components instantly.",
-        "I'd recommend trying the **Soft** variant for a more subtle, modern look. It uses a lighter background with colored text, which works beautifully with most color palettes.",
+        "That's a great question! In the Theme Builder, you can adjust the border radius using the slider in the sidebar.\n\nThe `--ui-radius` CSS variable controls the roundness of all components globally.\n\n```css\n:root {\n  --ui-radius: 0.5rem;\n}\n```\n\nTry dragging the slider to see the effect in real-time!",
+        "You can export your theme in multiple formats:\n\n| Format | Best For |\n|---|---|\n| `app.config.ts` | Drop-in config for Nuxt |\n| **CSS Variables** | Use in any project |\n| **JSON** | Programmatic use |\n\n### How to export\n\n1. Click the **Export** button in the sidebar\n2. Choose your preferred format\n3. Copy or download the output\n\n> **Tip:** The `app.config.ts` format is the easiest way to apply your theme in a Nuxt project.",
+        "The font picker supports several carefully selected fonts:\n\n- **Public Sans** — Clean, neutral, government-grade readability\n- **DM Sans** — Geometric, modern, great for headings\n- **Geist** — Vercel's typeface, optimized for code & UI\n- **Inter** — The go-to for web interfaces\n- **Poppins** — Rounded, friendly, geometric\n- **Outfit** — Variable weight, modern sans-serif\n- **Raleway** — Elegant, thin weights available\n\nEach is loaded from **Google Fonts** and applied across all components instantly. Try switching between them to see the difference!",
+        "I'd recommend trying the **Soft** variant for a more subtle, modern look.\n\n### Variant comparison\n\n| Variant | Style | Use Case |\n|---|---|---|\n| `solid` | Filled background | Primary actions |\n| `outline` | Border only | Secondary actions |\n| **`soft`** | Light tinted bg | ✅ Subtle & modern |\n| `subtle` | Very light bg + border | Form elements |\n| `ghost` | No background | Tertiary actions |\n\n> **Why soft?** It uses a lighter background with colored text, which works beautifully with most color palettes.",
       ];
       messages.value.push({
         id: String(Date.now()),
@@ -271,7 +271,7 @@ function createChat(prompt: string) {
               </div>
             </div>
           </template>
-          <template #trailing>
+          <template #right>
             <div class="flex items-center gap-1">
               <USelect
                 v-model="selectedModel"
@@ -352,7 +352,16 @@ function createChat(prompt: string) {
                 v-for="(part, index) in message.parts"
                 :key="`${message.id}-${part.type}-${index}`"
               >
-                <p v-if="part.type === 'text'" class="whitespace-pre-wrap">
+                <MDC
+                  v-if="part.type === 'text' && message.role === 'assistant'"
+                  :value="part.text"
+                  :cache-key="`${message.id}-${index}`"
+                  class="prose prose-sm dark:prose-invert *:first:mt-0 *:last:mb-0"
+                />
+                <p
+                  v-else-if="part.type === 'text' && message.role === 'user'"
+                  class="whitespace-pre-wrap"
+                >
                   {{ part.text }}
                 </p>
               </template>
