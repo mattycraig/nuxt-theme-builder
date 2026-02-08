@@ -1,5 +1,6 @@
 import type { ThemePreset } from "~/types/theme";
 import {
+  DEFAULT_THEME,
   DEFAULT_LIGHT_OVERRIDES,
   DEFAULT_DARK_OVERRIDES,
 } from "~/utils/defaults";
@@ -8,21 +9,7 @@ export const BUILT_IN_PRESETS: ThemePreset[] = [
   {
     name: "Default",
     builtIn: true,
-    config: {
-      colors: {
-        primary: "green",
-        secondary: "blue",
-        success: "green",
-        info: "blue",
-        warning: "yellow",
-        error: "red",
-      },
-      neutral: "slate",
-      radius: 0.25,
-      font: "Public Sans",
-      lightOverrides: { ...DEFAULT_LIGHT_OVERRIDES },
-      darkOverrides: { ...DEFAULT_DARK_OVERRIDES },
-    },
+    config: { ...DEFAULT_THEME },
   },
   {
     name: "Ocean",

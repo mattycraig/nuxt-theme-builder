@@ -61,29 +61,39 @@ export type NeutralShade = (typeof SHADE_VALUES)[number];
 
 export type SemanticColors = Record<SemanticColorKey, ChromaticPalette>;
 
-export interface TextTokenOverrides {
-  dimmed: NeutralShade;
-  muted: NeutralShade;
-  toned: NeutralShade;
-  default: NeutralShade;
-  highlighted: NeutralShade;
-  inverted: NeutralShade;
-}
+export const TEXT_TOKEN_KEYS = [
+  "dimmed",
+  "muted",
+  "toned",
+  "default",
+  "highlighted",
+  "inverted",
+] as const;
 
-export interface BgTokenOverrides {
-  default: NeutralShade;
-  muted: NeutralShade;
-  elevated: NeutralShade;
-  accented: NeutralShade;
-  inverted: NeutralShade;
-}
+export type TextTokenKey = (typeof TEXT_TOKEN_KEYS)[number];
 
-export interface BorderTokenOverrides {
-  default: NeutralShade;
-  muted: NeutralShade;
-  accented: NeutralShade;
-  inverted: NeutralShade;
-}
+export const BG_TOKEN_KEYS = [
+  "default",
+  "muted",
+  "elevated",
+  "accented",
+  "inverted",
+] as const;
+
+export type BgTokenKey = (typeof BG_TOKEN_KEYS)[number];
+
+export const BORDER_TOKEN_KEYS = [
+  "default",
+  "muted",
+  "accented",
+  "inverted",
+] as const;
+
+export type BorderTokenKey = (typeof BORDER_TOKEN_KEYS)[number];
+
+export type TextTokenOverrides = Record<TextTokenKey, NeutralShade>;
+export type BgTokenOverrides = Record<BgTokenKey, NeutralShade>;
+export type BorderTokenOverrides = Record<BorderTokenKey, NeutralShade>;
 
 export interface TokenOverrides {
   text: TextTokenOverrides;
@@ -122,29 +132,17 @@ const chromaticPaletteSchema = z.enum(CHROMATIC_PALETTES);
 const neutralPaletteSchema = z.enum(NEUTRAL_PALETTES);
 const neutralShadeSchema = z.enum(SHADE_VALUES);
 
-const textTokenOverridesSchema = z.object({
-  dimmed: neutralShadeSchema,
-  muted: neutralShadeSchema,
-  toned: neutralShadeSchema,
-  default: neutralShadeSchema,
-  highlighted: neutralShadeSchema,
-  inverted: neutralShadeSchema,
-});
+function shadeRecordSchema<T extends readonly string[]>(keys: T) {
+  const shape = {} as Record<string, z.ZodType<string>>;
+  for (const key of keys) {
+    shape[key] = neutralShadeSchema;
+  }
+  return z.object(shape);
+}
 
-const bgTokenOverridesSchema = z.object({
-  default: neutralShadeSchema,
-  muted: neutralShadeSchema,
-  elevated: neutralShadeSchema,
-  accented: neutralShadeSchema,
-  inverted: neutralShadeSchema,
-});
-
-const borderTokenOverridesSchema = z.object({
-  default: neutralShadeSchema,
-  muted: neutralShadeSchema,
-  accented: neutralShadeSchema,
-  inverted: neutralShadeSchema,
-});
+const textTokenOverridesSchema = shadeRecordSchema(TEXT_TOKEN_KEYS);
+const bgTokenOverridesSchema = shadeRecordSchema(BG_TOKEN_KEYS);
+const borderTokenOverridesSchema = shadeRecordSchema(BORDER_TOKEN_KEYS);
 
 const tokenOverridesSchema = z.object({
   text: textTokenOverridesSchema,

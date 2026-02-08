@@ -10,6 +10,8 @@ const router = useRouter();
 
 // Listen for theme & color-mode sync messages from parent frame
 function handleMessage(event: MessageEvent) {
+  if (event.origin !== window.location.origin) return;
+
   if (event.data?.type === "theme-sync") {
     store._syncConfig(event.data.config);
   }
@@ -18,16 +20,14 @@ function handleMessage(event: MessageEvent) {
   }
   if (event.data?.type === "navigate") {
     router.push(event.data.path).then(() => {
-      // Signal parent that navigation is complete
-      window.parent?.postMessage({ type: "preview-ready" }, "*");
+      window.parent?.postMessage({ type: "preview-ready" }, window.location.origin);
     });
   }
 }
 
 onMounted(() => {
   window.addEventListener("message", handleMessage);
-  // Notify parent that iframe is ready so it can push initial state
-  window.parent?.postMessage({ type: "preview-ready" }, "*");
+  window.parent?.postMessage({ type: "preview-ready" }, window.location.origin);
 });
 
 onUnmounted(() => {

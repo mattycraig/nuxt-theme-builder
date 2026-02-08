@@ -1,4 +1,11 @@
-import type { ThemeConfig, TokenOverrides, NeutralShade } from "~/types/theme";
+import type {
+  ThemeConfig,
+  TokenOverrides,
+  NeutralShade,
+  TextTokenOverrides,
+  BgTokenOverrides,
+  BorderTokenOverrides,
+} from "~/types/theme";
 import { shadeToCSS } from "~/utils/defaults";
 import { typedEntries } from "~/utils/helpers";
 
@@ -26,12 +33,18 @@ function generateCategoryLines(
   for (const [key, shade] of typedEntries(overrides)) {
     if (shade !== defaults[key]) {
       const varName = key === "default" ? prefix : `${prefix}-${key}`;
-      lines.push(`${indent}${varName}: ${shadeToCSS(shade as string)};`);
+      lines.push(`${indent}${varName}: ${shadeToCSS(shade)};`);
     }
   }
 
   return lines;
 }
+
+type CategoryOverrideMap = {
+  text: TextTokenOverrides;
+  bg: BgTokenOverrides;
+  border: BorderTokenOverrides;
+};
 
 /**
  * Generate all CSS variable override lines for a set of token overrides.
@@ -42,31 +55,18 @@ export function generateOverrideLines(
   indent: string = "  ",
 ): string[] {
   const lines: string[] = [];
+  const categories: TokenCategory[] = ["text", "bg", "border"];
 
-  lines.push(
-    ...generateCategoryLines(
-      "text",
-      overrides.text as unknown as Record<string, NeutralShade>,
-      defaults.text as unknown as Record<string, NeutralShade>,
-      indent,
-    ),
-  );
-  lines.push(
-    ...generateCategoryLines(
-      "bg",
-      overrides.bg as unknown as Record<string, NeutralShade>,
-      defaults.bg as unknown as Record<string, NeutralShade>,
-      indent,
-    ),
-  );
-  lines.push(
-    ...generateCategoryLines(
-      "border",
-      overrides.border as unknown as Record<string, NeutralShade>,
-      defaults.border as unknown as Record<string, NeutralShade>,
-      indent,
-    ),
-  );
+  for (const cat of categories) {
+    lines.push(
+      ...generateCategoryLines(
+        cat,
+        overrides[cat] as CategoryOverrideMap[typeof cat] & Record<string, NeutralShade>,
+        defaults[cat] as CategoryOverrideMap[typeof cat] & Record<string, NeutralShade>,
+        indent,
+      ),
+    );
+  }
 
   return lines;
 }

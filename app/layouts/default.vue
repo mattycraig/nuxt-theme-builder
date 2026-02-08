@@ -220,7 +220,7 @@ watch(iframeSrc, (newSrc) => {
   iframeLoading.value = true;
   previewFrame.value?.contentWindow?.postMessage(
     { type: "navigate", path: newSrc },
-    "*",
+    window.location.origin,
   );
 });
 
@@ -233,7 +233,7 @@ watch(
         type: "theme-sync",
         config: JSON.parse(JSON.stringify(newConfig)),
       },
-      "*",
+      window.location.origin,
     );
   },
   { deep: true },
@@ -248,13 +248,15 @@ watch(
         type: "colormode-sync",
         mode: pref,
       },
-      "*",
+      window.location.origin,
     );
   },
 );
 
 // When iframe signals it's ready, push full state
 function handleIframeMessage(event: MessageEvent) {
+  if (event.origin !== window.location.origin) return;
+
   if (event.data?.type === "preview-ready") {
     iframeReady.value = true;
     iframeLoading.value = false;
@@ -263,14 +265,14 @@ function handleIframeMessage(event: MessageEvent) {
         type: "theme-sync",
         config: JSON.parse(JSON.stringify(store.config)),
       },
-      "*",
+      window.location.origin,
     );
     previewFrame.value?.contentWindow?.postMessage(
       {
         type: "colormode-sync",
         mode: colorMode.preference,
       },
-      "*",
+      window.location.origin,
     );
   }
 }

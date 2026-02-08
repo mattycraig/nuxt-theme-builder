@@ -31,7 +31,7 @@ function onUpdate(val: number | number[]) {
     <USlider
       :model-value="modelValue"
       :min="0"
-      :max="1"
+      :max="2"
       :step="0.125"
       @update:model-value="onUpdate"
     />

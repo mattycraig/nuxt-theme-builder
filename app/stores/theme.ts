@@ -5,6 +5,9 @@ import type {
   ChromaticPalette,
   NeutralPalette,
   NeutralShade,
+  TextTokenKey,
+  BgTokenKey,
+  BorderTokenKey,
 } from "~/types/theme";
 import { ThemeConfigSchema } from "~/types/theme";
 import { DEFAULT_THEME, cloneTheme } from "~/utils/defaults";
@@ -69,40 +72,40 @@ export const useThemeStore = defineStore(
 
     function setTextOverride(
       mode: "light" | "dark",
-      token: string,
+      token: TextTokenKey,
       shade: NeutralShade,
     ) {
       const target =
         mode === "light"
           ? config.value.lightOverrides
           : config.value.darkOverrides;
-      (target.text as Record<string, NeutralShade>)[token] = shade;
+      target.text[token] = shade;
       _pushHistory();
     }
 
     function setBgOverride(
       mode: "light" | "dark",
-      token: string,
+      token: BgTokenKey,
       shade: NeutralShade,
     ) {
       const target =
         mode === "light"
           ? config.value.lightOverrides
           : config.value.darkOverrides;
-      (target.bg as Record<string, NeutralShade>)[token] = shade;
+      target.bg[token] = shade;
       _pushHistory();
     }
 
     function setBorderOverride(
       mode: "light" | "dark",
-      token: string,
+      token: BorderTokenKey,
       shade: NeutralShade,
     ) {
       const target =
         mode === "light"
           ? config.value.lightOverrides
           : config.value.darkOverrides;
-      (target.border as Record<string, NeutralShade>)[token] = shade;
+      target.border[token] = shade;
       _pushHistory();
     }
 
