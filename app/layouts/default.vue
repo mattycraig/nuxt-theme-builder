@@ -343,6 +343,9 @@ function onSearchSelect(option: any) {
       :min-size="300"
       :max-size="600"
       :default-size="300"
+      :ui="{
+        header: 'border-b border-default',
+      }"
     >
       <template #header="{ collapsed }">
         <h1
@@ -361,15 +364,6 @@ function onSearchSelect(option: any) {
 
       <template #default="{ collapsed }">
         <ThemeEditor :collapsed="collapsed" />
-      </template>
-
-      <template #footer="{ collapsed }">
-        <span
-          v-if="!collapsed"
-          class="text-xs text-(--ui-text-dimmed) ms-auto truncate"
-        >
-          Nuxt UI Builder
-        </span>
       </template>
     </UDashboardSidebar>
 
