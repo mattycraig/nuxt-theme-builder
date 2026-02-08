@@ -20,6 +20,19 @@ const presetItems = computed(() =>
   })),
 );
 
+// Sync dropdown when config changes externally (undo/redo/reset)
+watch(
+  () => store.config,
+  () => {
+    const currentJSON = JSON.stringify(store.config);
+    const match = allPresets.value.find(
+      (p) => JSON.stringify(p.config) === currentJSON,
+    );
+    selectedPresetName.value = match?.name ?? "";
+  },
+  { deep: true },
+);
+
 const selectedPreset = computed(() =>
   allPresets.value.find((p) => p.name === selectedPresetName.value),
 );
