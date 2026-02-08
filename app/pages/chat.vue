@@ -191,14 +191,15 @@ function createChat(prompt: string) {
       id="chat"
       v-model:open="sidebarOpen"
       collapsible
+      resizable
       class="bg-elevated/50"
     >
       <template #header="{ collapsed }">
-        <div class="flex items-center gap-2">
-          <UAvatar icon="i-lucide-bot" color="primary" size="xs" />
+        <div class="flex items-center gap-2 justify-center w-full">
+          <UAvatar icon="i-lucide-bot" color="primary" size="xs" class="" />
           <span
             v-if="!collapsed"
-            class="text-base font-bold text-(--ui-text-highlighted)"
+            class="text-base font-bold text-(--ui-text-highlighted) mr-auto"
           >
             Chat
           </span>

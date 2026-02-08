@@ -338,6 +338,7 @@ const isPreview = computed(() => "preview" in route.query);
       collapsible
       resizable
       :ui="{ footer: 'border-t border-default' }"
+      class="bg-elevated/50"
     >
       <template #header="{ collapsed }">
         <div v-if="!collapsed" class="flex items-center gap-2 min-w-0">

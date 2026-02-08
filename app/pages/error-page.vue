@@ -1,137 +1,209 @@
 <script setup lang="ts">
-const error404 = {
-  statusCode: 404,
-  statusMessage: "Page Not Found",
-  message: "The page you're looking for doesn't exist or has been moved.",
+import type { TabsItem } from "@nuxt/ui";
+
+const errorData: Record<
+  string,
+  { statusCode: number; statusMessage: string; message: string; icon: string }
+> = {
+  "404": {
+    statusCode: 404,
+    statusMessage: "Page Not Found",
+    message: "The page you're looking for doesn't exist or has been moved.",
+    icon: "i-lucide-file-question",
+  },
+  "500": {
+    statusCode: 500,
+    statusMessage: "Internal Server Error",
+    message:
+      "Something went wrong on our end. Please try again later or contact support if the problem persists.",
+    icon: "i-lucide-server-crash",
+  },
+  "403": {
+    statusCode: 403,
+    statusMessage: "Forbidden",
+    message:
+      "You don't have permission to access this resource. Please contact your administrator.",
+    icon: "i-lucide-shield-ban",
+  },
+  "429": {
+    statusCode: 429,
+    statusMessage: "Too Many Requests",
+    message:
+      "You've sent too many requests in a short period. Please slow down and try again shortly.",
+    icon: "i-lucide-timer",
+  },
+  "503": {
+    statusCode: 503,
+    statusMessage: "Service Unavailable",
+    message:
+      "The service is temporarily unavailable for maintenance. Please check back soon.",
+    icon: "i-lucide-hard-hat",
+  },
 };
 
-const error500 = {
-  statusCode: 500,
-  statusMessage: "Internal Server Error",
-  message:
-    "Something went wrong on our end. Please try again later or contact support if the problem persists.",
-};
+const tabItems: TabsItem[] = Object.entries(errorData).map(
+  ([code, { statusMessage, icon }]) => ({
+    label: code,
+    icon,
+    value: code,
+    description: statusMessage,
+  }),
+);
 
-const activeError = ref<"404" | "500" | "403">("404");
+const activeError = ref("404");
 
-const error403 = {
-  statusCode: 403,
-  statusMessage: "Forbidden",
-  message:
-    "You don't have permission to access this resource. Please contact your administrator.",
-};
+const currentError = computed(() => errorData[activeError.value]);
 
-const errors: Record<string, typeof error404> = {
-  "404": error404,
-  "500": error500,
-  "403": error403,
-};
+const helpLinks = [
+  {
+    icon: "i-lucide-book-open",
+    label: "Documentation",
+    description: "Browse our guides and API docs",
+    color: "primary" as const,
+  },
+  {
+    icon: "i-lucide-message-circle",
+    label: "Community",
+    description: "Get help from the community",
+    color: "secondary" as const,
+  },
+  {
+    icon: "i-lucide-life-buoy",
+    label: "Support",
+    description: "Open a support ticket",
+    color: "success" as const,
+  },
+];
 </script>
 
 <template>
   <div class="min-h-[60vh] flex flex-col">
-    <!-- Switcher -->
-    <div class="flex items-center justify-center gap-2 pt-8 pb-4">
+    <!-- Error code switcher using UTabs -->
+    <div class="flex flex-col items-center gap-3 pt-8 pb-4 px-4">
       <UBadge
-        label="Preview different error states:"
+        label="Preview different error states"
         variant="subtle"
         color="neutral"
         size="sm"
+        icon="i-lucide-bug"
       />
-      <UButton
-        v-for="code in ['404', '500', '403']"
-        :key="code"
-        :label="code"
+      <UTabs
+        v-model="activeError"
+        :items="tabItems"
+        :content="false"
+        variant="pill"
+        color="primary"
         size="sm"
-        :variant="activeError === code ? 'solid' : 'outline'"
-        :color="activeError === code ? 'primary' : 'neutral'"
-        @click="activeError = code as '404' | '500' | '403'"
       />
     </div>
 
-    <!-- Error display -->
-    <div class="flex-1 flex items-center justify-center pb-12">
-      <div class="text-center space-y-6 max-w-lg mx-auto px-6">
-        <!-- Status code -->
-        <p
-          class="text-8xl sm:text-9xl font-black text-(--ui-primary) opacity-20"
+    <!-- UError component -->
+    <div class="flex-1 flex items-center justify-center pb-8 px-4">
+      <div class="w-full max-w-2xl">
+        <UError
+          :error="currentError"
+          :clear="false"
+          :ui="{
+            root: 'min-h-0 py-8',
+            statusCode: 'text-base font-semibold',
+            statusMessage:
+              'mt-2 text-3xl sm:text-4xl lg:text-5xl font-bold text-balance',
+            message: 'mt-4 text-base sm:text-lg text-balance max-w-md mx-auto',
+            links: 'flex-col mt-4',
+          }"
         >
-          {{ errors[activeError].statusCode }}
-        </p>
+          <!-- Custom links slot with our action buttons -->
+          <template #links>
+            <!-- Contextual hint per error type -->
+            <div class="mt-6 text-left">
+              <UAlert
+                v-if="activeError === '404'"
+                icon="i-lucide-info"
+                color="info"
+                variant="subtle"
+                title="Tip"
+                description="Double-check the URL for typos, or use the search feature to find what you're looking for."
+              />
+              <UAlert
+                v-else-if="activeError === '500'"
+                icon="i-lucide-alert-triangle"
+                color="error"
+                variant="subtle"
+                title="What happened?"
+                description="Our server encountered an unexpected condition. The team has been notified and is working on a fix."
+              />
+              <UAlert
+                v-else-if="activeError === '403'"
+                icon="i-lucide-shield-alert"
+                color="warning"
+                variant="subtle"
+                title="Access Denied"
+                description="Make sure you're logged in with the correct account, or request access from your administrator."
+              />
+              <UAlert
+                v-else-if="activeError === '429'"
+                icon="i-lucide-clock"
+                color="warning"
+                variant="subtle"
+                title="Rate Limited"
+                description="Wait a moment before retrying. If you need higher limits, consider upgrading your plan."
+              />
+              <UAlert
+                v-else-if="activeError === '503'"
+                icon="i-lucide-wrench"
+                color="neutral"
+                variant="subtle"
+                title="Scheduled Maintenance"
+                description="We're performing scheduled maintenance to improve our services. Check our status page for updates."
+              />
+            </div>
+            <div
+              class="flex flex-col sm:flex-row items-center justify-center gap-3"
+            >
+              <UButton
+                label="Go Home"
+                icon="i-lucide-home"
+                size="lg"
+                color="primary"
+              />
+              <UButton
+                label="Go Back"
+                icon="i-lucide-arrow-left"
+                size="lg"
+                variant="outline"
+                color="neutral"
+              />
+              <UButton
+                label="Contact Support"
+                icon="i-lucide-mail"
+                size="lg"
+                variant="ghost"
+                color="neutral"
+              />
+            </div>
+          </template>
+        </UError>
 
-        <!-- Status message -->
-        <h1 class="text-3xl sm:text-4xl font-bold text-(--ui-text-highlighted)">
-          {{ errors[activeError].statusMessage }}
-        </h1>
-
-        <!-- Description -->
-        <p class="text-lg text-(--ui-text-muted) max-w-md mx-auto">
-          {{ errors[activeError].message }}
-        </p>
-
-        <!-- Actions -->
-        <div
-          class="flex flex-col sm:flex-row items-center justify-center gap-3 pt-4"
-        >
-          <UButton
-            label="Go Home"
-            icon="i-lucide-home"
-            size="lg"
-            color="primary"
-          />
-          <UButton
-            label="Go Back"
-            icon="i-lucide-arrow-left"
-            size="lg"
-            variant="outline"
-            color="neutral"
-          />
-          <UButton
-            label="Contact Support"
-            icon="i-lucide-mail"
-            size="lg"
-            variant="ghost"
-            color="neutral"
-          />
-        </div>
-
-        <!-- Additional help -->
+        <!-- Additional help resources -->
         <USeparator class="my-6" />
 
-        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 text-left">
-          <UCard class="text-center">
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+          <UCard
+            v-for="link in helpLinks"
+            :key="link.label"
+            class="text-center hover:ring-(--ui-primary)/40 transition-shadow"
+            :ui="{ root: 'cursor-pointer' }"
+          >
             <div class="space-y-2">
               <UIcon
-                name="i-lucide-book-open"
-                class="size-6 text-(--ui-primary) mx-auto"
+                :name="link.icon"
+                :class="`size-6 mx-auto text-(--ui-${link.color})`"
               />
-              <p class="font-semibold text-sm">Documentation</p>
-              <p class="text-xs text-(--ui-text-muted)">
-                Browse our guides and API docs
+              <p class="font-semibold text-sm text-(--ui-text-highlighted)">
+                {{ link.label }}
               </p>
-            </div>
-          </UCard>
-          <UCard class="text-center">
-            <div class="space-y-2">
-              <UIcon
-                name="i-lucide-message-circle"
-                class="size-6 text-(--ui-secondary) mx-auto"
-              />
-              <p class="font-semibold text-sm">Community</p>
               <p class="text-xs text-(--ui-text-muted)">
-                Get help from the community
-              </p>
-            </div>
-          </UCard>
-          <UCard class="text-center">
-            <div class="space-y-2">
-              <UIcon
-                name="i-lucide-life-buoy"
-                class="size-6 text-(--ui-success) mx-auto"
-              />
-              <p class="font-semibold text-sm">Support</p>
-              <p class="text-xs text-(--ui-text-muted)">
-                Open a support ticket
+                {{ link.description }}
               </p>
             </div>
           </UCard>
