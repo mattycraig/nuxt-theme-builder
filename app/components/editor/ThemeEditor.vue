@@ -106,6 +106,17 @@ function onBorderOverride(token: BorderTokenKey, shade: NeutralShade) {
 
     <USeparator v-if="!collapsed" />
 
+    <!-- My Themes -->
+    <EditorSection
+      :collapsed="collapsed"
+      icon="i-lucide-bookmark"
+      label="My Themes"
+    >
+      <EditorSavedThemes />
+    </EditorSection>
+
+    <USeparator v-if="!collapsed" />
+
     <!-- Color Mode -->
     <EditorSection
       :collapsed="collapsed"

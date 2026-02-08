@@ -157,10 +157,28 @@ export const useThemeStore = defineStore(
       savedPresets.value = savedPresets.value.filter((p) => p.name !== name);
     }
 
+    function renamePreset(oldName: string, newName: string) {
+      const trimmed = newName.trim();
+      if (!trimmed) return false;
+      const duplicate = savedPresets.value.some(
+        (p) => p.name === trimmed && p.name !== oldName,
+      );
+      if (duplicate) return false;
+      const updated = [...savedPresets.value];
+      const idx = updated.findIndex((p) => p.name === oldName);
+      if (idx < 0) return false;
+      updated[idx] = { ...updated[idx], name: trimmed };
+      savedPresets.value = updated;
+      return true;
+    }
+
     function loadPreset(preset: ThemePreset) {
       const result = ThemeConfigSchema.safeParse(preset.config);
       if (!result.success) {
-        console.warn("Invalid preset config, skipping load:", result.error.issues);
+        console.warn(
+          "Invalid preset config, skipping load:",
+          result.error.issues,
+        );
         return;
       }
       config.value = cloneTheme(result.data as ThemeConfig);
@@ -187,6 +205,7 @@ export const useThemeStore = defineStore(
       _syncConfig,
       savePreset,
       deletePreset,
+      renamePreset,
       loadPreset,
     };
   },
@@ -201,6 +220,19 @@ export const useThemeStore = defineStore(
             result.error.issues,
           );
           ctx.store.config = cloneTheme(DEFAULT_THEME);
+        }
+
+        if (Array.isArray(ctx.store.savedPresets)) {
+          const valid = ctx.store.savedPresets.filter(
+            (p: ThemePreset) =>
+              p?.name && ThemeConfigSchema.safeParse(p.config).success,
+          );
+          if (valid.length !== ctx.store.savedPresets.length) {
+            console.warn(
+              `Removed ${ctx.store.savedPresets.length - valid.length} invalid saved preset(s) on hydration.`,
+            );
+            ctx.store.savedPresets = valid;
+          }
         }
       },
     },
