@@ -46,6 +46,15 @@ function getSwatchHex(shade: NeutralShade): string {
           :style="{ backgroundColor: getSwatchHex(modelValue) }"
         />
       </template>
+      <template #item-leading="{ item }">
+        <span
+          aria-hidden="true"
+          class="size-3 rounded-full inline-block shrink-0 border border-[var(--ui-border)] self-center mr-3"
+          :style="{
+            backgroundColor: getSwatchHex(item.value as NeutralShade),
+          }"
+        />
+      </template>
     </USelect>
   </div>
 </template>

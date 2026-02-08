@@ -41,6 +41,13 @@ const items = NEUTRAL_PALETTES.map((p) => ({
           :style="{ backgroundColor: NEUTRAL_SWATCH_HEX[modelValue] }"
         />
       </template>
+      <template #item-leading="{ item }">
+        <span
+          aria-hidden="true"
+          class="size-3 rounded-full inline-block shrink-0 ring-1 ring-(--ui-border) self-center mr-3"
+          :style="{ backgroundColor: NEUTRAL_SWATCH_HEX[item.value as string] }"
+        />
+      </template>
     </USelect>
   </div>
 </template>
