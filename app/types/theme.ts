@@ -114,6 +114,8 @@ export interface ThemePreset {
   name: string;
   config: ThemeConfig;
   builtIn?: boolean;
+  createdAt?: number;
+  updatedAt?: number;
 }
 
 export const FONT_OPTIONS = [

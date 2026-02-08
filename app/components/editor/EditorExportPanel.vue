@@ -12,6 +12,7 @@ const exportTabs = [
 const { appConfigExport, cssExport, jsonExport, importJSON, downloadFile } =
   useThemeExport();
 const { copy, copied } = useClipboard();
+const toast = useToast();
 
 const currentCode = computed(() => {
   switch (activeTab.value) {
@@ -28,6 +29,11 @@ const currentCode = computed(() => {
 
 function handleCopy() {
   copy(currentCode.value);
+  toast.add({
+    title: "Copied to clipboard",
+    icon: "i-lucide-check",
+    color: "success",
+  });
 }
 
 function handleDownload() {
@@ -42,43 +48,43 @@ function handleDownload() {
       downloadFile(jsonExport.value, "theme.json", "application/json");
       break;
   }
+  toast.add({
+    title: "File downloaded",
+    icon: "i-lucide-download",
+    color: "success",
+  });
 }
 
 const importText = ref("");
-const importStatus = ref<{ type: "success" | "error"; message: string } | null>(
-  null,
-);
 
 function handleImport() {
   const trimmed = importText.value.trim();
   if (!trimmed) {
-    importStatus.value = {
-      type: "error",
-      message: "Please paste JSON to import.",
-    };
-    clearStatus();
+    toast.add({
+      title: "Import failed",
+      description: "Please paste JSON to import.",
+      icon: "i-lucide-alert-circle",
+      color: "error",
+    });
     return;
   }
   const result = importJSON(trimmed);
   if (result.success) {
-    importStatus.value = {
-      type: "success",
-      message: "Theme imported successfully!",
-    };
+    toast.add({
+      title: "Theme imported",
+      description: "Theme applied successfully",
+      icon: "i-lucide-check",
+      color: "success",
+    });
     importText.value = "";
   } else {
-    importStatus.value = {
-      type: "error",
-      message: result.error || "Import failed.",
-    };
+    toast.add({
+      title: "Import failed",
+      description: result.error || "Invalid theme JSON",
+      icon: "i-lucide-alert-circle",
+      color: "error",
+    });
   }
-  clearStatus();
-}
-
-function clearStatus() {
-  setTimeout(() => {
-    importStatus.value = null;
-  }, 3000);
 }
 </script>
 
@@ -137,18 +143,6 @@ function clearStatus() {
         size="xs"
         @click="handleImport"
       />
-      <p
-        v-if="importStatus"
-        aria-live="polite"
-        class="text-xs font-medium"
-        :class="
-          importStatus.type === 'success'
-            ? 'text-[var(--ui-color-success-500)]'
-            : 'text-[var(--ui-color-error-500)]'
-        "
-      >
-        {{ importStatus.message }}
-      </p>
     </div>
   </div>
 </template>

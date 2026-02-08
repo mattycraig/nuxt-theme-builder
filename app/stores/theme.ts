@@ -19,6 +19,7 @@ export const useThemeStore = defineStore(
   () => {
     const config = ref<ThemeConfig>(cloneTheme(DEFAULT_THEME));
     const savedPresets = shallowRef<ThemePreset[]>([]);
+    const activePresetName = ref<string>("");
 
     const history = shallowRef<ThemeConfig[]>([cloneTheme(DEFAULT_THEME)]);
     const historyIndex = ref(0);
@@ -38,6 +39,15 @@ export const useThemeStore = defineStore(
     const canRedo = computed(
       () => historyIndex.value < history.value.length - 1,
     );
+
+    const hasUnsavedChanges = computed(() => {
+      if (!activePresetName.value) return false;
+      const active = savedPresets.value.find(
+        (p) => p.name === activePresetName.value,
+      );
+      if (!active) return false;
+      return JSON.stringify(config.value) !== JSON.stringify(active.config);
+    });
 
     function undo() {
       if (!canUndo.value) return;
@@ -117,6 +127,7 @@ export const useThemeStore = defineStore(
 
     function resetToDefaults() {
       config.value = cloneTheme(DEFAULT_THEME);
+      activePresetName.value = "";
       _pushHistory();
     }
 
@@ -141,35 +152,59 @@ export const useThemeStore = defineStore(
       config.value = cloneTheme(result.data as ThemeConfig);
     }
 
-    function savePreset(name: string) {
+    function savePreset(name: string): { isUpdate: boolean } {
+      const now = Date.now();
       const existing = savedPresets.value.findIndex((p) => p.name === name);
-      const preset: ThemePreset = { name, config: cloneTheme(config.value) };
+      const isUpdate = existing >= 0;
+      const preset: ThemePreset = {
+        name,
+        config: cloneTheme(config.value),
+        createdAt: isUpdate
+          ? (savedPresets.value[existing]!.createdAt ?? now)
+          : now,
+        updatedAt: now,
+      };
       const updated = [...savedPresets.value];
-      if (existing >= 0) {
+      if (isUpdate) {
         updated[existing] = preset;
       } else {
         updated.push(preset);
       }
       savedPresets.value = updated;
+      activePresetName.value = name;
+      return { isUpdate };
     }
 
     function deletePreset(name: string) {
+      if (activePresetName.value === name) {
+        activePresetName.value = "";
+      }
       savedPresets.value = savedPresets.value.filter((p) => p.name !== name);
     }
 
-    function renamePreset(oldName: string, newName: string) {
+    function renamePreset(
+      oldName: string,
+      newName: string,
+    ): { success: boolean; error?: string } {
       const trimmed = newName.trim();
-      if (!trimmed) return false;
+      if (!trimmed) return { success: false, error: "Name cannot be empty" };
       const duplicate = savedPresets.value.some(
         (p) => p.name === trimmed && p.name !== oldName,
       );
-      if (duplicate) return false;
+      if (duplicate)
+        return {
+          success: false,
+          error: `A theme named "${trimmed}" already exists`,
+        };
       const updated = [...savedPresets.value];
       const idx = updated.findIndex((p) => p.name === oldName);
-      if (idx < 0) return false;
-      updated[idx] = { ...updated[idx], name: trimmed };
+      if (idx < 0) return { success: false, error: "Theme not found" };
+      updated[idx] = { ...updated[idx], name: trimmed, updatedAt: Date.now() };
       savedPresets.value = updated;
-      return true;
+      if (activePresetName.value === oldName) {
+        activePresetName.value = trimmed;
+      }
+      return { success: true };
     }
 
     function loadPreset(preset: ThemePreset) {
@@ -182,12 +217,15 @@ export const useThemeStore = defineStore(
         return;
       }
       config.value = cloneTheme(result.data as ThemeConfig);
+      activePresetName.value = preset.name;
       _pushHistory();
     }
 
     return {
       config,
       savedPresets,
+      activePresetName,
+      hasUnsavedChanges,
       canUndo,
       canRedo,
       undo,
@@ -211,7 +249,7 @@ export const useThemeStore = defineStore(
   },
   {
     persist: {
-      pick: ["config", "savedPresets"],
+      pick: ["config", "savedPresets", "activePresetName"],
       afterHydrate(ctx) {
         const result = ThemeConfigSchema.safeParse(ctx.store.config);
         if (!result.success) {

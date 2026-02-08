@@ -67,7 +67,7 @@ watch(
   </UPopover>
 
   <!-- Expanded mode: collapsible section -->
-  <UCollapsible v-else v-model:open="isOpen">
+  <UCollapsible v-else v-model:open="isOpen" class="px-3">
     <UButton
       :icon="icon"
       variant="ghost"

@@ -25,6 +25,8 @@ withDefaults(
 const store = useThemeStore();
 const colorMode = useColorMode();
 
+const toolbarRef = ref<{ openSaveAsNew: () => void }>();
+
 const SECTION_KEYS = [
   "myThemes",
   "presets",
@@ -55,12 +57,11 @@ const sectionOpen = reactive<Record<SectionKey, boolean>>(
   ) as Record<SectionKey, boolean>,
 );
 
-function expandAll() {
-  for (const key of SECTION_KEYS) sectionOpen[key] = true;
-}
+const allExpanded = computed(() => SECTION_KEYS.every((k) => sectionOpen[k]));
 
-function collapseAll() {
-  for (const key of SECTION_KEYS) sectionOpen[key] = false;
+function toggleSections() {
+  const value = !allExpanded.value;
+  for (const key of SECTION_KEYS) sectionOpen[key] = value;
 }
 
 const debouncedRadiusCommit = useDebounceFn((val: number) => {
@@ -97,202 +98,209 @@ function onBorderOverride(token: BorderTokenKey, shade: NeutralShade) {
 
 <template>
   <!-- Undo / Redo / Reset toolbar -->
-  <EditorToolbar
-    :collapsed="collapsed"
-    @expand-all="expandAll"
-    @collapse-all="collapseAll"
-  />
-  <USeparator :class="collapsed ? 'w-6 my-1' : 'my-2'" />
-
-  <!-- Sections (collapsed → popover, expanded → collapsible) -->
-  <div :class="collapsed ? 'flex flex-col items-center gap-1' : 'space-y-2'">
-    <!-- My Themes -->
-    <EditorSection
-      v-model:open="sectionOpen.myThemes"
+  <div data-testid="theme-editor">
+    <EditorToolbar
+      ref="toolbarRef"
       :collapsed="collapsed"
-      icon="i-lucide-bookmark"
-      label="My Themes"
-      default-open
+      :all-expanded="allExpanded"
+      @toggle-sections="toggleSections"
+    />
+    <USeparator :class="collapsed ? 'w-6 my-1' : 'hidden'" />
+
+    <!-- Sections (collapsed → popover, expanded → collapsible) -->
+    <div
+      :class="
+        collapsed ? 'flex flex-col items-center gap-1' : 'space-y-2 pt-2 pb-4'
+      "
     >
-      <EditorSavedThemes />
-    </EditorSection>
+      <!-- My Themes -->
+      <EditorSection
+        v-model:open="sectionOpen.myThemes"
+        :collapsed="collapsed"
+        icon="i-lucide-bookmark"
+        label="My Themes"
+        default-open
+      >
+        <EditorSavedThemes @save="toolbarRef?.openSaveAsNew()" />
+      </EditorSection>
 
-    <USeparator v-if="!collapsed" />
+      <USeparator v-if="!collapsed" />
 
-    <!-- Presets -->
-    <EditorSection
-      v-model:open="sectionOpen.presets"
-      :collapsed="collapsed"
-      icon="i-lucide-layers"
-      label="Theme Presets"
-      default-open
-    >
-      <EditorPresetSelector />
-    </EditorSection>
+      <!-- Presets -->
+      <EditorSection
+        v-model:open="sectionOpen.presets"
+        :collapsed="collapsed"
+        icon="i-lucide-layers"
+        label="Theme Presets"
+        default-open
+      >
+        <EditorPresetSelector />
+      </EditorSection>
 
-    <USeparator v-if="!collapsed" />
+      <USeparator v-if="!collapsed" />
 
-    <!-- Color Mode -->
-    <EditorSection
-      v-model:open="sectionOpen.colorMode"
-      :collapsed="collapsed"
-      icon="i-lucide-sun-moon"
-      label="Color Mode"
-      default-open
-    >
-      <div class="flex items-center gap-2">
-        <UColorModeSwitch />
-        <span class="text-xs text-[var(--ui-text-toned)]">
-          Editing <strong>{{ mode }}</strong> overrides
-        </span>
-      </div>
-    </EditorSection>
+      <!-- Color Mode -->
+      <EditorSection
+        v-model:open="sectionOpen.colorMode"
+        :collapsed="collapsed"
+        icon="i-lucide-sun-moon"
+        label="Color Mode"
+        default-open
+      >
+        <div class="flex items-center gap-2">
+          <UColorModeSwitch />
+          <span class="text-xs text-[var(--ui-text-toned)]">
+            Editing <strong>{{ mode }}</strong> overrides
+          </span>
+        </div>
+      </EditorSection>
 
-    <USeparator v-if="!collapsed" />
+      <USeparator v-if="!collapsed" />
 
-    <!-- Layout -->
-    <EditorSection
-      v-model:open="sectionOpen.layout"
-      :collapsed="collapsed"
-      icon="i-lucide-sliders-horizontal"
-      label="Layout"
-      default-open
-    >
-      <div class="space-y-3">
-        <EditorFontPicker
-          :model-value="store.config.font"
-          @update:model-value="store.setFont($event)"
+      <!-- Layout -->
+      <EditorSection
+        v-model:open="sectionOpen.layout"
+        :collapsed="collapsed"
+        icon="i-lucide-sliders-horizontal"
+        label="Layout"
+        default-open
+      >
+        <div class="space-y-3">
+          <EditorFontPicker
+            :model-value="store.config.font"
+            @update:model-value="store.setFont($event)"
+          />
+          <EditorRadiusSlider
+            :model-value="store.config.radius"
+            @update:model-value="onRadiusChange($event)"
+          />
+        </div>
+      </EditorSection>
+
+      <USeparator v-if="!collapsed" />
+
+      <!-- Semantic Colors -->
+      <EditorSection
+        v-model:open="sectionOpen.semanticColors"
+        :collapsed="collapsed"
+        icon="i-lucide-palette"
+        label="Semantic Colors"
+        default-open
+      >
+        <div class="space-y-2">
+          <EditorColorPicker
+            v-for="key in SEMANTIC_COLOR_KEYS"
+            :key="key"
+            :model-value="store.config.colors[key]"
+            :label="capitalize(key)"
+            @update:model-value="store.setSemanticColor(key, $event)"
+          />
+        </div>
+      </EditorSection>
+
+      <USeparator v-if="!collapsed" />
+
+      <!-- Neutral Color -->
+      <EditorSection
+        v-model:open="sectionOpen.neutralColor"
+        :collapsed="collapsed"
+        icon="i-lucide-contrast"
+        label="Neutral Color"
+        default-open
+      >
+        <EditorNeutralPicker
+          :model-value="store.config.neutral"
+          label="Neutral"
+          @update:model-value="store.setNeutral($event)"
         />
-        <EditorRadiusSlider
-          :model-value="store.config.radius"
-          @update:model-value="onRadiusChange($event)"
-        />
-      </div>
-    </EditorSection>
+      </EditorSection>
 
-    <USeparator v-if="!collapsed" />
+      <USeparator v-if="!collapsed" />
 
-    <!-- Semantic Colors -->
-    <EditorSection
-      v-model:open="sectionOpen.semanticColors"
-      :collapsed="collapsed"
-      icon="i-lucide-palette"
-      label="Semantic Colors"
-      default-open
-    >
-      <div class="space-y-2">
-        <EditorColorPicker
-          v-for="key in SEMANTIC_COLOR_KEYS"
-          :key="key"
-          :model-value="store.config.colors[key]"
-          :label="capitalize(key)"
-          @update:model-value="store.setSemanticColor(key, $event)"
-        />
-      </div>
-    </EditorSection>
+      <!-- Text Colors -->
+      <EditorSection
+        v-model:open="sectionOpen.textColors"
+        :collapsed="collapsed"
+        icon="i-lucide-type"
+        label="Text Colors"
+      >
+        <template #heading>
+          Text Colors
+          <UBadge :label="mode" variant="subtle" size="xs" class="ml-1" />
+        </template>
+        <div class="space-y-2">
+          <EditorShadeSelect
+            v-for="token in TEXT_TOKEN_KEYS"
+            :key="token"
+            :model-value="overrides.text[token]"
+            :label="capitalize(token)"
+            :neutral-palette="store.config.neutral"
+            @update:model-value="onTextOverride(token, $event)"
+          />
+        </div>
+      </EditorSection>
 
-    <USeparator v-if="!collapsed" />
+      <USeparator v-if="!collapsed" />
 
-    <!-- Neutral Color -->
-    <EditorSection
-      v-model:open="sectionOpen.neutralColor"
-      :collapsed="collapsed"
-      icon="i-lucide-contrast"
-      label="Neutral Color"
-      default-open
-    >
-      <EditorNeutralPicker
-        :model-value="store.config.neutral"
-        label="Neutral"
-        @update:model-value="store.setNeutral($event)"
-      />
-    </EditorSection>
+      <!-- Background Colors -->
+      <EditorSection
+        v-model:open="sectionOpen.bgColors"
+        :collapsed="collapsed"
+        icon="i-lucide-paintbrush"
+        label="Background Colors"
+      >
+        <template #heading>
+          Background Colors
+          <UBadge :label="mode" variant="subtle" size="xs" class="ml-1" />
+        </template>
+        <div class="space-y-2">
+          <EditorShadeSelect
+            v-for="token in BG_TOKEN_KEYS"
+            :key="token"
+            :model-value="overrides.bg[token]"
+            :label="capitalize(token)"
+            :neutral-palette="store.config.neutral"
+            @update:model-value="onBgOverride(token, $event)"
+          />
+        </div>
+      </EditorSection>
 
-    <USeparator v-if="!collapsed" />
+      <USeparator v-if="!collapsed" />
 
-    <!-- Text Colors -->
-    <EditorSection
-      v-model:open="sectionOpen.textColors"
-      :collapsed="collapsed"
-      icon="i-lucide-type"
-      label="Text Colors"
-    >
-      <template #heading>
-        Text Colors
-        <UBadge :label="mode" variant="subtle" size="xs" class="ml-1" />
-      </template>
-      <div class="space-y-2">
-        <EditorShadeSelect
-          v-for="token in TEXT_TOKEN_KEYS"
-          :key="token"
-          :model-value="overrides.text[token]"
-          :label="capitalize(token)"
-          :neutral-palette="store.config.neutral"
-          @update:model-value="onTextOverride(token, $event)"
-        />
-      </div>
-    </EditorSection>
+      <!-- Border Colors -->
+      <EditorSection
+        v-model:open="sectionOpen.borderColors"
+        :collapsed="collapsed"
+        icon="i-lucide-frame"
+        label="Border Colors"
+      >
+        <template #heading>
+          Border Colors
+          <UBadge :label="mode" variant="subtle" size="xs" class="ml-1" />
+        </template>
+        <div class="space-y-2">
+          <EditorShadeSelect
+            v-for="token in BORDER_TOKEN_KEYS"
+            :key="token"
+            :model-value="overrides.border[token]"
+            :label="capitalize(token)"
+            :neutral-palette="store.config.neutral"
+            @update:model-value="onBorderOverride(token, $event)"
+          />
+        </div>
+      </EditorSection>
 
-    <USeparator v-if="!collapsed" />
+      <USeparator v-if="!collapsed" />
 
-    <!-- Background Colors -->
-    <EditorSection
-      v-model:open="sectionOpen.bgColors"
-      :collapsed="collapsed"
-      icon="i-lucide-paintbrush"
-      label="Background Colors"
-    >
-      <template #heading>
-        Background Colors
-        <UBadge :label="mode" variant="subtle" size="xs" class="ml-1" />
-      </template>
-      <div class="space-y-2">
-        <EditorShadeSelect
-          v-for="token in BG_TOKEN_KEYS"
-          :key="token"
-          :model-value="overrides.bg[token]"
-          :label="capitalize(token)"
-          :neutral-palette="store.config.neutral"
-          @update:model-value="onBgOverride(token, $event)"
-        />
-      </div>
-    </EditorSection>
-
-    <USeparator v-if="!collapsed" />
-
-    <!-- Border Colors -->
-    <EditorSection
-      v-model:open="sectionOpen.borderColors"
-      :collapsed="collapsed"
-      icon="i-lucide-frame"
-      label="Border Colors"
-    >
-      <template #heading>
-        Border Colors
-        <UBadge :label="mode" variant="subtle" size="xs" class="ml-1" />
-      </template>
-      <div class="space-y-2">
-        <EditorShadeSelect
-          v-for="token in BORDER_TOKEN_KEYS"
-          :key="token"
-          :model-value="overrides.border[token]"
-          :label="capitalize(token)"
-          :neutral-palette="store.config.neutral"
-          @update:model-value="onBorderOverride(token, $event)"
-        />
-      </div>
-    </EditorSection>
-
-    <USeparator v-if="!collapsed" />
-
-    <!-- Export / Import -->
-    <EditorSection
-      v-model:open="sectionOpen.exportImport"
-      :collapsed="collapsed"
-      icon="i-lucide-share-2"
-      label="Export / Import"
-    >
-      <EditorExportPanel />
-    </EditorSection>
+      <!-- Export / Import -->
+      <EditorSection
+        v-model:open="sectionOpen.exportImport"
+        :collapsed="collapsed"
+        icon="i-lucide-share-2"
+        label="Export / Import"
+      >
+        <EditorExportPanel />
+      </EditorSection>
+    </div>
   </div>
 </template>

@@ -345,6 +345,7 @@ function onSearchSelect(option: any) {
       :default-size="300"
       :ui="{
         header: 'border-b border-default',
+        body: 'p-0',
       }"
     >
       <template #header="{ collapsed }">
