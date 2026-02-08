@@ -93,7 +93,7 @@ function onBorderOverride(token: BorderTokenKey, shade: NeutralShade) {
   </div>
 
   <!-- Sections (collapsed → popover, expanded → collapsible) -->
-  <div :class="collapsed ? 'flex flex-col items-center gap-1' : 'space-y-1'">
+  <div :class="collapsed ? 'flex flex-col items-center gap-1' : 'space-y-2'">
     <!-- Presets -->
     <EditorSection
       :collapsed="collapsed"
