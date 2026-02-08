@@ -231,7 +231,7 @@ watch(
     previewFrame.value?.contentWindow?.postMessage(
       {
         type: "theme-sync",
-        config: JSON.parse(JSON.stringify(newConfig)),
+        config: structuredClone(toRaw(newConfig)),
       },
       window.location.origin,
     );
@@ -263,7 +263,7 @@ function handleIframeMessage(event: MessageEvent) {
     previewFrame.value?.contentWindow?.postMessage(
       {
         type: "theme-sync",
-        config: JSON.parse(JSON.stringify(store.config)),
+        config: structuredClone(toRaw(store.config)),
       },
       window.location.origin,
     );

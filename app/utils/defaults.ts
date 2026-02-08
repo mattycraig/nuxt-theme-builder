@@ -5,6 +5,7 @@ import type {
   BgTokenOverrides,
   BorderTokenOverrides,
 } from "~/types/theme";
+import { toRaw } from "vue";
 
 export const DEFAULT_TEXT_LIGHT: TextTokenOverrides = {
   dimmed: "400",
@@ -201,5 +202,5 @@ export function shadeToCSS(shade: string): string {
  * Deep clone a ThemeConfig
  */
 export function cloneTheme(theme: ThemeConfig): ThemeConfig {
-  return JSON.parse(JSON.stringify(theme));
+  return structuredClone(toRaw(theme));
 }

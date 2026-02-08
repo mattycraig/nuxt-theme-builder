@@ -18,19 +18,20 @@ export const useThemeStore = defineStore(
   "theme",
   () => {
     const config = ref<ThemeConfig>(cloneTheme(DEFAULT_THEME));
-    const savedPresets = ref<ThemePreset[]>([]);
+    const savedPresets = shallowRef<ThemePreset[]>([]);
 
-    const history = ref<ThemeConfig[]>([cloneTheme(DEFAULT_THEME)]);
+    const history = shallowRef<ThemeConfig[]>([cloneTheme(DEFAULT_THEME)]);
     const historyIndex = ref(0);
 
     function _pushHistory() {
-      history.value = history.value.slice(0, historyIndex.value + 1);
-      history.value.push(cloneTheme(config.value));
-      if (history.value.length > MAX_HISTORY) {
-        history.value.shift();
+      const newHistory = history.value.slice(0, historyIndex.value + 1);
+      newHistory.push(cloneTheme(config.value));
+      if (newHistory.length > MAX_HISTORY) {
+        newHistory.shift();
       } else {
         historyIndex.value++;
       }
+      history.value = newHistory;
     }
 
     const canUndo = computed(() => historyIndex.value > 0);
@@ -63,6 +64,11 @@ export const useThemeStore = defineStore(
     function setRadius(value: number) {
       config.value.radius = value;
       _pushHistory();
+    }
+
+    /** Update radius visually without pushing history — use for continuous slider drag */
+    function setRadiusVisual(value: number) {
+      config.value.radius = value;
     }
 
     function setFont(value: string) {
@@ -123,7 +129,7 @@ export const useThemeStore = defineStore(
         );
         config.value = cloneTheme(DEFAULT_THEME);
       } else {
-        config.value = cloneTheme(result.data);
+        config.value = cloneTheme(result.data as ThemeConfig);
       }
       _pushHistory();
     }
@@ -136,11 +142,13 @@ export const useThemeStore = defineStore(
     function savePreset(name: string) {
       const existing = savedPresets.value.findIndex((p) => p.name === name);
       const preset: ThemePreset = { name, config: cloneTheme(config.value) };
+      const updated = [...savedPresets.value];
       if (existing >= 0) {
-        savedPresets.value[existing] = preset;
+        updated[existing] = preset;
       } else {
-        savedPresets.value.push(preset);
+        updated.push(preset);
       }
+      savedPresets.value = updated;
     }
 
     function deletePreset(name: string) {
@@ -148,7 +156,9 @@ export const useThemeStore = defineStore(
     }
 
     function loadPreset(preset: ThemePreset) {
-      loadConfig(preset.config);
+      // Skip Zod validation — preset configs are already type-safe
+      config.value = cloneTheme(preset.config);
+      _pushHistory();
     }
 
     return {
@@ -161,6 +171,7 @@ export const useThemeStore = defineStore(
       setSemanticColor,
       setNeutral,
       setRadius,
+      setRadiusVisual,
       setFont,
       setTextOverride,
       setBgOverride,

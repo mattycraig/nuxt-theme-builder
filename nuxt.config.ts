@@ -17,17 +17,17 @@ export default defineNuxtConfig({
   fonts: {
     families: [
       { name: "Public Sans", provider: "google", global: true },
-      { name: "DM Sans", provider: "google", global: true },
-      { name: "Geist", provider: "google", global: true },
-      { name: "Inter", provider: "google", global: true },
-      { name: "Poppins", provider: "google", global: true },
-      { name: "Outfit", provider: "google", global: true },
-      { name: "Raleway", provider: "google", global: true },
+      { name: "DM Sans", provider: "google" },
+      { name: "Geist", provider: "google" },
+      { name: "Inter", provider: "google" },
+      { name: "Poppins", provider: "google" },
+      { name: "Outfit", provider: "google" },
+      { name: "Raleway", provider: "google" },
     ],
     defaults: {
       weights: [400, 500, 600, 700],
       styles: ["normal"],
-      subsets: ["latin", "latin-ext"],
+      subsets: ["latin"],
     },
   },
 

@@ -1,5 +1,10 @@
 <script setup lang="ts">
-import type { NeutralShade, TextTokenKey, BgTokenKey, BorderTokenKey } from "~/types/theme";
+import type {
+  NeutralShade,
+  TextTokenKey,
+  BgTokenKey,
+  BorderTokenKey,
+} from "~/types/theme";
 import {
   SEMANTIC_COLOR_KEYS,
   TEXT_TOKEN_KEYS,
@@ -19,6 +24,15 @@ withDefaults(
 
 const store = useThemeStore();
 const colorMode = useColorMode();
+
+const debouncedRadiusCommit = useDebounceFn((val: number) => {
+  store.setRadius(val);
+}, 300);
+
+function onRadiusChange(val: number) {
+  store.setRadiusVisual(val);
+  debouncedRadiusCommit(val);
+}
 
 const mode = computed<"light" | "dark">(() =>
   colorMode.value === "dark" ? "dark" : "light",
@@ -45,10 +59,7 @@ function onBorderOverride(token: BorderTokenKey, shade: NeutralShade) {
 
 <template>
   <!-- Collapsed: undo/redo/reset toolbar -->
-  <div
-    v-if="collapsed"
-    class="flex flex-col items-center gap-1 py-2"
-  >
+  <div v-if="collapsed" class="flex flex-col items-center gap-1 py-2">
     <UTooltip text="Undo" :content="{ side: 'right' }">
       <UButton
         icon="i-lucide-undo-2"
@@ -84,14 +95,24 @@ function onBorderOverride(token: BorderTokenKey, shade: NeutralShade) {
   <!-- Sections (collapsed → popover, expanded → collapsible) -->
   <div :class="collapsed ? 'flex flex-col items-center gap-1' : 'space-y-1'">
     <!-- Presets -->
-    <EditorSection :collapsed="collapsed" icon="i-lucide-layers" label="Presets" default-open>
+    <EditorSection
+      :collapsed="collapsed"
+      icon="i-lucide-layers"
+      label="Presets"
+      default-open
+    >
       <EditorPresetSelector />
     </EditorSection>
 
     <USeparator v-if="!collapsed" />
 
     <!-- Color Mode -->
-    <EditorSection :collapsed="collapsed" icon="i-lucide-sun-moon" label="Color Mode" default-open>
+    <EditorSection
+      :collapsed="collapsed"
+      icon="i-lucide-sun-moon"
+      label="Color Mode"
+      default-open
+    >
       <div class="flex items-center gap-2">
         <UColorModeSwitch />
         <span class="text-xs text-[var(--ui-text-toned)]">
@@ -103,7 +124,12 @@ function onBorderOverride(token: BorderTokenKey, shade: NeutralShade) {
     <USeparator v-if="!collapsed" />
 
     <!-- Layout -->
-    <EditorSection :collapsed="collapsed" icon="i-lucide-sliders-horizontal" label="Layout" default-open>
+    <EditorSection
+      :collapsed="collapsed"
+      icon="i-lucide-sliders-horizontal"
+      label="Layout"
+      default-open
+    >
       <div class="space-y-3">
         <EditorFontPicker
           :model-value="store.config.font"
@@ -111,7 +137,7 @@ function onBorderOverride(token: BorderTokenKey, shade: NeutralShade) {
         />
         <EditorRadiusSlider
           :model-value="store.config.radius"
-          @update:model-value="store.setRadius($event)"
+          @update:model-value="onRadiusChange($event)"
         />
       </div>
     </EditorSection>
@@ -119,7 +145,12 @@ function onBorderOverride(token: BorderTokenKey, shade: NeutralShade) {
     <USeparator v-if="!collapsed" />
 
     <!-- Semantic Colors -->
-    <EditorSection :collapsed="collapsed" icon="i-lucide-palette" label="Semantic Colors" default-open>
+    <EditorSection
+      :collapsed="collapsed"
+      icon="i-lucide-palette"
+      label="Semantic Colors"
+      default-open
+    >
       <div class="space-y-2">
         <EditorColorPicker
           v-for="key in SEMANTIC_COLOR_KEYS"
@@ -134,7 +165,12 @@ function onBorderOverride(token: BorderTokenKey, shade: NeutralShade) {
     <USeparator v-if="!collapsed" />
 
     <!-- Neutral Color -->
-    <EditorSection :collapsed="collapsed" icon="i-lucide-contrast" label="Neutral Color" default-open>
+    <EditorSection
+      :collapsed="collapsed"
+      icon="i-lucide-contrast"
+      label="Neutral Color"
+      default-open
+    >
       <EditorNeutralPicker
         :model-value="store.config.neutral"
         label="Neutral"
@@ -145,7 +181,11 @@ function onBorderOverride(token: BorderTokenKey, shade: NeutralShade) {
     <USeparator v-if="!collapsed" />
 
     <!-- Text Colors -->
-    <EditorSection :collapsed="collapsed" icon="i-lucide-type" label="Text Colors">
+    <EditorSection
+      :collapsed="collapsed"
+      icon="i-lucide-type"
+      label="Text Colors"
+    >
       <template #heading>
         Text Colors
         <UBadge :label="mode" variant="subtle" size="xs" class="ml-1" />
@@ -165,7 +205,11 @@ function onBorderOverride(token: BorderTokenKey, shade: NeutralShade) {
     <USeparator v-if="!collapsed" />
 
     <!-- Background Colors -->
-    <EditorSection :collapsed="collapsed" icon="i-lucide-paintbrush" label="Background Colors">
+    <EditorSection
+      :collapsed="collapsed"
+      icon="i-lucide-paintbrush"
+      label="Background Colors"
+    >
       <template #heading>
         Background Colors
         <UBadge :label="mode" variant="subtle" size="xs" class="ml-1" />
@@ -185,7 +229,11 @@ function onBorderOverride(token: BorderTokenKey, shade: NeutralShade) {
     <USeparator v-if="!collapsed" />
 
     <!-- Border Colors -->
-    <EditorSection :collapsed="collapsed" icon="i-lucide-frame" label="Border Colors">
+    <EditorSection
+      :collapsed="collapsed"
+      icon="i-lucide-frame"
+      label="Border Colors"
+    >
       <template #heading>
         Border Colors
         <UBadge :label="mode" variant="subtle" size="xs" class="ml-1" />
@@ -205,7 +253,11 @@ function onBorderOverride(token: BorderTokenKey, shade: NeutralShade) {
     <USeparator v-if="!collapsed" />
 
     <!-- Export / Import -->
-    <EditorSection :collapsed="collapsed" icon="i-lucide-share-2" label="Export / Import">
+    <EditorSection
+      :collapsed="collapsed"
+      icon="i-lucide-share-2"
+      label="Export / Import"
+    >
       <EditorExportPanel />
     </EditorSection>
   </div>

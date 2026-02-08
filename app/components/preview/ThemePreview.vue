@@ -20,33 +20,33 @@
     <PreviewCards />
 
     <USeparator />
-    <PreviewInputs />
+    <LazyPreviewInputs />
 
     <USeparator />
-    <PreviewTable />
+    <LazyPreviewTable />
 
     <USeparator />
-    <PreviewTabs />
+    <LazyPreviewTabs />
 
     <USeparator />
-    <PreviewAccordion />
+    <LazyPreviewAccordion />
 
     <USeparator />
-    <PreviewAvatars />
+    <LazyPreviewAvatars />
 
     <USeparator />
-    <PreviewProgress />
+    <LazyPreviewProgress />
 
     <USeparator />
-    <PreviewCalendar />
+    <LazyPreviewCalendar />
 
     <USeparator />
-    <PreviewNavigation />
+    <LazyPreviewNavigation />
 
     <USeparator />
-    <PreviewDropdown />
+    <LazyPreviewDropdown />
 
     <USeparator />
-    <PreviewMisc />
+    <LazyPreviewMisc />
   </div>
 </template>

@@ -21,7 +21,7 @@ const presetItems = computed(() =>
 );
 
 // Sync dropdown when config changes externally (undo/redo/reset)
-watch(
+watchDebounced(
   () => store.config,
   () => {
     const currentJSON = JSON.stringify(store.config);
@@ -30,7 +30,7 @@ watch(
     );
     selectedPresetName.value = match?.name ?? "";
   },
-  { deep: true },
+  { deep: true, debounce: 300 },
 );
 
 const selectedPreset = computed(() =>

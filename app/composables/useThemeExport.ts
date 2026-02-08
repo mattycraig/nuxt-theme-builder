@@ -1,5 +1,6 @@
 import { useThemeStore } from "~/stores/theme";
 import { ThemeConfigSchema } from "~/types/theme";
+import type { ThemeConfig } from "~/types/theme";
 import {
   DEFAULT_LIGHT_OVERRIDES,
   DEFAULT_DARK_OVERRIDES,
@@ -94,7 +95,7 @@ export function useThemeExport() {
           error: `Invalid theme JSON: ${issues}`,
         };
       }
-      store.loadConfig(result.data);
+      store.loadConfig(result.data as ThemeConfig);
       return { success: true };
     } catch (e: unknown) {
       return {

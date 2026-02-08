@@ -9,7 +9,7 @@ export const BUILT_IN_PRESETS: ThemePreset[] = [
   {
     name: "Default",
     builtIn: true,
-    config: { ...DEFAULT_THEME },
+    config: DEFAULT_THEME,
   },
   {
     name: "Ocean",
@@ -26,8 +26,8 @@ export const BUILT_IN_PRESETS: ThemePreset[] = [
       neutral: "slate",
       radius: 0.375,
       font: "Inter",
-      lightOverrides: { ...DEFAULT_LIGHT_OVERRIDES },
-      darkOverrides: { ...DEFAULT_DARK_OVERRIDES },
+      lightOverrides: DEFAULT_LIGHT_OVERRIDES,
+      darkOverrides: DEFAULT_DARK_OVERRIDES,
     },
   },
   {
@@ -45,8 +45,8 @@ export const BUILT_IN_PRESETS: ThemePreset[] = [
       neutral: "stone",
       radius: 0.5,
       font: "DM Sans",
-      lightOverrides: { ...DEFAULT_LIGHT_OVERRIDES },
-      darkOverrides: { ...DEFAULT_DARK_OVERRIDES },
+      lightOverrides: DEFAULT_LIGHT_OVERRIDES,
+      darkOverrides: DEFAULT_DARK_OVERRIDES,
     },
   },
   {
@@ -64,8 +64,8 @@ export const BUILT_IN_PRESETS: ThemePreset[] = [
       neutral: "zinc",
       radius: 0.375,
       font: "Poppins",
-      lightOverrides: { ...DEFAULT_LIGHT_OVERRIDES },
-      darkOverrides: { ...DEFAULT_DARK_OVERRIDES },
+      lightOverrides: DEFAULT_LIGHT_OVERRIDES,
+      darkOverrides: DEFAULT_DARK_OVERRIDES,
     },
   },
   {
