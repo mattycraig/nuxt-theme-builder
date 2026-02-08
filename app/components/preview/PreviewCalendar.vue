@@ -13,7 +13,8 @@
 </template>
 
 <script setup lang="ts">
-import { today, getLocalTimeZone } from "@internationalized/date";
+import { today, getLocalTimeZone, type CalendarDate } from "@internationalized/date";
 
-const selectedDate = ref(today(getLocalTimeZone()));
+// shallowRef preserves class identity; cast needed for Vue template type compatibility
+const selectedDate = shallowRef(today(getLocalTimeZone())) as Ref<CalendarDate>;
 </script>

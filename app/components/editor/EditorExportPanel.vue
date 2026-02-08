@@ -3,38 +3,11 @@ type ExportTab = "appconfig" | "css" | "json";
 
 const activeTab = ref<ExportTab>("appconfig");
 
-const baseId = useId();
-const tabIds: Record<ExportTab, string> = {
-  appconfig: `${baseId}-tab-appconfig`,
-  css: `${baseId}-tab-css`,
-  json: `${baseId}-tab-json`,
-};
-const panelId = `${baseId}-tabpanel`;
-const tabOrder: ExportTab[] = ["appconfig", "css", "json"];
-
-function onTabKeydown(event: KeyboardEvent) {
-  const idx = tabOrder.indexOf(activeTab.value);
-  let next = -1;
-  if (event.key === "ArrowRight") {
-    event.preventDefault();
-    next = (idx + 1) % tabOrder.length;
-  } else if (event.key === "ArrowLeft") {
-    event.preventDefault();
-    next = (idx - 1 + tabOrder.length) % tabOrder.length;
-  } else if (event.key === "Home") {
-    event.preventDefault();
-    next = 0;
-  } else if (event.key === "End") {
-    event.preventDefault();
-    next = tabOrder.length - 1;
-  }
-  if (next !== -1) {
-    activeTab.value = tabOrder[next];
-    nextTick(() => {
-      document.getElementById(tabIds[tabOrder[next]])?.focus();
-    });
-  }
-}
+const exportTabs = [
+  { label: "app.config.ts", value: "appconfig" as const },
+  { label: "CSS", value: "css" as const },
+  { label: "JSON", value: "json" as const },
+];
 
 const { appConfigExport, cssExport, jsonExport, importJSON, downloadFile } =
   useThemeExport();
@@ -111,53 +84,16 @@ function clearStatus() {
 
 <template>
   <div class="space-y-3">
-    <!-- Tab buttons -->
-    <div
-      role="tablist"
-      aria-label="Export format"
-      class="flex gap-1"
-      @keydown="onTabKeydown"
-    >
-      <UButton
-        :id="tabIds.appconfig"
-        label="app.config.ts"
-        role="tab"
-        :aria-selected="activeTab === 'appconfig'"
-        :aria-controls="panelId"
-        :tabindex="activeTab === 'appconfig' ? 0 : -1"
-        :variant="activeTab === 'appconfig' ? 'solid' : 'ghost'"
-        size="xs"
-        @click="activeTab = 'appconfig'"
-      />
-      <UButton
-        :id="tabIds.css"
-        label="CSS"
-        role="tab"
-        :aria-selected="activeTab === 'css'"
-        :aria-controls="panelId"
-        :tabindex="activeTab === 'css' ? 0 : -1"
-        :variant="activeTab === 'css' ? 'solid' : 'ghost'"
-        size="xs"
-        @click="activeTab = 'css'"
-      />
-      <UButton
-        :id="tabIds.json"
-        label="JSON"
-        role="tab"
-        :aria-selected="activeTab === 'json'"
-        :aria-controls="panelId"
-        :tabindex="activeTab === 'json' ? 0 : -1"
-        :variant="activeTab === 'json' ? 'solid' : 'ghost'"
-        size="xs"
-        @click="activeTab = 'json'"
-      />
-    </div>
+    <UTabs
+      v-model="activeTab"
+      :items="exportTabs"
+      value-key="value"
+      size="xs"
+      :content="false"
+    />
 
     <!-- Code block -->
     <pre
-      :id="panelId"
-      role="tabpanel"
-      :aria-labelledby="tabIds[activeTab]"
       tabindex="0"
       class="bg-[var(--ui-bg-elevated)] rounded-lg p-3 text-xs leading-relaxed overflow-x-auto max-h-64 overflow-y-auto border border-[var(--ui-border)]"
     ><code>{{ currentCode }}</code></pre>

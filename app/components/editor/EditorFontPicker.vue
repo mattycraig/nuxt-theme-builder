@@ -26,7 +26,7 @@ const items = FONT_OPTIONS.map((f) => ({
     >
     <USelect
       :id="inputId"
-      :model-value="modelValue"
+      :model-value="(modelValue as typeof FONT_OPTIONS[number])"
       :items="items"
       class="w-full"
       @update:model-value="emit('update:modelValue', $event as string)"

@@ -12,9 +12,10 @@ function formatValue(rem: number): string {
   return `${rem}rem (${px}px)`;
 }
 
-function onUpdate(val: number | number[]) {
-  const v = Array.isArray(val) ? val[0] : val;
-  emit("update:modelValue", v);
+function onUpdate(val: number | undefined) {
+  if (val !== undefined) {
+    emit("update:modelValue", val);
+  }
 }
 </script>
 
