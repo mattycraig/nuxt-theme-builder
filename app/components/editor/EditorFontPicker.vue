@@ -26,10 +26,17 @@ const items = FONT_OPTIONS.map((f) => ({
     >
     <USelect
       :id="inputId"
-      :model-value="(modelValue as typeof FONT_OPTIONS[number])"
+      :model-value="modelValue as (typeof FONT_OPTIONS)[number]"
       :items="items"
       class="w-full"
+      :style="{ fontFamily: modelValue }"
       @update:model-value="emit('update:modelValue', $event as string)"
-    />
+    >
+      <template #item-label="{ item }">
+        <span :style="{ fontFamily: item.label }" class="font-medium">{{
+          item.label
+        }}</span>
+      </template>
+    </USelect>
   </div>
 </template>
