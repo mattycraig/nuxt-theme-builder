@@ -45,57 +45,83 @@ const previewWidthOptions = [
 const items: NavigationMenuItem[][] = [
   [
     {
-      label: "Components",
-      icon: "i-lucide-layout-grid",
+      label: "Home",
+      icon: "i-lucide-home",
       to: "/",
     },
     {
-      label: "Dashboard",
-      icon: "i-lucide-layout-dashboard",
-      to: "/dashboard",
+      label: "Components",
+      icon: "i-lucide-layout-grid",
+      to: "/components",
+      children: [
+        { label: "All Components", to: "/components" },
+        { label: "Buttons", to: "/components/buttons" },
+        { label: "Badges", to: "/components/badges" },
+        { label: "Alerts", to: "/components/alerts" },
+        { label: "Cards", to: "/components/cards" },
+        { label: "Inputs", to: "/components/inputs" },
+        { label: "Table", to: "/components/table" },
+        { label: "Tabs", to: "/components/tabs" },
+        { label: "Accordion", to: "/components/accordion" },
+        { label: "Avatars", to: "/components/avatars" },
+        { label: "Progress", to: "/components/progress" },
+        { label: "Calendar", to: "/components/calendar" },
+        { label: "Navigation", to: "/components/navigation" },
+        { label: "Dropdown", to: "/components/dropdown" },
+        { label: "Misc", to: "/components/misc" },
+      ],
     },
     {
-      label: "Landing",
-      icon: "i-lucide-rocket",
-      to: "/landing",
+      label: "Blocks",
+      icon: "i-lucide-blocks",
+      to: "/blocks",
+      children: [
+        { label: "All Blocks", to: "/blocks" },
+        { label: "Hero", to: "/blocks/hero" },
+        { label: "Features", to: "/blocks/features" },
+        { label: "CTA", to: "/blocks/cta" },
+        { label: "Testimonials", to: "/blocks/testimonials" },
+        { label: "Stats", to: "/blocks/stats" },
+        { label: "FAQ", to: "/blocks/faq" },
+      ],
     },
     {
-      label: "Pricing",
-      icon: "i-lucide-credit-card",
-      to: "/pricing",
-    },
-    {
-      label: "Login",
-      icon: "i-lucide-log-in",
-      to: "/login",
-    },
-    {
-      label: "Blog",
-      icon: "i-lucide-newspaper",
-      to: "/blog",
-    },
-    {
-      label: "Changelog",
-      icon: "i-lucide-history",
-      to: "/changelog",
-    },
-    {
-      label: "Chat",
-      icon: "i-lucide-message-circle",
-      to: "/chat",
-    },
-    {
-      label: "Editor",
-      icon: "i-lucide-file-edit",
-      to: "/editor",
-    },
-    {
-      label: "Error",
-      icon: "i-lucide-alert-triangle",
-      to: "/error-page",
+      label: "Templates",
+      icon: "i-lucide-app-window",
+      to: "/templates",
+      children: [
+        { label: "All Templates", to: "/templates" },
+        { label: "Dashboard", to: "/templates/dashboard" },
+        { label: "Landing", to: "/templates/landing" },
+        { label: "Pricing", to: "/templates/pricing" },
+        { label: "Login", to: "/templates/login" },
+        { label: "Blog", to: "/templates/blog" },
+        { label: "Changelog", to: "/templates/changelog" },
+        { label: "Chat", to: "/templates/chat" },
+        { label: "Editor", to: "/templates/editor" },
+        { label: "Error", to: "/templates/error-page" },
+      ],
     },
   ],
 ];
+
+// Flatten all navigable items (including children) for search and label lookup
+const allNavItems = computed(() => {
+  const result: { label: string; icon?: string; to?: string }[] = [];
+  for (const group of items) {
+    for (const item of group) {
+      if (item.to) {
+        result.push({ label: item.label, icon: item.icon, to: item.to });
+      }
+      if (item.children) {
+        for (const child of item.children) {
+          result.push({ label: child.label, icon: item.icon, to: child.to });
+        }
+      }
+    }
+  }
+  return result;
+});
 
 const colorMode = useColorMode();
 
@@ -104,7 +130,7 @@ const searchGroups = computed(() => [
   {
     id: "pages",
     label: "Preview Pages",
-    items: items.flat().map((item) => ({
+    items: allNavItems.value.map((item) => ({
       label: item.label,
       icon: item.icon,
       to: item.to,
@@ -246,8 +272,7 @@ function onCustomWidthInput(val: string | number) {
 }
 
 const currentPageLabel = computed(() => {
-  const flat = items.flat().flatMap((g) => (Array.isArray(g) ? g : [g]));
-  return flat.find((i) => i.to === route.path)?.label ?? "Preview";
+  return allNavItems.value.find((i) => i.to === route.path)?.label ?? "Preview";
 });
 
 // --- Iframe preview ---
@@ -298,7 +323,7 @@ watch(
   },
 );
 
-// When iframe signals it's ready, push full state
+// When iframe signals it's ready, push full state and navigate to current route
 function handleIframeMessage(event: MessageEvent) {
   if (event.origin !== window.location.origin) return;
 
@@ -317,6 +342,25 @@ function handleIframeMessage(event: MessageEvent) {
         type: "colormode-sync",
         mode: colorMode.preference,
       },
+      window.location.origin,
+    );
+    // Navigate iframe to current route in case it differs from the initial src
+    const currentSrc = iframeSrc.value;
+    if (currentSrc !== iframeInitialSrc.value) {
+      previewFrame.value?.contentWindow?.postMessage(
+        { type: "navigate", path: currentSrc },
+        window.location.origin,
+      );
+    }
+  }
+}
+
+// Fallback: if the iframe loads before the parent registers the message listener,
+// the initial preview-ready message is lost. Re-request it on iframe load.
+function handleIframeLoad() {
+  if (!iframeReady.value) {
+    previewFrame.value?.contentWindow?.postMessage(
+      { type: "request-ready" },
       window.location.origin,
     );
   }
@@ -349,6 +393,15 @@ onMounted(() => {
   if (import.meta.client) {
     document.addEventListener("keydown", handleKeydown);
     window.addEventListener("message", handleIframeMessage);
+    // Proactively request preview-ready in case the iframe loaded before hydration
+    nextTick(() => {
+      if (!iframeReady.value && previewFrame.value?.contentWindow) {
+        previewFrame.value.contentWindow.postMessage(
+          { type: "request-ready" },
+          window.location.origin,
+        );
+      }
+    });
   }
 });
 onUnmounted(() => {
@@ -475,7 +528,7 @@ function onSearchSelect(option: any) {
       </UDashboardNavbar>
 
       <!-- Navigation toolbar -->
-      <UDashboardToolbar class="overflow-x-auto">
+      <UDashboardToolbar :ui="{ root: 'overflow-visible' }">
         <UNavigationMenu :items="items" highlight class="flex-1 min-w-max" />
       </UDashboardToolbar>
 
@@ -512,6 +565,7 @@ function onSearchSelect(option: any) {
               title="Theme preview"
               class="w-full h-full border-0"
               :class="{ 'pointer-events-none': isDragging }"
+              @load="handleIframeLoad"
             >
               Your browser does not support iframes. Please use a modern browser
               to view the theme preview.

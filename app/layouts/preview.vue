@@ -18,6 +18,12 @@ function handleMessage(event: MessageEvent) {
   if (event.data?.type === "colormode-sync") {
     colorMode.preference = event.data.mode;
   }
+  if (event.data?.type === "request-ready") {
+    window.parent?.postMessage(
+      { type: "preview-ready" },
+      window.location.origin,
+    );
+  }
   if (event.data?.type === "navigate") {
     const path = String(event.data.path);
     if (path.startsWith("/") && !path.includes("://")) {
