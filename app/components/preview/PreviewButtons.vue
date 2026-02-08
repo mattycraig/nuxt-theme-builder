@@ -68,7 +68,12 @@
       />
       <UButton label="Disabled" color="neutral" variant="solid" disabled />
       <UButton label="Loading" color="primary" variant="solid" loading />
-      <UButton icon="i-lucide-heart" color="error" variant="ghost" />
+      <UButton
+        icon="i-lucide-heart"
+        color="error"
+        variant="ghost"
+        aria-label="Like"
+      />
       <UButton label="Link style" color="primary" variant="link" />
     </div>
   </section>

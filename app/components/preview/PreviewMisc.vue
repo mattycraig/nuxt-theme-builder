@@ -37,10 +37,20 @@
         <UButton label="Hover me" color="primary" variant="outline" />
       </UTooltip>
       <UTooltip text="Edit this document">
-        <UButton icon="i-lucide-pencil" color="neutral" variant="ghost" />
+        <UButton
+          icon="i-lucide-pencil"
+          color="neutral"
+          variant="ghost"
+          aria-label="Edit this document"
+        />
       </UTooltip>
       <UTooltip text="Remove from favorites">
-        <UButton icon="i-lucide-heart" color="error" variant="soft" />
+        <UButton
+          icon="i-lucide-heart"
+          color="error"
+          variant="soft"
+          aria-label="Remove from favorites"
+        />
       </UTooltip>
     </div>
   </section>

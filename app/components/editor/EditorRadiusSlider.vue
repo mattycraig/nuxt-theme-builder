@@ -33,6 +33,7 @@ function onUpdate(val: number | number[]) {
       :min="0"
       :max="2"
       :step="0.125"
+      aria-label="Border Radius"
       @update:model-value="onUpdate"
     />
   </div>

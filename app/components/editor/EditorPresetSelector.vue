@@ -109,6 +109,7 @@ function deleteSelected() {
       <UInput
         v-model="saveInput"
         placeholder="Preset name..."
+        aria-label="Preset name"
         size="xs"
         class="flex-1"
         @keyup.enter="confirmSave"

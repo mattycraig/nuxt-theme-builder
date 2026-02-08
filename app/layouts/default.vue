@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { SpeedInsights } from '@vercel/speed-insights/vue';
+import { SpeedInsights } from "@vercel/speed-insights/vue";
 import { useThemeApply } from "~/composables/useThemeApply";
 import { useThemeStore } from "~/stores/theme";
 import type { NavigationMenuItem } from "@nuxt/ui";
@@ -201,6 +201,15 @@ function startResize(e: MouseEvent, side: "left" | "right") {
   document.addEventListener("mouseup", onMouseUp);
 }
 
+function onCustomWidthInput(val: string | number) {
+  const num = Number(val);
+  if (!isNaN(num) && num >= 320) {
+    customWidth.value = Math.min(num, previewArea.value?.clientWidth ?? 1920);
+  } else if (val === "" || val == null) {
+    customWidth.value = null;
+  }
+}
+
 const currentPageLabel = computed(() => {
   const flat = items.flat().flatMap((g) => (Array.isArray(g) ? g : [g]));
   return flat.find((i) => i.to === route.path)?.label ?? "Preview";
@@ -302,11 +311,15 @@ onUnmounted(() => {
   }
 });
 
+const seoTitle = computed(
+  () => `${currentPageLabel.value} — Nuxt UI Theme Builder`,
+);
+
 useSeoMeta({
-  title: "Nuxt UI Theme Builder",
+  title: seoTitle,
   description:
     "Visually configure Nuxt UI v4 design tokens and export your theme.",
-  ogTitle: "Nuxt UI Theme Builder",
+  ogTitle: seoTitle,
   ogDescription:
     "Visually configure Nuxt UI v4 design tokens and export your theme.",
   ogType: "website",
@@ -402,12 +415,36 @@ function onSearchSelect(option: any) {
 
         <template #right>
           <UDashboardSearchButton collapsed class="me-2" />
-          <UBadge
-            :label="displayWidth"
-            variant="subtle"
-            size="xs"
-            color="neutral"
-          />
+          <UPopover>
+            <UTooltip text="Set custom preview width">
+              <UButton
+                :label="displayWidth"
+                variant="subtle"
+                size="xs"
+                color="neutral"
+                aria-label="Set custom preview width"
+              />
+            </UTooltip>
+            <template #content>
+              <div class="p-3 space-y-2">
+                <label
+                  for="custom-width-input"
+                  class="text-xs font-medium text-(--ui-text-muted) block"
+                >
+                  Custom width (px)
+                </label>
+                <UInput
+                  id="custom-width-input"
+                  type="number"
+                  :model-value="customWidth ?? ''"
+                  :min="320"
+                  placeholder="e.g. 480"
+                  size="xs"
+                  @update:model-value="onCustomWidthInput"
+                />
+              </div>
+            </template>
+          </UPopover>
           <UTooltip
             v-for="option in previewWidthOptions"
             :key="option.value"
@@ -415,6 +452,7 @@ function onSearchSelect(option: any) {
           >
             <UButton
               :icon="option.icon"
+              :aria-label="option.label"
               size="sm"
               :variant="previewWidth === option.value ? 'soft' : 'ghost'"
               :color="previewWidth === option.value ? 'primary' : 'neutral'"
@@ -464,7 +502,10 @@ function onSearchSelect(option: any) {
               title="Theme preview"
               class="w-full h-full border-0"
               :class="{ 'pointer-events-none': isDragging }"
-            />
+            >
+              Your browser does not support iframes. Please use a modern browser
+              to view the theme preview.
+            </iframe>
             <!-- Loading overlay -->
             <Transition
               enter-active-class="transition-opacity duration-200"

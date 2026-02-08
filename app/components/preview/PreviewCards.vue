@@ -56,8 +56,16 @@
         </template>
 
         <div class="space-y-3">
-          <UInput placeholder="Your name" icon="i-lucide-user" />
-          <UTextarea placeholder="Write your feedback..." :rows="3" />
+          <UInput
+            placeholder="Your name"
+            icon="i-lucide-user"
+            aria-label="Your name"
+          />
+          <UTextarea
+            placeholder="Write your feedback..."
+            :rows="3"
+            aria-label="Your feedback"
+          />
         </div>
 
         <template #footer>

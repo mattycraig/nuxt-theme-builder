@@ -14,13 +14,11 @@ withDefaults(
 
 <template>
   <!-- Collapsed mode: icon button with popover -->
-  <UPopover
-    v-if="collapsed"
-    :content="{ side: 'right', align: 'start' }"
-  >
+  <UPopover v-if="collapsed" :content="{ side: 'right', align: 'start' }">
     <UTooltip :text="label" :content="{ side: 'right' }">
       <UButton
         :icon="icon"
+        :aria-label="label"
         variant="ghost"
         color="neutral"
         size="sm"

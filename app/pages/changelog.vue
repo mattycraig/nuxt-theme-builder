@@ -1,5 +1,6 @@
 <script setup lang="ts">
 definePageMeta({ layout: "preview" });
+useSeoMeta({ title: "Changelog — Nuxt UI Theme Builder" });
 
 interface ChangeItem {
   type: "feature" | "improvement" | "fix";
