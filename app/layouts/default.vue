@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { SpeedInsights } from '@vercel/speed-insights/vue';
 import { useThemeApply } from "~/composables/useThemeApply";
 import { useThemeStore } from "~/stores/theme";
 import type { NavigationMenuItem } from "@nuxt/ui";
@@ -510,5 +511,6 @@ function onSearchSelect(option: any) {
     <div class="hidden">
       <slot />
     </div>
+    <SpeedInsights />
   </UDashboardGroup>
 </template>
