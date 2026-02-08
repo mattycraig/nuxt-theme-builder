@@ -17,7 +17,8 @@ const activeError = ref<"404" | "500" | "403">("404");
 const error403 = {
   statusCode: 403,
   statusMessage: "Forbidden",
-  message: "You don't have permission to access this resource. Please contact your administrator.",
+  message:
+    "You don't have permission to access this resource. Please contact your administrator.",
 };
 
 const errors: Record<string, typeof error404> = {
@@ -31,7 +32,12 @@ const errors: Record<string, typeof error404> = {
   <div class="min-h-[60vh] flex flex-col">
     <!-- Switcher -->
     <div class="flex items-center justify-center gap-2 pt-8 pb-4">
-      <UBadge label="Preview different error states:" variant="subtle" color="neutral" size="sm" />
+      <UBadge
+        label="Preview different error states:"
+        variant="subtle"
+        color="neutral"
+        size="sm"
+      />
       <UButton
         v-for="code in ['404', '500', '403']"
         :key="code"
@@ -47,7 +53,9 @@ const errors: Record<string, typeof error404> = {
     <div class="flex-1 flex items-center justify-center pb-12">
       <div class="text-center space-y-6 max-w-lg mx-auto px-6">
         <!-- Status code -->
-        <p class="text-8xl sm:text-9xl font-black text-(--ui-primary) opacity-20">
+        <p
+          class="text-8xl sm:text-9xl font-black text-(--ui-primary) opacity-20"
+        >
           {{ errors[activeError].statusCode }}
         </p>
 
@@ -62,13 +70,14 @@ const errors: Record<string, typeof error404> = {
         </p>
 
         <!-- Actions -->
-        <div class="flex flex-col sm:flex-row items-center justify-center gap-3 pt-4">
+        <div
+          class="flex flex-col sm:flex-row items-center justify-center gap-3 pt-4"
+        >
           <UButton
             label="Go Home"
             icon="i-lucide-home"
             size="lg"
             color="primary"
-            to="/"
           />
           <UButton
             label="Go Back"
@@ -76,7 +85,6 @@ const errors: Record<string, typeof error404> = {
             size="lg"
             variant="outline"
             color="neutral"
-            @click="$router.back()"
           />
           <UButton
             label="Contact Support"
@@ -93,23 +101,38 @@ const errors: Record<string, typeof error404> = {
         <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 text-left">
           <UCard class="text-center">
             <div class="space-y-2">
-              <UIcon name="i-lucide-book-open" class="size-6 text-(--ui-primary) mx-auto" />
+              <UIcon
+                name="i-lucide-book-open"
+                class="size-6 text-(--ui-primary) mx-auto"
+              />
               <p class="font-semibold text-sm">Documentation</p>
-              <p class="text-xs text-(--ui-text-muted)">Browse our guides and API docs</p>
+              <p class="text-xs text-(--ui-text-muted)">
+                Browse our guides and API docs
+              </p>
             </div>
           </UCard>
           <UCard class="text-center">
             <div class="space-y-2">
-              <UIcon name="i-lucide-message-circle" class="size-6 text-(--ui-secondary) mx-auto" />
+              <UIcon
+                name="i-lucide-message-circle"
+                class="size-6 text-(--ui-secondary) mx-auto"
+              />
               <p class="font-semibold text-sm">Community</p>
-              <p class="text-xs text-(--ui-text-muted)">Get help from the community</p>
+              <p class="text-xs text-(--ui-text-muted)">
+                Get help from the community
+              </p>
             </div>
           </UCard>
           <UCard class="text-center">
             <div class="space-y-2">
-              <UIcon name="i-lucide-life-buoy" class="size-6 text-(--ui-success) mx-auto" />
+              <UIcon
+                name="i-lucide-life-buoy"
+                class="size-6 text-(--ui-success) mx-auto"
+              />
               <p class="font-semibold text-sm">Support</p>
-              <p class="text-xs text-(--ui-text-muted)">Open a support ticket</p>
+              <p class="text-xs text-(--ui-text-muted)">
+                Open a support ticket
+              </p>
             </div>
           </UCard>
         </div>

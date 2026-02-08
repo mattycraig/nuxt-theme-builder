@@ -167,15 +167,14 @@ function onRegisterSubmit(payload: FormSubmitEvent<RegisterSchema>) {
         @submit="onLoginSubmit"
       >
         <template #password-hint>
-          <ULink to="#" class="text-primary font-medium text-xs" tabindex="-1"
+          <ULink class="text-primary font-medium text-xs" tabindex="-1"
             >Forgot password?</ULink
           >
         </template>
 
         <template #footer>
           By signing in, you agree to our
-          <ULink to="#" class="text-primary font-medium">Terms of Service</ULink
-          >.
+          <ULink class="text-primary font-medium">Terms of Service</ULink>.
         </template>
       </UAuthForm>
     </UPageCard>
@@ -199,11 +198,9 @@ function onRegisterSubmit(payload: FormSubmitEvent<RegisterSchema>) {
       >
         <template #footer>
           By signing up, you agree to our
-          <ULink to="#" class="text-primary font-medium"
-            >Terms of Service</ULink
-          >
+          <ULink class="text-primary font-medium">Terms of Service</ULink>
           and
-          <ULink to="#" class="text-primary font-medium">Privacy Policy</ULink>.
+          <ULink class="text-primary font-medium">Privacy Policy</ULink>.
         </template>
       </UAuthForm>
     </UPageCard>

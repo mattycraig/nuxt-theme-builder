@@ -231,7 +231,6 @@ function onCategoryChange(value: string | number) {
         :authors="featuredPost.authors"
         orientation="horizontal"
         variant="outline"
-        to="#"
         :ui="{
           title: 'text-xl sm:text-2xl',
           description: 'line-clamp-3',
@@ -256,7 +255,6 @@ function onCategoryChange(value: string | number) {
           :image="post.image"
           :authors="post.authors"
           variant="outline"
-          to="#"
         />
       </UBlogPosts>
 
