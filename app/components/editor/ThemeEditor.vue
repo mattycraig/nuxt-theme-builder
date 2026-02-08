@@ -92,11 +92,16 @@ function onBgOverride(token: BgTokenKey, shade: NeutralShade) {
 function onBorderOverride(token: BorderTokenKey, shade: NeutralShade) {
   store.setBorderOverride(mode.value, token, shade);
 }
+
+const hydrated = ref(false);
+onMounted(() => {
+  hydrated.value = true;
+});
 </script>
 
 <template>
   <!-- Undo / Redo / Reset toolbar -->
-  <div data-testid="theme-editor">
+  <div data-testid="theme-editor" :data-hydrated="hydrated || undefined">
     <EditorToolbar
       :collapsed="collapsed"
       :all-expanded="allExpanded"

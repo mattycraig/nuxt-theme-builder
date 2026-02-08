@@ -6,12 +6,11 @@ test.describe("Theme Saving - Unified Flow", () => {
       localStorage.removeItem("theme");
     });
     await page.goto("/");
-    await page
-      .waitForSelector('[data-testid="theme-editor"]', {
-        state: "visible",
-        timeout: 15_000,
-      })
-      .catch(() => {});
+    // Wait for Vue hydration — data-hydrated is set in onMounted
+    await page.waitForSelector(
+      '[data-testid="theme-editor"][data-hydrated="true"]',
+      { state: "visible", timeout: 30_000 },
+    );
   });
 
   test("should show empty state in My Themes with toolbar hint", async ({
@@ -53,7 +52,9 @@ test.describe("Theme Saving - Unified Flow", () => {
     });
 
     await test.step("Verify theme appears in My Themes list", async () => {
-      await expect(page.getByText("Test Theme")).toBeVisible();
+      await expect(
+        page.getByRole("button", { name: /Load theme: Test Theme/ }),
+      ).toBeVisible();
     });
 
     await test.step("Screenshot saved theme", async () => {
@@ -150,7 +151,9 @@ test.describe("Theme Saving - Unified Flow", () => {
       await page.getByLabel("Theme name").fill("Active Theme");
       await page.getByRole("button", { name: "Save" }).click();
 
-      await expect(page.getByText("Active Theme")).toBeVisible();
+      await expect(
+        page.getByRole("button", { name: /Load theme: Active Theme/ }),
+      ).toBeVisible();
     });
 
     await test.step("Screenshot active theme state", async () => {
@@ -195,7 +198,9 @@ test.describe("Theme Saving - Unified Flow", () => {
     });
 
     await test.step("Verify renamed theme appears", async () => {
-      await expect(page.getByText("Renamed Theme")).toBeVisible();
+      await expect(
+        page.getByRole("button", { name: /Load theme: Renamed Theme/ }),
+      ).toBeVisible();
     });
 
     await test.step("Screenshot rename result", async () => {
@@ -250,7 +255,9 @@ test.describe("Theme Saving - Unified Flow", () => {
       await saveButton.click();
       await page.getByLabel("Theme name").fill("Quick Save Test");
       await page.getByRole("button", { name: "Save" }).click();
-      await expect(page.getByText("Quick Save Test")).toBeVisible();
+      await expect(
+        page.getByRole("button", { name: /Load theme: Quick Save Test/ }),
+      ).toBeVisible();
     });
 
     await test.step("Verify toolbar shows active theme name and save-as button", async () => {
@@ -281,14 +288,13 @@ test.describe("Theme Saving - Unified Flow", () => {
     });
 
     await test.step("Modify theme to trigger unsaved state", async () => {
-      const radiusSlider = page.locator('input[type="range"]').first();
-      if (await radiusSlider.isVisible()) {
-        await radiusSlider.fill("1");
-      }
+      const slider = page.getByRole("slider", { name: "Thumb" });
+      await slider.focus();
+      await slider.press("ArrowRight");
     });
 
     await test.step("Verify Modified badge appears", async () => {
-      const modifiedBadge = page.getByText("Modified");
+      const modifiedBadge = page.getByText("Modified", { exact: true });
       await expect(modifiedBadge).toBeVisible();
     });
 
