@@ -101,7 +101,7 @@ const logos = ["Nuxt", "Vue.js", "Tailwind", "Vercel", "Netlify", "Cloudflare"];
           >
             Build Beautiful
             <span class="text-(--ui-primary)">Themes</span>
-            <br class="hidden sm:inline" />
+            <br class="hidden sm:inline" >
             in Minutes
           </h1>
 

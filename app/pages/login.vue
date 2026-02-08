@@ -148,8 +148,8 @@ function onRegisterSubmit(payload: FormSubmitEvent<RegisterSchema>) {
           { label: 'Sign Up', value: 'register' },
         ]"
         :model-value="activeTab"
-        @update:model-value="activeTab = $event as 'login' | 'register'"
         class="w-full"
+        @update:model-value="activeTab = $event as 'login' | 'register'"
       />
     </div>
 

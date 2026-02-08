@@ -2,7 +2,7 @@
 export default defineNuxtConfig({
   modules: [
     "@nuxt/ui",
-    "@nuxt/image",
+    "@nuxt/eslint",
     "@nuxtjs/mdc",
     "@pinia/nuxt",
     "pinia-plugin-persistedstate/nuxt",

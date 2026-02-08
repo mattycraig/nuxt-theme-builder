@@ -684,7 +684,7 @@ function onNodeChange(event: { node: any; pos: number }) {
           v-model="documentTitle"
           class="w-full text-2xl sm:text-3xl font-bold text-(--ui-text-highlighted) bg-transparent border-none outline-none placeholder:text-(--ui-text-dimmed)"
           placeholder="Untitled Document"
-        />
+        >
         <div
           class="flex flex-wrap items-center gap-x-3 gap-y-1.5 mt-2 text-sm text-(--ui-text-muted)"
         >

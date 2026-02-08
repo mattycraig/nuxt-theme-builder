@@ -40,7 +40,7 @@ function handleDownload() {
   }
 }
 
-// --- Import ---
+
 const importText = ref("");
 const importStatus = ref<{ type: "success" | "error"; message: string } | null>(
   null,
@@ -82,21 +82,27 @@ function clearStatus() {
 <template>
   <div class="space-y-3">
     <!-- Tab buttons -->
-    <div class="flex gap-1">
+    <div role="tablist" aria-label="Export format" class="flex gap-1">
       <UButton
         label="app.config.ts"
+        role="tab"
+        :aria-selected="activeTab === 'appconfig'"
         :variant="activeTab === 'appconfig' ? 'solid' : 'ghost'"
         size="xs"
         @click="activeTab = 'appconfig'"
       />
       <UButton
         label="CSS"
+        role="tab"
+        :aria-selected="activeTab === 'css'"
         :variant="activeTab === 'css' ? 'solid' : 'ghost'"
         size="xs"
         @click="activeTab = 'css'"
       />
       <UButton
         label="JSON"
+        role="tab"
+        :aria-selected="activeTab === 'json'"
         :variant="activeTab === 'json' ? 'solid' : 'ghost'"
         size="xs"
         @click="activeTab = 'json'"
@@ -105,6 +111,8 @@ function clearStatus() {
 
     <!-- Code block -->
     <pre
+      role="tabpanel"
+      aria-label="Export code"
       class="bg-[var(--ui-bg-elevated)] rounded-lg p-3 text-xs leading-relaxed overflow-x-auto max-h-64 overflow-y-auto border border-[var(--ui-border)]"
     ><code>{{ currentCode }}</code></pre>
 
@@ -137,6 +145,7 @@ function clearStatus() {
       <UTextarea
         v-model="importText"
         placeholder="Paste theme JSON here..."
+        aria-label="Theme JSON to import"
         :rows="4"
       />
       <UButton
@@ -148,6 +157,7 @@ function clearStatus() {
       />
       <p
         v-if="importStatus"
+        aria-live="polite"
         class="text-xs font-medium"
         :class="
           importStatus.type === 'success'

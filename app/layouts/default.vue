@@ -1,13 +1,11 @@
 <script setup lang="ts">
 import { useThemeApply } from "~/composables/useThemeApply";
-import { useThemeExport } from "~/composables/useThemeExport";
 import { useThemeStore } from "~/stores/theme";
 import type { NavigationMenuItem } from "@nuxt/ui";
 
 useThemeApply();
 
 const store = useThemeStore();
-const { decodeFromHash } = useThemeExport();
 const route = useRoute();
 
 const previewWidth = ref<"mobile" | "tablet" | "desktop">("desktop");
@@ -301,28 +299,15 @@ onUnmounted(() => {
   }
 });
 
-onMounted(() => {
-  if (import.meta.client && window.location.hash) {
-    const hash = window.location.hash;
-    const prefix = "#theme=";
-    if (hash.startsWith(prefix)) {
-      const encoded = hash.slice(prefix.length);
-      const result = decodeFromHash(encoded);
-      if (!result.success)
-        console.warn("Failed to load theme from URL:", result.error);
-    }
-  }
-});
-
-useHead({
+useSeoMeta({
   title: "Nuxt UI Theme Builder",
-  meta: [
-    {
-      name: "description",
-      content:
-        "Visually configure Nuxt UI v4 design tokens and export your theme.",
-    },
-  ],
+  description:
+    "Visually configure Nuxt UI v4 design tokens and export your theme.",
+  ogTitle: "Nuxt UI Theme Builder",
+  ogDescription:
+    "Visually configure Nuxt UI v4 design tokens and export your theme.",
+  ogType: "website",
+  twitterCard: "summary_large_image",
 });
 
 // Handle search command selection
@@ -335,6 +320,7 @@ function onSearchSelect(option: any) {
 
 <template>
   <UDashboardGroup unit="px" storage-key="theme-builder">
+    <a href="#maincontent" class="skip-link">Skip to main content</a>
     <UDashboardSidebar
       resizable
       collapsible
@@ -359,6 +345,7 @@ function onSearchSelect(option: any) {
           <UTooltip text="Undo">
             <UButton
               icon="i-lucide-undo-2"
+              aria-label="Undo"
               variant="ghost"
               size="xs"
               :disabled="!store.canUndo"
@@ -368,6 +355,7 @@ function onSearchSelect(option: any) {
           <UTooltip text="Redo">
             <UButton
               icon="i-lucide-redo-2"
+              aria-label="Redo"
               variant="ghost"
               size="xs"
               :disabled="!store.canRedo"
@@ -377,6 +365,7 @@ function onSearchSelect(option: any) {
           <UTooltip text="Reset to defaults">
             <UButton
               icon="i-lucide-rotate-ccw"
+              aria-label="Reset to defaults"
               color="error"
               variant="ghost"
               size="xs"
@@ -400,7 +389,7 @@ function onSearchSelect(option: any) {
       </template>
     </UDashboardSidebar>
 
-    <main class="flex-1 h-full overflow-hidden flex flex-col">
+    <main id="maincontent" class="flex-1 h-full overflow-hidden flex flex-col">
       <!-- Navbar -->
       <UDashboardNavbar :title="currentPageLabel">
         <template #leading>

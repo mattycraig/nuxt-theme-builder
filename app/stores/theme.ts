@@ -6,6 +6,7 @@ import type {
   NeutralPalette,
   NeutralShade,
 } from "~/types/theme";
+import { ThemeConfigSchema } from "~/types/theme";
 import { DEFAULT_THEME, cloneTheme } from "~/utils/defaults";
 
 const MAX_HISTORY = 50;
@@ -13,16 +14,13 @@ const MAX_HISTORY = 50;
 export const useThemeStore = defineStore(
   "theme",
   () => {
-    // --- Core State ---
     const config = ref<ThemeConfig>(cloneTheme(DEFAULT_THEME));
     const savedPresets = ref<ThemePreset[]>([]);
 
-    // --- History (undo/redo) ---
     const history = ref<ThemeConfig[]>([cloneTheme(DEFAULT_THEME)]);
     const historyIndex = ref(0);
 
     function _pushHistory() {
-      // Trim any future states if we're not at the end
       history.value = history.value.slice(0, historyIndex.value + 1);
       history.value.push(cloneTheme(config.value));
       if (history.value.length > MAX_HISTORY) {
@@ -49,7 +47,6 @@ export const useThemeStore = defineStore(
       config.value = cloneTheme(history.value[historyIndex.value]!);
     }
 
-    // --- Actions ---
     function setSemanticColor(key: SemanticColorKey, value: ChromaticPalette) {
       config.value.colors[key] = value;
       _pushHistory();
@@ -115,7 +112,16 @@ export const useThemeStore = defineStore(
     }
 
     function loadConfig(newConfig: ThemeConfig) {
-      config.value = cloneTheme(newConfig);
+      const result = ThemeConfigSchema.safeParse(newConfig);
+      if (!result.success) {
+        console.warn(
+          "Invalid theme config passed to loadConfig, falling back to defaults:",
+          result.error.issues,
+        );
+        config.value = cloneTheme(DEFAULT_THEME);
+      } else {
+        config.value = cloneTheme(result.data);
+      }
       _pushHistory();
     }
 
@@ -124,7 +130,6 @@ export const useThemeStore = defineStore(
       config.value = cloneTheme(newConfig);
     }
 
-    // --- Presets ---
     function savePreset(name: string) {
       const existing = savedPresets.value.findIndex((p) => p.name === name);
       const preset: ThemePreset = { name, config: cloneTheme(config.value) };
@@ -144,15 +149,12 @@ export const useThemeStore = defineStore(
     }
 
     return {
-      // State
       config,
       savedPresets,
-      // History
       canUndo,
       canRedo,
       undo,
       redo,
-      // Actions
       setSemanticColor,
       setNeutral,
       setRadius,
@@ -163,7 +165,6 @@ export const useThemeStore = defineStore(
       resetToDefaults,
       loadConfig,
       _syncConfig,
-      // Presets
       savePreset,
       deletePreset,
       loadPreset,
@@ -172,6 +173,16 @@ export const useThemeStore = defineStore(
   {
     persist: {
       pick: ["config", "savedPresets"],
+      afterHydrate(ctx) {
+        const result = ThemeConfigSchema.safeParse(ctx.store.config);
+        if (!result.success) {
+          console.warn(
+            "Persisted theme config is invalid (schema changed?), resetting to defaults:",
+            result.error.issues,
+          );
+          ctx.store.config = cloneTheme(DEFAULT_THEME);
+        }
+      },
     },
   },
 );

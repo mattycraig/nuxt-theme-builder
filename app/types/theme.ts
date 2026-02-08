@@ -1,4 +1,3 @@
-// All available Tailwind CSS v4 chromatic color palettes (17)
 export const CHROMATIC_PALETTES = [
   "red",
   "orange",
@@ -21,7 +20,6 @@ export const CHROMATIC_PALETTES = [
 
 export type ChromaticPalette = (typeof CHROMATIC_PALETTES)[number];
 
-// Available neutral palettes (5)
 export const NEUTRAL_PALETTES = [
   "slate",
   "gray",
@@ -32,10 +30,6 @@ export const NEUTRAL_PALETTES = [
 
 export type NeutralPalette = (typeof NEUTRAL_PALETTES)[number];
 
-// All palettes combined
-export type AnyPalette = ChromaticPalette | NeutralPalette;
-
-// Semantic color alias names
 export const SEMANTIC_COLOR_KEYS = [
   "primary",
   "secondary",
@@ -47,7 +41,6 @@ export const SEMANTIC_COLOR_KEYS = [
 
 export type SemanticColorKey = (typeof SEMANTIC_COLOR_KEYS)[number];
 
-// Neutral shade options for token overrides
 export const SHADE_VALUES = [
   "white",
   "black",
@@ -66,11 +59,7 @@ export const SHADE_VALUES = [
 
 export type NeutralShade = (typeof SHADE_VALUES)[number];
 
-// Semantic color mappings (e.g., primary → 'blue')
 export type SemanticColors = Record<SemanticColorKey, ChromaticPalette>;
-
-// Token override: maps a CSS variable token name to a neutral shade
-// Separate light and dark values
 
 export interface TextTokenOverrides {
   dimmed: NeutralShade;
@@ -102,30 +91,21 @@ export interface TokenOverrides {
   border: BorderTokenOverrides;
 }
 
-// Full theme configuration
 export interface ThemeConfig {
-  // Semantic color palette mappings
   colors: SemanticColors;
-  // Neutral palette
   neutral: NeutralPalette;
-  // Border radius in rem
   radius: number;
-  // Font family name
   font: string;
-  // Token overrides for light mode
   lightOverrides: TokenOverrides;
-  // Token overrides for dark mode
   darkOverrides: TokenOverrides;
 }
 
-// Saved preset
 export interface ThemePreset {
   name: string;
   config: ThemeConfig;
   builtIn?: boolean;
 }
 
-// Available fonts
 export const FONT_OPTIONS = [
   "Public Sans",
   "DM Sans",
@@ -136,4 +116,54 @@ export const FONT_OPTIONS = [
   "Raleway",
 ] as const;
 
-export type FontOption = (typeof FONT_OPTIONS)[number];
+import { z } from "zod";
+
+const chromaticPaletteSchema = z.enum(CHROMATIC_PALETTES);
+const neutralPaletteSchema = z.enum(NEUTRAL_PALETTES);
+const neutralShadeSchema = z.enum(SHADE_VALUES);
+
+const textTokenOverridesSchema = z.object({
+  dimmed: neutralShadeSchema,
+  muted: neutralShadeSchema,
+  toned: neutralShadeSchema,
+  default: neutralShadeSchema,
+  highlighted: neutralShadeSchema,
+  inverted: neutralShadeSchema,
+});
+
+const bgTokenOverridesSchema = z.object({
+  default: neutralShadeSchema,
+  muted: neutralShadeSchema,
+  elevated: neutralShadeSchema,
+  accented: neutralShadeSchema,
+  inverted: neutralShadeSchema,
+});
+
+const borderTokenOverridesSchema = z.object({
+  default: neutralShadeSchema,
+  muted: neutralShadeSchema,
+  accented: neutralShadeSchema,
+  inverted: neutralShadeSchema,
+});
+
+const tokenOverridesSchema = z.object({
+  text: textTokenOverridesSchema,
+  bg: bgTokenOverridesSchema,
+  border: borderTokenOverridesSchema,
+});
+
+export const ThemeConfigSchema = z.object({
+  colors: z.object({
+    primary: chromaticPaletteSchema,
+    secondary: chromaticPaletteSchema,
+    success: chromaticPaletteSchema,
+    info: chromaticPaletteSchema,
+    warning: chromaticPaletteSchema,
+    error: chromaticPaletteSchema,
+  }),
+  neutral: neutralPaletteSchema,
+  radius: z.number().min(0).max(2),
+  font: z.string().min(1),
+  lightOverrides: tokenOverridesSchema,
+  darkOverrides: tokenOverridesSchema,
+});

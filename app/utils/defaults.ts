@@ -6,7 +6,6 @@ import type {
   BorderTokenOverrides,
 } from "~/types/theme";
 
-// Default text token shades (light mode)
 export const DEFAULT_TEXT_LIGHT: TextTokenOverrides = {
   dimmed: "400",
   muted: "500",
@@ -16,7 +15,6 @@ export const DEFAULT_TEXT_LIGHT: TextTokenOverrides = {
   inverted: "white",
 };
 
-// Default text token shades (dark mode)
 export const DEFAULT_TEXT_DARK: TextTokenOverrides = {
   dimmed: "500",
   muted: "400",
@@ -26,7 +24,6 @@ export const DEFAULT_TEXT_DARK: TextTokenOverrides = {
   inverted: "900",
 };
 
-// Default background token shades (light mode)
 export const DEFAULT_BG_LIGHT: BgTokenOverrides = {
   default: "white",
   muted: "50",
@@ -35,7 +32,6 @@ export const DEFAULT_BG_LIGHT: BgTokenOverrides = {
   inverted: "900",
 };
 
-// Default background token shades (dark mode)
 export const DEFAULT_BG_DARK: BgTokenOverrides = {
   default: "900",
   muted: "800",
@@ -44,7 +40,6 @@ export const DEFAULT_BG_DARK: BgTokenOverrides = {
   inverted: "white",
 };
 
-// Default border token shades (light mode)
 export const DEFAULT_BORDER_LIGHT: BorderTokenOverrides = {
   default: "200",
   muted: "200",
@@ -52,7 +47,6 @@ export const DEFAULT_BORDER_LIGHT: BorderTokenOverrides = {
   inverted: "900",
 };
 
-// Default border token shades (dark mode)
 export const DEFAULT_BORDER_DARK: BorderTokenOverrides = {
   default: "800",
   muted: "700",
@@ -60,21 +54,18 @@ export const DEFAULT_BORDER_DARK: BorderTokenOverrides = {
   inverted: "white",
 };
 
-// Default light overrides (matches Nuxt UI defaults)
 export const DEFAULT_LIGHT_OVERRIDES: TokenOverrides = {
   text: { ...DEFAULT_TEXT_LIGHT },
   bg: { ...DEFAULT_BG_LIGHT },
   border: { ...DEFAULT_BORDER_LIGHT },
 };
 
-// Default dark overrides (matches Nuxt UI defaults)
 export const DEFAULT_DARK_OVERRIDES: TokenOverrides = {
   text: { ...DEFAULT_TEXT_DARK },
   bg: { ...DEFAULT_BG_DARK },
   border: { ...DEFAULT_BORDER_DARK },
 };
 
-// Full default theme config
 export const DEFAULT_THEME: ThemeConfig = {
   colors: {
     primary: "green",
@@ -91,8 +82,6 @@ export const DEFAULT_THEME: ThemeConfig = {
   darkOverrides: { ...DEFAULT_DARK_OVERRIDES },
 };
 
-// Static hex lookup for all neutral palette shades
-// Used for rendering color swatches in the editor UI
 export const NEUTRAL_HEX_MAP: Record<string, Record<string, string>> = {
   slate: {
     "50": "#f8fafc",
@@ -171,7 +160,6 @@ export const NEUTRAL_HEX_MAP: Record<string, Record<string, string>> = {
   },
 };
 
-// Color swatch hex values for all chromatic palettes (shade 500 representative)
 export const CHROMATIC_SWATCH_HEX: Record<string, string> = {
   red: "#ef4444",
   orange: "#f97316",
@@ -192,7 +180,6 @@ export const CHROMATIC_SWATCH_HEX: Record<string, string> = {
   rose: "#f43f5e",
 };
 
-// Neutral palette swatch (shade 500)
 export const NEUTRAL_SWATCH_HEX: Record<string, string> = {
   slate: "#64748b",
   gray: "#6b7280",

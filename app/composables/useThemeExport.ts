@@ -1,10 +1,10 @@
 import { useThemeStore } from "~/stores/theme";
-import type { ThemeConfig } from "~/types/theme";
+import { ThemeConfigSchema } from "~/types/theme";
 import {
-  shadeToCSS,
   DEFAULT_LIGHT_OVERRIDES,
   DEFAULT_DARK_OVERRIDES,
 } from "~/utils/defaults";
+import { generateOverrideLines } from "~/utils/cssGenerator";
 
 /**
  * Composable for exporting, importing, and sharing theme configurations.
@@ -12,7 +12,6 @@ import {
 export function useThemeExport() {
   const store = useThemeStore();
 
-  // --- Export: app.config.ts ---
   const appConfigExport = computed(() => {
     const cfg = store.config;
     const lines: string[] = [];
@@ -32,7 +31,6 @@ export function useThemeExport() {
     return lines.join("\n");
   });
 
-  // --- Export: CSS file ---
   const cssExport = computed(() => {
     const cfg = store.config;
     const lines: string[] = [];
@@ -41,7 +39,7 @@ export function useThemeExport() {
     lines.push(`@import "@nuxt/ui";`);
     lines.push(``);
 
-    // @theme for font
+    // @theme for font (Tailwind v4 convention)
     lines.push(`@theme {`);
     lines.push(
       `  --font-sans: '${cfg.font}', ui-sans-serif, system-ui, sans-serif;`,
@@ -50,42 +48,12 @@ export function useThemeExport() {
     lines.push(``);
 
     // :root overrides
-    const rootLines: string[] = [];
-    rootLines.push(`  --ui-radius: ${cfg.radius}rem;`);
-
-    // Light text
-    for (const [key, shade] of Object.entries(cfg.lightOverrides.text)) {
-      if (
-        shade !==
-        (DEFAULT_LIGHT_OVERRIDES.text as unknown as Record<string, string>)[key]
-      ) {
-        const varName = key === "default" ? "--ui-text" : `--ui-text-${key}`;
-        rootLines.push(`  ${varName}: ${shadeToCSS(shade as string)};`);
-      }
-    }
-    // Light bg
-    for (const [key, shade] of Object.entries(cfg.lightOverrides.bg)) {
-      if (
-        shade !==
-        (DEFAULT_LIGHT_OVERRIDES.bg as unknown as Record<string, string>)[key]
-      ) {
-        const varName = key === "default" ? "--ui-bg" : `--ui-bg-${key}`;
-        rootLines.push(`  ${varName}: ${shadeToCSS(shade as string)};`);
-      }
-    }
-    // Light border
-    for (const [key, shade] of Object.entries(cfg.lightOverrides.border)) {
-      if (
-        shade !==
-        (DEFAULT_LIGHT_OVERRIDES.border as unknown as Record<string, string>)[
-          key
-        ]
-      ) {
-        const varName =
-          key === "default" ? "--ui-border" : `--ui-border-${key}`;
-        rootLines.push(`  ${varName}: ${shadeToCSS(shade as string)};`);
-      }
-    }
+    const rootOverrideLines = generateOverrideLines(
+      cfg.lightOverrides,
+      DEFAULT_LIGHT_OVERRIDES,
+    );
+    const rootLines: string[] = [`  --ui-radius: ${cfg.radius}rem;`];
+    rootLines.push(...rootOverrideLines);
 
     if (rootLines.length > 0) {
       lines.push(`:root {`);
@@ -95,65 +63,38 @@ export function useThemeExport() {
     }
 
     // .dark overrides
-    const darkLines: string[] = [];
-    for (const [key, shade] of Object.entries(cfg.darkOverrides.text)) {
-      if (
-        shade !==
-        (DEFAULT_DARK_OVERRIDES.text as unknown as Record<string, string>)[key]
-      ) {
-        const varName = key === "default" ? "--ui-text" : `--ui-text-${key}`;
-        darkLines.push(`  ${varName}: ${shadeToCSS(shade as string)};`);
-      }
-    }
-    for (const [key, shade] of Object.entries(cfg.darkOverrides.bg)) {
-      if (
-        shade !==
-        (DEFAULT_DARK_OVERRIDES.bg as unknown as Record<string, string>)[key]
-      ) {
-        const varName = key === "default" ? "--ui-bg" : `--ui-bg-${key}`;
-        darkLines.push(`  ${varName}: ${shadeToCSS(shade as string)};`);
-      }
-    }
-    for (const [key, shade] of Object.entries(cfg.darkOverrides.border)) {
-      if (
-        shade !==
-        (DEFAULT_DARK_OVERRIDES.border as unknown as Record<string, string>)[
-          key
-        ]
-      ) {
-        const varName =
-          key === "default" ? "--ui-border" : `--ui-border-${key}`;
-        darkLines.push(`  ${varName}: ${shadeToCSS(shade as string)};`);
-      }
-    }
+    const darkOverrideLines = generateOverrideLines(
+      cfg.darkOverrides,
+      DEFAULT_DARK_OVERRIDES,
+    );
 
-    if (darkLines.length > 0) {
+    if (darkOverrideLines.length > 0) {
       lines.push(`.dark {`);
-      lines.push(...darkLines);
+      lines.push(...darkOverrideLines);
       lines.push(`}`);
     }
 
     return lines.join("\n");
   });
 
-  // --- Export: JSON ---
   const jsonExport = computed(() => {
     return JSON.stringify(store.config, null, 2);
   });
 
-  // --- Import: JSON ---
   function importJSON(json: string): { success: boolean; error?: string } {
     try {
-      const parsed = JSON.parse(json) as ThemeConfig;
-      // Basic validation
-      if (!parsed.colors || !parsed.neutral || parsed.radius === undefined) {
+      const raw = JSON.parse(json);
+      const result = ThemeConfigSchema.safeParse(raw);
+      if (!result.success) {
+        const issues = result.error.issues
+          .map((i) => `${i.path.join(".")}: ${i.message}`)
+          .join("; ");
         return {
           success: false,
-          error:
-            "Invalid theme JSON: missing required fields (colors, neutral, radius).",
+          error: `Invalid theme JSON: ${issues}`,
         };
       }
-      store.loadConfig(parsed);
+      store.loadConfig(result.data);
       return { success: true };
     } catch (e: unknown) {
       return {
@@ -163,10 +104,6 @@ export function useThemeExport() {
     }
   }
 
-  // --- URL Hash sharing ---
-  // (Removed share URL helpers: encodeToHash, decodeFromHash, getShareURL)
-
-  // --- Download helper ---
   function downloadFile(
     content: string,
     filename: string,
