@@ -9,7 +9,7 @@ export default defineNuxtConfig({
     "@vueuse/nuxt",
   ],
 
-  devtools: { enabled: true },
+  devtools: { enabled: process.env.NODE_ENV === "development" },
   compatibilityDate: "2024-04-03",
 
   css: ["~/assets/css/main.css"],
@@ -41,6 +41,17 @@ export default defineNuxtConfig({
       pathPrefix: false,
     },
   ],
+
+  routeRules: {
+    "/**": {
+      headers: {
+        "X-Content-Type-Options": "nosniff",
+        "X-Frame-Options": "SAMEORIGIN",
+        "Referrer-Policy": "strict-origin-when-cross-origin",
+        "Permissions-Policy": "camera=(), microphone=(), geolocation=()",
+      },
+    },
+  },
 
   vite: {
     optimizeDeps: {

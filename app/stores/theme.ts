@@ -135,8 +135,10 @@ export const useThemeStore = defineStore(
     }
 
     /** Silently update config from iframe sync — no history push */
-    function _syncConfig(newConfig: ThemeConfig) {
-      config.value = cloneTheme(newConfig);
+    function _syncConfig(newConfig: unknown) {
+      const result = ThemeConfigSchema.safeParse(newConfig);
+      if (!result.success) return;
+      config.value = cloneTheme(result.data as ThemeConfig);
     }
 
     function savePreset(name: string) {
@@ -156,8 +158,12 @@ export const useThemeStore = defineStore(
     }
 
     function loadPreset(preset: ThemePreset) {
-      // Skip Zod validation — preset configs are already type-safe
-      config.value = cloneTheme(preset.config);
+      const result = ThemeConfigSchema.safeParse(preset.config);
+      if (!result.success) {
+        console.warn("Invalid preset config, skipping load:", result.error.issues);
+        return;
+      }
+      config.value = cloneTheme(result.data as ThemeConfig);
       _pushHistory();
     }
 

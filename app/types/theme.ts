@@ -160,8 +160,8 @@ export const ThemeConfigSchema = z.object({
     error: chromaticPaletteSchema,
   }),
   neutral: neutralPaletteSchema,
-  radius: z.number().min(0).max(2),
-  font: z.string().min(1),
+  radius: z.number().finite().min(0).max(2),
+  font: z.enum(FONT_OPTIONS),
   lightOverrides: tokenOverridesSchema,
   darkOverrides: tokenOverridesSchema,
 });

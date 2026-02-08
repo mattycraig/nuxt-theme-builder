@@ -19,9 +19,15 @@ function handleMessage(event: MessageEvent) {
     colorMode.preference = event.data.mode;
   }
   if (event.data?.type === "navigate") {
-    router.push(event.data.path).then(() => {
-      window.parent?.postMessage({ type: "preview-ready" }, window.location.origin);
-    });
+    const path = String(event.data.path);
+    if (path.startsWith("/") && !path.includes("://")) {
+      router.push(path).then(() => {
+        window.parent?.postMessage(
+          { type: "preview-ready" },
+          window.location.origin,
+        );
+      });
+    }
   }
 }
 
