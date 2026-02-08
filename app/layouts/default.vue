@@ -54,7 +54,7 @@ const items: NavigationMenuItem[][] = [
       icon: "i-lucide-layout-grid",
       to: "/components",
       children: [
-        { label: "All Components", to: "/components" },
+        { label: "All Components", to: "/components/all" },
         { label: "Buttons", to: "/components/buttons" },
         { label: "Badges", to: "/components/badges" },
         { label: "Alerts", to: "/components/alerts" },
@@ -284,8 +284,16 @@ const iframeReady = ref(false);
 const iframeSrc = computed(() => `${route.path}?preview`);
 const iframeInitialSrc = ref(`${route.path}?preview`);
 
+// When the iframe itself navigates (user clicked a link), skip echoing navigate back
+const navigatingFromIframe = ref(false);
+
 // Navigate iframe internally via postMessage instead of reloading
 watch(iframeSrc, (newSrc) => {
+  if (navigatingFromIframe.value) {
+    navigatingFromIframe.value = false;
+    iframeLoading.value = false;
+    return;
+  }
   if (!iframeReady.value) return;
   iframeLoading.value = true;
   previewFrame.value?.contentWindow?.postMessage(
@@ -326,6 +334,16 @@ watch(
 // When iframe signals it's ready, push full state and navigate to current route
 function handleIframeMessage(event: MessageEvent) {
   if (event.origin !== window.location.origin) return;
+
+  // Iframe link click — update host route without echoing navigate back to iframe
+  if (event.data?.type === "navigate-parent") {
+    const path = String(event.data.path);
+    if (path.startsWith("/") && !path.includes("://") && path !== route.path) {
+      navigatingFromIframe.value = true;
+      navigateTo(path);
+    }
+    return;
+  }
 
   if (event.data?.type === "preview-ready") {
     iframeReady.value = true;

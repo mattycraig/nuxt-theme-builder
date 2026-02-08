@@ -8,6 +8,28 @@ const store = useThemeStore();
 const colorMode = useColorMode();
 const router = useRouter();
 
+// Flag to suppress navigate-parent when the parent itself triggered the navigation
+const navigatingFromParent = ref(false);
+
+// Preserve ?preview query on every in-iframe navigation so the preview layout stays active
+router.beforeEach((to) => {
+  if (!("preview" in to.query)) {
+    return { path: to.path, query: { ...to.query, preview: "" } };
+  }
+});
+
+// After navigation completes, notify parent of user-initiated link clicks
+router.afterEach((to) => {
+  if (navigatingFromParent.value) {
+    navigatingFromParent.value = false;
+    return;
+  }
+  window.parent?.postMessage(
+    { type: "navigate-parent", path: to.path },
+    window.location.origin,
+  );
+});
+
 // Listen for theme & color-mode sync messages from parent frame
 function handleMessage(event: MessageEvent) {
   if (event.origin !== window.location.origin) return;
@@ -27,7 +49,9 @@ function handleMessage(event: MessageEvent) {
   if (event.data?.type === "navigate") {
     const path = String(event.data.path);
     if (path.startsWith("/") && !path.includes("://")) {
+      navigatingFromParent.value = true;
       router.push(path).then(() => {
+        navigatingFromParent.value = false;
         window.parent?.postMessage(
           { type: "preview-ready" },
           window.location.origin,
