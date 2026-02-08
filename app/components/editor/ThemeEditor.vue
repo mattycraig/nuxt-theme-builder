@@ -25,6 +25,44 @@ withDefaults(
 const store = useThemeStore();
 const colorMode = useColorMode();
 
+const SECTION_KEYS = [
+  "myThemes",
+  "presets",
+  "colorMode",
+  "layout",
+  "semanticColors",
+  "neutralColor",
+  "textColors",
+  "bgColors",
+  "borderColors",
+  "exportImport",
+] as const;
+
+type SectionKey = (typeof SECTION_KEYS)[number];
+
+const DEFAULT_OPEN_SECTIONS: SectionKey[] = [
+  "myThemes",
+  "presets",
+  "colorMode",
+  "layout",
+  "semanticColors",
+  "neutralColor",
+];
+
+const sectionOpen = reactive<Record<SectionKey, boolean>>(
+  Object.fromEntries(
+    SECTION_KEYS.map((k) => [k, DEFAULT_OPEN_SECTIONS.includes(k)]),
+  ) as Record<SectionKey, boolean>,
+);
+
+function expandAll() {
+  for (const key of SECTION_KEYS) sectionOpen[key] = true;
+}
+
+function collapseAll() {
+  for (const key of SECTION_KEYS) sectionOpen[key] = false;
+}
+
 const debouncedRadiusCommit = useDebounceFn((val: number) => {
   store.setRadius(val);
 }, 300);
@@ -58,47 +96,35 @@ function onBorderOverride(token: BorderTokenKey, shade: NeutralShade) {
 </script>
 
 <template>
-  <!-- Collapsed: undo/redo/reset toolbar -->
-  <div v-if="collapsed" class="flex flex-col items-center gap-1 py-2">
-    <UTooltip text="Undo" :content="{ side: 'right' }">
-      <UButton
-        icon="i-lucide-undo-2"
-        variant="ghost"
-        color="neutral"
-        size="xs"
-        :disabled="!store.canUndo"
-        @click="store.undo()"
-      />
-    </UTooltip>
-    <UTooltip text="Redo" :content="{ side: 'right' }">
-      <UButton
-        icon="i-lucide-redo-2"
-        variant="ghost"
-        color="neutral"
-        size="xs"
-        :disabled="!store.canRedo"
-        @click="store.redo()"
-      />
-    </UTooltip>
-    <UTooltip text="Reset" :content="{ side: 'right' }">
-      <UButton
-        icon="i-lucide-rotate-ccw"
-        color="error"
-        variant="ghost"
-        size="xs"
-        @click="store.resetToDefaults()"
-      />
-    </UTooltip>
-    <USeparator class="w-6 my-1" />
-  </div>
+  <!-- Undo / Redo / Reset toolbar -->
+  <EditorToolbar
+    :collapsed="collapsed"
+    @expand-all="expandAll"
+    @collapse-all="collapseAll"
+  />
+  <USeparator :class="collapsed ? 'w-6 my-1' : 'my-2'" />
 
   <!-- Sections (collapsed → popover, expanded → collapsible) -->
   <div :class="collapsed ? 'flex flex-col items-center gap-1' : 'space-y-2'">
+    <!-- My Themes -->
+    <EditorSection
+      v-model:open="sectionOpen.myThemes"
+      :collapsed="collapsed"
+      icon="i-lucide-bookmark"
+      label="My Themes"
+      default-open
+    >
+      <EditorSavedThemes />
+    </EditorSection>
+
+    <USeparator v-if="!collapsed" />
+
     <!-- Presets -->
     <EditorSection
+      v-model:open="sectionOpen.presets"
       :collapsed="collapsed"
       icon="i-lucide-layers"
-      label="Presets"
+      label="Theme Presets"
       default-open
     >
       <EditorPresetSelector />
@@ -106,19 +132,9 @@ function onBorderOverride(token: BorderTokenKey, shade: NeutralShade) {
 
     <USeparator v-if="!collapsed" />
 
-    <!-- My Themes -->
-    <EditorSection
-      :collapsed="collapsed"
-      icon="i-lucide-bookmark"
-      label="My Themes"
-    >
-      <EditorSavedThemes />
-    </EditorSection>
-
-    <USeparator v-if="!collapsed" />
-
     <!-- Color Mode -->
     <EditorSection
+      v-model:open="sectionOpen.colorMode"
       :collapsed="collapsed"
       icon="i-lucide-sun-moon"
       label="Color Mode"
@@ -136,6 +152,7 @@ function onBorderOverride(token: BorderTokenKey, shade: NeutralShade) {
 
     <!-- Layout -->
     <EditorSection
+      v-model:open="sectionOpen.layout"
       :collapsed="collapsed"
       icon="i-lucide-sliders-horizontal"
       label="Layout"
@@ -157,6 +174,7 @@ function onBorderOverride(token: BorderTokenKey, shade: NeutralShade) {
 
     <!-- Semantic Colors -->
     <EditorSection
+      v-model:open="sectionOpen.semanticColors"
       :collapsed="collapsed"
       icon="i-lucide-palette"
       label="Semantic Colors"
@@ -177,6 +195,7 @@ function onBorderOverride(token: BorderTokenKey, shade: NeutralShade) {
 
     <!-- Neutral Color -->
     <EditorSection
+      v-model:open="sectionOpen.neutralColor"
       :collapsed="collapsed"
       icon="i-lucide-contrast"
       label="Neutral Color"
@@ -193,6 +212,7 @@ function onBorderOverride(token: BorderTokenKey, shade: NeutralShade) {
 
     <!-- Text Colors -->
     <EditorSection
+      v-model:open="sectionOpen.textColors"
       :collapsed="collapsed"
       icon="i-lucide-type"
       label="Text Colors"
@@ -217,6 +237,7 @@ function onBorderOverride(token: BorderTokenKey, shade: NeutralShade) {
 
     <!-- Background Colors -->
     <EditorSection
+      v-model:open="sectionOpen.bgColors"
       :collapsed="collapsed"
       icon="i-lucide-paintbrush"
       label="Background Colors"
@@ -241,6 +262,7 @@ function onBorderOverride(token: BorderTokenKey, shade: NeutralShade) {
 
     <!-- Border Colors -->
     <EditorSection
+      v-model:open="sectionOpen.borderColors"
       :collapsed="collapsed"
       icon="i-lucide-frame"
       label="Border Colors"
@@ -265,6 +287,7 @@ function onBorderOverride(token: BorderTokenKey, shade: NeutralShade) {
 
     <!-- Export / Import -->
     <EditorSection
+      v-model:open="sectionOpen.exportImport"
       :collapsed="collapsed"
       icon="i-lucide-share-2"
       label="Export / Import"

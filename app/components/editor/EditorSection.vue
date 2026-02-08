@@ -1,13 +1,43 @@
 <script setup lang="ts">
-withDefaults(
+const props = withDefaults(
   defineProps<{
     collapsed: boolean;
     icon: string;
     label: string;
     defaultOpen?: boolean;
+    open?: boolean;
   }>(),
   {
     defaultOpen: false,
+    open: undefined,
+  },
+);
+
+const emit = defineEmits<{
+  "update:open": [value: boolean];
+}>();
+
+const isControlled = computed(() => props.open !== undefined);
+
+const internalOpen = ref(props.defaultOpen);
+
+const isOpen = computed({
+  get: () => (isControlled.value ? props.open! : internalOpen.value),
+  set: (val: boolean) => {
+    if (isControlled.value) {
+      emit("update:open", val);
+    } else {
+      internalOpen.value = val;
+    }
+  },
+});
+
+watch(
+  () => props.open,
+  (val) => {
+    if (val !== undefined) {
+      internalOpen.value = val;
+    }
   },
 );
 </script>
@@ -37,7 +67,7 @@ withDefaults(
   </UPopover>
 
   <!-- Expanded mode: collapsible section -->
-  <UCollapsible v-else :default-open="defaultOpen">
+  <UCollapsible v-else v-model:open="isOpen">
     <UButton
       :icon="icon"
       variant="ghost"
