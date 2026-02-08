@@ -130,7 +130,7 @@ function clearStatus() {
     <!-- Import section -->
     <div class="border-t border-[var(--ui-border)] pt-3 mt-3 space-y-2">
       <p
-        class="text-xs font-semibold uppercase tracking-wide text-[var(--ui-text-muted)]"
+        class="text-xs font-semibold uppercase tracking-wide text-(--ui-text-muted)"
       >
         Import JSON
       </p>

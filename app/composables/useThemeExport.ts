@@ -4,7 +4,6 @@ import {
   shadeToCSS,
   DEFAULT_LIGHT_OVERRIDES,
   DEFAULT_DARK_OVERRIDES,
-  cloneTheme,
 } from "~/utils/defaults";
 
 /**
@@ -165,33 +164,7 @@ export function useThemeExport() {
   }
 
   // --- URL Hash sharing ---
-  function encodeToHash(): string {
-    const json = JSON.stringify(store.config);
-    if (import.meta.client) {
-      return btoa(encodeURIComponent(json));
-    }
-    return "";
-  }
-
-  function decodeFromHash(hash: string): { success: boolean; error?: string } {
-    try {
-      const json = decodeURIComponent(atob(hash));
-      return importJSON(json);
-    } catch (e: unknown) {
-      return {
-        success: false,
-        error: `Failed to decode URL hash: ${e instanceof Error ? e.message : String(e)}`,
-      };
-    }
-  }
-
-  function getShareURL(): string {
-    if (import.meta.client) {
-      const hash = encodeToHash();
-      return `${window.location.origin}${window.location.pathname}#theme=${hash}`;
-    }
-    return "";
-  }
+  // (Removed share URL helpers: encodeToHash, decodeFromHash, getShareURL)
 
   // --- Download helper ---
   function downloadFile(
@@ -214,9 +187,6 @@ export function useThemeExport() {
     cssExport,
     jsonExport,
     importJSON,
-    encodeToHash,
-    decodeFromHash,
-    getShareURL,
     downloadFile,
   };
 }

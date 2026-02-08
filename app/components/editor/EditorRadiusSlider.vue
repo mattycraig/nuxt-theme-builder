@@ -21,10 +21,10 @@ function onUpdate(val: number | number[]) {
 <template>
   <div>
     <div class="flex items-center justify-between mb-2">
-      <label class="text-xs font-medium text-[var(--ui-text-muted)]"
+      <label class="text-xs font-medium text-(--ui-text-muted)"
         >Border Radius</label
       >
-      <span class="text-xs font-mono text-[var(--ui-text-toned)]">{{
+      <span class="text-xs font-mono text-(--ui-text-toned)">{{
         formatValue(modelValue)
       }}</span>
     </div>

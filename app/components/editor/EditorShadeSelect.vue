@@ -25,7 +25,7 @@ function getSwatchHex(shade: NeutralShade): string {
 
 <template>
   <div>
-    <label class="text-xs font-medium text-[var(--ui-text-muted)] mb-1 block">{{
+    <label class="text-xs font-medium text-(--ui-text-muted) mb-1 block">{{
       label
     }}</label>
     <USelect

@@ -17,7 +17,7 @@ const items = FONT_OPTIONS.map((f) => ({
 
 <template>
   <div>
-    <label class="text-xs font-medium text-[var(--ui-text-muted)] mb-1 block"
+    <label class="text-xs font-medium text-(--ui-text-muted) mb-1 block"
       >Font Family</label
     >
     <USelect

@@ -20,7 +20,7 @@ const items = CHROMATIC_PALETTES.map((p) => ({
 
 <template>
   <div>
-    <label class="text-xs font-medium text-[var(--ui-text-muted)] mb-1 block">{{
+    <label class="text-xs font-medium text-(--ui-text-muted) mb-1 block">{{
       label
     }}</label>
     <USelect
@@ -33,7 +33,7 @@ const items = CHROMATIC_PALETTES.map((p) => ({
     >
       <template #leading>
         <span
-          class="size-3 rounded-full inline-block shrink-0 ring-1 ring-[var(--ui-border)]"
+          class="size-3 rounded-full inline-block shrink-0 ring-1 ring-(--ui-border)"
           :style="{ backgroundColor: CHROMATIC_SWATCH_HEX[modelValue] }"
         />
       </template>
