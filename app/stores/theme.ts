@@ -175,6 +175,27 @@ export const useThemeStore = defineStore(
       return { isUpdate };
     }
 
+    function duplicatePreset(sourceName: string): { newName: string } {
+      const source = savedPresets.value.find((p) => p.name === sourceName);
+      if (!source) throw new Error(`Preset "${sourceName}" not found`);
+      const existingNames = new Set(savedPresets.value.map((p) => p.name));
+      let newName = `Copy of ${sourceName}`;
+      let counter = 1;
+      while (existingNames.has(newName)) {
+        counter++;
+        newName = `Copy of ${sourceName} (${counter})`;
+      }
+      const now = Date.now();
+      const preset: ThemePreset = {
+        name: newName,
+        config: cloneTheme(source.config),
+        createdAt: now,
+        updatedAt: now,
+      };
+      savedPresets.value = [...savedPresets.value, preset];
+      return { newName };
+    }
+
     function deletePreset(name: string) {
       if (activePresetName.value === name) {
         activePresetName.value = "";
@@ -199,7 +220,11 @@ export const useThemeStore = defineStore(
       const updated = [...savedPresets.value];
       const idx = updated.findIndex((p) => p.name === oldName);
       if (idx < 0) return { success: false, error: "Theme not found" };
-      updated[idx] = { ...updated[idx], name: trimmed, updatedAt: Date.now() };
+      updated[idx] = {
+        ...updated[idx],
+        name: trimmed,
+        updatedAt: Date.now(),
+      } as ThemePreset;
       savedPresets.value = updated;
       if (activePresetName.value === oldName) {
         activePresetName.value = trimmed;
@@ -242,6 +267,7 @@ export const useThemeStore = defineStore(
       loadConfig,
       _syncConfig,
       savePreset,
+      duplicatePreset,
       deletePreset,
       renamePreset,
       loadPreset,

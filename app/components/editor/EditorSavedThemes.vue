@@ -13,10 +13,6 @@ const renameError = ref("");
 
 const deletingName = ref<string | null>(null);
 
-const emit = defineEmits<{
-  save: [];
-}>();
-
 const statusMessage = ref("");
 
 function loadTheme(preset: ThemePreset) {
@@ -62,33 +58,14 @@ function closeRenameModal() {
 }
 
 function duplicateTheme(preset: ThemePreset) {
-  let baseName = `Copy of ${preset.name}`;
-  let counter = 1;
-  const existingNames = new Set(store.savedPresets.map((p) => p.name));
-  while (existingNames.has(baseName)) {
-    counter++;
-    baseName = `Copy of ${preset.name} (${counter})`;
-  }
-  store.savePreset(baseName);
-  const idx = store.savedPresets.findIndex((p) => p.name === baseName);
-  if (idx >= 0) {
-    const now = Date.now();
-    const updated = [...store.savedPresets];
-    updated[idx] = {
-      name: baseName,
-      config: structuredClone(toRaw(preset.config)),
-      createdAt: now,
-      updatedAt: now,
-    };
-    store.savedPresets = updated;
-  }
+  const { newName } = store.duplicatePreset(preset.name);
   toast.add({
     title: "Theme duplicated",
-    description: `Created "${baseName}"`,
+    description: `Created "${newName}"`,
     icon: "i-lucide-copy",
     color: "success",
   });
-  statusMessage.value = `Theme duplicated as "${baseName}"`;
+  statusMessage.value = `Theme duplicated as "${newName}"`;
 }
 
 function exportThemeJSON(preset: ThemePreset) {
@@ -176,22 +153,22 @@ function getDropdownItems(preset: ThemePreset) {
     <!-- Empty state -->
     <div
       v-if="store.savedPresets.length === 0"
-      class="text-center py-6 space-y-3"
+      class="text-center py-6 space-y-2"
     >
       <UIcon
         name="i-lucide-bookmark"
         class="size-8 text-(--ui-text-dimmed) mx-auto"
         aria-hidden="true"
       />
-      <p class="text-xs text-(--ui-text-muted)">No saved themes yet.</p>
-      <UButton
-        label="Save current theme"
-        icon="i-lucide-save"
-        variant="soft"
-        color="primary"
-        size="xs"
-        @click="emit('save')"
-      />
+      <p class="text-sm">No saved themes yet.</p>
+      <p class="text-xs text-(--ui-text-muted)">
+        Use the
+        <span class="inline-flex items-center align-text-bottom">
+          <UIcon name="i-lucide-save" class="size-3.5" aria-hidden="true" />
+        </span>
+        <span class="font-medium">Save</span> button in the toolbar to save your
+        current theme.
+      </p>
     </div>
 
     <!-- Saved themes list -->
@@ -268,7 +245,7 @@ function getDropdownItems(preset: ThemePreset) {
               label="Modified"
               color="warning"
               variant="soft"
-              size="xs"
+              size="sm"
             />
             <UBadge
               v-else

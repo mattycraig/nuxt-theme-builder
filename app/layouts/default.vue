@@ -2,12 +2,22 @@
 import { SpeedInsights } from "@vercel/speed-insights/vue";
 import { useThemeApply } from "~/composables/useThemeApply";
 import { useThemeStore } from "~/stores/theme";
+import { useSaveThemeModal } from "~/composables/useThemeExport";
 import type { NavigationMenuItem } from "@nuxt/ui";
 
 useThemeApply();
 
 const store = useThemeStore();
 const route = useRoute();
+const {
+  isOpen: saveModalOpen,
+  themeName: saveModalThemeName,
+  isOverwrite: saveModalIsOverwrite,
+  openSaveAs,
+  quickSave: saveModalQuickSave,
+  confirm: saveModalConfirm,
+  cancel: saveModalCancel,
+} = useSaveThemeModal();
 
 const previewWidth = ref<"mobile" | "tablet" | "desktop">("desktop");
 
@@ -139,6 +149,31 @@ const searchGroups = computed(() => [
         suffix: "Reset all theme settings",
         onSelect() {
           store.resetToDefaults();
+        },
+      },
+      {
+        label: "Save Theme",
+        icon: "i-lucide-save",
+        suffix:
+          store.activePresetName && store.hasUnsavedChanges
+            ? `Save "${store.activePresetName}"`
+            : "Save as new theme",
+        kbds: ["meta", "S"],
+        onSelect() {
+          if (store.activePresetName && store.hasUnsavedChanges) {
+            saveModalQuickSave();
+          } else {
+            openSaveAs();
+          }
+        },
+      },
+      {
+        label: "Save Theme As...",
+        icon: "i-lucide-file-plus",
+        suffix: "Save as a new theme with a name",
+        kbds: ["meta", "shift", "S"],
+        onSelect() {
+          openSaveAs();
         },
       },
     ],
@@ -296,6 +331,18 @@ function handleKeydown(e: KeyboardEvent) {
     e.preventDefault();
     store.redo();
   }
+  if ((e.ctrlKey || e.metaKey) && !e.shiftKey && e.key === "s") {
+    e.preventDefault();
+    if (store.activePresetName && store.hasUnsavedChanges) {
+      saveModalQuickSave();
+    } else {
+      openSaveAs();
+    }
+  }
+  if ((e.ctrlKey || e.metaKey) && e.shiftKey && e.key === "s") {
+    e.preventDefault();
+    openSaveAs();
+  }
 }
 
 onMounted(() => {
@@ -344,8 +391,8 @@ function onSearchSelect(option: any) {
       :max-size="600"
       :default-size="300"
       :ui="{
-        header: 'border-b border-default',
-        body: 'p-0',
+        header: 'border-b border-default sm:px-4',
+        body: 'p-0 sm:p-0',
       }"
     >
       <template #header="{ collapsed }">
@@ -515,6 +562,68 @@ function onSearchSelect(option: any) {
     <div class="hidden">
       <slot />
     </div>
+
+    <!-- Save-theme modal (shared via composable, rendered once at layout level) -->
+    <UModal
+      :open="saveModalOpen"
+      title="Save theme"
+      :description="
+        saveModalIsOverwrite
+          ? `A theme named &quot;${saveModalThemeName.trim()}&quot; already exists. Saving will overwrite it.`
+          : 'Give your theme a name to save it.'
+      "
+      @close="saveModalCancel()"
+    >
+      <template #body>
+        <div class="space-y-3">
+          <div>
+            <label
+              for="save-modal-name"
+              class="text-xs font-medium text-(--ui-text-muted) block mb-1.5"
+            >
+              Theme name
+            </label>
+            <UInput
+              id="save-modal-name"
+              v-model="saveModalThemeName"
+              placeholder="My theme..."
+              aria-label="Theme name"
+              size="lg"
+              autofocus
+              class="w-full"
+              @keyup.enter="saveModalConfirm()"
+              @keyup.escape="saveModalCancel()"
+            />
+          </div>
+          <div
+            v-if="saveModalIsOverwrite"
+            class="text-xs text-(--ui-color-warning-500) flex items-center gap-1.5 px-2.5 py-2 rounded-md bg-(--ui-color-warning-500)/8"
+            role="status"
+          >
+            <UIcon
+              name="i-lucide-alert-triangle"
+              class="size-3.5 shrink-0"
+              aria-hidden="true"
+            />
+            <span>Will overwrite "{{ saveModalThemeName.trim() }}"</span>
+          </div>
+        </div>
+      </template>
+      <template #footer>
+        <div class="flex gap-2 ml-auto">
+          <UButton label="Cancel" variant="ghost" @click="saveModalCancel()" />
+          <UButton
+            :label="saveModalIsOverwrite ? 'Update' : 'Save'"
+            color="primary"
+            variant="solid"
+            icon="i-lucide-save"
+            :disabled="!saveModalThemeName.trim()"
+            @click="saveModalConfirm()"
+          />
+        </div>
+      </template>
+    </UModal>
+
     <SpeedInsights />
   </UDashboardGroup>
 </template>

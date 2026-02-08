@@ -22,7 +22,7 @@ test.describe("Theme Saving - Unified Flow", () => {
       await expect(emptyText).toBeVisible();
 
       const hintText = page.getByText(
-        "save button in the toolbar to save your current theme",
+        "button in the toolbar to save your current theme",
       );
       await expect(hintText).toBeVisible();
     });
@@ -37,7 +37,9 @@ test.describe("Theme Saving - Unified Flow", () => {
 
   test("should save a new theme via toolbar save button", async ({ page }) => {
     await test.step("Click toolbar save button to open modal", async () => {
-      const saveButton = page.getByRole("button", { name: "Save theme" });
+      const saveButton = page.getByRole("button", {
+        name: "Save as new theme",
+      });
       await saveButton.click();
 
       await expect(page.getByText("Save theme")).toBeVisible();
@@ -66,20 +68,19 @@ test.describe("Theme Saving - Unified Flow", () => {
     page,
   }) => {
     await test.step("Save an initial theme via toolbar", async () => {
-      const saveButton = page.getByRole("button", { name: "Save theme" });
+      const saveButton = page.getByRole("button", {
+        name: "Save as new theme",
+      });
       await saveButton.click();
       await page.getByLabel("Theme name").fill("Duplicate Test");
       await page.getByRole("button", { name: "Save" }).click();
     });
 
-    await test.step("Open 'Save as new' from dropdown", async () => {
-      const moreButton = page.getByRole("button", {
-        name: "More save options",
+    await test.step("Open 'Save as new' button", async () => {
+      const saveAsButton = page.getByRole("button", {
+        name: "Save as new theme",
       });
-      await moreButton.click();
-      await page
-        .getByRole("menuitem", { name: "Save as new theme..." })
-        .click();
+      await saveAsButton.click();
     });
 
     await test.step("Type duplicate name and verify warning", async () => {
@@ -102,7 +103,9 @@ test.describe("Theme Saving - Unified Flow", () => {
 
   test("should show dropdown menu with theme actions", async ({ page }) => {
     await test.step("Save a theme first", async () => {
-      const saveButton = page.getByRole("button", { name: "Save theme" });
+      const saveButton = page.getByRole("button", {
+        name: "Save as new theme",
+      });
       await saveButton.click();
       await page.getByLabel("Theme name").fill("Menu Test Theme");
       await page.getByRole("button", { name: "Save" }).click();
@@ -140,7 +143,9 @@ test.describe("Theme Saving - Unified Flow", () => {
 
   test("should show active theme indicator after saving", async ({ page }) => {
     await test.step("Save and verify active state", async () => {
-      const saveButton = page.getByRole("button", { name: "Save theme" });
+      const saveButton = page.getByRole("button", {
+        name: "Save as new theme",
+      });
       await saveButton.click();
       await page.getByLabel("Theme name").fill("Active Theme");
       await page.getByRole("button", { name: "Save" }).click();
@@ -158,7 +163,9 @@ test.describe("Theme Saving - Unified Flow", () => {
 
   test("should rename theme via modal", async ({ page }) => {
     await test.step("Save a theme then open rename modal", async () => {
-      const saveButton = page.getByRole("button", { name: "Save theme" });
+      const saveButton = page.getByRole("button", {
+        name: "Save as new theme",
+      });
       await saveButton.click();
       await page.getByLabel("Theme name").fill("Rename Me");
       await page.getByRole("button", { name: "Save" }).click();
@@ -201,7 +208,9 @@ test.describe("Theme Saving - Unified Flow", () => {
 
   test("should show delete confirmation modal", async ({ page }) => {
     await test.step("Save and trigger delete", async () => {
-      const saveButton = page.getByRole("button", { name: "Save theme" });
+      const saveButton = page.getByRole("button", {
+        name: "Save as new theme",
+      });
       await saveButton.click();
       await page.getByLabel("Theme name").fill("Delete Me");
       await page.getByRole("button", { name: "Save" }).click();
@@ -231,32 +240,24 @@ test.describe("Theme Saving - Unified Flow", () => {
     });
   });
 
-  test("should instant-save active theme and show 'Save as new' dropdown", async ({
+  test("should show active theme name and save-as button in toolbar", async ({
     page,
   }) => {
     await test.step("Save initial theme via toolbar", async () => {
-      const saveButton = page.getByRole("button", { name: "Save theme" });
+      const saveButton = page.getByRole("button", {
+        name: "Save as new theme",
+      });
       await saveButton.click();
       await page.getByLabel("Theme name").fill("Quick Save Test");
       await page.getByRole("button", { name: "Save" }).click();
       await expect(page.getByText("Quick Save Test")).toBeVisible();
     });
 
-    await test.step("Modify theme to create unsaved changes", async () => {
-      const resetButton = page.getByRole("button", {
-        name: "Reset to defaults",
+    await test.step("Verify toolbar shows active theme name and save-as button", async () => {
+      const saveAsButton = page.getByRole("button", {
+        name: "Save as new theme",
       });
-      await resetButton.click();
-
-      // Undo reset so we have a theme loaded again
-      await page.getByRole("button", { name: "Undo" }).click();
-    });
-
-    await test.step("Verify 'Save as new' dropdown appears for active theme", async () => {
-      const moreButton = page.getByRole("button", {
-        name: "More save options",
-      });
-      await expect(moreButton).toBeVisible();
+      await expect(saveAsButton).toBeVisible();
     });
 
     await test.step("Screenshot toolbar with active theme", async () => {
@@ -271,14 +272,15 @@ test.describe("Theme Saving - Unified Flow", () => {
     page,
   }) => {
     await test.step("Save a theme", async () => {
-      const saveButton = page.getByRole("button", { name: "Save theme" });
+      const saveButton = page.getByRole("button", {
+        name: "Save as new theme",
+      });
       await saveButton.click();
       await page.getByLabel("Theme name").fill("Modified Test");
       await page.getByRole("button", { name: "Save" }).click();
     });
 
     await test.step("Modify theme to trigger unsaved state", async () => {
-      // Change the radius to create a diff
       const radiusSlider = page.locator('input[type="range"]').first();
       if (await radiusSlider.isVisible()) {
         await radiusSlider.fill("1");
@@ -296,7 +298,5 @@ test.describe("Theme Saving - Unified Flow", () => {
         fullPage: false,
       });
     });
-  });
-});
   });
 });

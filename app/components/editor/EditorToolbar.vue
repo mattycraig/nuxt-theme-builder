@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { useSaveThemeModal } from "~/composables/useThemeExport";
+
 defineProps<{
   collapsed?: boolean;
   allExpanded?: boolean;
@@ -9,73 +11,33 @@ const emit = defineEmits<{
 }>();
 
 const store = useThemeStore();
-const toast = useToast();
+const { openSaveAs, quickSave } = useSaveThemeModal();
 
-const saveModalOpen = ref(false);
-const saveModalName = ref("");
-
-const isOverwrite = computed(() => {
-  const name = saveModalName.value.trim();
-  return name ? store.savedPresets.some((p) => p.name === name) : false;
-});
+const isSavedPreset = computed(() =>
+  store.activePresetName
+    ? store.savedPresets.some((p) => p.name === store.activePresetName)
+    : false,
+);
 
 function handleSaveClick() {
-  if (store.activePresetName && store.hasUnsavedChanges) {
-    store.savePreset(store.activePresetName);
-    toast.add({
-      title: "Theme updated",
-      description: `"${store.activePresetName}" saved`,
-      icon: "i-lucide-check",
-      color: "success",
-    });
-  } else if (store.activePresetName && !store.hasUnsavedChanges) {
-    openSaveAsNew();
+  if (isSavedPreset.value && store.hasUnsavedChanges) {
+    quickSave();
+  } else if (isSavedPreset.value && !store.hasUnsavedChanges) {
+    return;
   } else {
-    openSaveAsNew();
+    openSaveAs();
   }
-}
-
-function openSaveAsNew() {
-  saveModalName.value = "";
-  saveModalOpen.value = true;
-}
-
-function openSaveAsNewFromActive() {
-  saveModalName.value = "";
-  saveModalOpen.value = true;
-}
-
-function confirmSaveModal() {
-  const name = saveModalName.value.trim();
-  if (!name) return;
-  const { isUpdate } = store.savePreset(name);
-  saveModalOpen.value = false;
-  saveModalName.value = "";
-  const action = isUpdate ? "updated" : "saved";
-  toast.add({
-    title: `Theme ${action}`,
-    description: `"${name}" ${action} successfully`,
-    icon: "i-lucide-check",
-    color: "success",
-  });
-}
-
-function cancelSaveModal() {
-  saveModalOpen.value = false;
-  saveModalName.value = "";
 }
 
 const saveTooltipText = computed(() => {
-  if (store.activePresetName && store.hasUnsavedChanges) {
+  if (isSavedPreset.value && store.hasUnsavedChanges) {
     return `Save "${store.activePresetName}"`;
   }
-  if (store.activePresetName) {
-    return "Save as new theme";
+  if (isSavedPreset.value) {
+    return `"${store.activePresetName}" is up to date`;
   }
-  return "Save theme";
+  return "Save as new theme";
 });
-
-defineExpose({ openSaveAsNew });
 </script>
 
 <template>
@@ -86,45 +48,8 @@ defineExpose({ openSaveAsNew });
         : 'flex items-center gap-1 px-4 min-h-[49px] sticky top-0 z-10 bg-(--ui-bg) border-b border-(--ui-border)'
     "
   >
-    <!-- Save: split button via UFieldGroup -->
-    <UFieldGroup v-if="!collapsed" size="sm">
-      <UTooltip :text="saveTooltipText">
-        <span class="relative inline-flex">
-          <UButton
-            icon="i-lucide-save"
-            :aria-label="saveTooltipText"
-            variant="ghost"
-            @click="handleSaveClick"
-          />
-          <span
-            v-if="store.hasUnsavedChanges"
-            class="absolute -top-0.5 -right-0.5 size-2 rounded-full bg-(--ui-color-warning-500) animate-pulse"
-            aria-hidden="true"
-          />
-        </span>
-      </UTooltip>
-      <UDropdownMenu
-        v-if="store.activePresetName"
-        :items="[
-          [
-            {
-              label: 'Save as new theme...',
-              icon: 'i-lucide-file-plus',
-              onSelect: openSaveAsNewFromActive,
-            },
-          ],
-        ]"
-      >
-        <UButton
-          icon="i-lucide-chevron-down"
-          aria-label="More save options"
-          variant="ghost"
-          color="neutral"
-        />
-      </UDropdownMenu>
-    </UFieldGroup>
-    <!-- Collapsed mode: single save button -->
-    <UTooltip v-else :text="saveTooltipText" :content="{ side: 'right' }">
+    <!-- Save button: quick-save if active+modified, otherwise save-as -->
+    <UTooltip v-if="!collapsed" :text="saveTooltipText">
       <span class="relative inline-flex">
         <UButton
           icon="i-lucide-save"
@@ -134,7 +59,41 @@ defineExpose({ openSaveAsNew });
           @click="handleSaveClick"
         />
         <span
-          v-if="store.hasUnsavedChanges"
+          v-if="store.hasUnsavedChanges && store.activePresetName"
+          class="absolute -top-0.5 -right-0.5 size-2 rounded-full bg-(--ui-color-warning-500) animate-pulse"
+          aria-hidden="true"
+        />
+      </span>
+    </UTooltip>
+
+    <!-- Save as... (only when editing a saved preset, otherwise save button already opens save-as) -->
+    <UTooltip v-if="!collapsed && isSavedPreset" text="Save as new theme...">
+      <UButton
+        icon="i-lucide-file-plus"
+        aria-label="Save as new theme"
+        variant="ghost"
+        color="neutral"
+        size="sm"
+        @click="openSaveAs()"
+      />
+    </UTooltip>
+
+    <!-- Collapsed mode: single save button -->
+    <UTooltip
+      v-if="collapsed"
+      :text="saveTooltipText"
+      :content="{ side: 'right' }"
+    >
+      <span class="relative inline-flex">
+        <UButton
+          icon="i-lucide-save"
+          :aria-label="saveTooltipText"
+          variant="ghost"
+          size="sm"
+          @click="handleSaveClick"
+        />
+        <span
+          v-if="store.hasUnsavedChanges && store.activePresetName"
           class="absolute -top-0.5 -right-0.5 size-2 rounded-full bg-(--ui-color-warning-500) animate-pulse"
           aria-hidden="true"
         />
@@ -192,6 +151,7 @@ defineExpose({ openSaveAsNew });
       />
     </UTooltip>
 
+    <!-- Collapse/Expand -->
     <UTooltip
       v-if="!collapsed"
       :text="allExpanded ? 'Collapse all sections' : 'Expand all sections'"
@@ -213,66 +173,5 @@ defineExpose({ openSaveAsNew });
         @click="emit('toggle-sections')"
       />
     </UTooltip>
-
-    <!-- Save modal -->
-    <UModal
-      :open="saveModalOpen"
-      title="Save theme"
-      :description="
-        isOverwrite
-          ? `A theme named &quot;${saveModalName.trim()}&quot; already exists. Saving will overwrite it.`
-          : 'Give your theme a name to save it.'
-      "
-      @close="cancelSaveModal"
-    >
-      <template #body>
-        <div class="space-y-3">
-          <div>
-            <label
-              for="save-modal-name"
-              class="text-xs font-medium text-(--ui-text-muted) block mb-1.5"
-            >
-              Theme name
-            </label>
-            <UInput
-              id="save-modal-name"
-              v-model="saveModalName"
-              placeholder="My theme..."
-              aria-label="Theme name"
-              size="lg"
-              autofocus
-              class="w-full"
-              @keyup.enter="confirmSaveModal"
-              @keyup.escape="cancelSaveModal"
-            />
-          </div>
-          <div
-            v-if="isOverwrite"
-            class="text-xs text-(--ui-color-warning-500) flex items-center gap-1.5 px-2.5 py-2 rounded-md bg-(--ui-color-warning-500)/8"
-            role="status"
-          >
-            <UIcon
-              name="i-lucide-alert-triangle"
-              class="size-3.5 shrink-0"
-              aria-hidden="true"
-            />
-            <span>Will overwrite "{{ saveModalName.trim() }}"</span>
-          </div>
-        </div>
-      </template>
-      <template #footer>
-        <div class="flex gap-2 ml-auto">
-          <UButton label="Cancel" variant="ghost" @click="cancelSaveModal" />
-          <UButton
-            :label="isOverwrite ? 'Update' : 'Save'"
-            color="primary"
-            variant="solid"
-            icon="i-lucide-save"
-            :disabled="!saveModalName.trim()"
-            @click="confirmSaveModal"
-          />
-        </div>
-      </template>
-    </UModal>
   </div>
 </template>

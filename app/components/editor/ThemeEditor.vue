@@ -25,8 +25,6 @@ withDefaults(
 const store = useThemeStore();
 const colorMode = useColorMode();
 
-const toolbarRef = ref<{ openSaveAsNew: () => void }>();
-
 const SECTION_KEYS = [
   "myThemes",
   "presets",
@@ -100,7 +98,6 @@ function onBorderOverride(token: BorderTokenKey, shade: NeutralShade) {
   <!-- Undo / Redo / Reset toolbar -->
   <div data-testid="theme-editor">
     <EditorToolbar
-      ref="toolbarRef"
       :collapsed="collapsed"
       :all-expanded="allExpanded"
       @toggle-sections="toggleSections"
@@ -121,7 +118,7 @@ function onBorderOverride(token: BorderTokenKey, shade: NeutralShade) {
         label="My Themes"
         default-open
       >
-        <EditorSavedThemes @save="toolbarRef?.openSaveAsNew()" />
+        <EditorSavedThemes />
       </EditorSection>
 
       <USeparator v-if="!collapsed" />

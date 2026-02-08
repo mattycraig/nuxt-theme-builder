@@ -7,6 +7,84 @@ import {
 } from "~/utils/defaults";
 import { generateOverrideLines } from "~/utils/cssGenerator";
 
+const _saveModalOpen = ref(false);
+const _saveModalName = ref("");
+
+/**
+ * Shared composable for the save-theme modal state.
+ * Can be called from toolbar, saved-themes section, or keyboard shortcuts.
+ */
+export function useSaveThemeModal() {
+  const store = useThemeStore();
+  const toast = useToast();
+
+  const isOpen = computed({
+    get: () => _saveModalOpen.value,
+    set: (val: boolean) => {
+      _saveModalOpen.value = val;
+    },
+  });
+
+  const themeName = computed({
+    get: () => _saveModalName.value,
+    set: (val: string) => {
+      _saveModalName.value = val;
+    },
+  });
+
+  const isOverwrite = computed(() => {
+    const name = _saveModalName.value.trim();
+    return name ? store.savedPresets.some((p) => p.name === name) : false;
+  });
+
+  function openSaveAs(prefill = "") {
+    _saveModalName.value = prefill;
+    _saveModalOpen.value = true;
+  }
+
+  /** Quick-save the active preset (overwrite in-place). */
+  function quickSave() {
+    if (!store.activePresetName || !store.hasUnsavedChanges) return;
+    store.savePreset(store.activePresetName);
+    toast.add({
+      title: "Theme updated",
+      description: `"${store.activePresetName}" saved`,
+      icon: "i-lucide-check",
+      color: "success",
+    });
+  }
+
+  function confirm() {
+    const name = _saveModalName.value.trim();
+    if (!name) return;
+    const { isUpdate } = store.savePreset(name);
+    _saveModalOpen.value = false;
+    _saveModalName.value = "";
+    const action = isUpdate ? "updated" : "saved";
+    toast.add({
+      title: `Theme ${action}`,
+      description: `"${name}" ${action} successfully`,
+      icon: "i-lucide-check",
+      color: "success",
+    });
+  }
+
+  function cancel() {
+    _saveModalOpen.value = false;
+    _saveModalName.value = "";
+  }
+
+  return {
+    isOpen,
+    themeName,
+    isOverwrite,
+    openSaveAs,
+    quickSave,
+    confirm,
+    cancel,
+  };
+}
+
 /**
  * Composable for exporting, importing, and sharing theme configurations.
  */
