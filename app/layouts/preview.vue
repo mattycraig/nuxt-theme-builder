@@ -53,7 +53,7 @@ function handleMessage(event: MessageEvent) {
       router.push(path).then(() => {
         navigatingFromParent.value = false;
         window.parent?.postMessage(
-          { type: "preview-ready" },
+          { type: "navigate-done" },
           window.location.origin,
         );
       });

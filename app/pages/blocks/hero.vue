@@ -14,7 +14,10 @@ const heroes = [
     primaryLabel: "Open Builder",
     secondaryLabel: "View on GitHub",
   },
-];
+] as const;
+
+const hero1 = heroes[0];
+const hero2 = heroes[1];
 </script>
 
 <template>
@@ -50,21 +53,21 @@ const heroes = [
         <h3
           class="text-3xl sm:text-5xl font-bold tracking-tight text-(--ui-text-highlighted) mb-4 max-w-2xl mx-auto"
         >
-          {{ heroes[0].headline }}
+          {{ hero1.headline }}
         </h3>
         <p class="text-lg text-(--ui-text-muted) max-w-xl mx-auto mb-8">
-          {{ heroes[0].subtitle }}
+          {{ hero1.subtitle }}
         </p>
         <div class="flex flex-wrap items-center justify-center gap-3">
           <UButton
-            :label="heroes[0].primaryLabel"
+            :label="hero1.primaryLabel"
             size="xl"
             color="primary"
             icon="i-lucide-arrow-right"
             trailing
           />
           <UButton
-            :label="heroes[0].secondaryLabel"
+            :label="hero1.secondaryLabel"
             size="xl"
             variant="outline"
             color="neutral"
@@ -88,19 +91,19 @@ const heroes = [
           <h3
             class="text-3xl sm:text-4xl font-bold tracking-tight text-(--ui-text-highlighted) mb-4"
           >
-            {{ heroes[1].headline }}
+            {{ hero2.headline }}
           </h3>
           <p class="text-lg text-(--ui-text-muted) mb-6">
-            {{ heroes[1].subtitle }}
+            {{ hero2.subtitle }}
           </p>
           <div class="flex flex-wrap gap-3">
             <UButton
-              :label="heroes[1].primaryLabel"
+              :label="hero2.primaryLabel"
               size="lg"
               color="primary"
             />
             <UButton
-              :label="heroes[1].secondaryLabel"
+              :label="hero2.secondaryLabel"
               size="lg"
               variant="ghost"
               color="neutral"
