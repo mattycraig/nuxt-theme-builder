@@ -20,6 +20,8 @@
 </template>
 
 <script setup lang="ts">
+import { capitalize } from "~/utils/helpers";
+
 const colors = [
   "primary",
   "secondary",
@@ -30,8 +32,4 @@ const colors = [
   "neutral",
 ] as const;
 const variants = ["solid", "outline", "soft", "subtle"] as const;
-
-function capitalize(str: string) {
-  return str.charAt(0).toUpperCase() + str.slice(1);
-}
 </script>

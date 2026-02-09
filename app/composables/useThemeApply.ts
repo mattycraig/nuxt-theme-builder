@@ -34,23 +34,13 @@ export function useThemeApply() {
     { immediate: true },
   );
 
-  // Split CSS generation: font/radius changes independently from token overrides
-  const layoutCSS = computed(() => {
-    const cfg = store.config;
-    return `:root {\n  --font-sans: '${cfg.font}', ui-sans-serif, system-ui, sans-serif;\n  --ui-radius: ${cfg.radius}rem;\n}`;
-  });
-
-  const tokenCSS = computed(() => {
+  const injectedCSS = computed(() => {
     const { rootCSS, darkCSS } = generateThemeCSS(
       store.config,
       DEFAULT_LIGHT_OVERRIDES,
       DEFAULT_DARK_OVERRIDES,
     );
     return [rootCSS, darkCSS].filter(Boolean).join("\n");
-  });
-
-  const injectedCSS = computed(() => {
-    return [layoutCSS.value, tokenCSS.value].filter(Boolean).join("\n");
   });
 
   useHead({

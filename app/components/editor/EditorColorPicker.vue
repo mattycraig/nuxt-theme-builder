@@ -2,6 +2,7 @@
 import type { ChromaticPalette } from "~/types/theme";
 import { CHROMATIC_PALETTES } from "~/types/theme";
 import { CHROMATIC_SWATCH_HEX } from "~/utils/defaults";
+import { capitalize } from "~/utils/helpers";
 
 defineProps<{
   modelValue: ChromaticPalette;
@@ -15,7 +16,7 @@ const emit = defineEmits<{
 const inputId = useId();
 
 const items = CHROMATIC_PALETTES.map((p) => ({
-  label: p.charAt(0).toUpperCase() + p.slice(1),
+  label: capitalize(p),
   value: p,
 }));
 </script>

@@ -289,6 +289,7 @@ function createChat(prompt: string) {
                   variant="ghost"
                   color="neutral"
                   size="sm"
+                  aria-label="Search messages"
                 />
               </UTooltip>
               <UDropdownMenu
@@ -314,6 +315,7 @@ function createChat(prompt: string) {
                   variant="ghost"
                   color="neutral"
                   size="sm"
+                  aria-label="Conversation options"
                 />
               </UDropdownMenu>
             </div>
@@ -416,6 +418,7 @@ function createChat(prompt: string) {
                       variant="ghost"
                       color="neutral"
                       size="xs"
+                      aria-label="Attach file"
                     />
                   </UTooltip>
                   <USelect

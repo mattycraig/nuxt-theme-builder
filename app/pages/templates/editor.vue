@@ -595,6 +595,7 @@ function onNodeChange(event: { node: any; pos: number }) {
               variant="ghost"
               color="neutral"
               size="xs"
+              aria-label="New document"
             />
           </UTooltip>
         </div>
@@ -759,6 +760,7 @@ function onNodeChange(event: { node: any; pos: number }) {
               color="neutral"
               variant="ghost"
               size="xs"
+              aria-label="Add block"
               :class="ui.handle()"
               @click="
                 (e: MouseEvent) => {
@@ -774,6 +776,7 @@ function onNodeChange(event: { node: any; pos: number }) {
             color="neutral"
             variant="ghost"
             size="xs"
+            aria-label="Drag to reorder"
             :class="ui.handle()"
           />
         </UEditorDragHandle>

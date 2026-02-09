@@ -516,6 +516,7 @@ const isPreview = computed(() => "preview" in route.query);
                     variant="ghost"
                     color="neutral"
                     size="xs"
+                    aria-label="Chart options"
                   />
                 </div>
               </template>
@@ -600,12 +601,14 @@ const isPreview = computed(() => "preview" in route.query);
                     icon="i-lucide-search"
                     size="sm"
                     class="w-full sm:w-48"
+                    aria-label="Search orders"
                   />
                   <UButton
                     icon="i-lucide-filter"
                     variant="outline"
                     color="neutral"
                     size="sm"
+                    aria-label="Filter orders"
                   />
                 </div>
               </div>

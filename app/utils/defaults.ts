@@ -7,7 +7,7 @@ import type {
 } from "~/types/theme";
 import { toRaw } from "vue";
 
-export const DEFAULT_TEXT_LIGHT: TextTokenOverrides = {
+const DEFAULT_TEXT_LIGHT: TextTokenOverrides = {
   dimmed: "400",
   muted: "500",
   toned: "600",
@@ -16,7 +16,7 @@ export const DEFAULT_TEXT_LIGHT: TextTokenOverrides = {
   inverted: "white",
 };
 
-export const DEFAULT_TEXT_DARK: TextTokenOverrides = {
+const DEFAULT_TEXT_DARK: TextTokenOverrides = {
   dimmed: "500",
   muted: "400",
   toned: "300",
@@ -25,7 +25,7 @@ export const DEFAULT_TEXT_DARK: TextTokenOverrides = {
   inverted: "900",
 };
 
-export const DEFAULT_BG_LIGHT: BgTokenOverrides = {
+const DEFAULT_BG_LIGHT: BgTokenOverrides = {
   default: "white",
   muted: "50",
   elevated: "100",
@@ -33,7 +33,7 @@ export const DEFAULT_BG_LIGHT: BgTokenOverrides = {
   inverted: "900",
 };
 
-export const DEFAULT_BG_DARK: BgTokenOverrides = {
+const DEFAULT_BG_DARK: BgTokenOverrides = {
   default: "900",
   muted: "800",
   elevated: "800",
@@ -41,14 +41,14 @@ export const DEFAULT_BG_DARK: BgTokenOverrides = {
   inverted: "white",
 };
 
-export const DEFAULT_BORDER_LIGHT: BorderTokenOverrides = {
+const DEFAULT_BORDER_LIGHT: BorderTokenOverrides = {
   default: "200",
   muted: "200",
   accented: "300",
   inverted: "900",
 };
 
-export const DEFAULT_BORDER_DARK: BorderTokenOverrides = {
+const DEFAULT_BORDER_DARK: BorderTokenOverrides = {
   default: "800",
   muted: "700",
   accented: "700",

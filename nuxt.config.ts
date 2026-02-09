@@ -10,7 +10,6 @@ export default defineNuxtConfig({
   ],
 
   devtools: { enabled: false },
-  // devtools: { enabled: process.env.NODE_ENV === "development" },
   compatibilityDate: "2024-04-03",
 
   css: ["~/assets/css/main.css"],
