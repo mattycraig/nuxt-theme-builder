@@ -46,13 +46,20 @@ const blocks = [
 
 <template>
   <div class="p-6 space-y-8 max-w-5xl mx-auto">
-    <div>
-      <h2 class="text-2xl font-bold mb-1">Blocks</h2>
-      <p class="text-sm text-(--ui-text-muted)">
-        Pre-built layout blocks you can compose into full pages. Each block
-        showcases your current theme settings.
-      </p>
-    </div>
+    <UPageHeader
+      headline="Theme Builder"
+      title="Blocks"
+      description="Pre-built layout blocks you can compose into full pages. Each block showcases your current theme settings."
+      :links="[
+        {
+          label: 'Back to Home',
+          icon: 'i-lucide-arrow-left',
+          to: '/',
+          variant: 'ghost',
+          color: 'neutral',
+        },
+      ]"
+    />
 
     <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
       <NuxtLink

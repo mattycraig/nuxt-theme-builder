@@ -22,21 +22,20 @@ const hero2 = heroes[1];
 
 <template>
   <div class="p-6 space-y-12 max-w-5xl mx-auto">
-    <div>
-      <UButton
-        label="Back to Blocks"
-        to="/blocks"
-        icon="i-lucide-arrow-left"
-        variant="ghost"
-        color="neutral"
-        size="sm"
-        class="mb-4"
-      />
-      <h2 class="text-2xl font-bold mb-1">Hero Section</h2>
-      <p class="text-sm text-(--ui-text-muted)">
-        Bold hero banners optimized for landing pages.
-      </p>
-    </div>
+    <UPageHeader
+      headline="Blocks"
+      title="Hero Section"
+      description="Bold hero banners optimized for landing pages."
+      :links="[
+        {
+          label: 'All Blocks',
+          icon: 'i-lucide-arrow-left',
+          to: '/blocks',
+          variant: 'ghost',
+          color: 'neutral',
+        },
+      ]"
+    />
 
     <!-- Hero variant 1: Centered -->
     <section
@@ -97,11 +96,7 @@ const hero2 = heroes[1];
             {{ hero2.subtitle }}
           </p>
           <div class="flex flex-wrap gap-3">
-            <UButton
-              :label="hero2.primaryLabel"
-              size="lg"
-              color="primary"
-            />
+            <UButton :label="hero2.primaryLabel" size="lg" color="primary" />
             <UButton
               :label="hero2.secondaryLabel"
               size="lg"

@@ -1,20 +1,19 @@
 <template>
   <div class="p-6 space-y-12 max-w-5xl mx-auto">
-    <div>
-      <UButton
-        label="Back to Blocks"
-        to="/blocks"
-        icon="i-lucide-arrow-left"
-        variant="ghost"
-        color="neutral"
-        size="sm"
-        class="mb-4"
-      />
-      <h2 class="text-2xl font-bold mb-1">CTA Sections</h2>
-      <p class="text-sm text-(--ui-text-muted)">
-        Call-to-action blocks that drive user engagement.
-      </p>
-    </div>
+    <UPageHeader
+      headline="Blocks"
+      title="CTA Sections"
+      description="Call-to-action blocks that drive user engagement."
+      :links="[
+        {
+          label: 'All Blocks',
+          icon: 'i-lucide-arrow-left',
+          to: '/blocks',
+          variant: 'ghost',
+          color: 'neutral',
+        },
+      ]"
+    />
 
     <!-- CTA variant 1: Simple centered -->
     <section

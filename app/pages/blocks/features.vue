@@ -63,21 +63,20 @@ const compactFeatures = [
 
 <template>
   <div class="p-6 space-y-12 max-w-5xl mx-auto">
-    <div>
-      <UButton
-        label="Back to Blocks"
-        to="/blocks"
-        icon="i-lucide-arrow-left"
-        variant="ghost"
-        color="neutral"
-        size="sm"
-        class="mb-4"
-      />
-      <h2 class="text-2xl font-bold mb-1">Features Grid</h2>
-      <p class="text-sm text-(--ui-text-muted)">
-        Showcase product features in different grid layouts.
-      </p>
-    </div>
+    <UPageHeader
+      headline="Blocks"
+      title="Features Grid"
+      description="Showcase product features in different grid layouts."
+      :links="[
+        {
+          label: 'All Blocks',
+          icon: 'i-lucide-arrow-left',
+          to: '/blocks',
+          variant: 'ghost',
+          color: 'neutral',
+        },
+      ]"
+    />
 
     <!-- Variant 1: 3-column icon grid -->
     <section

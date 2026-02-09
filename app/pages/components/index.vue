@@ -101,19 +101,30 @@ const components = [
 
 <template>
   <div class="p-6 space-y-8 max-w-5xl mx-auto">
-    <div>
-      <h2 class="text-2xl font-bold mb-1">Components</h2>
-      <p class="text-sm text-(--ui-text-muted)">
-        Individual UI components showcasing your current theme settings. Browse
-        each component or
-        <NuxtLink
-          to="/components/all"
-          class="text-(--ui-primary) underline underline-offset-2"
-          >view all components</NuxtLink
-        >
-        on a single page.
-      </p>
-    </div>
+    <UPageHeader
+      headline="Theme Builder"
+      title="Components"
+      :links="[
+        {
+          label: 'View All',
+          icon: 'i-lucide-layout-grid',
+          to: '/components/all',
+          variant: 'outline',
+          color: 'neutral',
+        },
+        {
+          label: 'Back to Home',
+          icon: 'i-lucide-arrow-left',
+          to: '/',
+          variant: 'ghost',
+          color: 'neutral',
+        },
+      ]"
+    >
+      <template #description>
+        Individual UI components showcasing your current theme settings.
+      </template>
+    </UPageHeader>
 
     <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
       <NuxtLink

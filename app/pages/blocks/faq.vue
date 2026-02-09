@@ -35,21 +35,20 @@ const faqs = [
 
 <template>
   <div class="p-6 space-y-12 max-w-5xl mx-auto">
-    <div>
-      <UButton
-        label="Back to Blocks"
-        to="/blocks"
-        icon="i-lucide-arrow-left"
-        variant="ghost"
-        color="neutral"
-        size="sm"
-        class="mb-4"
-      />
-      <h2 class="text-2xl font-bold mb-1">FAQ Section</h2>
-      <p class="text-sm text-(--ui-text-muted)">
-        Frequently asked questions in an accordion layout.
-      </p>
-    </div>
+    <UPageHeader
+      headline="Blocks"
+      title="FAQ Section"
+      description="Frequently asked questions in an accordion layout."
+      :links="[
+        {
+          label: 'All Blocks',
+          icon: 'i-lucide-arrow-left',
+          to: '/blocks',
+          variant: 'ghost',
+          color: 'neutral',
+        },
+      ]"
+    />
 
     <!-- FAQ block -->
     <section
