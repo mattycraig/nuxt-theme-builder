@@ -223,16 +223,35 @@ function getDropdownItems(preset: ThemePreset) {
         <!-- Bottom row: metadata + status -->
         <div class="flex items-center justify-between gap-2 mt-1.5">
           <span
-            class="text-[11px] text-(--ui-text-dimmed) flex items-center gap-1 truncate"
+            class="text-[11px] text-(--ui-text-dimmed) flex items-center gap-2.5 truncate"
           >
-            <span class="truncate">{{ preset.config.font }}</span>
-            <span aria-hidden="true">&middot;</span>
-            <span>{{ preset.config.radius }}</span>
+            <div class="flex items-center gap-1">
+              <UIcon
+                name="i-lucide-type"
+                class="size-3.5 shrink-0"
+                aria-hidden="true"
+              />
+              <span class="truncate">{{ preset.config.font }}</span>
+            </div>
+            <div class="flex items-center gap-1">
+              <UIcon
+                name="i-lucide-square-round-corner"
+                class="size-3.5 shrink-0"
+                aria-hidden="true"
+              />
+              <span>{{ preset.config.radius }}</span>
+            </div>
             <template v-if="preset.updatedAt">
-              <span aria-hidden="true">&middot;</span>
-              <span :title="new Date(preset.updatedAt).toLocaleString()">{{
-                timeAgo(preset.updatedAt)
-              }}</span>
+              <div class="flex items-center gap-1">
+                <UIcon
+                  name="i-lucide-clock"
+                  class="size-3.5 shrink-0"
+                  aria-hidden="true"
+                />
+                <span :title="new Date(preset.updatedAt).toLocaleString()">{{
+                  timeAgo(preset.updatedAt)
+                }}</span>
+              </div>
             </template>
           </span>
 
@@ -243,9 +262,10 @@ function getDropdownItems(preset: ThemePreset) {
             <UBadge
               v-if="store.hasUnsavedChanges"
               label="Modified"
-              color="warning"
-              variant="soft"
-              size="sm"
+              color="error"
+              variant="subtle"
+              size="xs"
+              class="uppercase"
             />
             <UBadge
               v-else
@@ -253,6 +273,7 @@ function getDropdownItems(preset: ThemePreset) {
               color="primary"
               variant="subtle"
               size="xs"
+              class="uppercase"
             />
           </span>
         </div>

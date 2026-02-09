@@ -35,7 +35,6 @@ const SECTION_KEYS = [
   "textColors",
   "bgColors",
   "borderColors",
-  "exportImport",
 ] as const;
 
 type SectionKey = (typeof SECTION_KEYS)[number];
@@ -290,18 +289,6 @@ onMounted(() => {
             @update:model-value="onBorderOverride(token, $event)"
           />
         </div>
-      </EditorSection>
-
-      <USeparator v-if="!collapsed" />
-
-      <!-- Export / Import -->
-      <EditorSection
-        v-model:open="sectionOpen.exportImport"
-        :collapsed="collapsed"
-        icon="i-lucide-share-2"
-        label="Export / Import"
-      >
-        <EditorExportPanel />
       </EditorSection>
     </div>
   </div>

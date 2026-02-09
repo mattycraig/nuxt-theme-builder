@@ -131,6 +131,22 @@ const saveTooltipText = computed(() => {
       />
     </UTooltip>
 
+    <!-- Undo All -->
+    <UTooltip
+      text="Undo all changes"
+      :content="collapsed ? { side: 'right' } : undefined"
+    >
+      <UButton
+        icon="i-lucide-undo-dot"
+        aria-label="Undo all changes"
+        variant="ghost"
+        color="neutral"
+        size="sm"
+        :disabled="!store.canUndoAll"
+        @click="store.undoAll()"
+      />
+    </UTooltip>
+
     <USeparator
       :orientation="collapsed ? 'horizontal' : 'vertical'"
       :class="collapsed ? 'w-6 my-1' : 'h-4 mx-0.5'"

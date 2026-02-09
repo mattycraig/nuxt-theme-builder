@@ -18,9 +18,7 @@ const {
   isLoadingSource,
   sourceError,
   hasSourcePage,
-  copied,
   setViewMode,
-  copySource,
   retry: retrySource,
 } = useSourceCode();
 
@@ -214,6 +212,7 @@ function onSearchSelect(option: { to?: string }) {
       :ui="{
         header: 'border-b border-default sm:px-4',
         body: 'p-0 sm:p-0',
+        footer: 'border-t border-default py-4',
       }"
     >
       <template #header="{ collapsed }">
@@ -233,6 +232,29 @@ function onSearchSelect(option: { to?: string }) {
 
       <template #default="{ collapsed }">
         <ThemeEditor :collapsed="collapsed" />
+      </template>
+
+      <template #footer="{ collapsed }">
+        <UButton
+          v-if="!collapsed"
+          icon="i-lucide-import"
+          label="Export / Import Theme"
+          block
+          size="md"
+          variant="solid"
+          color="primary"
+          @click="useExportPanel().open()"
+        />
+        <UTooltip v-else text="Export / Import Theme">
+          <UButton
+            icon="i-lucide-import"
+            aria-label="Export Theme"
+            size="sm"
+            variant="solid"
+            color="primary"
+            @click="useExportPanel().open()"
+          />
+        </UTooltip>
       </template>
     </UDashboardSidebar>
 
@@ -381,13 +403,14 @@ function onSearchSelect(option: { to?: string }) {
             class="h-6 mx-2"
           />
 
-          <!-- Export -->
+          <!-- Export/Import Button -->
           <UButton
-            icon="i-lucide-download"
-            label="Export"
+            icon="i-lucide-import"
+            label="Export / Import"
             size="sm"
             variant="solid"
             color="primary"
+            @click="useExportPanel().open()"
           />
         </div>
       </div>
@@ -399,8 +422,6 @@ function onSearchSelect(option: { to?: string }) {
         :file-path="sourceFilePath"
         :loading="isLoadingSource"
         :error="sourceError"
-        :copied="copied"
-        @copy="copySource"
         @retry="retrySource"
       />
 
@@ -432,6 +453,9 @@ function onSearchSelect(option: { to?: string }) {
 
     <!-- Save-theme modal (singleton rendered at layout level) -->
     <SaveThemeModal />
+
+    <!-- Export/Import slideover (singleton rendered at layout level) -->
+    <EditorExportSlideover />
 
     <SpeedInsights />
   </UDashboardGroup>

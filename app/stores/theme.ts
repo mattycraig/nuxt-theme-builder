@@ -32,12 +32,14 @@ export const useThemeStore = defineStore(
 
     const history = shallowRef<ThemeConfig[]>([cloneTheme(DEFAULT_THEME)]);
     const historyIndex = ref(0);
+    const historyBaseIndex = ref(0);
 
     function _pushHistory() {
       const newHistory = history.value.slice(0, historyIndex.value + 1);
       newHistory.push(cloneTheme(config.value));
       if (newHistory.length > MAX_HISTORY) {
         newHistory.shift();
+        if (historyBaseIndex.value > 0) historyBaseIndex.value--;
       } else {
         historyIndex.value++;
       }
@@ -45,6 +47,7 @@ export const useThemeStore = defineStore(
     }
 
     const canUndo = computed(() => historyIndex.value > 0);
+    const canUndoAll = computed(() => historyIndex.value > historyBaseIndex.value);
     const canRedo = computed(
       () => historyIndex.value < history.value.length - 1,
     );
@@ -62,6 +65,14 @@ export const useThemeStore = defineStore(
       if (!canUndo.value) return;
       historyIndex.value--;
       config.value = cloneTheme(history.value[historyIndex.value]!);
+    }
+
+    function undoAll() {
+      if (!canUndoAll.value) return;
+      const target = Math.max(historyBaseIndex.value, 0);
+      if (historyIndex.value === target) return;
+      historyIndex.value = target;
+      config.value = cloneTheme(history.value[target]!);
     }
 
     function redo() {
@@ -142,6 +153,7 @@ export const useThemeStore = defineStore(
       config.value = cloneTheme(DEFAULT_THEME);
       activePresetName.value = "";
       _pushHistory();
+      historyBaseIndex.value = historyIndex.value;
     }
 
     function loadConfig(newConfig: ThemeConfig) {
@@ -156,6 +168,7 @@ export const useThemeStore = defineStore(
         config.value = cloneTheme(result.data as ThemeConfig);
       }
       _pushHistory();
+      historyBaseIndex.value = historyIndex.value;
     }
 
     /** Silently update config from iframe sync — no history push */
@@ -259,6 +272,7 @@ export const useThemeStore = defineStore(
       config.value = cloneTheme(result.data as ThemeConfig);
       activePresetName.value = preset.name;
       _pushHistory();
+      historyBaseIndex.value = historyIndex.value;
     }
 
     // Public API ─────────────────────────────────────────────────────
@@ -269,8 +283,10 @@ export const useThemeStore = defineStore(
       activePresetName,
       hasUnsavedChanges,
       canUndo,
+      canUndoAll,
       canRedo,
       undo,
+      undoAll,
       redo,
       setSemanticColor,
       setNeutral,
