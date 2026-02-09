@@ -7,7 +7,7 @@ import type {
 } from "~/types/theme";
 import { toRaw } from "vue";
 
-// ─── Light Mode Token Defaults ──────────────────────────────────────────────
+// Light Mode Token Defaults ──────────────────────────────────────────────
 // Shade assignments for text, background, and border in light mode.
 
 const DEFAULT_TEXT_LIGHT: TextTokenOverrides = {
@@ -19,7 +19,7 @@ const DEFAULT_TEXT_LIGHT: TextTokenOverrides = {
   inverted: "white",
 };
 
-// ─── Dark Mode Token Defaults ───────────────────────────────────────────────
+// Dark Mode Token Defaults ───────────────────────────────────────────────
 
 const DEFAULT_TEXT_DARK: TextTokenOverrides = {
   dimmed: "500",
@@ -60,7 +60,7 @@ const DEFAULT_BORDER_DARK: BorderTokenOverrides = {
   inverted: "white",
 };
 
-// ─── Composed Default Theme ─────────────────────────────────────────────────
+// Composed Default Theme ─────────────────────────────────────────────────
 
 export const DEFAULT_LIGHT_OVERRIDES: TokenOverrides = {
   text: { ...DEFAULT_TEXT_LIGHT },
@@ -90,7 +90,7 @@ export const DEFAULT_THEME: ThemeConfig = {
   darkOverrides: { ...DEFAULT_DARK_OVERRIDES },
 };
 
-// ─── Hex Color Maps ─────────────────────────────────────────────────────────
+// Hex Color Maps ─────────────────────────────────────────────────────────
 // Static hex values for rendering color swatches in the editor UI.
 
 export const NEUTRAL_HEX_MAP: Record<string, Record<string, string>> = {
@@ -199,7 +199,7 @@ export const NEUTRAL_SWATCH_HEX: Record<string, string> = {
   stone: "#78716c",
 };
 
-// ─── Utility Functions ───────────────────────────────────────────────────────
+// Utility Functions ───────────────────────────────────────────────────────
 
 /**
  * Convert a shade token value to the CSS value

@@ -1,4 +1,4 @@
-// ─── Color Palette Constants ─────────────────────────────────────────────────
+// Color Palette Constants ─────────────────────────────────────────────────
 // Tailwind CSS color palette names available for semantic color assignment.
 
 export const CHROMATIC_PALETTES = [
@@ -33,7 +33,7 @@ export const NEUTRAL_PALETTES = [
 
 export type NeutralPalette = (typeof NEUTRAL_PALETTES)[number];
 
-// ─── Semantic Color Keys ─────────────────────────────────────────────────────
+// Semantic Color Keys ─────────────────────────────────────────────────────
 // The named color roles that Nuxt UI uses across components.
 
 export const SEMANTIC_COLOR_KEYS = [
@@ -47,7 +47,7 @@ export const SEMANTIC_COLOR_KEYS = [
 
 export type SemanticColorKey = (typeof SEMANTIC_COLOR_KEYS)[number];
 
-// ─── Shade Values ────────────────────────────────────────────────────────────
+// Shade Values ────────────────────────────────────────────────────────────
 // Neutral shade scale used for text, background, and border token overrides.
 
 export const SHADE_VALUES = [
@@ -70,7 +70,7 @@ export type NeutralShade = (typeof SHADE_VALUES)[number];
 
 export type SemanticColors = Record<SemanticColorKey, ChromaticPalette>;
 
-// ─── Token Override Keys ─────────────────────────────────────────────────────
+// Token Override Keys ─────────────────────────────────────────────────────
 // CSS variable token names that can be overridden per light/dark mode.
 
 export const TEXT_TOKEN_KEYS = [
@@ -103,7 +103,7 @@ export const BORDER_TOKEN_KEYS = [
 
 export type BorderTokenKey = (typeof BORDER_TOKEN_KEYS)[number];
 
-// ─── Core Interfaces ─────────────────────────────────────────────────────────
+// Core Interfaces ─────────────────────────────────────────────────────────
 
 export type TextTokenOverrides = Record<TextTokenKey, NeutralShade>;
 export type BgTokenOverrides = Record<BgTokenKey, NeutralShade>;
@@ -132,7 +132,7 @@ export interface ThemePreset {
   updatedAt?: number;
 }
 
-// ─── Font Options ────────────────────────────────────────────────────────────
+// Font Options ────────────────────────────────────────────────────────────
 // Must match fonts registered in nuxt.config.ts `fonts.families`.
 
 export const FONT_OPTIONS = [
@@ -145,7 +145,7 @@ export const FONT_OPTIONS = [
   "Raleway",
 ] as const;
 
-// ─── Zod Validation Schemas ──────────────────────────────────────────────────
+// Zod Validation Schemas ──────────────────────────────────────────────────
 // Used by the store to validate persisted state and imported configs.
 
 import { z } from "zod";

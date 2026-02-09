@@ -13,11 +13,11 @@ const route = useRoute();
 const colorMode = useColorMode();
 const store = useThemeStore();
 
-// ─── Iframe Preview ────────────────────────────────────────────────────────
+// Iframe Preview ────────────────────────────────────────────────────────
 const { previewFrame, iframeLoading, iframeInitialSrc, handleIframeLoad } =
   usePreviewIframe();
 
-// ─── Preview Resize ────────────────────────────────────────────────────────
+// Preview Resize ────────────────────────────────────────────────────────
 const {
   previewWidth,
   customWidth,
@@ -30,14 +30,14 @@ const {
   onCustomWidthInput,
 } = usePreviewResize();
 
-// ─── Navigation ────────────────────────────────────────────────────────────
+// Navigation ────────────────────────────────────────────────────────────
 const allNavItems = computed(() => flattenNavigationItems(NAVIGATION_ITEMS));
 
 const currentPageLabel = computed(
   () => allNavItems.value.find((i) => i.to === route.path)?.label ?? "Preview",
 );
 
-// ─── Search ────────────────────────────────────────────────────────────────
+// Search ────────────────────────────────────────────────────────────────
 const searchGroups = computed(() => [
   {
     id: "pages",
@@ -114,7 +114,7 @@ function buildQuickActions() {
   ];
 }
 
-// ─── SEO ───────────────────────────────────────────────────────────────────
+// SEO ───────────────────────────────────────────────────────────────────
 const seoTitle = computed(
   () => `${currentPageLabel.value} — Nuxt UI Theme Builder`,
 );
@@ -139,7 +139,7 @@ function onSearchSelect(option: { to?: string }) {
   <UDashboardGroup unit="px" storage-key="theme-builder">
     <a href="#maincontent" class="skip-link">Skip to main content</a>
 
-    <!-- ─── Sidebar (Theme Editor) ─────────────────────────────────────── -->
+    <!-- Sidebar (Theme Editor) ─────────────────────────────────────── -->
     <UDashboardSidebar
       resizable
       collapsible
@@ -171,7 +171,7 @@ function onSearchSelect(option: { to?: string }) {
       </template>
     </UDashboardSidebar>
 
-    <!-- ─── Main Content ──────────────────────────────────────────────── -->
+    <!-- Main Content ──────────────────────────────────────────────── -->
     <main id="maincontent" class="flex-1 h-full overflow-hidden flex flex-col">
       <!-- Navbar with preview width controls -->
       <UDashboardNavbar :title="currentPageLabel">
@@ -260,7 +260,7 @@ function onSearchSelect(option: { to?: string }) {
     <!-- Command palette search -->
     <UDashboardSearch
       :groups="searchGroups"
-      placeholder="Search pages & actions..."
+      placeholder="Search pages & actions\u2026"
       @update:model-value="onSearchSelect"
     />
 

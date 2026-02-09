@@ -1,6 +1,6 @@
 import type { NavigationMenuItem } from "@nuxt/ui";
 
-// ─── Component Navigation ────────────────────────────────────────────────────
+// Component Navigation ────────────────────────────────────────────────────
 
 const componentChildren: NavigationMenuItem[] = [
   {
@@ -95,7 +95,7 @@ const componentChildren: NavigationMenuItem[] = [
   },
 ];
 
-// ─── Block Navigation ────────────────────────────────────────────────────────
+// Block Navigation ────────────────────────────────────────────────────────
 
 const blockChildren: NavigationMenuItem[] = [
   {
@@ -142,7 +142,7 @@ const blockChildren: NavigationMenuItem[] = [
   },
 ];
 
-// ─── Template Navigation ─────────────────────────────────────────────────────
+// Template Navigation ─────────────────────────────────────────────────────
 
 const templateChildren: NavigationMenuItem[] = [
   {
@@ -207,7 +207,7 @@ const templateChildren: NavigationMenuItem[] = [
   },
 ];
 
-// ─── Main Navigation Items ───────────────────────────────────────────────────
+// Main Navigation Items ───────────────────────────────────────────────────
 
 export const NAVIGATION_ITEMS: NavigationMenuItem[][] = [
   [

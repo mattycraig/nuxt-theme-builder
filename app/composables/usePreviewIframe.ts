@@ -24,7 +24,7 @@ export function usePreviewIframe() {
   // When the iframe itself navigates (user clicked a link), skip echoing navigate back
   const navigatingFromIframe = ref(false);
 
-  // ─── Outbound Messages ───────────────────────────────────────────────
+  // Outbound Messages ───────────────────────────────────────────────
 
   function postToIframe(data: Record<string, unknown>) {
     previewFrame.value?.contentWindow?.postMessage(
@@ -48,7 +48,7 @@ export function usePreviewIframe() {
     postToIframe({ type: "navigate", path });
   }
 
-  // ─── Watchers ────────────────────────────────────────────────────────
+  // Watchers ────────────────────────────────────────────────────────
 
   // Navigate iframe via postMessage instead of reloading on route change
   watch(iframeSrc, (newSrc) => {
@@ -75,7 +75,7 @@ export function usePreviewIframe() {
     (pref) => syncColorModeToIframe(pref),
   );
 
-  // ─── Inbound Message Handler ─────────────────────────────────────────
+  // Inbound Message Handler ─────────────────────────────────────────
 
   /** Validate postMessage navigation paths — allow only clean relative paths */
   function sanitizeNavigationPath(raw: string): string | null {
@@ -121,7 +121,7 @@ export function usePreviewIframe() {
     }
   }
 
-  // ─── Lifecycle ───────────────────────────────────────────────────────
+  // Lifecycle ───────────────────────────────────────────────────────
 
   /**
    * Fallback: if the iframe loads before the parent registers the listener,

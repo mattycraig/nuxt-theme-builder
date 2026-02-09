@@ -22,13 +22,13 @@ const MAX_HISTORY = 50;
 export const useThemeStore = defineStore(
   "theme",
   () => {
-    // ─── State ──────────────────────────────────────────────────────────
+    // State ──────────────────────────────────────────────────────────
 
     const config = ref<ThemeConfig>(cloneTheme(DEFAULT_THEME));
     const savedPresets = shallowRef<ThemePreset[]>([]);
     const activePresetName = ref<string>("");
 
-    // ─── Undo / Redo History ────────────────────────────────────────────
+    // Undo / Redo History ────────────────────────────────────────────
 
     const history = shallowRef<ThemeConfig[]>([cloneTheme(DEFAULT_THEME)]);
     const historyIndex = ref(0);
@@ -70,7 +70,7 @@ export const useThemeStore = defineStore(
       config.value = cloneTheme(history.value[historyIndex.value]!);
     }
 
-    // ─── Setters (each pushes history for undo support) ────────────────
+    // Setters (each pushes history for undo support) ────────────────
 
     function setSemanticColor(key: SemanticColorKey, value: ChromaticPalette) {
       config.value.colors[key] = value;
@@ -136,7 +136,7 @@ export const useThemeStore = defineStore(
       _pushHistory();
     }
 
-    // ─── Config Management ──────────────────────────────────────────────
+    // Config Management ──────────────────────────────────────────────
 
     function resetToDefaults() {
       config.value = cloneTheme(DEFAULT_THEME);
@@ -165,7 +165,7 @@ export const useThemeStore = defineStore(
       config.value = cloneTheme(result.data as ThemeConfig);
     }
 
-    // ─── Preset CRUD ────────────────────────────────────────────────────
+    // Preset CRUD ────────────────────────────────────────────────────
 
     function savePreset(name: string): { isUpdate: boolean } {
       const now = Date.now();
@@ -261,7 +261,7 @@ export const useThemeStore = defineStore(
       _pushHistory();
     }
 
-    // ─── Public API ─────────────────────────────────────────────────────
+    // Public API ─────────────────────────────────────────────────────
 
     return {
       config,
