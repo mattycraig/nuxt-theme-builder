@@ -37,6 +37,42 @@ const currentPageLabel = computed(
   () => allNavItems.value.find((i) => i.to === route.path)?.label ?? "Preview",
 );
 
+// Breadcrumb ────────────────────────────────────────────────────────────
+const breadcrumbItems = computed(() => {
+  const items: { label: string; icon?: string; to?: string }[] = [
+    { label: "Home", icon: "i-lucide-home", to: "/" },
+  ];
+
+  if (route.path === "/") return items;
+
+  const topLevel = (NAVIGATION_ITEMS[0] ?? []).find(
+    (nav) =>
+      nav.to === route.path ||
+      nav.children?.some((c) => c.to && route.path.startsWith(String(c.to))),
+  );
+
+  if (topLevel) {
+    items.push({
+      label: topLevel.label ?? "",
+      icon: topLevel.icon as string | undefined,
+      to: String(topLevel.to),
+    });
+
+    if (topLevel.to !== route.path) {
+      const child = topLevel.children?.find((c) => String(c.to) === route.path);
+      if (child) {
+        items.push({
+          label: child.label ?? "",
+          icon: child.icon as string | undefined,
+          to: String(child.to),
+        });
+      }
+    }
+  }
+
+  return items;
+});
+
 // Search ────────────────────────────────────────────────────────────────
 const searchGroups = computed(() => [
   {
@@ -130,6 +166,20 @@ useSeoMeta({
   twitterCard: "summary_large_image",
 });
 
+// Mobile navigation dropdown ─────────────────────────────────────────
+const mobileNavItems = computed(() => [
+  (NAVIGATION_ITEMS[0] ?? []).map((item) => ({
+    label: item.label,
+    icon: item.icon as string,
+    to: String(item.to),
+    children: item.children?.map((child) => ({
+      label: child.label,
+      icon: child.icon as string,
+      to: child.to ? String(child.to) : undefined,
+    })),
+  })),
+]);
+
 function onSearchSelect(option: { to?: string }) {
   if (option.to) navigateTo(option.to);
 }
@@ -173,15 +223,75 @@ function onSearchSelect(option: { to?: string }) {
 
     <!-- Main Content ──────────────────────────────────────────────── -->
     <main id="maincontent" class="flex-1 h-full overflow-hidden flex flex-col">
-      <!-- Navbar with preview width controls -->
-      <UDashboardNavbar :title="currentPageLabel">
+      <!-- Bar 1: Top Navbar — page identity + global actions ────── -->
+      <UDashboardNavbar>
         <template #leading>
           <UDashboardSidebarCollapse />
           <USeparator orientation="vertical" class="h-6 mx-1" />
         </template>
 
+        <template #trailing>
+          <!-- Desktop: full horizontal navigation menu -->
+          <UNavigationMenu
+            :items="NAVIGATION_ITEMS"
+            class="hidden md:flex flex-1 min-w-max"
+          />
+
+          <!-- Mobile: compact dropdown -->
+          <UDropdownMenu :items="mobileNavItems" class="md:hidden">
+            <UButton
+              :label="currentPageLabel"
+              variant="ghost"
+              color="neutral"
+              trailing-icon="i-lucide-chevron-down"
+            />
+          </UDropdownMenu>
+        </template>
+
         <template #right>
-          <UDashboardSearchButton collapsed class="me-2" />
+          <UDashboardSearchButton />
+          <USeparator orientation="vertical" class="h-6 mx-2" />
+
+          <!-- Future slot: localization dropdown, etc. -->
+          <UColorModeSwitch />
+        </template>
+      </UDashboardNavbar>
+
+      <!-- Bar 2: Navigation — page switching + breadcrumbs ──────── -->
+      <!-- <UDashboardToolbar>
+      </UDashboardToolbar> -->
+
+      <!-- Bar 3: Preview controls — viewport sizing + actions ───── -->
+      <div
+        class="hidden md:flex items-center justify-between gap-1.5 md:px-6 md:pt-6 shrink-0 bg-(--ui-bg-muted) relative"
+        role="toolbar"
+        aria-label="Preview controls"
+      >
+        <UBreadcrumb
+          :items="breadcrumbItems"
+          :ui="{ linkLeadingIcon: 'size-4', link: 'text-xs' }"
+        />
+
+        <div
+          class="flex items-center gap-1.5 absolute left-1/2 -translate-x-1/2"
+        >
+          <!-- Preset width toggles -->
+          <UTooltip
+            v-for="option in PRESET_WIDTHS"
+            :key="option.value"
+            :text="option.label"
+          >
+            <UButton
+              :icon="option.icon"
+              :aria-label="option.label"
+              size="xs"
+              :variant="previewWidth === option.value ? 'soft' : 'ghost'"
+              :color="previewWidth === option.value ? 'primary' : 'neutral'"
+              @click="previewWidth = option.value"
+            />
+          </UTooltip>
+
+          <USeparator orientation="vertical" class="h-5 mx-1" />
 
           <!-- Custom width popover -->
           <UPopover>
@@ -191,6 +301,7 @@ function onSearchSelect(option: { to?: string }) {
                 variant="subtle"
                 size="xs"
                 color="neutral"
+                class="font-mono tabular-nums"
                 aria-label="Set custom preview width"
               />
             </UTooltip>
@@ -214,35 +325,14 @@ function onSearchSelect(option: { to?: string }) {
               </div>
             </template>
           </UPopover>
+        </div>
 
-          <!-- Preset width toggles -->
-          <UTooltip
-            v-for="option in PRESET_WIDTHS"
-            :key="option.value"
-            :text="option.label"
-          >
-            <UButton
-              :icon="option.icon"
-              :aria-label="option.label"
-              size="sm"
-              :variant="previewWidth === option.value ? 'soft' : 'ghost'"
-              :color="previewWidth === option.value ? 'primary' : 'neutral'"
-              @click="previewWidth = option.value"
-            />
-          </UTooltip>
-          <USeparator orientation="vertical" class="h-6 mx-2" />
-          <UColorModeSwitch />
-        </template>
-      </UDashboardNavbar>
-
-      <!-- Navigation toolbar -->
-      <UDashboardToolbar :ui="{ root: 'overflow-visible' }">
-        <UNavigationMenu
-          :items="NAVIGATION_ITEMS"
-          highlight
-          class="flex-1 min-w-max"
-        />
-      </UDashboardToolbar>
+        <!-- Right-aligned slot: future "View Source" + copy buttons -->
+        <div class="flex items-center gap-1.5">
+          <!-- Placeholder: view source / copy template actions go here -->
+          Testing
+        </div>
+      </div>
 
       <!-- Preview area with resizable iframe -->
       <PreviewFrame

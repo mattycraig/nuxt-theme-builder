@@ -32,7 +32,7 @@ function onUpdate(val: number | undefined) {
     <USlider
       :model-value="modelValue"
       :min="0"
-      :max="2"
+      :max="1"
       :step="0.125"
       aria-label="Border Radius"
       @update:model-value="onUpdate"
