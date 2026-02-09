@@ -146,9 +146,9 @@ const components = [
               />
             </div>
             <div>
-              <h3 class="font-semibold text-(--ui-text-highlighted) mb-1">
+              <h2 class="font-semibold text-(--ui-text-highlighted) mb-1">
                 {{ component.title }}
-              </h3>
+              </h2>
               <p class="text-sm text-(--ui-text-muted)">
                 {{ component.description }}
               </p>

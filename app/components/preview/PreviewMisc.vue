@@ -1,6 +1,6 @@
 <template>
   <section>
-    <h3 class="text-lg font-semibold mb-4">Miscellaneous</h3>
+    <h2 class="text-lg font-semibold mb-4">Miscellaneous</h2>
 
     <!-- Separator -->
     <p class="text-sm text-(--ui-text-muted) mb-2">Separator</p>

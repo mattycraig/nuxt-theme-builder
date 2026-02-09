@@ -86,7 +86,7 @@ const messages = ref<ChatMsg[]>([
     parts: [
       {
         type: "text",
-        text: "Of course! Here are some tips for choosing a great color palette:\n\n### 1. Start with your primary color\n\nPick one that represents your brand:\n\n| Color | Conveys |\n|---|---|\n| **Blue** | Trust & stability |\n| **Green** | Growth & health |\n| **Purple** | Creativity & luxury |\n| **Red** | Energy & urgency |\n\n### 2. Complementary secondary\n\nContrast with your primary: `blue → orange`, `violet → cyan`, `green → rose`.\n\n### 3. Semantic colors\n\nKeep them intuitive:\n- ✅ **Success** — green / emerald\n- ⚠️ **Warning** — amber / yellow\n- ❌ **Error** — red / rose\n- ℹ️ **Info** — sky / blue\n\n### 4. Neutral palette\n\nSlate, zinc, or gray for text and backgrounds.\n\n> **Pro tip:** A good neutral is just as important as your primary color — it makes up most of your UI.\n\nWould you like me to suggest a specific palette?",
+        text: "Of course! Here are some tips for choosing a great color palette:\n\n## 1. Start with your primary color\n\nPick one that represents your brand:\n\n| Color | Conveys |\n|---|---|\n| **Blue** | Trust & stability |\n| **Green** | Growth & health |\n| **Purple** | Creativity & luxury |\n| **Red** | Energy & urgency |\n\n## 2. Complementary secondary\n\nContrast with your primary: `blue → orange`, `violet → cyan`, `green → rose`.\n\n## 3. Semantic colors\n\nKeep them intuitive:\n- ✅ **Success** — green / emerald\n- ⚠️ **Warning** — amber / yellow\n- ❌ **Error** — red / rose\n- ℹ️ **Info** — sky / blue\n\n## 4. Neutral palette\n\nSlate, zinc, or gray for text and backgrounds.\n\n> **Pro tip:** A good neutral is just as important as your primary color — it makes up most of your UI.\n\nWould you like me to suggest a specific palette?",
       },
     ],
   },
@@ -106,7 +106,7 @@ const messages = ref<ChatMsg[]>([
     parts: [
       {
         type: "text",
-        text: "Great choice! Violet is perfect for dev tools — modern and technical.\n\n### Recommended palette\n\n| Role | Color | Why |\n|---|---|---|\n| **Primary** | `violet` | Modern, tech-forward |\n| **Secondary** | `cyan` | High contrast complement |\n| **Success** | `emerald` | Sophisticated green |\n| **Info** | `sky` | Calm, informational |\n| **Warning** | `amber` | Clear without alarm |\n| **Error** | `rose` | Softer than pure red |\n| **Neutral** | `zinc` | Clean & professional |\n\n### Why this works\n\n- **Violet + Cyan** creates a vibrant, tech-forward feel\n- **Zinc** neutral keeps things clean and professional\n- **Emerald** for success is more sophisticated than plain green\n- **Rose** for errors is softer than pure red but still noticeable\n\n```ts\n// app.config.ts\nexport default defineAppConfig({\n  ui: {\n    colors: {\n      primary: 'violet',\n      secondary: 'cyan',\n      success: 'emerald',\n      info: 'sky',\n      warning: 'amber',\n      error: 'rose',\n      neutral: 'zinc'\n    }\n  }\n})\n```\n\n> You can try this right now in the **Theme Builder** sidebar!",
+        text: "Great choice! Violet is perfect for dev tools — modern and technical.\n\n## Recommended palette\n\n| Role | Color | Why |\n|---|---|---|\n| **Primary** | `violet` | Modern, tech-forward |\n| **Secondary** | `cyan` | High contrast complement |\n| **Success** | `emerald` | Sophisticated green |\n| **Info** | `sky` | Calm, informational |\n| **Warning** | `amber` | Clear without alarm |\n| **Error** | `rose` | Softer than pure red |\n| **Neutral** | `zinc` | Clean & professional |\n\n## Why this works\n\n- **Violet + Cyan** creates a vibrant, tech-forward feel\n- **Zinc** neutral keeps things clean and professional\n- **Emerald** for success is more sophisticated than plain green\n- **Rose** for errors is softer than pure red but still noticeable\n\n```ts\n// app.config.ts\nexport default defineAppConfig({\n  ui: {\n    colors: {\n      primary: 'violet',\n      secondary: 'cyan',\n      success: 'emerald',\n      info: 'sky',\n      warning: 'amber',\n      error: 'rose',\n      neutral: 'zinc'\n    }\n  }\n})\n```\n\n> You can try this right now in the **Theme Builder** sidebar!",
       },
     ],
   },
@@ -159,9 +159,9 @@ function onSubmit() {
     setTimeout(() => {
       const responses = [
         "That's a great question! In the Theme Builder, you can adjust the border radius using the slider in the sidebar.\n\nThe `--ui-radius` CSS variable controls the roundness of all components globally.\n\n```css\n:root {\n  --ui-radius: 0.5rem;\n}\n```\n\nTry dragging the slider to see the effect in real-time!",
-        "You can export your theme in multiple formats:\n\n| Format | Best For |\n|---|---|\n| `app.config.ts` | Drop-in config for Nuxt |\n| **CSS Variables** | Use in any project |\n| **JSON** | Programmatic use |\n\n### How to export\n\n1. Click the **Export** button in the sidebar\n2. Choose your preferred format\n3. Copy or download the output\n\n> **Tip:** The `app.config.ts` format is the easiest way to apply your theme in a Nuxt project.",
+        "You can export your theme in multiple formats:\n\n| Format | Best For |\n|---|---|\n| `app.config.ts` | Drop-in config for Nuxt |\n| **CSS Variables** | Use in any project |\n| **JSON** | Programmatic use |\n\n## How to export\n\n1. Click the **Export** button in the sidebar\n2. Choose your preferred format\n3. Copy or download the output\n\n> **Tip:** The `app.config.ts` format is the easiest way to apply your theme in a Nuxt project.",
         "The font picker supports several carefully selected fonts:\n\n- **Public Sans** — Clean, neutral, government-grade readability\n- **DM Sans** — Geometric, modern, great for headings\n- **Geist** — Vercel's typeface, optimized for code & UI\n- **Inter** — The go-to for web interfaces\n- **Poppins** — Rounded, friendly, geometric\n- **Outfit** — Variable weight, modern sans-serif\n- **Raleway** — Elegant, thin weights available\n\nEach is loaded from **Google Fonts** and applied across all components instantly. Try switching between them to see the difference!",
-        "I'd recommend trying the **Soft** variant for a more subtle, modern look.\n\n### Variant comparison\n\n| Variant | Style | Use Case |\n|---|---|---|\n| `solid` | Filled background | Primary actions |\n| `outline` | Border only | Secondary actions |\n| **`soft`** | Light tinted bg | ✅ Subtle & modern |\n| `subtle` | Very light bg + border | Form elements |\n| `ghost` | No background | Tertiary actions |\n\n> **Why soft?** It uses a lighter background with colored text, which works beautifully with most color palettes.",
+        "I'd recommend trying the **Soft** variant for a more subtle, modern look.\n\n## Variant comparison\n\n| Variant | Style | Use Case |\n|---|---|---|\n| `solid` | Filled background | Primary actions |\n| `outline` | Border only | Secondary actions |\n| **`soft`** | Light tinted bg | ✅ Subtle & modern |\n| `subtle` | Very light bg + border | Form elements |\n| `ghost` | No background | Tertiary actions |\n\n> **Why soft?** It uses a lighter background with colored text, which works beautifully with most color palettes.",
       ];
       messages.value.push({
         id: String(Date.now()),
@@ -211,6 +211,7 @@ function createChat(prompt: string) {
           color="neutral"
           size="xs"
           class="ms-auto"
+          aria-label="New conversation"
         />
       </template>
 
@@ -222,6 +223,7 @@ function createChat(prompt: string) {
             "
             variant="soft"
             block
+            aria-label="New chat"
           />
         </div>
 
@@ -243,6 +245,7 @@ function createChat(prompt: string) {
           color="neutral"
           variant="ghost"
           block
+          aria-label="Settings"
         />
       </template>
     </UDashboardSidebar>
@@ -250,7 +253,7 @@ function createChat(prompt: string) {
     <!-- ── Main chat panel ──────────────────────────────────────────── -->
     <UDashboardPanel id="chat-main" :ui="{ body: 'p-0 sm:p-0' }">
       <template #header>
-        <UDashboardNavbar>
+        <UDashboardNavbar title="Chat" :ui="{ title: 'sr-only' }">
           <template #leading>
             <div class="flex items-center gap-3">
               <UDashboardSidebarCollapse />
@@ -282,6 +285,7 @@ function createChat(prompt: string) {
                 size="xs"
                 variant="ghost"
                 class="hidden sm:block"
+                :aria-label="`AI model: ${models.find((m) => m.value === selectedModel)?.label}`"
               />
               <UTooltip text="Search messages">
                 <UButton
@@ -429,6 +433,7 @@ function createChat(prompt: string) {
                     size="xs"
                     variant="ghost"
                     class="sm:hidden"
+                    :aria-label="`AI model: ${models.find((m) => m.value === selectedModel)?.label}`"
                   />
                 </div>
 
@@ -436,6 +441,7 @@ function createChat(prompt: string) {
                   :status="chatStatus"
                   color="neutral"
                   size="sm"
+                  aria-label="Send message"
                   @stop="chatStatus = 'ready'"
                 />
               </template>

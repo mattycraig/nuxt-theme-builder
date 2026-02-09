@@ -21,6 +21,7 @@
     "@internationalized/date": "^3.11.0",
     "@nuxt/ui": "^4.4.0",
     "@nuxtjs/mdc": "^0.20.1",
+    "@nuxtjs/sitemap": "^7.6.0",
     "@pinia/nuxt": "^0.11.3",
     "@tiptap/extension-emoji": "^3.19.0",
     "@vercel/analytics": "^1.6.1",

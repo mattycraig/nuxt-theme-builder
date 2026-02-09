@@ -1,6 +1,6 @@
 <template>
   <section>
-    <h3 class="text-lg font-semibold mb-4">Form Inputs</h3>
+    <h2 class="text-lg font-semibold mb-4">Form Inputs</h2>
 
     <div class="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-4">
       <!-- Text input -->
@@ -74,6 +74,7 @@
           v-model="selectedRole"
           :items="roles"
           placeholder="Select a role"
+          :aria-label="`Role: ${selectedRole}`"
         />
       </div>
 

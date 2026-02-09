@@ -1,8 +1,13 @@
 <template>
   <section>
-    <h3 class="text-lg font-semibold mb-4">Table</h3>
+    <h2 class="text-lg font-semibold mb-4">Table</h2>
 
-    <UTable :data="users" :columns="columns">
+    <UTable
+      :data="users"
+      :columns="columns"
+      caption="User directory"
+      :ui="{ root: 'w-full' }"
+    >
       <template #status-cell="{ row }">
         <UBadge
           :label="row.original.status"

@@ -504,9 +504,9 @@ const isPreview = computed(() => "preview" in route.query);
               <template #header>
                 <div class="flex items-center justify-between">
                   <div>
-                    <h3 class="font-semibold text-(--ui-text-highlighted)">
+                    <h2 class="font-semibold text-(--ui-text-highlighted)">
                       Revenue Overview
-                    </h3>
+                    </h2>
                     <p class="text-sm text-(--ui-text-muted)">
                       Monthly revenue for the current year
                     </p>
@@ -542,9 +542,9 @@ const isPreview = computed(() => "preview" in route.query);
             <!-- Recent Activity -->
             <UCard>
               <template #header>
-                <h3 class="font-semibold text-(--ui-text-highlighted)">
+                <h2 class="font-semibold text-(--ui-text-highlighted)">
                   Recent Activity
-                </h3>
+                </h2>
               </template>
 
               <div class="space-y-4">
@@ -588,9 +588,9 @@ const isPreview = computed(() => "preview" in route.query);
                 class="flex flex-col sm:flex-row sm:items-center justify-between gap-3"
               >
                 <div>
-                  <h3 class="font-semibold text-(--ui-text-highlighted)">
+                  <h2 class="font-semibold text-(--ui-text-highlighted)">
                     Recent Orders
-                  </h3>
+                  </h2>
                   <p class="text-sm text-(--ui-text-muted)">
                     Manage and track customer orders
                   </p>
@@ -641,9 +641,9 @@ const isPreview = computed(() => "preview" in route.query);
             <!-- Progress Cards -->
             <UCard>
               <template #header>
-                <h3 class="font-semibold text-(--ui-text-highlighted)">
+                <h2 class="font-semibold text-(--ui-text-highlighted)">
                   Goals Progress
-                </h3>
+                </h2>
               </template>
               <div class="space-y-5">
                 <div
@@ -686,6 +686,7 @@ const isPreview = computed(() => "preview" in route.query);
                     :value="goal.value"
                     :color="goal.color as any"
                     size="sm"
+                    :aria-label="goal.label"
                   />
                 </div>
               </div>
@@ -694,9 +695,9 @@ const isPreview = computed(() => "preview" in route.query);
             <!-- Top Products -->
             <UCard>
               <template #header>
-                <h3 class="font-semibold text-(--ui-text-highlighted)">
+                <h2 class="font-semibold text-(--ui-text-highlighted)">
                   Top Products
-                </h3>
+                </h2>
               </template>
               <div class="space-y-3">
                 <div

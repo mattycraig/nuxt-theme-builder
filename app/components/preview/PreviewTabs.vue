@@ -1,6 +1,6 @@
 <template>
   <section>
-    <h3 class="text-lg font-semibold mb-4">Tabs</h3>
+    <h2 class="text-lg font-semibold mb-4">Tabs</h2>
 
     <UTabs :items="tabs">
       <template #overview>

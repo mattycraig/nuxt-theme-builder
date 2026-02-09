@@ -1,6 +1,6 @@
 <template>
   <section>
-    <h3 class="text-lg font-semibold mb-4">Alerts</h3>
+    <h2 class="text-lg font-semibold mb-4">Alerts</h2>
 
     <div class="space-y-3">
       <UAlert

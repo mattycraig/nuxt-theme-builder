@@ -83,9 +83,9 @@ const compactFeatures = [
       class="rounded-xl border border-(--ui-border) bg-(--ui-bg) p-6 sm:p-10"
     >
       <div class="text-center mb-10">
-        <h3 class="text-2xl font-bold text-(--ui-text-highlighted) mb-2">
+        <h2 class="text-2xl font-bold text-(--ui-text-highlighted) mb-2">
           Everything you need
-        </h3>
+        </h2>
         <p class="text-(--ui-text-muted) max-w-xl mx-auto">
           A batteries-included toolkit for building modern web applications.
         </p>
@@ -102,9 +102,9 @@ const compactFeatures = [
             <UIcon :name="feature.icon" class="size-5 text-(--ui-primary)" />
           </div>
           <div>
-            <h4 class="font-semibold text-(--ui-text-highlighted) mb-1">
+            <h3 class="font-semibold text-(--ui-text-highlighted) mb-1">
               {{ feature.title }}
-            </h4>
+            </h3>
             <p class="text-sm text-(--ui-text-muted)">
               {{ feature.description }}
             </p>
@@ -118,9 +118,9 @@ const compactFeatures = [
       class="rounded-xl border border-(--ui-border) bg-(--ui-bg) p-6 sm:p-10"
     >
       <div class="text-center mb-10">
-        <h3 class="text-2xl font-bold text-(--ui-text-highlighted) mb-2">
+        <h2 class="text-2xl font-bold text-(--ui-text-highlighted) mb-2">
           Built for developers
-        </h3>
+        </h2>
         <p class="text-(--ui-text-muted) max-w-xl mx-auto">
           The theme builder is designed around your workflow.
         </p>
@@ -129,9 +129,9 @@ const compactFeatures = [
         <UCard v-for="f in compactFeatures" :key="f.title">
           <div class="text-center py-2">
             <UIcon :name="f.icon" class="size-8 text-(--ui-primary) mb-3" />
-            <h4 class="font-semibold text-(--ui-text-highlighted) mb-1">
+            <h3 class="font-semibold text-(--ui-text-highlighted) mb-1">
               {{ f.title }}
-            </h4>
+            </h3>
             <p class="text-sm text-(--ui-text-muted)">{{ f.description }}</p>
           </div>
         </UCard>

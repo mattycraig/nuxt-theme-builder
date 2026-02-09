@@ -1,6 +1,6 @@
 <template>
   <section>
-    <h3 class="text-lg font-semibold mb-4">Buttons</h3>
+    <h2 class="text-lg font-semibold mb-4">Buttons</h2>
 
     <!-- Solid -->
     <p class="text-sm text-(--ui-text-muted) mb-2">Solid</p>

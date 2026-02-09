@@ -53,9 +53,9 @@ const testimonials = [
       class="rounded-xl border border-(--ui-border) bg-(--ui-bg) p-6 sm:p-10"
     >
       <div class="text-center mb-10">
-        <h3 class="text-2xl font-bold text-(--ui-text-highlighted) mb-2">
+        <h2 class="text-2xl font-bold text-(--ui-text-highlighted) mb-2">
           Loved by developers
-        </h3>
+        </h2>
         <p class="text-(--ui-text-muted)">
           See what people are saying about the theme builder.
         </p>

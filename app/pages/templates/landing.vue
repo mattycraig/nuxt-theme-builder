@@ -261,9 +261,9 @@ const logos = ["Nuxt", "Vue.js", "Tailwind", "Vercel", "Netlify", "Cloudflare"];
                   class="size-5 text-(--ui-primary)"
                 />
               </div>
-              <h3 class="font-semibold text-(--ui-text-highlighted)">
+              <h2 class="font-semibold text-(--ui-text-highlighted)">
                 {{ feature.title }}
-              </h3>
+              </h2>
               <p class="text-sm text-(--ui-text-muted) leading-relaxed">
                 {{ feature.description }}
               </p>
@@ -368,7 +368,15 @@ const logos = ["Nuxt", "Vue.js", "Tailwind", "Vercel", "Netlify", "Cloudflare"];
                 <UBadge label="Tag 2" color="secondary" variant="subtle" />
                 <UBadge label="Tag 3" color="success" variant="subtle" />
               </div>
-              <UProgress :value="65" color="primary" size="sm" />
+              <UProgress
+                :value="65"
+                color="primary"
+                size="sm"
+                :get-value-label="
+                  (value: number | null | undefined) =>
+                    `Project progress: ${value ?? 0}%`
+                "
+              />
             </div>
           </div>
         </div>

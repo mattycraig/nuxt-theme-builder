@@ -1,6 +1,6 @@
 <template>
   <section>
-    <h3 class="text-lg font-semibold mb-4">Accordion</h3>
+    <h2 class="text-lg font-semibold mb-4">Accordion</h2>
 
     <UAccordion :items="items" />
   </section>

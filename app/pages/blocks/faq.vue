@@ -55,9 +55,9 @@ const faqs = [
       class="rounded-xl border border-(--ui-border) bg-(--ui-bg) p-6 sm:p-10"
     >
       <div class="text-center mb-10">
-        <h3 class="text-2xl font-bold text-(--ui-text-highlighted) mb-2">
+        <h2 class="text-2xl font-bold text-(--ui-text-highlighted) mb-2">
           Frequently Asked Questions
-        </h3>
+        </h2>
         <p class="text-(--ui-text-muted) max-w-xl mx-auto">
           Everything you need to know about the Nuxt UI Theme Builder.
         </p>

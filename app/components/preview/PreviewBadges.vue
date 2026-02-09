@@ -1,6 +1,6 @@
 <template>
   <section>
-    <h3 class="text-lg font-semibold mb-4">Badges</h3>
+    <h2 class="text-lg font-semibold mb-4">Badges</h2>
 
     <div v-for="variant in variants" :key="variant" class="mb-3">
       <p class="text-sm text-(--ui-text-muted) mb-2">

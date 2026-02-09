@@ -1,13 +1,13 @@
 <template>
   <section>
-    <h3 class="text-lg font-semibold mb-4">Cards</h3>
+    <h2 class="text-lg font-semibold mb-4">Cards</h2>
 
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
       <!-- Card with header, body, footer -->
       <UCard>
         <template #header>
           <div class="flex items-center justify-between">
-            <h4 class="font-semibold">Project Overview</h4>
+            <h3 class="font-semibold">Project Overview</h3>
             <UBadge label="Active" color="success" variant="soft" />
           </div>
         </template>
@@ -52,7 +52,7 @@
       <!-- Card with form -->
       <UCard>
         <template #header>
-          <h4 class="font-semibold">Quick Feedback</h4>
+          <h3 class="font-semibold">Quick Feedback</h3>
         </template>
 
         <div class="space-y-3">

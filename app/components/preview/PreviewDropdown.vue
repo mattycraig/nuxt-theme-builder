@@ -1,6 +1,6 @@
 <template>
   <section>
-    <h3 class="text-lg font-semibold mb-4">Dropdown Menu</h3>
+    <h2 class="text-lg font-semibold mb-4">Dropdown Menu</h2>
 
     <div class="flex gap-4">
       <UDropdownMenu :items="items">

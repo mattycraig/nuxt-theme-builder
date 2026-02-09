@@ -49,11 +49,11 @@ const hero2 = heroes[1];
           size="lg"
           class="mb-6"
         />
-        <h3
+        <h2
           class="text-3xl sm:text-5xl font-bold tracking-tight text-(--ui-text-highlighted) mb-4 max-w-2xl mx-auto"
         >
           {{ hero1.headline }}
-        </h3>
+        </h2>
         <p class="text-lg text-(--ui-text-muted) max-w-xl mx-auto mb-8">
           {{ hero1.subtitle }}
         </p>
@@ -87,11 +87,11 @@ const hero2 = heroes[1];
             variant="subtle"
             class="mb-4"
           />
-          <h3
+          <h2
             class="text-3xl sm:text-4xl font-bold tracking-tight text-(--ui-text-highlighted) mb-4"
           >
             {{ hero2.headline }}
-          </h3>
+          </h2>
           <p class="text-lg text-(--ui-text-muted) mb-6">
             {{ hero2.subtitle }}
           </p>

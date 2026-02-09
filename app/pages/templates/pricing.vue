@@ -223,6 +223,7 @@ const faqItems = [
           </span>
           <USwitch
             :model-value="billingCycle === 'annual'"
+            aria-label="Toggle annual billing"
             @update:model-value="billingCycle = $event ? 'annual' : 'monthly'"
           />
           <span

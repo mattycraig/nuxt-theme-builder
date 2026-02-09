@@ -1,9 +1,7 @@
 import { defineEventHandler, getRouterParam, createError } from "h3";
-import { resolve, normalize } from "node:path";
-import { readFile } from "node:fs/promises";
-import { existsSync } from "node:fs";
+import sourceCodeMap from "#source-code-map";
 
-const PAGES_DIR = resolve(process.cwd(), "app/pages");
+const sources = sourceCodeMap as Record<string, string>;
 
 export default defineEventHandler(async (event) => {
   const rawPath = getRouterParam(event, "path") ?? "";
@@ -13,24 +11,22 @@ export default defineEventHandler(async (event) => {
   }
 
   const safePath = rawPath.replace(/[\\]/g, "/").replace(/\.vue$/, "");
-  const candidates = [
-    resolve(PAGES_DIR, `${safePath}.vue`),
-    resolve(PAGES_DIR, safePath, "index.vue"),
-  ];
+  const candidates = [`${safePath}.vue`, `${safePath}/index.vue`];
 
-  const resolvedFile = candidates.find((candidate) => {
-    const normalized = normalize(candidate);
-    return normalized.startsWith(PAGES_DIR) && existsSync(normalized);
-  });
+  let content: string | undefined;
+  for (const candidate of candidates) {
+    if (sources[candidate]) {
+      content = sources[candidate];
+      break;
+    }
+  }
 
-  if (!resolvedFile) {
+  if (!content) {
     throw createError({
       statusCode: 404,
       statusMessage: "Source file not found",
     });
   }
-
-  const content = await readFile(resolvedFile, "utf-8");
 
   event.node.res.setHeader("Content-Type", "text/plain; charset=utf-8");
   return content;

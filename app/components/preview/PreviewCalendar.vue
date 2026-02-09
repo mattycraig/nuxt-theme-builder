@@ -1,6 +1,6 @@
 <template>
   <section>
-    <h3 class="text-lg font-semibold mb-4">Calendar</h3>
+    <h2 class="text-lg font-semibold mb-4">Calendar</h2>
 
     <div class="flex flex-col sm:flex-row items-start gap-4">
       <UCalendar v-model="selectedDate" />

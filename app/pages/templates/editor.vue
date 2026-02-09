@@ -510,6 +510,7 @@ function onNodeChange(event: { node: any; pos: number }) {
       variant="outline"
       color="neutral"
       size="sm"
+      aria-label="Open document sidebar"
       @click="sidebarOpen = true"
     />
 
@@ -586,9 +587,9 @@ function onNodeChange(event: { node: any; pos: number }) {
       <!-- Header -->
       <div class="px-4 py-3 border-b border-(--ui-border)">
         <div class="flex items-center justify-between mb-3">
-          <h3 class="text-sm font-semibold text-(--ui-text-highlighted)">
+          <h2 class="text-sm font-semibold text-(--ui-text-highlighted)">
             Documents
-          </h3>
+          </h2>
           <UTooltip text="New document">
             <UButton
               icon="i-lucide-plus"

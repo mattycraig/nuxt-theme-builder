@@ -1,6 +1,6 @@
 <template>
   <section>
-    <h3 class="text-lg font-semibold mb-4">Avatars</h3>
+    <h2 class="text-lg font-semibold mb-4">Avatars</h2>
 
     <!-- Individual sizes -->
     <p class="text-sm text-(--ui-text-muted) mb-2">Sizes</p>

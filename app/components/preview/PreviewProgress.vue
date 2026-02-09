@@ -1,6 +1,6 @@
 <template>
   <section>
-    <h3 class="text-lg font-semibold mb-4">Progress</h3>
+    <h2 class="text-lg font-semibold mb-4">Progress</h2>
 
     <div class="space-y-4">
       <div v-for="bar in bars" :key="bar.label">
@@ -8,7 +8,15 @@
           <span class="text-sm font-medium">{{ bar.label }}</span>
           <span class="text-sm text-(--ui-text-muted)">{{ bar.value }}%</span>
         </div>
-        <UProgress :value="bar.value" :max="100" :color="bar.color" />
+        <UProgress
+          :value="bar.value"
+          :max="100"
+          :color="bar.color"
+          :get-value-label="
+            (_value: number | null | undefined, max: number) =>
+              `${bar.label}: ${bar.value} of ${max}`
+          "
+        />
       </div>
     </div>
   </section>

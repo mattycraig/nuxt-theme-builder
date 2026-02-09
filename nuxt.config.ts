@@ -4,10 +4,32 @@ export default defineNuxtConfig({
     "@nuxt/ui",
     "@nuxt/eslint",
     "@nuxtjs/mdc",
+    "@nuxtjs/sitemap",
     "@pinia/nuxt",
     "pinia-plugin-persistedstate/nuxt",
     "@vueuse/nuxt",
   ],
+
+  site: {
+    url: "https://nuxt-theme-builder.vercel.app",
+    name: "Nuxt UI Theme Builder",
+  },
+
+  app: {
+    head: {
+      htmlAttrs: { lang: "en" },
+      link: [
+        { rel: "icon", type: "image/svg+xml", href: "/favicon.svg" },
+        { rel: "apple-touch-icon", href: "/apple-touch-icon.svg" },
+      ],
+      meta: [
+        {
+          name: "og:image",
+          content: "https://nuxt-theme-builder.vercel.app/og-image.png",
+        },
+      ],
+    },
+  },
 
   devtools: { enabled: false },
   compatibilityDate: "2024-04-03",

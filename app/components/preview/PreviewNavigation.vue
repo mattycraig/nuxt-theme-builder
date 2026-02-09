@@ -1,6 +1,6 @@
 <template>
   <section>
-    <h3 class="text-lg font-semibold mb-4">Navigation Menu</h3>
+    <h2 class="text-lg font-semibold mb-4">Navigation Menu</h2>
 
     <UNavigationMenu :items="items" />
   </section>

@@ -20,11 +20,11 @@
       class="rounded-xl border border-(--ui-border) bg-(--ui-bg) overflow-hidden"
     >
       <div class="px-6 py-16 text-center">
-        <h3
+        <h2
           class="text-2xl sm:text-3xl font-bold text-(--ui-text-highlighted) mb-3"
         >
           Ready to get started?
-        </h3>
+        </h2>
         <p class="text-(--ui-text-muted) max-w-md mx-auto mb-6">
           Start building your theme in minutes. No account required — everything
           runs in your browser.
@@ -54,9 +54,9 @@
         class="px-6 py-16 flex flex-col lg:flex-row items-center justify-between gap-8 max-w-4xl mx-auto"
       >
         <div>
-          <h3 class="text-2xl font-bold text-(--ui-text-highlighted) mb-2">
+          <h2 class="text-2xl font-bold text-(--ui-text-highlighted) mb-2">
             Export your theme now
-          </h3>
+          </h2>
           <p class="text-(--ui-text-muted)">
             Copy your theme configuration as
             <code class="text-sm bg-(--ui-bg-elevated) px-1.5 py-0.5 rounded"
@@ -81,9 +81,9 @@
     >
       <div class="px-6 py-12 max-w-lg mx-auto text-center">
         <UIcon name="i-lucide-mail" class="size-10 text-(--ui-primary) mb-4" />
-        <h3 class="text-xl font-bold text-(--ui-text-highlighted) mb-2">
+        <h2 class="text-xl font-bold text-(--ui-text-highlighted) mb-2">
           Stay in the loop
-        </h3>
+        </h2>
         <p class="text-sm text-(--ui-text-muted) mb-6">
           Get notified about new components, presets, and theme builder updates.
         </p>

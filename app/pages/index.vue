@@ -75,12 +75,12 @@ const sections = [
           size="lg"
           class="mb-6"
         />
-        <h2
+        <h1
           class="text-4xl sm:text-5xl font-bold tracking-tight text-(--ui-text-highlighted) mb-6"
         >
           Build your perfect
           <span class="text-(--ui-primary)">Nuxt UI</span> theme
-        </h2>
+        </h1>
         <p
           class="text-lg sm:text-xl text-(--ui-text-muted) max-w-2xl mx-auto mb-10"
         >
@@ -114,9 +114,9 @@ const sections = [
     <section class="py-16 px-6">
       <div class="max-w-5xl mx-auto">
         <div class="text-center mb-12">
-          <h3 class="text-2xl font-bold text-(--ui-text-highlighted) mb-2">
+          <h2 class="text-2xl font-bold text-(--ui-text-highlighted) mb-2">
             Everything you need to theme your app
-          </h3>
+          </h2>
           <p class="text-(--ui-text-muted)">
             Edit in the sidebar, preview on the right, export when you're done.
           </p>
@@ -133,9 +133,9 @@ const sections = [
                 />
               </div>
               <div>
-                <h4 class="font-semibold text-(--ui-text-highlighted) mb-1">
+                <h3 class="font-semibold text-(--ui-text-highlighted) mb-1">
                   {{ feature.title }}
-                </h4>
+                </h3>
                 <p class="text-sm text-(--ui-text-muted)">
                   {{ feature.description }}
                 </p>
@@ -152,9 +152,9 @@ const sections = [
     <section class="py-16 px-6">
       <div class="max-w-4xl mx-auto">
         <div class="text-center mb-12">
-          <h3 class="text-2xl font-bold text-(--ui-text-highlighted) mb-2">
+          <h2 class="text-2xl font-bold text-(--ui-text-highlighted) mb-2">
             Explore the preview sections
-          </h3>
+          </h2>
           <p class="text-(--ui-text-muted)">
             See how your theme looks across components, blocks, and full page
             templates.
@@ -179,11 +179,11 @@ const sections = [
                     class="size-7 text-(--ui-primary)"
                   />
                 </div>
-                <h4
+                <h3
                   class="text-lg font-semibold text-(--ui-text-highlighted) mb-2"
                 >
                   {{ section.title }}
-                </h4>
+                </h3>
                 <p class="text-sm text-(--ui-text-muted)">
                   {{ section.description }}
                 </p>

@@ -101,6 +101,7 @@ const helpLinks = [
     <div class="flex-1 flex items-center justify-center pb-8 px-4">
       <div class="w-full max-w-2xl">
         <UError
+          as="div"
           :error="currentError"
           :clear="false"
           :ui="{

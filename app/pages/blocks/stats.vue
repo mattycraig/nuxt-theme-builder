@@ -36,9 +36,9 @@ const detailedStats = [
       class="rounded-xl border border-(--ui-border) bg-(--ui-bg) p-6 sm:p-10"
     >
       <div class="text-center mb-10">
-        <h3 class="text-2xl font-bold text-(--ui-text-highlighted) mb-2">
+        <h2 class="text-2xl font-bold text-(--ui-text-highlighted) mb-2">
           By the numbers
-        </h3>
+        </h2>
       </div>
       <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
         <UCard v-for="stat in stats" :key="stat.label">
@@ -58,9 +58,9 @@ const detailedStats = [
       class="rounded-xl border border-(--ui-border) bg-(--ui-bg) p-6 sm:p-10"
     >
       <div class="text-center mb-10">
-        <h3 class="text-2xl font-bold text-(--ui-text-highlighted) mb-2">
+        <h2 class="text-2xl font-bold text-(--ui-text-highlighted) mb-2">
           Project Health
-        </h3>
+        </h2>
       </div>
       <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
         <UCard v-for="stat in detailedStats" :key="stat.label">

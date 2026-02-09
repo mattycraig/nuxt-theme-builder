@@ -32,6 +32,7 @@ const items = CHROMATIC_PALETTES.map((p) => ({
       :id="inputId"
       :model-value="modelValue"
       :items="items"
+      :aria-label="`${label}: ${modelValue}`"
       class="w-full"
       @update:model-value="
         emit('update:modelValue', $event as ChromaticPalette)

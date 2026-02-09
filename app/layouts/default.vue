@@ -171,12 +171,23 @@ const seoTitle = computed(
 useSeoMeta({
   title: seoTitle,
   description:
-    "Visually configure Nuxt UI v4 design tokens and export your theme.",
+    "Visually configure Nuxt UI v4 design tokens — colors, radius, fonts, and shades — preview every component live, then export as app.config.ts, CSS, or JSON.",
   ogTitle: seoTitle,
   ogDescription:
-    "Visually configure Nuxt UI v4 design tokens and export your theme.",
+    "Visually configure Nuxt UI v4 design tokens — colors, radius, fonts, and shades — preview every component live, then export as app.config.ts, CSS, or JSON.",
   ogType: "website",
+  ogImage: "https://nuxt-theme-builder.vercel.app/og-image.png",
   twitterCard: "summary_large_image",
+  twitterImage: "https://nuxt-theme-builder.vercel.app/og-image.png",
+});
+
+useHead({
+  link: [
+    {
+      rel: "canonical",
+      href: computed(() => `https://nuxt-theme-builder.vercel.app${route.path}`),
+    },
+  ],
 });
 
 // Mobile navigation dropdown ─────────────────────────────────────────
@@ -216,17 +227,19 @@ function onSearchSelect(option: { to?: string }) {
       }"
     >
       <template #header="{ collapsed }">
-        <h1
+        <p
           v-if="!collapsed"
           class="text-lg font-bold text-[var(--ui-text-highlighted)] truncate flex items-center gap-2"
+          role="banner"
         >
-          <UIcon name="i-lucide-palette" class="size-5 text-(--ui-primary)" />
+          <UIcon name="i-lucide-palette" class="size-5 text-(--ui-primary)" aria-hidden="true" />
           Nuxt UI Builder
-        </h1>
+        </p>
         <UIcon
           v-else
           name="i-lucide-palette"
           class="size-5 text-(--ui-primary) mx-auto"
+          aria-hidden="true"
         />
       </template>
 
@@ -261,7 +274,7 @@ function onSearchSelect(option: { to?: string }) {
     <!-- Main Content ──────────────────────────────────────────────── -->
     <main id="maincontent" class="flex-1 h-full overflow-hidden flex flex-col">
       <!-- Bar 1: Top Navbar — page identity + global actions ────── -->
-      <UDashboardNavbar>
+      <UDashboardNavbar title="Nuxt UI Theme Builder" :ui="{ title: 'sr-only' }">
         <template #leading>
           <UDashboardSidebarCollapse />
           <USeparator orientation="vertical" class="h-6 mx-2" />
@@ -340,7 +353,7 @@ function onSearchSelect(option: { to?: string }) {
                 size="sm"
                 color="neutral"
                 class="font-mono tabular-nums"
-                aria-label="Set custom preview width"
+                :aria-label="`Current preview width: ${displayWidth}`"
               />
             </UTooltip>
             <template #content>
@@ -447,7 +460,7 @@ function onSearchSelect(option: { to?: string }) {
     />
 
     <!-- Hidden slot keeps NuxtPage mounted so Vue Router reactivity works -->
-    <div class="hidden">
+    <div class="hidden" aria-hidden="true">
       <slot />
     </div>
 
