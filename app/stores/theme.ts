@@ -14,12 +14,21 @@ import { DEFAULT_THEME, cloneTheme } from "~/utils/defaults";
 
 const MAX_HISTORY = 50;
 
+/**
+ * Central theme store — single source of truth for all design token configuration.
+ * Supports undo/redo, named presets, and localStorage persistence.
+ */
+
 export const useThemeStore = defineStore(
   "theme",
   () => {
+    // ─── State ──────────────────────────────────────────────────────────
+
     const config = ref<ThemeConfig>(cloneTheme(DEFAULT_THEME));
     const savedPresets = shallowRef<ThemePreset[]>([]);
     const activePresetName = ref<string>("");
+
+    // ─── Undo / Redo History ────────────────────────────────────────────
 
     const history = shallowRef<ThemeConfig[]>([cloneTheme(DEFAULT_THEME)]);
     const historyIndex = ref(0);
@@ -60,6 +69,8 @@ export const useThemeStore = defineStore(
       historyIndex.value++;
       config.value = cloneTheme(history.value[historyIndex.value]!);
     }
+
+    // ─── Setters (each pushes history for undo support) ────────────────
 
     function setSemanticColor(key: SemanticColorKey, value: ChromaticPalette) {
       config.value.colors[key] = value;
@@ -125,6 +136,8 @@ export const useThemeStore = defineStore(
       _pushHistory();
     }
 
+    // ─── Config Management ──────────────────────────────────────────────
+
     function resetToDefaults() {
       config.value = cloneTheme(DEFAULT_THEME);
       activePresetName.value = "";
@@ -151,6 +164,8 @@ export const useThemeStore = defineStore(
       if (!result.success) return;
       config.value = cloneTheme(result.data as ThemeConfig);
     }
+
+    // ─── Preset CRUD ────────────────────────────────────────────────────
 
     function savePreset(name: string): { isUpdate: boolean } {
       const now = Date.now();
@@ -245,6 +260,8 @@ export const useThemeStore = defineStore(
       activePresetName.value = preset.name;
       _pushHistory();
     }
+
+    // ─── Public API ─────────────────────────────────────────────────────
 
     return {
       config,

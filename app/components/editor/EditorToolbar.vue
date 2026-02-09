@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { useSaveThemeModal } from "~/composables/useThemeExport";
+import { useSaveThemeModal } from "~/composables/useSaveThemeModal";
 
 defineProps<{
   collapsed?: boolean;
