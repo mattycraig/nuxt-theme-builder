@@ -76,16 +76,16 @@ export const DEFAULT_DARK_OVERRIDES: TokenOverrides = {
 
 export const DEFAULT_THEME: ThemeConfig = {
   colors: {
-    primary: "green",
-    secondary: "blue",
-    success: "green",
+    primary: "indigo",
+    secondary: "sky",
+    success: "emerald",
     info: "blue",
-    warning: "yellow",
-    error: "red",
+    warning: "amber",
+    error: "rose",
   },
   neutral: "slate",
-  radius: 0.25,
-  font: "Public Sans",
+  radius: 0.375,
+  font: "Inter",
   lightOverrides: { ...DEFAULT_LIGHT_OVERRIDES },
   darkOverrides: { ...DEFAULT_DARK_OVERRIDES },
 };
