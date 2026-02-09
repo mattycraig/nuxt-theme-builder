@@ -34,6 +34,7 @@ export function useThemeApply() {
     { immediate: true },
   );
 
+  // CSS injection covers radius, font, token overrides AND shade-shifted palette overrides
   const injectedCSS = computed(() => {
     const { rootCSS, darkCSS } = generateThemeCSS(
       store.config,

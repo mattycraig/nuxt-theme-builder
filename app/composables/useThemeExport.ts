@@ -1,11 +1,14 @@
 import { useThemeStore } from "~/stores/theme";
-import { ThemeConfigSchema } from "~/types/theme";
+import { ThemeConfigSchema, SEMANTIC_COLOR_KEYS } from "~/types/theme";
 import type { ThemeConfig } from "~/types/theme";
 import {
   DEFAULT_LIGHT_OVERRIDES,
   DEFAULT_DARK_OVERRIDES,
 } from "~/utils/defaults";
-import { generateOverrideLines } from "~/utils/cssGenerator";
+import {
+  generateOverrideLines,
+  generateShadeOverrideLines,
+} from "~/utils/cssGenerator";
 
 /**
  * Composable for exporting, importing, and sharing theme configurations.
@@ -23,6 +26,9 @@ export function useThemeExport() {
 
   const appConfigExport = computed(() => {
     const cfg = store.config;
+    const hasShadeOverrides = SEMANTIC_COLOR_KEYS.some(
+      (k) => cfg.colorShades[k] !== "500",
+    );
     const lines: string[] = [];
     lines.push(`export default defineAppConfig({`);
     lines.push(`  ui: {`);
@@ -37,6 +43,19 @@ export function useThemeExport() {
     lines.push(`    },`);
     lines.push(`  },`);
     lines.push(`})`);
+    if (hasShadeOverrides) {
+      lines.push(``);
+      lines.push(
+        `// Shade overrides — add the CSS variables from the CSS export to your main.css`,
+      );
+      for (const key of SEMANTIC_COLOR_KEYS) {
+        if (cfg.colorShades[key] !== "500") {
+          lines.push(
+            `// ${key}: ${cfg.colors[key]}-${cfg.colorShades[key]} (shifted from default 500)`,
+          );
+        }
+      }
+    }
     return lines.join("\n");
   });
 
@@ -61,8 +80,13 @@ export function useThemeExport() {
       cfg.lightOverrides,
       DEFAULT_LIGHT_OVERRIDES,
     );
+    const shadeOverrideLines = generateShadeOverrideLines(
+      cfg.colors,
+      cfg.colorShades,
+    );
     const rootLines: string[] = [`  --ui-radius: ${cfg.radius}rem;`];
     rootLines.push(...rootOverrideLines);
+    rootLines.push(...shadeOverrideLines);
 
     if (rootLines.length > 0) {
       lines.push(`:root {`);

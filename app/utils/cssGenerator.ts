@@ -5,8 +5,11 @@ import type {
   TextTokenOverrides,
   BgTokenOverrides,
   BorderTokenOverrides,
+  SemanticColorKey,
+  ChromaticPalette,
 } from "~/types/theme";
-import { shadeToCSS } from "~/utils/defaults";
+import { SEMANTIC_COLOR_KEYS, NUMERIC_SHADE_KEYS } from "~/types/theme";
+import { shadeToCSS, CHROMATIC_HEX_MAP } from "~/utils/defaults";
 import { typedEntries } from "~/utils/helpers";
 
 type TokenCategory = "text" | "bg" | "border";
@@ -85,6 +88,62 @@ export interface ThemeCSSResult {
   darkCSS: string;
 }
 
+const DEFAULT_SHADE_INDEX = NUMERIC_SHADE_KEYS.indexOf("500");
+
+/**
+ * Generate CSS variable overrides that remap a semantic color's palette shades.
+ * When the user selects a shade other than 500, the palette is shifted so the
+ * selected shade becomes the "center" (500) of the output palette.
+ *
+ * For example, selecting 400 for primary=indigo means:
+ *   --ui-color-primary-500 gets indigo-400's hex value
+ *   --ui-color-primary-600 gets indigo-500's hex value
+ *   (clamped at palette boundaries)
+ */
+export function generateShadeOverrideLines(
+  colors: Record<SemanticColorKey, ChromaticPalette>,
+  colorShades: Record<SemanticColorKey, NeutralShade>,
+  indent: string = "  ",
+): string[] {
+  const lines: string[] = [];
+
+  for (const key of SEMANTIC_COLOR_KEYS) {
+    const shade = colorShades[key];
+    if (shade === "500") continue;
+
+    // White/black: flatten entire palette to a single color
+    if (shade === "white" || shade === "black") {
+      const hex = shade === "white" ? "#ffffff" : "#000000";
+      for (const targetShade of NUMERIC_SHADE_KEYS) {
+        lines.push(`${indent}--ui-color-${key}-${targetShade}: ${hex};`);
+      }
+      continue;
+    }
+
+    const palette = colors[key];
+    const hexMap = CHROMATIC_HEX_MAP[palette];
+    if (!hexMap) continue;
+
+    const selectedIdx = NUMERIC_SHADE_KEYS.indexOf(shade);
+    const offset = selectedIdx - DEFAULT_SHADE_INDEX;
+
+    for (let i = 0; i < NUMERIC_SHADE_KEYS.length; i++) {
+      const targetShade = NUMERIC_SHADE_KEYS[i];
+      const sourceIdx = Math.max(
+        0,
+        Math.min(i + offset, NUMERIC_SHADE_KEYS.length - 1),
+      );
+      const sourceShade = NUMERIC_SHADE_KEYS[sourceIdx]!;
+      const hex = hexMap[sourceShade];
+      if (hex) {
+        lines.push(`${indent}--ui-color-${key}-${targetShade}: ${hex};`);
+      }
+    }
+  }
+
+  return lines;
+}
+
 /**
  * Generate the complete theme CSS override string for both light and dark modes.
  * Used by both useThemeApply (DOM injection) and useThemeExport (export output).
@@ -105,6 +164,12 @@ export function generateThemeCSS(
   rootLines.push(
     ...generateOverrideLines(config.lightOverrides, lightDefaults),
   );
+
+  // Shade-shifted palette overrides (when any semantic color uses a non-default shade)
+  rootLines.push(
+    ...generateShadeOverrideLines(config.colors, config.colorShades),
+  );
+
   rootLines.push(`}`);
 
   const darkOverrideLines = generateOverrideLines(

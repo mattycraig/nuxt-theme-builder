@@ -88,6 +88,11 @@ export const useThemeStore = defineStore(
       _pushHistory();
     }
 
+    function setSemanticShade(key: SemanticColorKey, shade: NeutralShade) {
+      config.value.colorShades[key] = shade;
+      _pushHistory();
+    }
+
     function setNeutral(value: NeutralPalette) {
       config.value.neutral = value;
       _pushHistory();
@@ -289,6 +294,7 @@ export const useThemeStore = defineStore(
       undoAll,
       redo,
       setSemanticColor,
+      setSemanticShade,
       setNeutral,
       setRadius,
       setRadiusVisual,

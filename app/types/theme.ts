@@ -68,7 +68,16 @@ export const SHADE_VALUES = [
 
 export type NeutralShade = (typeof SHADE_VALUES)[number];
 
+// Numeric shade scale for palette shade selection (no white/black).
+export const NUMERIC_SHADE_KEYS = [
+  "50", "100", "200", "300", "400", "500",
+  "600", "700", "800", "900", "950",
+] as const;
+
+export type NumericShade = (typeof NUMERIC_SHADE_KEYS)[number];
+
 export type SemanticColors = Record<SemanticColorKey, ChromaticPalette>;
+export type SemanticShades = Record<SemanticColorKey, NeutralShade>;
 
 // Token Override Keys ─────────────────────────────────────────────────────
 // CSS variable token names that can be overridden per light/dark mode.
@@ -117,6 +126,7 @@ export interface TokenOverrides {
 
 export interface ThemeConfig {
   colors: SemanticColors;
+  colorShades: SemanticShades;
   neutral: NeutralPalette;
   radius: number;
   font: string;
@@ -153,6 +163,7 @@ import { z } from "zod";
 const chromaticPaletteSchema = z.enum(CHROMATIC_PALETTES);
 const neutralPaletteSchema = z.enum(NEUTRAL_PALETTES);
 const neutralShadeSchema = z.enum(SHADE_VALUES);
+const numericShadeSchema = z.enum(NUMERIC_SHADE_KEYS);
 
 function shadeRecordSchema<T extends readonly string[]>(keys: T) {
   const shape = {} as Record<string, z.ZodType<string>>;
@@ -172,6 +183,15 @@ const tokenOverridesSchema = z.object({
   border: borderTokenOverridesSchema,
 });
 
+const defaultColorShades = {
+  primary: "500" as const,
+  secondary: "500" as const,
+  success: "500" as const,
+  info: "500" as const,
+  warning: "500" as const,
+  error: "500" as const,
+};
+
 export const ThemeConfigSchema = z.object({
   colors: z.object({
     primary: chromaticPaletteSchema,
@@ -181,6 +201,14 @@ export const ThemeConfigSchema = z.object({
     warning: chromaticPaletteSchema,
     error: chromaticPaletteSchema,
   }),
+  colorShades: z.object({
+    primary: neutralShadeSchema,
+    secondary: neutralShadeSchema,
+    success: neutralShadeSchema,
+    info: neutralShadeSchema,
+    warning: neutralShadeSchema,
+    error: neutralShadeSchema,
+  }).default(defaultColorShades),
   neutral: neutralPaletteSchema,
   radius: z.number().finite().min(0).max(2),
   font: z.enum(FONT_OPTIONS),

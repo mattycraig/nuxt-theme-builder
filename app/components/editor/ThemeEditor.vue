@@ -193,8 +193,10 @@ onMounted(() => {
             v-for="key in SEMANTIC_COLOR_KEYS"
             :key="key"
             :model-value="store.config.colors[key]"
+            :shade="store.config.colorShades[key]"
             :label="capitalize(key)"
             @update:model-value="store.setSemanticColor(key, $event)"
+            @update:shade="store.setSemanticShade(key, $event)"
           />
         </div>
       </EditorSection>
