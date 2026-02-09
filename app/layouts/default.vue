@@ -5,9 +5,24 @@ import { usePreviewIframe } from "~/composables/usePreviewIframe";
 import { usePreviewResize } from "~/composables/usePreviewResize";
 import { useKeyboardShortcuts } from "~/composables/useKeyboardShortcuts";
 import { NAVIGATION_ITEMS, flattenNavigationItems } from "~/utils/navigation";
+import { useSourceCode } from "~/composables/useSourceCode";
 
 useThemeApply();
 useKeyboardShortcuts();
+
+// Source code viewer ────────────────────────────────────────────────────
+const {
+  viewMode,
+  sourceCode,
+  sourceFilePath,
+  isLoadingSource,
+  sourceError,
+  hasSourcePage,
+  copied,
+  setViewMode,
+  copySource,
+  retry: retrySource,
+} = useSourceCode();
 
 const route = useRoute();
 const colorMode = useColorMode();
@@ -227,7 +242,7 @@ function onSearchSelect(option: { to?: string }) {
       <UDashboardNavbar>
         <template #leading>
           <UDashboardSidebarCollapse />
-          <USeparator orientation="vertical" class="h-6 mx-1" />
+          <USeparator orientation="vertical" class="h-6 mx-2" />
         </template>
 
         <template #trailing>
@@ -272,8 +287,10 @@ function onSearchSelect(option: { to?: string }) {
           :ui="{ linkLeadingIcon: 'size-4', link: 'text-xs' }"
         />
 
-        <div
-          class="flex items-center gap-1.5 absolute left-1/2 -translate-x-1/2"
+        <UFieldGroup
+          class="flex items-center absolute left-1/2 -translate-x-1/2"
+          role="group"
+          aria-label="Change preview width"
         >
           <!-- Preset width toggles -->
           <UTooltip
@@ -284,14 +301,13 @@ function onSearchSelect(option: { to?: string }) {
             <UButton
               :icon="option.icon"
               :aria-label="option.label"
-              size="xs"
-              :variant="previewWidth === option.value ? 'soft' : 'ghost'"
+              size="sm"
+              variant="outline"
               :color="previewWidth === option.value ? 'primary' : 'neutral'"
+              :aria-pressed="previewWidth === option.value"
               @click="previewWidth = option.value"
             />
           </UTooltip>
-
-          <USeparator orientation="vertical" class="h-5 mx-1" />
 
           <!-- Custom width popover -->
           <UPopover>
@@ -299,7 +315,7 @@ function onSearchSelect(option: { to?: string }) {
               <UButton
                 :label="displayWidth"
                 variant="subtle"
-                size="xs"
+                size="sm"
                 color="neutral"
                 class="font-mono tabular-nums"
                 aria-label="Set custom preview width"
@@ -325,17 +341,72 @@ function onSearchSelect(option: { to?: string }) {
               </div>
             </template>
           </UPopover>
-        </div>
+        </UFieldGroup>
 
-        <!-- Right-aligned slot: future "View Source" + copy buttons -->
-        <div class="flex items-center gap-1.5">
-          <!-- Placeholder: view source / copy template actions go here -->
-          Testing
+        <div class="flex items-center gap-2">
+          <!-- Preview / Code toggle -->
+          <UFieldGroup
+            v-if="hasSourcePage"
+            class="flex items-center"
+            role="group"
+            aria-label="View mode"
+          >
+            <UTooltip text="Preview">
+              <UButton
+                icon="i-lucide-eye"
+                aria-label="Preview"
+                size="sm"
+                variant="outline"
+                :color="viewMode === 'preview' ? 'primary' : 'neutral'"
+                :aria-pressed="viewMode === 'preview'"
+                @click="setViewMode('preview')"
+              />
+            </UTooltip>
+            <UTooltip text="View source code">
+              <UButton
+                icon="i-lucide-code"
+                aria-label="View source code"
+                size="sm"
+                variant="outline"
+                :color="viewMode === 'code' ? 'primary' : 'neutral'"
+                :aria-pressed="viewMode === 'code'"
+                @click="setViewMode('code')"
+              />
+            </UTooltip>
+          </UFieldGroup>
+
+          <USeparator
+            v-if="hasSourcePage"
+            orientation="vertical"
+            class="h-6 mx-2"
+          />
+
+          <!-- Export -->
+          <UButton
+            icon="i-lucide-download"
+            label="Export"
+            size="sm"
+            variant="solid"
+            color="primary"
+          />
         </div>
       </div>
 
+      <!-- Source code view (replaces iframe when active) -->
+      <SourceCodeView
+        v-if="viewMode === 'code' && hasSourcePage"
+        :source="sourceCode"
+        :file-path="sourceFilePath"
+        :loading="isLoadingSource"
+        :error="sourceError"
+        :copied="copied"
+        @copy="copySource"
+        @retry="retrySource"
+      />
+
       <!-- Preview area with resizable iframe -->
       <PreviewFrame
+        v-show="viewMode === 'preview' || !hasSourcePage"
         v-model:preview-frame="previewFrame"
         v-model:preview-area="previewArea"
         :iframe-initial-src="iframeInitialSrc"
