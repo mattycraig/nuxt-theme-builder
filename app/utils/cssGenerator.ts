@@ -11,6 +11,11 @@ import { typedEntries } from "~/utils/helpers";
 
 type TokenCategory = "text" | "bg" | "border";
 
+/** Strip characters that could break out of a CSS string or inject rules */
+function sanitizeCSSValue(value: string): string {
+  return value.replace(/[;<>{}()\\/"'`]/g, "");
+}
+
 const CSS_PREFIX_MAP: Record<TokenCategory, string> = {
   text: "--ui-text",
   bg: "--ui-bg",
@@ -61,8 +66,10 @@ export function generateOverrideLines(
     lines.push(
       ...generateCategoryLines(
         cat,
-        overrides[cat] as CategoryOverrideMap[typeof cat] & Record<string, NeutralShade>,
-        defaults[cat] as CategoryOverrideMap[typeof cat] & Record<string, NeutralShade>,
+        overrides[cat] as CategoryOverrideMap[typeof cat] &
+          Record<string, NeutralShade>,
+        defaults[cat] as CategoryOverrideMap[typeof cat] &
+          Record<string, NeutralShade>,
         indent,
       ),
     );
@@ -90,9 +97,10 @@ export function generateThemeCSS(
   const rootLines: string[] = [];
   rootLines.push(`:root {`);
   rootLines.push(
-    `  --font-sans: '${config.font}', ui-sans-serif, system-ui, sans-serif;`,
+    `  --font-sans: '${sanitizeCSSValue(config.font)}', ui-sans-serif, system-ui, sans-serif;`,
   );
-  rootLines.push(`  --ui-radius: ${config.radius}rem;`);
+  const safeRadius = Math.max(0, Math.min(Number(config.radius) || 0, 2));
+  rootLines.push(`  --ui-radius: ${safeRadius}rem;`);
 
   rootLines.push(
     ...generateOverrideLines(config.lightOverrides, lightDefaults),

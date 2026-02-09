@@ -21,6 +21,20 @@ const {
 
 const previewWidth = ref<"mobile" | "tablet" | "desktop">("desktop");
 
+/** Validate postMessage navigation paths — allow only clean relative paths */
+function sanitizeNavigationPath(raw: string): string | null {
+  if (typeof raw !== "string") return null;
+  try {
+    const url = new URL(raw, window.location.origin);
+    if (url.origin !== window.location.origin) return null;
+    const pathname = url.pathname;
+    if (/[^a-zA-Z0-9/_-]/.test(pathname)) return null;
+    return pathname;
+  } catch {
+    return null;
+  }
+}
+
 const previewWidthOptions = [
   {
     value: "mobile" as const,
@@ -271,7 +285,11 @@ const allNavItems = computed(() => {
   for (const group of items) {
     for (const item of group) {
       if (item.to && item.label) {
-        result.push({ label: item.label, icon: item.icon as string | undefined, to: String(item.to) });
+        result.push({
+          label: item.label,
+          icon: item.icon as string | undefined,
+          to: String(item.to),
+        });
       }
       if (item.children) {
         for (const child of item.children) {
@@ -508,8 +526,8 @@ function handleIframeMessage(event: MessageEvent) {
 
   // Iframe link click — update host route without echoing navigate back to iframe
   if (event.data?.type === "navigate-parent") {
-    const path = String(event.data.path);
-    if (path.startsWith("/") && !path.includes("://") && path !== route.path) {
+    const path = sanitizeNavigationPath(String(event.data.path));
+    if (path && path !== route.path) {
       navigatingFromIframe.value = true;
       navigateTo(path);
     }
@@ -751,6 +769,7 @@ function onSearchSelect(option: any) {
             <iframe
               ref="previewFrame"
               :src="iframeInitialSrc"
+              sandbox="allow-scripts allow-same-origin"
               title="Theme preview"
               class="w-full h-full border-0"
               :class="{ 'pointer-events-none': isDragging }"
