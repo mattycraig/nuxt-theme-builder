@@ -309,7 +309,7 @@ function onSearchSelect(option: { to?: string }) {
               <div class="p-3 space-y-2">
                 <label
                   for="custom-width-input"
-                  class="text-xs font-medium text-(--ui-text-muted) block"
+                  class="text-sm font-medium text-(--ui-text-muted) block"
                 >
                   Custom width (px)
                 </label>
@@ -319,7 +319,7 @@ function onSearchSelect(option: { to?: string }) {
                   :model-value="customWidth ?? ''"
                   :min="320"
                   placeholder="e.g. 480"
-                  size="xs"
+                  size="sm"
                   @update:model-value="onCustomWidthInput"
                 />
               </div>
