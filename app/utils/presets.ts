@@ -1,10 +1,205 @@
-import type { ThemePreset, ThemeConfig } from "~/types/theme";
+import type {
+  ThemePreset,
+  ThemeConfig,
+  TokenOverrides,
+  SemanticShades,
+} from "~/types/theme";
 import {
   DEFAULT_THEME,
   DEFAULT_LIGHT_OVERRIDES,
   DEFAULT_DARK_OVERRIDES,
   DEFAULT_COLOR_SHADES,
 } from "~/utils/defaults";
+
+// Reusable token override sets ────────────────────────────────────────────
+// Each set is designed with WCAG 2.2 contrast ratios in mind.
+// Light mode: dark text on light backgrounds. Dark mode: light text on dark backgrounds.
+
+/** Standard light — balanced readability, ~4.5:1+ for body text on white */
+const LIGHT_STANDARD: TokenOverrides = {
+  ...DEFAULT_LIGHT_OVERRIDES,
+};
+
+/** Standard dark — balanced readability on 900-level backgrounds */
+const DARK_STANDARD: TokenOverrides = {
+  ...DEFAULT_DARK_OVERRIDES,
+};
+
+/** High-contrast light — bolder text, stronger borders */
+const LIGHT_HIGH_CONTRAST: TokenOverrides = {
+  text: {
+    dimmed: "500",
+    muted: "600",
+    toned: "700",
+    default: "800",
+    highlighted: "950",
+    inverted: "white",
+  },
+  bg: {
+    default: "white",
+    muted: "50",
+    elevated: "100",
+    accented: "200",
+    inverted: "950",
+  },
+  border: {
+    default: "300",
+    muted: "200",
+    accented: "400",
+    inverted: "950",
+  },
+};
+
+/** High-contrast dark — brighter text, 950 base */
+const DARK_HIGH_CONTRAST: TokenOverrides = {
+  text: {
+    dimmed: "400",
+    muted: "300",
+    toned: "200",
+    default: "100",
+    highlighted: "white",
+    inverted: "950",
+  },
+  bg: {
+    default: "950",
+    muted: "900",
+    elevated: "900",
+    accented: "800",
+    inverted: "white",
+  },
+  border: {
+    default: "700",
+    muted: "800",
+    accented: "600",
+    inverted: "white",
+  },
+};
+
+/** Soft light — subtle elevation differences, clean feel */
+const LIGHT_SOFT: TokenOverrides = {
+  text: {
+    dimmed: "400",
+    muted: "500",
+    toned: "600",
+    default: "700",
+    highlighted: "950",
+    inverted: "white",
+  },
+  bg: {
+    default: "white",
+    muted: "50",
+    elevated: "50",
+    accented: "100",
+    inverted: "950",
+  },
+  border: {
+    default: "200",
+    muted: "100",
+    accented: "200",
+    inverted: "950",
+  },
+};
+
+/** Deep dark — 950 base, maximum depth separation */
+const DARK_DEEP: TokenOverrides = {
+  text: {
+    dimmed: "500",
+    muted: "400",
+    toned: "300",
+    default: "200",
+    highlighted: "white",
+    inverted: "950",
+  },
+  bg: {
+    default: "950",
+    muted: "900",
+    elevated: "900",
+    accented: "800",
+    inverted: "white",
+  },
+  border: {
+    default: "800",
+    muted: "800",
+    accented: "700",
+    inverted: "white",
+  },
+};
+
+/** Warm light — slightly elevated muted tones for a cozy feel */
+const LIGHT_WARM: TokenOverrides = {
+  text: {
+    dimmed: "400",
+    muted: "500",
+    toned: "600",
+    default: "800",
+    highlighted: "950",
+    inverted: "white",
+  },
+  bg: {
+    default: "white",
+    muted: "50",
+    elevated: "100",
+    accented: "200",
+    inverted: "900",
+  },
+  border: {
+    default: "200",
+    muted: "200",
+    accented: "300",
+    inverted: "900",
+  },
+};
+
+/** Warm dark — rich dark tones with good separation */
+const DARK_WARM: TokenOverrides = {
+  text: {
+    dimmed: "500",
+    muted: "400",
+    toned: "300",
+    default: "200",
+    highlighted: "white",
+    inverted: "900",
+  },
+  bg: {
+    default: "900",
+    muted: "800",
+    elevated: "800",
+    accented: "700",
+    inverted: "white",
+  },
+  border: {
+    default: "700",
+    muted: "700",
+    accented: "600",
+    inverted: "white",
+  },
+};
+
+// Default shade sets ─────────────────────────────────────────────────────
+
+const SHADES_DEFAULT: SemanticShades = { ...DEFAULT_COLOR_SHADES };
+
+/** Brighter shades for dark mode — 400-level pops more on dark backgrounds */
+const SHADES_BRIGHT: SemanticShades = {
+  primary: "400",
+  secondary: "400",
+  success: "400",
+  info: "400",
+  warning: "400",
+  error: "400",
+};
+
+/** Deeper shades for light mode — 600-level for stronger presence on white */
+const SHADES_DEEP: SemanticShades = {
+  primary: "600",
+  secondary: "600",
+  success: "600",
+  info: "600",
+  warning: "600",
+  error: "600",
+};
+
+// Preset builder ─────────────────────────────────────────────────────────
 
 /** Build a full preset config, filling dark-mode fields from light when not specified */
 function preset(
@@ -35,52 +230,78 @@ function preset(
   };
 }
 
+// ═════════════════════════════════════════════════════════════════════════
+// Built-in Presets — one per chromatic primary colour
+// ═════════════════════════════════════════════════════════════════════════
+
 export const BUILT_IN_PRESETS: ThemePreset[] = [
+  // ── 1. Default (indigo) ───────────────────────────────────────────────
   {
     name: "Default",
+    description:
+      "Balanced indigo palette with standard contrast. A versatile starting point for any project.",
     builtIn: true,
     config: DEFAULT_THEME,
   },
+
+  // ── 2. Nuxt UI (green) ────────────────────────────────────────────────
+  // Matches the official Nuxt UI out-of-the-box defaults.
   {
-    name: "Ocean",
+    name: "Nuxt UI",
+    description:
+      "Official Nuxt UI defaults. Green primary, blue secondary, slate neutral with standard shading.",
     builtIn: true,
     config: preset({
       colors: {
-        primary: "cyan",
+        primary: "green",
         secondary: "blue",
-        success: "teal",
+        success: "green",
+        info: "blue",
+        warning: "yellow",
+        error: "red",
+      },
+      colorShades: SHADES_DEFAULT,
+      neutral: "slate",
+      radius: 0.375,
+      font: "Public Sans",
+      lightOverrides: LIGHT_STANDARD,
+      darkOverrides: DARK_STANDARD,
+      darkColorShades: SHADES_BRIGHT,
+    }),
+  },
+
+  // ── 3. Cherry (red) ──────────────────────────────────────────────────
+  {
+    name: "Cherry",
+    description:
+      "Bold red tones for high-energy, attention-grabbing interfaces.",
+    builtIn: true,
+    config: preset({
+      colors: {
+        primary: "red",
+        secondary: "orange",
+        success: "emerald",
         info: "sky",
         warning: "amber",
         error: "rose",
       },
-      neutral: "slate",
+      colorShades: SHADES_DEFAULT,
+      neutral: "zinc",
       radius: 0.375,
-      font: "Inter",
-      lightOverrides: DEFAULT_LIGHT_OVERRIDES,
-      darkOverrides: DEFAULT_DARK_OVERRIDES,
+      font: "Poppins",
+      lightOverrides: LIGHT_STANDARD,
+      darkOverrides: DARK_STANDARD,
+      darkColorShades: SHADES_BRIGHT,
     }),
   },
-  {
-    name: "Forest",
-    builtIn: true,
-    config: preset({
-      colors: {
-        primary: "emerald",
-        secondary: "lime",
-        success: "green",
-        info: "teal",
-        warning: "amber",
-        error: "red",
-      },
-      neutral: "stone",
-      radius: 0.5,
-      font: "DM Sans",
-      lightOverrides: DEFAULT_LIGHT_OVERRIDES,
-      darkOverrides: DEFAULT_DARK_OVERRIDES,
-    }),
-  },
+
+  // ── 3. Sunset (orange) — FULL DUAL PERSONALITY ────────────────────────
+  // Light: warm orange palette. Dark: completely different cool violet
+  // with different neutral, radius, font, and shades per mode.
   {
     name: "Sunset",
+    description:
+      "Dual personality — warm orange in light, cool violet in dark. Every setting transforms between modes.",
     builtIn: true,
     config: preset({
       colors: {
@@ -91,198 +312,32 @@ export const BUILT_IN_PRESETS: ThemePreset[] = [
         warning: "yellow",
         error: "red",
       },
+      colorShades: SHADES_DEFAULT,
       neutral: "zinc",
       radius: 0.375,
       font: "Poppins",
-      lightOverrides: DEFAULT_LIGHT_OVERRIDES,
-      darkOverrides: DEFAULT_DARK_OVERRIDES,
-    }),
-  },
-  {
-    name: "Dark Mono",
-    builtIn: true,
-    config: preset({
-      colors: {
+      lightOverrides: LIGHT_STANDARD,
+      darkOverrides: DARK_WARM,
+      darkColors: {
         primary: "violet",
-        secondary: "indigo",
-        success: "emerald",
-        info: "blue",
-        warning: "amber",
-        error: "rose",
-      },
-      neutral: "neutral",
-      radius: 0.25,
-      font: "Geist",
-      lightOverrides: {
-        text: {
-          dimmed: "400",
-          muted: "500",
-          toned: "600",
-          default: "800",
-          highlighted: "950",
-          inverted: "white",
-        },
-        bg: {
-          default: "white",
-          muted: "50",
-          elevated: "100",
-          accented: "200",
-          inverted: "950",
-        },
-        border: {
-          default: "200",
-          muted: "200",
-          accented: "300",
-          inverted: "950",
-        },
-      },
-      darkOverrides: {
-        text: {
-          dimmed: "500",
-          muted: "400",
-          toned: "300",
-          default: "200",
-          highlighted: "white",
-          inverted: "950",
-        },
-        bg: {
-          default: "950",
-          muted: "900",
-          elevated: "900",
-          accented: "800",
-          inverted: "white",
-        },
-        border: {
-          default: "800",
-          muted: "800",
-          accented: "700",
-          inverted: "white",
-        },
-      },
-    }),
-  },
-  {
-    name: "Rose Gold",
-    builtIn: true,
-    config: preset({
-      colors: {
-        primary: "rose",
-        secondary: "pink",
-        success: "emerald",
-        info: "sky",
-        warning: "amber",
-        error: "red",
-      },
-      neutral: "stone",
-      radius: 0.5,
-      font: "Outfit",
-      lightOverrides: DEFAULT_LIGHT_OVERRIDES,
-      darkOverrides: DEFAULT_DARK_OVERRIDES,
-    }),
-  },
-  {
-    name: "Corporate",
-    builtIn: true,
-    config: preset({
-      colors: {
-        primary: "blue",
-        secondary: "sky",
-        success: "green",
-        info: "indigo",
-        warning: "amber",
-        error: "red",
-      },
-      neutral: "gray",
-      radius: 0.25,
-      font: "Inter",
-      lightOverrides: DEFAULT_LIGHT_OVERRIDES,
-      darkOverrides: DEFAULT_DARK_OVERRIDES,
-    }),
-  },
-  {
-    name: "Lavender",
-    builtIn: true,
-    config: preset({
-      colors: {
-        primary: "purple",
         secondary: "fuchsia",
-        success: "emerald",
-        info: "sky",
-        warning: "amber",
-        error: "rose",
-      },
-      neutral: "zinc",
-      radius: 0.5,
-      font: "Poppins",
-      lightOverrides: DEFAULT_LIGHT_OVERRIDES,
-      darkOverrides: DEFAULT_DARK_OVERRIDES,
-    }),
-  },
-  {
-    name: "Minimal",
-    builtIn: true,
-    config: preset({
-      colors: {
-        primary: "sky",
-        secondary: "blue",
-        success: "emerald",
+        success: "teal",
         info: "cyan",
         warning: "amber",
-        error: "rose",
+        error: "pink",
       },
-      neutral: "neutral",
-      radius: 0,
-      font: "Geist",
-      lightOverrides: {
-        text: {
-          dimmed: "400",
-          muted: "500",
-          toned: "600",
-          default: "800",
-          highlighted: "950",
-          inverted: "white",
-        },
-        bg: {
-          default: "white",
-          muted: "50",
-          elevated: "50",
-          accented: "100",
-          inverted: "950",
-        },
-        border: {
-          default: "200",
-          muted: "100",
-          accented: "200",
-          inverted: "950",
-        },
-      },
-      darkOverrides: {
-        text: {
-          dimmed: "500",
-          muted: "400",
-          toned: "300",
-          default: "200",
-          highlighted: "white",
-          inverted: "950",
-        },
-        bg: {
-          default: "950",
-          muted: "900",
-          elevated: "900",
-          accented: "800",
-          inverted: "white",
-        },
-        border: {
-          default: "800",
-          muted: "800",
-          accented: "700",
-          inverted: "white",
-        },
-      },
+      darkColorShades: SHADES_BRIGHT,
+      darkNeutral: "slate",
+      darkRadius: 0.5,
+      darkFont: "Outfit",
     }),
   },
+
+  // ── 4. Sahara (amber) ────────────────────────────────────────────────
   {
     name: "Sahara",
+    description:
+      "Desert-inspired amber warmth on stone neutral. Rich and earthy.",
     builtIn: true,
     config: preset({
       colors: {
@@ -293,15 +348,143 @@ export const BUILT_IN_PRESETS: ThemePreset[] = [
         warning: "yellow",
         error: "red",
       },
+      colorShades: SHADES_DEEP,
       neutral: "stone",
       radius: 0.375,
       font: "Raleway",
-      lightOverrides: DEFAULT_LIGHT_OVERRIDES,
-      darkOverrides: DEFAULT_DARK_OVERRIDES,
+      lightOverrides: LIGHT_WARM,
+      darkOverrides: DARK_WARM,
+      darkColorShades: SHADES_BRIGHT,
+      darkNeutral: "zinc",
     }),
   },
+
+  // ── 5. Sunflower (yellow) ─────────────────────────────────────────────
+  {
+    name: "Sunflower",
+    description:
+      "Bright yellow for cheerful, optimistic designs. Deeper shades ensure readability.",
+    builtIn: true,
+    config: preset({
+      colors: {
+        primary: "yellow",
+        secondary: "amber",
+        success: "emerald",
+        info: "sky",
+        warning: "orange",
+        error: "red",
+      },
+      colorShades: SHADES_DEEP,
+      neutral: "zinc",
+      radius: 0.5,
+      font: "Outfit",
+      lightOverrides: LIGHT_STANDARD,
+      darkOverrides: DARK_WARM,
+      darkColorShades: SHADES_BRIGHT,
+    }),
+  },
+
+  // ── 6. Zest (lime) ───────────────────────────────────────────────────
+  {
+    name: "Zest",
+    description: "Fresh lime green with modern energy and clean lines.",
+    builtIn: true,
+    config: preset({
+      colors: {
+        primary: "lime",
+        secondary: "green",
+        success: "emerald",
+        info: "teal",
+        warning: "amber",
+        error: "red",
+      },
+      colorShades: SHADES_DEEP,
+      neutral: "neutral",
+      radius: 0.375,
+      font: "DM Sans",
+      lightOverrides: LIGHT_STANDARD,
+      darkOverrides: DARK_STANDARD,
+      darkColorShades: SHADES_BRIGHT,
+    }),
+  },
+
+  // ── 7. Forest (green) ────────────────────────────────────────────────
+  {
+    name: "Forest",
+    description: "Natural green tones on warm stone. Earthy and grounded.",
+    builtIn: true,
+    config: preset({
+      colors: {
+        primary: "green",
+        secondary: "lime",
+        success: "emerald",
+        info: "teal",
+        warning: "amber",
+        error: "red",
+      },
+      colorShades: SHADES_DEEP,
+      neutral: "stone",
+      radius: 0.5,
+      font: "DM Sans",
+      lightOverrides: LIGHT_WARM,
+      darkOverrides: DARK_WARM,
+      darkColorShades: SHADES_BRIGHT,
+      darkNeutral: "slate",
+    }),
+  },
+
+  // ── 8. Emerald (emerald) ──────────────────────────────────────────────
+  {
+    name: "Emerald",
+    description: "Rich emerald gemstone palette. Sophisticated and luxurious.",
+    builtIn: true,
+    config: preset({
+      colors: {
+        primary: "emerald",
+        secondary: "teal",
+        success: "green",
+        info: "sky",
+        warning: "amber",
+        error: "rose",
+      },
+      colorShades: SHADES_DEFAULT,
+      neutral: "gray",
+      radius: 0.375,
+      font: "Inter",
+      lightOverrides: LIGHT_STANDARD,
+      darkOverrides: DARK_STANDARD,
+      darkColorShades: SHADES_BRIGHT,
+    }),
+  },
+
+  // ── 9. Coastal (teal) ────────────────────────────────────────────────
+  {
+    name: "Coastal",
+    description: "Calm teal tones evoking ocean shores and open skies.",
+    builtIn: true,
+    config: preset({
+      colors: {
+        primary: "teal",
+        secondary: "cyan",
+        success: "emerald",
+        info: "sky",
+        warning: "amber",
+        error: "rose",
+      },
+      colorShades: SHADES_DEFAULT,
+      neutral: "slate",
+      radius: 0.5,
+      font: "Public Sans",
+      lightOverrides: LIGHT_STANDARD,
+      darkOverrides: DARK_STANDARD,
+      darkColorShades: SHADES_BRIGHT,
+    }),
+  },
+
+  // ── 10. Arctic (cyan) ────────────────────────────────────────────────
   {
     name: "Arctic",
+    description: "Icy cyan on slate. Cool, crisp, and professional.",
     builtIn: true,
     config: preset({
       colors: {
@@ -312,15 +495,130 @@ export const BUILT_IN_PRESETS: ThemePreset[] = [
         warning: "amber",
         error: "rose",
       },
+      colorShades: SHADES_DEFAULT,
       neutral: "slate",
       radius: 0.5,
       font: "Public Sans",
-      lightOverrides: DEFAULT_LIGHT_OVERRIDES,
-      darkOverrides: DEFAULT_DARK_OVERRIDES,
+      lightOverrides: LIGHT_STANDARD,
+      darkOverrides: DARK_DEEP,
+      darkColorShades: SHADES_BRIGHT,
+      darkNeutral: "gray",
+      darkFont: "Geist",
     }),
   },
+
+  // ── 11. Minimal (sky) ────────────────────────────────────────────────
+  {
+    name: "Minimal",
+    description:
+      "Ultra-clean sky blue with zero radius. Content-focused design.",
+    builtIn: true,
+    config: preset({
+      colors: {
+        primary: "sky",
+        secondary: "blue",
+        success: "emerald",
+        info: "cyan",
+        warning: "amber",
+        error: "rose",
+      },
+      colorShades: SHADES_DEFAULT,
+      neutral: "neutral",
+      radius: 0,
+      font: "Geist",
+      lightOverrides: LIGHT_SOFT,
+      darkOverrides: DARK_DEEP,
+      darkColorShades: SHADES_BRIGHT,
+    }),
+  },
+
+  // ── 12. Corporate (blue) ──────────────────────────────────────────────
+  {
+    name: "Corporate",
+    description:
+      "Professional blue with high contrast. Ideal for business applications.",
+    builtIn: true,
+    config: preset({
+      colors: {
+        primary: "blue",
+        secondary: "sky",
+        success: "green",
+        info: "indigo",
+        warning: "amber",
+        error: "red",
+      },
+      colorShades: SHADES_DEEP,
+      neutral: "gray",
+      radius: 0.25,
+      font: "Inter",
+      lightOverrides: LIGHT_HIGH_CONTRAST,
+      darkOverrides: DARK_STANDARD,
+      darkColorShades: SHADES_BRIGHT,
+    }),
+  },
+
+  // ── 13. Dark Mono (violet) ────────────────────────────────────────────
+  {
+    name: "Dark Mono",
+    description:
+      "High-contrast violet with deep 950 dark base. Bold and dramatic.",
+    builtIn: true,
+    config: preset({
+      colors: {
+        primary: "violet",
+        secondary: "indigo",
+        success: "emerald",
+        info: "blue",
+        warning: "amber",
+        error: "rose",
+      },
+      colorShades: SHADES_DEFAULT,
+      neutral: "neutral",
+      radius: 0.25,
+      font: "Geist",
+      lightOverrides: LIGHT_HIGH_CONTRAST,
+      darkOverrides: DARK_HIGH_CONTRAST,
+      darkColorShades: SHADES_BRIGHT,
+    }),
+  },
+
+  // ── 14. Lavender (purple) ─────────────────────────────────────────────
+  {
+    name: "Lavender",
+    description: "Soft purple tones deepening to rich violet in dark mode.",
+    builtIn: true,
+    config: preset({
+      colors: {
+        primary: "purple",
+        secondary: "fuchsia",
+        success: "emerald",
+        info: "sky",
+        warning: "amber",
+        error: "rose",
+      },
+      colorShades: SHADES_DEFAULT,
+      neutral: "zinc",
+      radius: 0.5,
+      font: "Poppins",
+      lightOverrides: LIGHT_STANDARD,
+      darkOverrides: DARK_DEEP,
+      darkColors: {
+        primary: "violet",
+        secondary: "fuchsia",
+        success: "emerald",
+        info: "cyan",
+        warning: "amber",
+        error: "rose",
+      },
+      darkColorShades: SHADES_BRIGHT,
+      darkNeutral: "neutral",
+    }),
+  },
+
+  // ── 15. Neon (fuchsia) ────────────────────────────────────────────────
   {
     name: "Neon",
+    description: "Vibrant fuchsia with bright shades. Playful and high-energy.",
     builtIn: true,
     config: preset({
       colors: {
@@ -331,52 +629,94 @@ export const BUILT_IN_PRESETS: ThemePreset[] = [
         warning: "yellow",
         error: "rose",
       },
+      colorShades: SHADES_BRIGHT,
       neutral: "zinc",
       radius: 0.75,
       font: "Outfit",
-      lightOverrides: DEFAULT_LIGHT_OVERRIDES,
-      darkOverrides: DEFAULT_DARK_OVERRIDES,
+      lightOverrides: LIGHT_STANDARD,
+      darkOverrides: DARK_HIGH_CONTRAST,
+      darkColors: {
+        primary: "fuchsia",
+        secondary: "cyan",
+        success: "lime",
+        info: "violet",
+        warning: "yellow",
+        error: "rose",
+      },
+      darkColorShades: SHADES_BRIGHT,
+      darkRadius: 1,
     }),
   },
+
+  // ── 16. Blush (pink) — FULL DUAL PERSONALITY ──────────────────────────
+  // Light: soft pink warmth. Dark: completely different cool indigo
+  // with different neutral, radius, font, colors, and shades.
   {
-    name: "Midnight",
+    name: "Blush",
+    description:
+      "Dual personality — soft pink in light transforms to cool indigo in dark. Colors, shape, and feel all change between modes.",
     builtIn: true,
     config: preset({
       colors: {
-        primary: "blue",
-        secondary: "indigo",
+        primary: "pink",
+        secondary: "rose",
         success: "emerald",
-        info: "cyan",
+        info: "sky",
         warning: "amber",
-        error: "rose",
+        error: "red",
       },
-      neutral: "gray",
-      radius: 0.375,
-      font: "Geist",
-      lightOverrides: DEFAULT_LIGHT_OVERRIDES,
-      darkOverrides: {
-        text: {
-          dimmed: "500",
-          muted: "400",
-          toned: "300",
-          default: "200",
-          highlighted: "white",
-          inverted: "950",
-        },
-        bg: {
-          default: "950",
-          muted: "900",
-          elevated: "900",
-          accented: "800",
-          inverted: "white",
-        },
-        border: {
-          default: "800",
-          muted: "800",
-          accented: "700",
-          inverted: "white",
-        },
+      colorShades: SHADES_DEFAULT,
+      neutral: "stone",
+      radius: 0.75,
+      font: "Poppins",
+      lightOverrides: LIGHT_SOFT,
+      darkOverrides: DARK_DEEP,
+      darkColors: {
+        primary: "indigo",
+        secondary: "cyan",
+        success: "teal",
+        info: "violet",
+        warning: "yellow",
+        error: "fuchsia",
       },
+      darkColorShades: SHADES_BRIGHT,
+      darkNeutral: "slate",
+      darkRadius: 0.25,
+      darkFont: "Geist",
+    }),
+  },
+
+  // ── 17. Rose Gold (rose) ──────────────────────────────────────────────
+  {
+    name: "Rose Gold",
+    description:
+      "Elegant rose on warm stone neutral. Refined and sophisticated.",
+    builtIn: true,
+    config: preset({
+      colors: {
+        primary: "rose",
+        secondary: "pink",
+        success: "emerald",
+        info: "sky",
+        warning: "amber",
+        error: "red",
+      },
+      colorShades: SHADES_DEFAULT,
+      neutral: "stone",
+      radius: 0.5,
+      font: "Outfit",
+      lightOverrides: LIGHT_WARM,
+      darkOverrides: DARK_WARM,
+      darkColors: {
+        primary: "rose",
+        secondary: "fuchsia",
+        success: "emerald",
+        info: "sky",
+        warning: "amber",
+        error: "red",
+      },
+      darkColorShades: SHADES_BRIGHT,
+      darkNeutral: "zinc",
     }),
   },
 ];

@@ -35,18 +35,26 @@ const CSS_PREFIX_MAP: Record<TokenCategory, string> = {
 /**
  * Generate CSS variable lines for a single token category (text, bg, or border),
  * only emitting overrides that differ from defaults.
+ *
+ * When `forceEmitKeys` is provided, tokens whose compound key (e.g. "text.default")
+ * appears in the set are emitted even if they match the defaults. This prevents
+ * light-mode `:root` values from bleeding into `.dark` when the dark value
+ * happens to equal the dark default.
  */
 function generateCategoryLines(
   category: TokenCategory,
   overrides: Record<string, NeutralShade>,
   defaults: Record<string, NeutralShade>,
   indent: string = "  ",
+  forceEmitKeys?: Set<string>,
 ): string[] {
   const prefix = CSS_PREFIX_MAP[category];
   const lines: string[] = [];
 
   for (const [key, shade] of typedEntries(overrides)) {
-    if (shade !== defaults[key]) {
+    const shouldEmit =
+      shade !== defaults[key] || forceEmitKeys?.has(`${category}.${key}`);
+    if (shouldEmit) {
       const varName = key === "default" ? prefix : `${prefix}-${key}`;
       lines.push(`${indent}${varName}: ${shadeToCSS(shade)};`);
     }
@@ -63,11 +71,16 @@ type CategoryOverrideMap = {
 
 /**
  * Generate all CSS variable override lines for a set of token overrides.
+ *
+ * When `forceEmitKeys` is provided, those tokens are emitted even if they
+ * match the defaults. Used by the dark-mode generator to ensure any token
+ * overridden in `:root` is also explicitly set in `.dark`.
  */
 export function generateOverrideLines(
   overrides: TokenOverrides,
   defaults: TokenOverrides,
   indent: string = "  ",
+  forceEmitKeys?: Set<string>,
 ): string[] {
   const lines: string[] = [];
   const categories: TokenCategory[] = ["text", "bg", "border"];
@@ -81,11 +94,37 @@ export function generateOverrideLines(
         defaults[cat] as CategoryOverrideMap[typeof cat] &
           Record<string, NeutralShade>,
         indent,
+        forceEmitKeys,
       ),
     );
   }
 
   return lines;
+}
+
+/**
+ * Collect compound keys (e.g. "text.default", "bg.muted") for all token
+ * overrides that differ from their defaults. Used to force-emit corresponding
+ * dark-mode values so that customized `:root` values don't bleed through.
+ */
+export function getOverriddenTokenKeys(
+  overrides: TokenOverrides,
+  defaults: TokenOverrides,
+): Set<string> {
+  const keys = new Set<string>();
+  const categories: TokenCategory[] = ["text", "bg", "border"];
+
+  for (const cat of categories) {
+    const overrideMap = overrides[cat] as Record<string, NeutralShade>;
+    const defaultMap = defaults[cat] as Record<string, NeutralShade>;
+    for (const [key, shade] of typedEntries(overrideMap)) {
+      if (shade !== defaultMap[key]) {
+        keys.add(`${cat}.${key}`);
+      }
+    }
+  }
+
+  return keys;
 }
 
 export interface ThemeCSSResult {
@@ -323,8 +362,22 @@ export function generateThemeCSS(
     );
   }
 
+  // Collect tokens customized in :root so we can force-emit them in .dark,
+  // preventing light-mode values from bleeding into dark mode.
+  const lightOverriddenKeys = getOverriddenTokenKeys(
+    config.lightOverrides,
+    lightDefaults,
+  );
+
   // Dark token overrides (text/bg/border shades)
-  darkLines.push(...generateOverrideLines(config.darkOverrides, darkDefaults));
+  darkLines.push(
+    ...generateOverrideLines(
+      config.darkOverrides,
+      darkDefaults,
+      "  ",
+      lightOverriddenKeys,
+    ),
+  );
 
   // Dark palette overrides (when dark colors/shades differ from light)
   darkLines.push(

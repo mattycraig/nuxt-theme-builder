@@ -6,6 +6,7 @@ import {
   generateShadeOverrideLines,
   generateDarkPaletteOverrideLines,
   generateDarkNeutralOverrideLines,
+  getOverriddenTokenKeys,
 } from "~/utils/cssGenerator";
 import {
   DEFAULT_LIGHT_OVERRIDES,
@@ -132,10 +133,9 @@ describe("generateExportCSS", () => {
 
 describe("generateShadeOverrideLines", () => {
   it("returns empty array when all shades are default (500)", () => {
-    const lines = generateShadeOverrideLines(
-      DEFAULT_THEME.colors,
-      { ...DEFAULT_COLOR_SHADES },
-    );
+    const lines = generateShadeOverrideLines(DEFAULT_THEME.colors, {
+      ...DEFAULT_COLOR_SHADES,
+    });
     expect(lines).toEqual([]);
   });
 
@@ -221,9 +221,7 @@ describe("generateDarkPaletteOverrideLines", () => {
       DEFAULT_THEME.colors,
       darkShades,
     );
-    const primaryLines = lines.filter((l) =>
-      l.includes("--ui-color-primary-"),
-    );
+    const primaryLines = lines.filter((l) => l.includes("--ui-color-primary-"));
     expect(primaryLines.length).toBe(11);
     expect(primaryLines.every((l) => l.includes("#ffffff"))).toBe(true);
   });
@@ -316,5 +314,93 @@ describe("generateThemeCSS — dark mode integration", () => {
       DEFAULT_DARK_OVERRIDES,
     );
     expect(rootCSS).toContain("--ui-radius: 0rem");
+  });
+});
+
+describe("getOverriddenTokenKeys", () => {
+  it("returns empty set when overrides match defaults", () => {
+    const keys = getOverriddenTokenKeys(
+      DEFAULT_LIGHT_OVERRIDES,
+      DEFAULT_LIGHT_OVERRIDES,
+    );
+    expect(keys.size).toBe(0);
+  });
+
+  it("returns compound keys for overridden tokens", () => {
+    const custom = {
+      ...DEFAULT_LIGHT_OVERRIDES,
+      text: { ...DEFAULT_LIGHT_OVERRIDES.text, default: "800" as const },
+      bg: { ...DEFAULT_LIGHT_OVERRIDES.bg, muted: "100" as const },
+    };
+    const keys = getOverriddenTokenKeys(custom, DEFAULT_LIGHT_OVERRIDES);
+    expect(keys.has("text.default")).toBe(true);
+    expect(keys.has("bg.muted")).toBe(true);
+    expect(keys.has("border.default")).toBe(false);
+  });
+});
+
+describe("generateOverrideLines — forceEmitKeys", () => {
+  it("emits forced keys even when overrides match defaults", () => {
+    const forceKeys = new Set(["text.default", "bg.muted"]);
+    const lines = generateOverrideLines(
+      DEFAULT_DARK_OVERRIDES,
+      DEFAULT_DARK_OVERRIDES,
+      "  ",
+      forceKeys,
+    );
+    expect(lines.some((l) => l.includes("--ui-text:"))).toBe(true);
+    expect(lines.some((l) => l.includes("--ui-bg-muted:"))).toBe(true);
+  });
+
+  it("does not emit non-forced keys that match defaults", () => {
+    const forceKeys = new Set(["text.default"]);
+    const lines = generateOverrideLines(
+      DEFAULT_DARK_OVERRIDES,
+      DEFAULT_DARK_OVERRIDES,
+      "  ",
+      forceKeys,
+    );
+    expect(lines.some((l) => l.includes("--ui-text:"))).toBe(true);
+    expect(lines.some((l) => l.includes("--ui-bg:"))).toBe(false);
+  });
+});
+
+describe("generateThemeCSS — light-to-dark bleed-through prevention", () => {
+  it("emits dark overrides for tokens customized in light mode", () => {
+    const config = cloneTheme(DEFAULT_THEME);
+    config.lightOverrides.text.default = "800";
+    // Dark text.default matches DEFAULT_DARK_OVERRIDES ("200"),
+    // but should still be emitted in .dark to override the :root value
+
+    const { darkCSS } = generateThemeCSS(
+      config,
+      DEFAULT_LIGHT_OVERRIDES,
+      DEFAULT_DARK_OVERRIDES,
+    );
+    expect(darkCSS).toContain(".dark {");
+    expect(darkCSS).toContain("--ui-text:");
+  });
+
+  it("produces correct dark value for forced keys", () => {
+    const config = cloneTheme(DEFAULT_THEME);
+    config.lightOverrides.text.highlighted = "950";
+    // Dark highlighted is "white" (default) → should still emit
+
+    const { darkCSS } = generateThemeCSS(
+      config,
+      DEFAULT_LIGHT_OVERRIDES,
+      DEFAULT_DARK_OVERRIDES,
+    );
+    expect(darkCSS).toContain("--ui-text-highlighted: white;");
+  });
+
+  it("does not force-emit when light overrides match light defaults", () => {
+    // Both light and dark match their respective defaults → no dark CSS
+    const { darkCSS } = generateThemeCSS(
+      DEFAULT_THEME,
+      DEFAULT_LIGHT_OVERRIDES,
+      DEFAULT_DARK_OVERRIDES,
+    );
+    expect(darkCSS).toBe("");
   });
 });

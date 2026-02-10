@@ -85,7 +85,7 @@ watch(
       </span>
     </UButton>
     <template #content>
-      <div class="px-2 pb-3 pt-1">
+      <div class="px-2 pb-3 pt-2">
         <slot />
       </div>
     </template>

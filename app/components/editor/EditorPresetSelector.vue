@@ -3,6 +3,58 @@ import { BUILT_IN_PRESETS } from "~/utils/presets";
 
 const store = useThemeStore();
 
+const helpOpen = ref(false);
+const helpAnchor = ref({ x: 0, y: 0 });
+const helpButtonRef = ref<HTMLButtonElement | null>(null);
+const isPointerInteraction = ref(false);
+
+const helpReference = computed(() => ({
+  getBoundingClientRect: () => {
+    if (isPointerInteraction.value) {
+      return {
+        width: 0,
+        height: 0,
+        left: helpAnchor.value.x,
+        right: helpAnchor.value.x,
+        top: helpAnchor.value.y,
+        bottom: helpAnchor.value.y,
+        ...helpAnchor.value,
+      } as DOMRect;
+    }
+    return helpButtonRef.value?.getBoundingClientRect() ?? new DOMRect();
+  },
+}));
+
+function onHelpPointerEnter() {
+  isPointerInteraction.value = true;
+  helpOpen.value = true;
+}
+
+function onHelpPointerLeave() {
+  helpOpen.value = false;
+  isPointerInteraction.value = false;
+}
+
+function onHelpFocus(ev: FocusEvent) {
+  const el = ev.currentTarget as HTMLElement;
+  if (el?.matches(":focus-visible")) {
+    helpOpen.value = true;
+  }
+}
+
+function onHelpBlur() {
+  if (!isPointerInteraction.value) {
+    helpOpen.value = false;
+  }
+}
+
+function onHelpKeydown(ev: KeyboardEvent) {
+  if (ev.key === "Escape" && helpOpen.value) {
+    helpOpen.value = false;
+    ev.stopPropagation();
+  }
+}
+
 const selectedPresetName = ref<string>("");
 let skipNextWatch = false;
 
@@ -76,6 +128,46 @@ function onPresetSelect(name: string) {
     <div v-if="selectedPreset" class="flex items-center gap-2 px-1">
       <EditorSwatchStrip :config="selectedPreset.config" />
       <span class="text-xs font-semibold">{{ selectedPreset.name }}</span>
+      <UPopover
+        v-if="selectedPreset.description"
+        :open="helpOpen"
+        :reference="helpReference"
+        :content="{
+          side: 'top',
+          sideOffset: 16,
+          updatePositionStrategy: 'always',
+        }"
+      >
+        <button
+          ref="helpButtonRef"
+          type="button"
+          :aria-label="`About ${selectedPreset.name} preset`"
+          class="inline-flex cursor-help rounded-sm focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--ui-primary)"
+          @pointerenter="onHelpPointerEnter"
+          @pointerleave="onHelpPointerLeave"
+          @pointermove="
+            (ev: PointerEvent) => {
+              helpAnchor.x = ev.clientX;
+              helpAnchor.y = ev.clientY;
+            }
+          "
+          @focus="onHelpFocus"
+          @blur="onHelpBlur"
+          @keydown="onHelpKeydown"
+        >
+          <UIcon
+            name="i-lucide-circle-help"
+            class="size-3.5 shrink-0 text-(--ui-text-muted)"
+            aria-hidden="true"
+          />
+        </button>
+
+        <template #content>
+          <div class="p-2 text-xs max-w-56">
+            {{ selectedPreset.description }}
+          </div>
+        </template>
+      </UPopover>
     </div>
   </div>
 </template>

@@ -153,6 +153,7 @@ export interface ThemeConfig {
 
 export interface ThemePreset {
   name: string;
+  description?: string;
   config: ThemeConfig;
   builtIn?: boolean;
   createdAt?: number;
