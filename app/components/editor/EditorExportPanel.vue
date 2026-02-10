@@ -54,7 +54,7 @@ const currentMeta = computed(
   () => TAB_META[activeTab.value] ?? TAB_META.appconfig,
 );
 
-const importOpen = ref(false);
+const importOpen = ref(true);
 const importText = ref("");
 const importError = ref("");
 
