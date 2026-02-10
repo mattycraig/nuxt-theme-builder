@@ -1,12 +1,13 @@
 <script setup lang="ts">
-import type { ChromaticPalette, NeutralShade } from "~/types/theme";
-import { CHROMATIC_PALETTES } from "~/types/theme";
-import { CHROMATIC_SWATCH_HEX, CHROMATIC_HEX_MAP } from "~/utils/defaults";
+import type { SelectMenuItem } from "@nuxt/ui";
+import type { AnyPalette, NeutralShade } from "~/types/theme";
+import { PALETTE_CATEGORY_ORDER, PALETTE_CATEGORIES } from "~/types/theme";
+import { ALL_SWATCH_HEX, ALL_HEX_MAP } from "~/utils/defaults";
 import { capitalize } from "~/utils/helpers";
 
 const props = withDefaults(
   defineProps<{
-    modelValue: ChromaticPalette;
+    modelValue: AnyPalette;
     label: string;
     shade?: NeutralShade;
   }>(),
@@ -16,18 +17,26 @@ const props = withDefaults(
 );
 
 const emit = defineEmits<{
-  "update:modelValue": [value: ChromaticPalette];
+  "update:modelValue": [value: AnyPalette];
   "update:shade": [value: NeutralShade];
 }>();
 
 const inputId = useId();
 
-const items = CHROMATIC_PALETTES.map((p) => ({
-  label: capitalize(p),
-  value: p,
-}));
+const items: SelectMenuItem[] = PALETTE_CATEGORY_ORDER.flatMap((cat, i) => {
+  const palettes = PALETTE_CATEGORIES[cat];
+  if (palettes.length === 0) return [];
+  return [
+    ...(i > 0 ? [{ type: "separator" as const }] : []),
+    { type: "label" as const, label: cat },
+    ...palettes.map((p) => ({
+      label: capitalize(p),
+      value: p,
+    })),
+  ];
+});
 
-const shadeHexMap = computed(() => CHROMATIC_HEX_MAP[props.modelValue] ?? {});
+const shadeHexMap = computed(() => ALL_HEX_MAP[props.modelValue] ?? {});
 </script>
 
 <template>
@@ -35,21 +44,23 @@ const shadeHexMap = computed(() => CHROMATIC_HEX_MAP[props.modelValue] ?? {});
     <label :for="inputId" class="text-xs font-medium mb-1 block">
       {{ label }}
     </label>
-    <USelect
+    <USelectMenu
       :id="inputId"
       :model-value="modelValue"
+      value-key="value"
       :items="items"
       :aria-label="`${label}: ${modelValue}`"
       class="w-full"
-      @update:model-value="
-        emit('update:modelValue', $event as ChromaticPalette)
-      "
+      :ui="{
+        label: 'text-muted uppercase text-xs',
+      }"
+      @update:model-value="emit('update:modelValue', $event as AnyPalette)"
     >
       <template #leading>
         <span
           aria-hidden="true"
           class="size-3 rounded-full inline-block shrink-0 ring-1 ring-(--ui-border)"
-          :style="{ backgroundColor: CHROMATIC_SWATCH_HEX[modelValue] }"
+          :style="{ backgroundColor: ALL_SWATCH_HEX[modelValue] }"
         />
       </template>
       <template #item-leading="{ item }">
@@ -57,11 +68,11 @@ const shadeHexMap = computed(() => CHROMATIC_HEX_MAP[props.modelValue] ?? {});
           aria-hidden="true"
           class="size-3 rounded-full inline-block shrink-0 ring-1 ring-(--ui-border) self-center mr-3"
           :style="{
-            backgroundColor: CHROMATIC_SWATCH_HEX[item.value as string],
+            backgroundColor: ALL_SWATCH_HEX[(item as { value: string }).value],
           }"
         />
       </template>
-    </USelect>
+    </USelectMenu>
 
     <EditorShadeStrip
       class="mt-1.5"

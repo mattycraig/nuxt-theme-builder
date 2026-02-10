@@ -11,6 +11,16 @@ export default defineNuxtConfig({
     "nuxt-security",
   ],
 
+  mdc: {
+    highlight: {
+      theme: {
+        default: "github-light",
+        dark: "github-dark",
+      },
+      langs: ["vue", "ts", "css", "json", "bash", "html", "js", "yaml"],
+    },
+  },
+
   site: {
     url: "https://nuxt-theme-builder.vercel.app",
     name: "Nuxt UI Theme Builder",
@@ -43,13 +53,44 @@ export default defineNuxtConfig({
 
   fonts: {
     families: [
+      // Sans-serif
       { name: "Public Sans", provider: "google", global: true },
-      { name: "DM Sans", provider: "google" },
-      { name: "Geist", provider: "google" },
-      { name: "Inter", provider: "google" },
-      { name: "Poppins", provider: "google" },
-      { name: "Outfit", provider: "google" },
-      { name: "Raleway", provider: "google" },
+      { name: "DM Sans", provider: "google", global: true },
+      { name: "Figtree", provider: "google", global: true },
+      { name: "Geist", provider: "google", global: true },
+      { name: "Inter", provider: "google", global: true },
+      { name: "Lato", provider: "google", global: true },
+      { name: "Montserrat", provider: "google", global: true },
+      { name: "Nunito", provider: "google", global: true },
+      { name: "Open Sans", provider: "google", global: true },
+      { name: "Outfit", provider: "google", global: true },
+      { name: "Plus Jakarta Sans", provider: "google", global: true },
+      { name: "Poppins", provider: "google", global: true },
+      { name: "Raleway", provider: "google", global: true },
+      { name: "Roboto", provider: "google", global: true },
+      { name: "Source Sans 3", provider: "google", global: true },
+      { name: "Space Grotesk", provider: "google", global: true },
+      { name: "Work Sans", provider: "google", global: true },
+      // Serif
+      { name: "Lora", provider: "google", global: true },
+      { name: "Merriweather", provider: "google", global: true },
+      { name: "Playfair Display", provider: "google", global: true },
+      { name: "Source Serif 4", provider: "google", global: true },
+      { name: "Libre Baskerville", provider: "google", global: true },
+      { name: "DM Serif Display", provider: "google", global: true },
+      { name: "Crimson Text", provider: "google", global: true },
+      // Monospace
+      { name: "JetBrains Mono", provider: "google", global: true },
+      { name: "Fira Code", provider: "google", global: true },
+      { name: "Source Code Pro", provider: "google", global: true },
+      { name: "IBM Plex Mono", provider: "google", global: true },
+      { name: "Space Mono", provider: "google", global: true },
+      // Display
+      { name: "Sora", provider: "google", global: true },
+      { name: "Archivo", provider: "google", global: true },
+      { name: "Lexend", provider: "google", global: true },
+      { name: "Urbanist", provider: "google", global: true },
+      { name: "Bricolage Grotesque", provider: "google", global: true },
     ],
     defaults: {
       weights: [400, 500, 600, 700],

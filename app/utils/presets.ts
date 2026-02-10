@@ -150,6 +150,56 @@ const LIGHT_WARM: TokenOverrides = {
   },
 };
 
+/** shadcn light — near-black text, clean whites, subtle zinc borders */
+const LIGHT_SHADCN: TokenOverrides = {
+  text: {
+    dimmed: "400",
+    muted: "500",
+    toned: "600",
+    default: "950",
+    highlighted: "950",
+    inverted: "white",
+  },
+  bg: {
+    default: "white",
+    muted: "50",
+    elevated: "100",
+    accented: "100",
+    inverted: "950",
+  },
+  border: {
+    default: "200",
+    muted: "100",
+    accented: "300",
+    inverted: "950",
+  },
+};
+
+/** shadcn dark — 950 near-black base, bright text, muted borders */
+const DARK_SHADCN: TokenOverrides = {
+  text: {
+    dimmed: "500",
+    muted: "400",
+    toned: "300",
+    default: "50",
+    highlighted: "white",
+    inverted: "950",
+  },
+  bg: {
+    default: "950",
+    muted: "900",
+    elevated: "900",
+    accented: "800",
+    inverted: "50",
+  },
+  border: {
+    default: "800",
+    muted: "800",
+    accented: "700",
+    inverted: "50",
+  },
+};
+
 /** Warm dark — rich dark tones with good separation */
 const DARK_WARM: TokenOverrides = {
   text: {
@@ -240,6 +290,7 @@ export const BUILT_IN_PRESETS: ThemePreset[] = [
     name: "Default",
     description:
       "Balanced indigo palette with standard contrast. A versatile starting point for any project.",
+    category: "Essentials",
     builtIn: true,
     config: DEFAULT_THEME,
   },
@@ -250,6 +301,7 @@ export const BUILT_IN_PRESETS: ThemePreset[] = [
     name: "Nuxt UI",
     description:
       "Official Nuxt UI defaults. Green primary, blue secondary, slate neutral with standard shading.",
+    category: "Essentials",
     builtIn: true,
     config: preset({
       colors: {
@@ -270,11 +322,55 @@ export const BUILT_IN_PRESETS: ThemePreset[] = [
     }),
   },
 
+  // ── shadcn (zinc) ────────────────────────────────────────────────────
+  // Inspired by shadcn/ui: near-black dark mode, ultra-clean light mode,
+  // zinc neutrals, minimal borders, and Geist typography.
+  // Primary shade 950 in light = near-black buttons; 50 in dark = near-white buttons.
+  {
+    name: "shadcn",
+    description:
+      "Inspired by shadcn/ui. Near-black dark mode, zinc neutrals, Geist font, and minimal borders for a clean developer aesthetic.",
+    category: "Essentials",
+    builtIn: true,
+    config: preset({
+      colors: {
+        primary: "zinc",
+        secondary: "violet",
+        success: "emerald",
+        info: "sky",
+        warning: "amber",
+        error: "red",
+      },
+      colorShades: {
+        primary: "950",
+        secondary: "600",
+        success: "600",
+        info: "600",
+        warning: "600",
+        error: "600",
+      },
+      neutral: "zinc",
+      radius: 0.375,
+      font: "Geist",
+      lightOverrides: LIGHT_SHADCN,
+      darkOverrides: DARK_SHADCN,
+      darkColorShades: {
+        primary: "50",
+        secondary: "400",
+        success: "400",
+        info: "400",
+        warning: "400",
+        error: "400",
+      },
+    }),
+  },
+
   // ── 3. Cherry (red) ──────────────────────────────────────────────────
   {
     name: "Cherry",
     description:
       "Bold red tones for high-energy, attention-grabbing interfaces.",
+    category: "Warm",
     builtIn: true,
     config: preset({
       colors: {
@@ -302,6 +398,7 @@ export const BUILT_IN_PRESETS: ThemePreset[] = [
     name: "Sunset",
     description:
       "Dual personality — warm orange in light, cool violet in dark. Every setting transforms between modes.",
+    category: "Warm",
     builtIn: true,
     config: preset({
       colors: {
@@ -338,6 +435,7 @@ export const BUILT_IN_PRESETS: ThemePreset[] = [
     name: "Sahara",
     description:
       "Desert-inspired amber warmth on stone neutral. Rich and earthy.",
+    category: "Warm",
     builtIn: true,
     config: preset({
       colors: {
@@ -351,7 +449,7 @@ export const BUILT_IN_PRESETS: ThemePreset[] = [
       colorShades: SHADES_DEEP,
       neutral: "stone",
       radius: 0.375,
-      font: "Raleway",
+      font: "Lora",
       lightOverrides: LIGHT_WARM,
       darkOverrides: DARK_WARM,
       darkColorShades: SHADES_BRIGHT,
@@ -364,6 +462,7 @@ export const BUILT_IN_PRESETS: ThemePreset[] = [
     name: "Sunflower",
     description:
       "Bright yellow for cheerful, optimistic designs. Deeper shades ensure readability.",
+    category: "Warm",
     builtIn: true,
     config: preset({
       colors: {
@@ -377,7 +476,7 @@ export const BUILT_IN_PRESETS: ThemePreset[] = [
       colorShades: SHADES_DEEP,
       neutral: "zinc",
       radius: 0.5,
-      font: "Outfit",
+      font: "Lexend",
       lightOverrides: LIGHT_STANDARD,
       darkOverrides: DARK_WARM,
       darkColorShades: SHADES_BRIGHT,
@@ -388,6 +487,7 @@ export const BUILT_IN_PRESETS: ThemePreset[] = [
   {
     name: "Zest",
     description: "Fresh lime green with modern energy and clean lines.",
+    category: "Nature",
     builtIn: true,
     config: preset({
       colors: {
@@ -401,7 +501,7 @@ export const BUILT_IN_PRESETS: ThemePreset[] = [
       colorShades: SHADES_DEEP,
       neutral: "neutral",
       radius: 0.375,
-      font: "DM Sans",
+      font: "Sora",
       lightOverrides: LIGHT_STANDARD,
       darkOverrides: DARK_STANDARD,
       darkColorShades: SHADES_BRIGHT,
@@ -412,6 +512,7 @@ export const BUILT_IN_PRESETS: ThemePreset[] = [
   {
     name: "Forest",
     description: "Natural green tones on warm stone. Earthy and grounded.",
+    category: "Nature",
     builtIn: true,
     config: preset({
       colors: {
@@ -425,7 +526,7 @@ export const BUILT_IN_PRESETS: ThemePreset[] = [
       colorShades: SHADES_DEEP,
       neutral: "stone",
       radius: 0.5,
-      font: "DM Sans",
+      font: "Merriweather",
       lightOverrides: LIGHT_WARM,
       darkOverrides: DARK_WARM,
       darkColorShades: SHADES_BRIGHT,
@@ -437,6 +538,7 @@ export const BUILT_IN_PRESETS: ThemePreset[] = [
   {
     name: "Emerald",
     description: "Rich emerald gemstone palette. Sophisticated and luxurious.",
+    category: "Nature",
     builtIn: true,
     config: preset({
       colors: {
@@ -450,7 +552,7 @@ export const BUILT_IN_PRESETS: ThemePreset[] = [
       colorShades: SHADES_DEFAULT,
       neutral: "gray",
       radius: 0.375,
-      font: "Inter",
+      font: "Plus Jakarta Sans",
       lightOverrides: LIGHT_STANDARD,
       darkOverrides: DARK_STANDARD,
       darkColorShades: SHADES_BRIGHT,
@@ -461,6 +563,7 @@ export const BUILT_IN_PRESETS: ThemePreset[] = [
   {
     name: "Coastal",
     description: "Calm teal tones evoking ocean shores and open skies.",
+    category: "Cool",
     builtIn: true,
     config: preset({
       colors: {
@@ -474,7 +577,7 @@ export const BUILT_IN_PRESETS: ThemePreset[] = [
       colorShades: SHADES_DEFAULT,
       neutral: "slate",
       radius: 0.5,
-      font: "Public Sans",
+      font: "Nunito",
       lightOverrides: LIGHT_STANDARD,
       darkOverrides: DARK_STANDARD,
       darkColorShades: SHADES_BRIGHT,
@@ -485,6 +588,7 @@ export const BUILT_IN_PRESETS: ThemePreset[] = [
   {
     name: "Arctic",
     description: "Icy cyan on slate. Cool, crisp, and professional.",
+    category: "Cool",
     builtIn: true,
     config: preset({
       colors: {
@@ -498,7 +602,7 @@ export const BUILT_IN_PRESETS: ThemePreset[] = [
       colorShades: SHADES_DEFAULT,
       neutral: "slate",
       radius: 0.5,
-      font: "Public Sans",
+      font: "Figtree",
       lightOverrides: LIGHT_STANDARD,
       darkOverrides: DARK_DEEP,
       darkColorShades: SHADES_BRIGHT,
@@ -512,6 +616,7 @@ export const BUILT_IN_PRESETS: ThemePreset[] = [
     name: "Minimal",
     description:
       "Ultra-clean sky blue with zero radius. Content-focused design.",
+    category: "Cool",
     builtIn: true,
     config: preset({
       colors: {
@@ -537,6 +642,7 @@ export const BUILT_IN_PRESETS: ThemePreset[] = [
     name: "Corporate",
     description:
       "Professional blue with high contrast. Ideal for business applications.",
+    category: "Cool",
     builtIn: true,
     config: preset({
       colors: {
@@ -550,7 +656,7 @@ export const BUILT_IN_PRESETS: ThemePreset[] = [
       colorShades: SHADES_DEEP,
       neutral: "gray",
       radius: 0.25,
-      font: "Inter",
+      font: "Source Sans 3",
       lightOverrides: LIGHT_HIGH_CONTRAST,
       darkOverrides: DARK_STANDARD,
       darkColorShades: SHADES_BRIGHT,
@@ -562,6 +668,7 @@ export const BUILT_IN_PRESETS: ThemePreset[] = [
     name: "Dark Mono",
     description:
       "High-contrast violet with deep 950 dark base. Bold and dramatic.",
+    category: "Bold",
     builtIn: true,
     config: preset({
       colors: {
@@ -575,7 +682,7 @@ export const BUILT_IN_PRESETS: ThemePreset[] = [
       colorShades: SHADES_DEFAULT,
       neutral: "neutral",
       radius: 0.25,
-      font: "Geist",
+      font: "Archivo",
       lightOverrides: LIGHT_HIGH_CONTRAST,
       darkOverrides: DARK_HIGH_CONTRAST,
       darkColorShades: SHADES_BRIGHT,
@@ -586,6 +693,7 @@ export const BUILT_IN_PRESETS: ThemePreset[] = [
   {
     name: "Lavender",
     description: "Soft purple tones deepening to rich violet in dark mode.",
+    category: "Bold",
     builtIn: true,
     config: preset({
       colors: {
@@ -599,7 +707,7 @@ export const BUILT_IN_PRESETS: ThemePreset[] = [
       colorShades: SHADES_DEFAULT,
       neutral: "zinc",
       radius: 0.5,
-      font: "Poppins",
+      font: "Urbanist",
       lightOverrides: LIGHT_STANDARD,
       darkOverrides: DARK_DEEP,
       darkColors: {
@@ -619,6 +727,7 @@ export const BUILT_IN_PRESETS: ThemePreset[] = [
   {
     name: "Neon",
     description: "Vibrant fuchsia with bright shades. Playful and high-energy.",
+    category: "Bold",
     builtIn: true,
     config: preset({
       colors: {
@@ -632,7 +741,7 @@ export const BUILT_IN_PRESETS: ThemePreset[] = [
       colorShades: SHADES_BRIGHT,
       neutral: "zinc",
       radius: 0.75,
-      font: "Outfit",
+      font: "Space Grotesk",
       lightOverrides: LIGHT_STANDARD,
       darkOverrides: DARK_HIGH_CONTRAST,
       darkColors: {
@@ -655,6 +764,7 @@ export const BUILT_IN_PRESETS: ThemePreset[] = [
     name: "Blush",
     description:
       "Dual personality — soft pink in light transforms to cool indigo in dark. Colors, shape, and feel all change between modes.",
+    category: "Warm",
     builtIn: true,
     config: preset({
       colors: {
@@ -691,6 +801,7 @@ export const BUILT_IN_PRESETS: ThemePreset[] = [
     name: "Rose Gold",
     description:
       "Elegant rose on warm stone neutral. Refined and sophisticated.",
+    category: "Warm",
     builtIn: true,
     config: preset({
       colors: {
@@ -704,7 +815,7 @@ export const BUILT_IN_PRESETS: ThemePreset[] = [
       colorShades: SHADES_DEFAULT,
       neutral: "stone",
       radius: 0.5,
-      font: "Outfit",
+      font: "Playfair Display",
       lightOverrides: LIGHT_WARM,
       darkOverrides: DARK_WARM,
       darkColors: {

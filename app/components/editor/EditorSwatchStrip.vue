@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import type { ThemeConfig } from "~/types/theme";
 import { SEMANTIC_COLOR_KEYS } from "~/types/theme";
-import { CHROMATIC_HEX_MAP, NEUTRAL_SWATCH_HEX } from "~/utils/defaults";
+import { ALL_HEX_MAP, NEUTRAL_SWATCH_HEX } from "~/utils/defaults";
 
 const props = withDefaults(
   defineProps<{
@@ -20,7 +20,7 @@ function getColorHex(
 ): string {
   const color = colors[key];
   const shade = shades[key] ?? "500";
-  return CHROMATIC_HEX_MAP[color as string]?.[shade] ?? "#71717a";
+  return ALL_HEX_MAP[color as string]?.[shade] ?? "#71717a";
 }
 
 const lightNeutralHex = computed(

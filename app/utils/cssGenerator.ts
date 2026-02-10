@@ -9,12 +9,16 @@ import type {
   SemanticColorKey,
   SemanticColors,
   SemanticShades,
-  ChromaticPalette,
+  AnyPalette,
 } from "~/types/theme";
-import { SEMANTIC_COLOR_KEYS, NUMERIC_SHADE_KEYS } from "~/types/theme";
+import {
+  SEMANTIC_COLOR_KEYS,
+  NUMERIC_SHADE_KEYS,
+  getFontFallbackStack,
+} from "~/types/theme";
 import {
   shadeToCSS,
-  CHROMATIC_HEX_MAP,
+  ALL_HEX_MAP,
   NEUTRAL_HEX_MAP,
 } from "~/utils/defaults";
 import { typedEntries } from "~/utils/helpers";
@@ -147,7 +151,7 @@ const DEFAULT_SHADE_INDEX = NUMERIC_SHADE_KEYS.indexOf("500");
  *   (clamped at palette boundaries)
  */
 export function generateShadeOverrideLines(
-  colors: Record<SemanticColorKey, ChromaticPalette>,
+  colors: Record<SemanticColorKey, AnyPalette>,
   colorShades: Record<SemanticColorKey, NeutralShade>,
   indent: string = "  ",
 ): string[] {
@@ -167,7 +171,7 @@ export function generateShadeOverrideLines(
     }
 
     const palette = colors[key];
-    const hexMap = CHROMATIC_HEX_MAP[palette];
+    const hexMap = ALL_HEX_MAP[palette];
     if (!hexMap) continue;
 
     const selectedIdx = NUMERIC_SHADE_KEYS.indexOf(shade);
@@ -222,7 +226,7 @@ export function generateDarkPaletteOverrideLines(
       continue;
     }
 
-    const hexMap = CHROMATIC_HEX_MAP[darkPalette];
+    const hexMap = ALL_HEX_MAP[darkPalette];
     if (!hexMap) continue;
 
     if (darkShade === "500" && darkPalette !== lightPalette) {
@@ -295,7 +299,7 @@ export function generateExportCSS(
   lines.push(``);
   lines.push(`@theme {`);
   lines.push(
-    `  --font-sans: '${sanitizeCSSValue(config.font)}', ui-sans-serif, system-ui, sans-serif;`,
+    `  --font-sans: '${sanitizeCSSValue(config.font)}', ${getFontFallbackStack(config.font)};`,
   );
   lines.push(`}`);
   lines.push(``);
@@ -327,7 +331,7 @@ export function generateThemeCSS(
   const rootLines: string[] = [];
   rootLines.push(`:root {`);
   rootLines.push(
-    `  --font-sans: '${sanitizeCSSValue(config.font)}', ui-sans-serif, system-ui, sans-serif;`,
+    `  --font-sans: '${sanitizeCSSValue(config.font)}', ${getFontFallbackStack(config.font)};`,
   );
   const safeRadius = Math.max(0, Math.min(Number(config.radius) || 0, 2));
   rootLines.push(`  --ui-radius: ${safeRadius}rem;`);
@@ -358,7 +362,7 @@ export function generateThemeCSS(
   // Dark font (if different from light)
   if (config.darkFont !== config.font) {
     darkLines.push(
-      `  --font-sans: '${sanitizeCSSValue(config.darkFont)}', ui-sans-serif, system-ui, sans-serif;`,
+      `  --font-sans: '${sanitizeCSSValue(config.darkFont)}', ${getFontFallbackStack(config.darkFont)};`,
     );
   }
 

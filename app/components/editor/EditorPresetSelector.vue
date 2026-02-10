@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { BUILT_IN_PRESETS } from "~/utils/presets";
+import { PRESET_CATEGORIES, type ThemeConfig } from "~/types/theme";
 
 const store = useThemeStore();
 
@@ -77,13 +78,42 @@ onMounted(() => {
   }
 });
 
-const presetItems = computed(() =>
-  BUILT_IN_PRESETS.map((p) => ({
-    label: p.name,
-    value: p.name,
-    config: p.config,
-  })),
-);
+const presetItems = computed(() => {
+  const items: Array<
+    | { type: "label"; label: string }
+    | { type: "separator" }
+    | { label: string; value: string; config: ThemeConfig }
+  > = [];
+
+  for (const category of PRESET_CATEGORIES) {
+    const presetsInCategory = BUILT_IN_PRESETS.filter(
+      (p) => p.category === category,
+    );
+    if (presetsInCategory.length === 0) continue;
+
+    if (items.length > 0) {
+      items.push({ type: "separator" });
+    }
+    items.push({ type: "label", label: category });
+
+    for (const p of presetsInCategory) {
+      items.push({ label: p.name, value: p.name, config: p.config });
+    }
+  }
+
+  // Uncategorized presets (e.g. user-saved presets without a category)
+  const uncategorized = BUILT_IN_PRESETS.filter((p) => !p.category);
+  if (uncategorized.length > 0) {
+    if (items.length > 0) {
+      items.push({ type: "separator" });
+    }
+    for (const p of uncategorized) {
+      items.push({ label: p.name, value: p.name, config: p.config });
+    }
+  }
+
+  return items;
+});
 
 const selectedPreset = computed(() =>
   BUILT_IN_PRESETS.find((p) => p.name === selectedPresetName.value),
@@ -123,11 +153,17 @@ function onPresetSelect(name: string) {
       value-key="value"
       class="w-full"
       placeholder="Select a preset..."
+      :ui="{
+        label: 'text-muted uppercase text-xs',
+      }"
       @update:model-value="onPresetSelect($event as string)"
     >
       <!-- Custom dropdown items: swatches + name -->
       <template #item="{ item }">
-        <div class="flex items-center gap-2 min-w-0 w-full py-0.5">
+        <div
+          v-if="'config' in item"
+          class="flex items-center gap-2 min-w-0 w-full py-0.5"
+        >
           <EditorSwatchStrip :config="item.config" />
           <span class="text-sm truncate">{{ item.label }}</span>
         </div>

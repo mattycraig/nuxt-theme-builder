@@ -187,7 +187,7 @@ function getDropdownItems(preset: ThemePreset) {
           />
         </span>
         <span class="font-medium">Save</span> button in the toolbar to save your
-        current theme.
+        current theme, or use the presets below.
       </p>
     </div>
 

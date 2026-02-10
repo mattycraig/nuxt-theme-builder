@@ -443,6 +443,16 @@ export const NEUTRAL_SWATCH_HEX: Record<string, string> = {
   stone: "#78716c",
 };
 
+export const ALL_SWATCH_HEX: Record<string, string> = {
+  ...CHROMATIC_SWATCH_HEX,
+  ...NEUTRAL_SWATCH_HEX,
+};
+
+export const ALL_HEX_MAP: Record<string, Record<string, string>> = {
+  ...CHROMATIC_HEX_MAP,
+  ...NEUTRAL_HEX_MAP,
+};
+
 // Utility Functions ───────────────────────────────────────────────────────
 
 /**

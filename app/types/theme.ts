@@ -33,6 +33,36 @@ export const NEUTRAL_PALETTES = [
 
 export type NeutralPalette = (typeof NEUTRAL_PALETTES)[number];
 
+export const ALL_PALETTES = [
+  ...CHROMATIC_PALETTES,
+  ...NEUTRAL_PALETTES,
+] as const;
+export type AnyPalette = ChromaticPalette | NeutralPalette;
+
+// Color Category Groupings ────────────────────────────────────────────────
+// Logical groupings of palettes for categorized dropdown display.
+
+export type PaletteCategory = "Warm" | "Green" | "Blue" | "Purple" | "Neutral";
+
+export const PALETTE_CATEGORY_ORDER: PaletteCategory[] = [
+  "Warm",
+  "Green",
+  "Blue",
+  "Purple",
+  "Neutral",
+];
+
+export const PALETTE_CATEGORIES: Record<
+  PaletteCategory,
+  readonly AnyPalette[]
+> = {
+  Warm: ["red", "orange", "amber", "yellow"],
+  Green: ["lime", "green", "emerald", "teal"],
+  Blue: ["cyan", "sky", "blue", "indigo"],
+  Purple: ["violet", "purple", "fuchsia", "pink", "rose"],
+  Neutral: ["slate", "gray", "zinc", "neutral", "stone"],
+};
+
 // Semantic Color Keys ─────────────────────────────────────────────────────
 // The named color roles that Nuxt UI uses across components.
 
@@ -85,7 +115,7 @@ export const NUMERIC_SHADE_KEYS = [
 
 export type NumericShade = (typeof NUMERIC_SHADE_KEYS)[number];
 
-export type SemanticColors = Record<SemanticColorKey, ChromaticPalette>;
+export type SemanticColors = Record<SemanticColorKey, AnyPalette>;
 export type SemanticShades = Record<SemanticColorKey, NeutralShade>;
 
 // Token Override Keys ─────────────────────────────────────────────────────
@@ -151,9 +181,20 @@ export interface ThemeConfig {
   darkFont: string;
 }
 
+export const PRESET_CATEGORIES = [
+  "Essentials",
+  "Warm",
+  "Nature",
+  "Cool",
+  "Bold",
+] as const;
+
+export type PresetCategory = (typeof PRESET_CATEGORIES)[number];
+
 export interface ThemePreset {
   name: string;
   description?: string;
+  category?: PresetCategory;
   config: ThemeConfig;
   builtIn?: boolean;
   createdAt?: number;
@@ -163,15 +204,79 @@ export interface ThemePreset {
 // Font Options ────────────────────────────────────────────────────────────
 // Must match fonts registered in nuxt.config.ts `fonts.families`.
 
-export const FONT_OPTIONS = [
-  "Public Sans",
-  "DM Sans",
-  "Geist",
-  "Inter",
-  "Poppins",
-  "Outfit",
-  "Raleway",
+export type FontCategory = "sans-serif" | "serif" | "monospace" | "display";
+
+export interface FontEntry {
+  name: string;
+  category: FontCategory;
+}
+
+const FONT_ENTRIES: FontEntry[] = [
+  // Sans-serif
+  { name: "Public Sans", category: "sans-serif" },
+  { name: "DM Sans", category: "sans-serif" },
+  { name: "Figtree", category: "sans-serif" },
+  { name: "Geist", category: "sans-serif" },
+  { name: "Inter", category: "sans-serif" },
+  { name: "Lato", category: "sans-serif" },
+  { name: "Montserrat", category: "sans-serif" },
+  { name: "Nunito", category: "sans-serif" },
+  { name: "Open Sans", category: "sans-serif" },
+  { name: "Outfit", category: "sans-serif" },
+  { name: "Plus Jakarta Sans", category: "sans-serif" },
+  { name: "Poppins", category: "sans-serif" },
+  { name: "Raleway", category: "sans-serif" },
+  { name: "Roboto", category: "sans-serif" },
+  { name: "Source Sans 3", category: "sans-serif" },
+  { name: "Space Grotesk", category: "sans-serif" },
+  { name: "Work Sans", category: "sans-serif" },
+  // Serif
+  { name: "Lora", category: "serif" },
+  { name: "Merriweather", category: "serif" },
+  { name: "Playfair Display", category: "serif" },
+  { name: "Source Serif 4", category: "serif" },
+  { name: "Libre Baskerville", category: "serif" },
+  { name: "DM Serif Display", category: "serif" },
+  { name: "Crimson Text", category: "serif" },
+  // Monospace
+  { name: "JetBrains Mono", category: "monospace" },
+  { name: "Fira Code", category: "monospace" },
+  { name: "Source Code Pro", category: "monospace" },
+  { name: "IBM Plex Mono", category: "monospace" },
+  { name: "Space Mono", category: "monospace" },
+  // Display
+  { name: "Sora", category: "display" },
+  { name: "Archivo", category: "display" },
+  { name: "Lexend", category: "display" },
+  { name: "Urbanist", category: "display" },
+  { name: "Bricolage Grotesque", category: "display" },
 ] as const;
+
+export { FONT_ENTRIES };
+
+export const FONT_OPTIONS = FONT_ENTRIES.map(
+  (f) => f.name,
+) as unknown as readonly string[] & readonly [string, ...string[]];
+
+const FONT_CATEGORY_MAP = new Map<string, FontCategory>(
+  FONT_ENTRIES.map((f) => [f.name, f.category]),
+);
+
+const FALLBACK_STACKS: Record<FontCategory, string> = {
+  "sans-serif": "ui-sans-serif, system-ui, sans-serif",
+  serif: "ui-serif, Georgia, Cambria, 'Times New Roman', Times, serif",
+  monospace:
+    "ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace",
+  display: "ui-sans-serif, system-ui, sans-serif",
+};
+
+export function getFontCategory(fontName: string): FontCategory {
+  return FONT_CATEGORY_MAP.get(fontName) ?? "sans-serif";
+}
+
+export function getFontFallbackStack(fontName: string): string {
+  return FALLBACK_STACKS[getFontCategory(fontName)];
+}
 
 // Zod Validation Schemas ──────────────────────────────────────────────────
 // Used by the store to validate persisted state and imported configs.
@@ -189,6 +294,7 @@ export const DEFAULT_COLOR_SHADES: SemanticShades = {
 
 const chromaticPaletteSchema = z.enum(CHROMATIC_PALETTES);
 const neutralPaletteSchema = z.enum(NEUTRAL_PALETTES);
+const anyPaletteSchema = z.enum(ALL_PALETTES);
 const neutralShadeSchema = z.enum(SHADE_VALUES);
 
 function shadeRecordSchema<T extends readonly string[]>(keys: T) {
@@ -210,12 +316,12 @@ const tokenOverridesSchema = z.object({
 });
 
 const semanticColorsSchema = z.object({
-  primary: chromaticPaletteSchema,
-  secondary: chromaticPaletteSchema,
-  success: chromaticPaletteSchema,
-  info: chromaticPaletteSchema,
-  warning: chromaticPaletteSchema,
-  error: chromaticPaletteSchema,
+  primary: anyPaletteSchema,
+  secondary: anyPaletteSchema,
+  success: anyPaletteSchema,
+  info: anyPaletteSchema,
+  warning: anyPaletteSchema,
+  error: anyPaletteSchema,
 });
 
 const semanticShadesSchema = z

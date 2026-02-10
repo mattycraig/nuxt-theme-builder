@@ -52,8 +52,8 @@ const tocLinks = [
     <UContainer>
       <UPageHeader
         headline="Help"
-        title="How to Use the Theme Builder"
-        description="Everything you need to configure, preview, and export your Nuxt UI theme."
+        title="Make Your Nuxt UI Theme in Minutes"
+        description="Pick colors, preview live, and export production-ready code — here's everything you need to know."
         :links="[
           {
             label: 'Back to Home',

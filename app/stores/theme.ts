@@ -2,7 +2,7 @@ import type {
   ThemeConfig,
   ThemePreset,
   SemanticColorKey,
-  ChromaticPalette,
+  AnyPalette,
   NeutralPalette,
   NeutralShade,
   TextTokenKey,
@@ -90,7 +90,7 @@ export const useThemeStore = defineStore(
     function setSemanticColorForMode(
       mode: "light" | "dark",
       key: SemanticColorKey,
-      value: ChromaticPalette,
+      value: AnyPalette,
     ) {
       if (mode === "light") {
         config.value.colors[key] = value;
