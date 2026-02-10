@@ -23,6 +23,9 @@ logs
 .env.*
 !.env.example
 
+# VS Code MCP config (contains API keys)
+.vscode/mcp.json
+
 # Playwright
 tests/e2e/screenshots/
 tests/e2e/test-results/
