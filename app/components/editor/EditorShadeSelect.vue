@@ -24,17 +24,12 @@ function getSwatchHex(shade: NeutralShade): string {
   return NEUTRAL_HEX_MAP[props.neutralPalette]?.[shade] ?? "#888888";
 }
 
-const shadeHexMap = computed(() =>
-  NEUTRAL_HEX_MAP[props.neutralPalette] ?? {},
-);
+const shadeHexMap = computed(() => NEUTRAL_HEX_MAP[props.neutralPalette] ?? {});
 </script>
 
 <template>
   <div>
-    <label
-      :for="inputId"
-      class="text-xs font-medium text-(--ui-text-muted) mb-1 block"
-    >
+    <label :for="inputId" class="text-xs font-medium mb-1 block">
       {{ label }}
     </label>
     <USelect
@@ -64,7 +59,7 @@ const shadeHexMap = computed(() =>
     </USelect>
 
     <EditorShadeStrip
-      class="mt-1.5"
+      class="mt-2"
       :model-value="modelValue"
       :hex-map="shadeHexMap"
       :aria-label="`${label} shade picker`"

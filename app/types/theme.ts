@@ -70,8 +70,17 @@ export type NeutralShade = (typeof SHADE_VALUES)[number];
 
 // Numeric shade scale for palette shade selection (no white/black).
 export const NUMERIC_SHADE_KEYS = [
-  "50", "100", "200", "300", "400", "500",
-  "600", "700", "800", "900", "950",
+  "50",
+  "100",
+  "200",
+  "300",
+  "400",
+  "500",
+  "600",
+  "700",
+  "800",
+  "900",
+  "950",
 ] as const;
 
 export type NumericShade = (typeof NUMERIC_SHADE_KEYS)[number];
@@ -125,6 +134,7 @@ export interface TokenOverrides {
 }
 
 export interface ThemeConfig {
+  // Base / light mode settings
   colors: SemanticColors;
   colorShades: SemanticShades;
   neutral: NeutralPalette;
@@ -132,6 +142,13 @@ export interface ThemeConfig {
   font: string;
   lightOverrides: TokenOverrides;
   darkOverrides: TokenOverrides;
+
+  // Per-dark-mode overrides (can differ from light)
+  darkColors: SemanticColors;
+  darkColorShades: SemanticShades;
+  darkNeutral: NeutralPalette;
+  darkRadius: number;
+  darkFont: string;
 }
 
 export interface ThemePreset {
@@ -192,26 +209,48 @@ const defaultColorShades = {
   error: "500" as const,
 };
 
-export const ThemeConfigSchema = z.object({
-  colors: z.object({
-    primary: chromaticPaletteSchema,
-    secondary: chromaticPaletteSchema,
-    success: chromaticPaletteSchema,
-    info: chromaticPaletteSchema,
-    warning: chromaticPaletteSchema,
-    error: chromaticPaletteSchema,
-  }),
-  colorShades: z.object({
+const semanticColorsSchema = z.object({
+  primary: chromaticPaletteSchema,
+  secondary: chromaticPaletteSchema,
+  success: chromaticPaletteSchema,
+  info: chromaticPaletteSchema,
+  warning: chromaticPaletteSchema,
+  error: chromaticPaletteSchema,
+});
+
+const semanticShadesSchema = z
+  .object({
     primary: neutralShadeSchema,
     secondary: neutralShadeSchema,
     success: neutralShadeSchema,
     info: neutralShadeSchema,
     warning: neutralShadeSchema,
     error: neutralShadeSchema,
-  }).default(defaultColorShades),
+  })
+  .default(defaultColorShades);
+
+const rawThemeSchema = z.object({
+  colors: semanticColorsSchema,
+  colorShades: semanticShadesSchema,
   neutral: neutralPaletteSchema,
   radius: z.number().finite().min(0).max(2),
   font: z.enum(FONT_OPTIONS),
   lightOverrides: tokenOverridesSchema,
   darkOverrides: tokenOverridesSchema,
+
+  // Dark-mode-specific overrides — optional for backward compatibility
+  darkColors: semanticColorsSchema.optional(),
+  darkColorShades: semanticShadesSchema.optional(),
+  darkNeutral: neutralPaletteSchema.optional(),
+  darkRadius: z.number().finite().min(0).max(2).optional(),
+  darkFont: z.enum(FONT_OPTIONS).optional(),
 });
+
+export const ThemeConfigSchema = rawThemeSchema.transform((data) => ({
+  ...data,
+  darkColors: data.darkColors ?? { ...data.colors },
+  darkColorShades: data.darkColorShades ?? { ...data.colorShades },
+  darkNeutral: data.darkNeutral ?? data.neutral,
+  darkRadius: data.darkRadius ?? data.radius,
+  darkFont: data.darkFont ?? data.font,
+}));

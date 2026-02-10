@@ -2,14 +2,21 @@ import type {
   ThemeConfig,
   TokenOverrides,
   NeutralShade,
+  NeutralPalette,
   TextTokenOverrides,
   BgTokenOverrides,
   BorderTokenOverrides,
   SemanticColorKey,
+  SemanticColors,
+  SemanticShades,
   ChromaticPalette,
 } from "~/types/theme";
 import { SEMANTIC_COLOR_KEYS, NUMERIC_SHADE_KEYS } from "~/types/theme";
-import { shadeToCSS, CHROMATIC_HEX_MAP } from "~/utils/defaults";
+import {
+  shadeToCSS,
+  CHROMATIC_HEX_MAP,
+  NEUTRAL_HEX_MAP,
+} from "~/utils/defaults";
 import { typedEntries } from "~/utils/helpers";
 
 type TokenCategory = "text" | "bg" | "border";
@@ -145,6 +152,95 @@ export function generateShadeOverrideLines(
 }
 
 /**
+ * Generate full palette hex CSS variable overrides for semantic colors
+ * when the dark mode uses a different palette than light mode.
+ * This remaps all shades of the semantic color to the dark palette's hex values.
+ */
+export function generateDarkPaletteOverrideLines(
+  lightColors: SemanticColors,
+  lightShades: SemanticShades,
+  darkColors: SemanticColors,
+  darkShades: SemanticShades,
+  indent: string = "  ",
+): string[] {
+  const lines: string[] = [];
+
+  for (const key of SEMANTIC_COLOR_KEYS) {
+    const lightPalette = lightColors[key];
+    const lightShade = lightShades[key];
+    const darkPalette = darkColors[key];
+    const darkShade = darkShades[key];
+
+    // Only emit overrides if the dark palette or shade differs from light
+    if (darkPalette === lightPalette && darkShade === lightShade) continue;
+
+    // White/black: flatten entire palette to a single color
+    if (darkShade === "white" || darkShade === "black") {
+      const hex = darkShade === "white" ? "#ffffff" : "#000000";
+      for (const targetShade of NUMERIC_SHADE_KEYS) {
+        lines.push(`${indent}--ui-color-${key}-${targetShade}: ${hex};`);
+      }
+      continue;
+    }
+
+    const hexMap = CHROMATIC_HEX_MAP[darkPalette];
+    if (!hexMap) continue;
+
+    if (darkShade === "500" && darkPalette !== lightPalette) {
+      // Simple remap: dark uses a different palette at default shade
+      for (const shade of NUMERIC_SHADE_KEYS) {
+        const hex = hexMap[shade];
+        if (hex) {
+          lines.push(`${indent}--ui-color-${key}-${shade}: ${hex};`);
+        }
+      }
+    } else {
+      // Shade-shifted remap
+      const selectedIdx = NUMERIC_SHADE_KEYS.indexOf(darkShade);
+      const offset = selectedIdx - DEFAULT_SHADE_INDEX;
+
+      for (let i = 0; i < NUMERIC_SHADE_KEYS.length; i++) {
+        const targetShade = NUMERIC_SHADE_KEYS[i];
+        const sourceIdx = Math.max(
+          0,
+          Math.min(i + offset, NUMERIC_SHADE_KEYS.length - 1),
+        );
+        const sourceShade = NUMERIC_SHADE_KEYS[sourceIdx]!;
+        const hex = hexMap[sourceShade];
+        if (hex) {
+          lines.push(`${indent}--ui-color-${key}-${targetShade}: ${hex};`);
+        }
+      }
+    }
+  }
+
+  return lines;
+}
+
+/**
+ * Generate CSS variable overrides for the neutral palette in dark mode
+ * when it differs from the light mode neutral.
+ */
+export function generateDarkNeutralOverrideLines(
+  lightNeutral: NeutralPalette,
+  darkNeutral: NeutralPalette,
+  indent: string = "  ",
+): string[] {
+  if (darkNeutral === lightNeutral) return [];
+  const hexMap = NEUTRAL_HEX_MAP[darkNeutral];
+  if (!hexMap) return [];
+
+  const lines: string[] = [];
+  for (const shade of NUMERIC_SHADE_KEYS) {
+    const hex = hexMap[shade];
+    if (hex) {
+      lines.push(`${indent}--ui-color-neutral-${shade}: ${hex};`);
+    }
+  }
+  return lines;
+}
+
+/**
  * Generate the complete theme CSS override string for both light and dark modes.
  * Used by both useThemeApply (DOM injection) and useThemeExport (export output).
  */
@@ -165,26 +261,55 @@ export function generateThemeCSS(
     ...generateOverrideLines(config.lightOverrides, lightDefaults),
   );
 
-  // Shade-shifted palette overrides (when any semantic color uses a non-default shade)
+  // Shade-shifted palette overrides for light mode
   rootLines.push(
     ...generateShadeOverrideLines(config.colors, config.colorShades),
   );
 
   rootLines.push(`}`);
 
-  const darkOverrideLines = generateOverrideLines(
-    config.darkOverrides,
-    darkDefaults,
-  );
+  // Dark mode block: token overrides + palette/neutral/radius/font differences
   const darkLines: string[] = [];
-  if (darkOverrideLines.length > 0) {
-    darkLines.push(`.dark {`);
-    darkLines.push(...darkOverrideLines);
-    darkLines.push(`}`);
+
+  // Dark radius (if different from light)
+  const safeDarkRadius = Math.max(
+    0,
+    Math.min(Number(config.darkRadius) || 0, 2),
+  );
+  if (safeDarkRadius !== safeRadius) {
+    darkLines.push(`  --ui-radius: ${safeDarkRadius}rem;`);
   }
+
+  // Dark font (if different from light)
+  if (config.darkFont !== config.font) {
+    darkLines.push(
+      `  --font-sans: '${sanitizeCSSValue(config.darkFont)}', ui-sans-serif, system-ui, sans-serif;`,
+    );
+  }
+
+  // Dark token overrides (text/bg/border shades)
+  darkLines.push(...generateOverrideLines(config.darkOverrides, darkDefaults));
+
+  // Dark palette overrides (when dark colors/shades differ from light)
+  darkLines.push(
+    ...generateDarkPaletteOverrideLines(
+      config.colors,
+      config.colorShades,
+      config.darkColors,
+      config.darkColorShades,
+    ),
+  );
+
+  // Dark neutral overrides (when dark neutral differs from light)
+  darkLines.push(
+    ...generateDarkNeutralOverrideLines(config.neutral, config.darkNeutral),
+  );
+
+  const darkCSS =
+    darkLines.length > 0 ? [`.dark {`, ...darkLines, `}`].join("\n") : "";
 
   return {
     rootCSS: rootLines.join("\n"),
-    darkCSS: darkLines.join("\n"),
+    darkCSS,
   };
 }

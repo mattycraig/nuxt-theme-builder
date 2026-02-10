@@ -9,7 +9,8 @@ export function useThemeApply() {
   const store = useThemeStore();
   const appConfig = useAppConfig();
 
-  // Targeted watch: only fires when color palette assignments change
+  // Nuxt UI's appConfig.ui.colors controls the base (light mode) palette assignment.
+  // Dark mode palette differences are handled entirely via CSS variable overrides in .dark {}.
   watch(
     () => ({
       primary: store.config.colors.primary,
@@ -34,7 +35,8 @@ export function useThemeApply() {
     { immediate: true },
   );
 
-  // CSS injection covers radius, font, token overrides AND shade-shifted palette overrides
+  // CSS injection covers radius, font, token overrides, shade-shifted palette overrides,
+  // AND dark-mode-specific palette/neutral/radius/font overrides
   const injectedCSS = computed(() => {
     const { rootCSS, darkCSS } = generateThemeCSS(
       store.config,

@@ -99,6 +99,20 @@ export const DEFAULT_THEME: ThemeConfig = {
   font: "Inter",
   lightOverrides: { ...DEFAULT_LIGHT_OVERRIDES },
   darkOverrides: { ...DEFAULT_DARK_OVERRIDES },
+
+  // Dark mode defaults — same as light
+  darkColors: {
+    primary: "indigo",
+    secondary: "sky",
+    success: "emerald",
+    info: "blue",
+    warning: "amber",
+    error: "rose",
+  },
+  darkColorShades: { ...DEFAULT_COLOR_SHADES },
+  darkNeutral: "slate",
+  darkRadius: 0.375,
+  darkFont: "Inter",
 };
 
 // Hex Color Maps ─────────────────────────────────────────────────────────
@@ -451,4 +465,19 @@ export function shadeToCSS(shade: string): string {
  */
 export function cloneTheme(theme: ThemeConfig): ThemeConfig {
   return structuredClone(toRaw(theme));
+}
+
+/**
+ * Ensure a config has all dark-mode-specific fields.
+ * Fills missing dark* fields from their light equivalents for backward compatibility.
+ */
+export function ensureDarkFields(config: ThemeConfig): ThemeConfig {
+  return {
+    ...config,
+    darkColors: config.darkColors ?? { ...config.colors },
+    darkColorShades: config.darkColorShades ?? { ...config.colorShades },
+    darkNeutral: config.darkNeutral ?? config.neutral,
+    darkRadius: config.darkRadius ?? config.radius,
+    darkFont: config.darkFont ?? config.font,
+  };
 }

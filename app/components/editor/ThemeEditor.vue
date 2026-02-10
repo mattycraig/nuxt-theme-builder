@@ -62,16 +62,35 @@ function toggleSections() {
 }
 
 const debouncedRadiusCommit = useDebounceFn((val: number) => {
-  store.setRadius(val);
+  store.setRadiusForMode(mode.value, val);
 }, 300);
 
 function onRadiusChange(val: number) {
-  store.setRadiusVisual(val);
+  store.setRadiusVisualForMode(mode.value, val);
   debouncedRadiusCommit(val);
 }
 
 const mode = computed<"light" | "dark">(() =>
   colorMode.value === "dark" ? "dark" : "light",
+);
+
+// Mode-aware computed properties for all settings
+const currentColors = computed(() =>
+  mode.value === "light" ? store.config.colors : store.config.darkColors,
+);
+const currentColorShades = computed(() =>
+  mode.value === "light"
+    ? store.config.colorShades
+    : store.config.darkColorShades,
+);
+const currentNeutral = computed(() =>
+  mode.value === "light" ? store.config.neutral : store.config.darkNeutral,
+);
+const currentRadius = computed(() =>
+  mode.value === "light" ? store.config.radius : store.config.darkRadius,
+);
+const currentFont = computed(() =>
+  mode.value === "light" ? store.config.font : store.config.darkFont,
 );
 
 const overrides = computed(() =>
@@ -151,7 +170,7 @@ onMounted(() => {
         <div class="flex items-center gap-2">
           <UColorModeSwitch />
           <span class="text-xs text-[var(--ui-text-toned)]">
-            Editing <strong>{{ mode }}</strong> overrides
+            Editing <strong>{{ mode }}</strong> mode settings
           </span>
         </div>
       </EditorSection>
@@ -166,13 +185,17 @@ onMounted(() => {
         label="Layout"
         default-open
       >
+        <template #heading>
+          Layout
+          <UBadge :label="mode" variant="subtle" size="xs" class="ml-1" />
+        </template>
         <div class="space-y-3">
           <EditorFontPicker
-            :model-value="store.config.font"
-            @update:model-value="store.setFont($event)"
+            :model-value="currentFont"
+            @update:model-value="store.setFontForMode(mode, $event)"
           />
           <EditorRadiusSlider
-            :model-value="store.config.radius"
+            :model-value="currentRadius"
             @update:model-value="onRadiusChange($event)"
           />
         </div>
@@ -188,15 +211,21 @@ onMounted(() => {
         label="Semantic Colors"
         default-open
       >
-        <div class="space-y-2">
+        <template #heading>
+          Semantic Colors
+          <UBadge :label="mode" variant="subtle" size="xs" class="ml-1" />
+        </template>
+        <div class="space-y-4">
           <EditorColorPicker
             v-for="key in SEMANTIC_COLOR_KEYS"
             :key="key"
-            :model-value="store.config.colors[key]"
-            :shade="store.config.colorShades[key]"
+            :model-value="currentColors[key]"
+            :shade="currentColorShades[key]"
             :label="capitalize(key)"
-            @update:model-value="store.setSemanticColor(key, $event)"
-            @update:shade="store.setSemanticShade(key, $event)"
+            @update:model-value="
+              store.setSemanticColorForMode(mode, key, $event)
+            "
+            @update:shade="store.setSemanticShadeForMode(mode, key, $event)"
           />
         </div>
       </EditorSection>
@@ -211,10 +240,14 @@ onMounted(() => {
         label="Neutral Color"
         default-open
       >
+        <template #heading>
+          Neutral Color
+          <UBadge :label="mode" variant="subtle" size="xs" class="ml-1" />
+        </template>
         <EditorNeutralPicker
-          :model-value="store.config.neutral"
+          :model-value="currentNeutral"
           label="Neutral"
-          @update:model-value="store.setNeutral($event)"
+          @update:model-value="store.setNeutralForMode(mode, $event)"
         />
       </EditorSection>
 
@@ -231,13 +264,13 @@ onMounted(() => {
           Text Colors
           <UBadge :label="mode" variant="subtle" size="xs" class="ml-1" />
         </template>
-        <div class="space-y-2">
+        <div class="space-y-4">
           <EditorShadeSelect
             v-for="token in TEXT_TOKEN_KEYS"
             :key="token"
             :model-value="overrides.text[token]"
             :label="capitalize(token)"
-            :neutral-palette="store.config.neutral"
+            :neutral-palette="currentNeutral"
             @update:model-value="onTextOverride(token, $event)"
           />
         </div>
@@ -256,13 +289,13 @@ onMounted(() => {
           Background Colors
           <UBadge :label="mode" variant="subtle" size="xs" class="ml-1" />
         </template>
-        <div class="space-y-2">
+        <div class="space-y-4">
           <EditorShadeSelect
             v-for="token in BG_TOKEN_KEYS"
             :key="token"
             :model-value="overrides.bg[token]"
             :label="capitalize(token)"
-            :neutral-palette="store.config.neutral"
+            :neutral-palette="currentNeutral"
             @update:model-value="onBgOverride(token, $event)"
           />
         </div>
@@ -281,13 +314,13 @@ onMounted(() => {
           Border Colors
           <UBadge :label="mode" variant="subtle" size="xs" class="ml-1" />
         </template>
-        <div class="space-y-2">
+        <div class="space-y-4">
           <EditorShadeSelect
             v-for="token in BORDER_TOKEN_KEYS"
             :key="token"
             :model-value="overrides.border[token]"
             :label="capitalize(token)"
-            :neutral-palette="store.config.neutral"
+            :neutral-palette="currentNeutral"
             @update:model-value="onBorderOverride(token, $event)"
           />
         </div>

@@ -1,9 +1,39 @@
-import type { ThemePreset } from "~/types/theme";
+import type { ThemePreset, ThemeConfig } from "~/types/theme";
 import {
   DEFAULT_THEME,
   DEFAULT_LIGHT_OVERRIDES,
   DEFAULT_DARK_OVERRIDES,
+  DEFAULT_COLOR_SHADES,
 } from "~/utils/defaults";
+
+/** Build a full preset config, filling dark-mode fields from light when not specified */
+function preset(
+  base: Omit<
+    ThemeConfig,
+    "darkColors" | "darkColorShades" | "darkNeutral" | "darkRadius" | "darkFont"
+  > &
+    Partial<
+      Pick<
+        ThemeConfig,
+        | "darkColors"
+        | "darkColorShades"
+        | "darkNeutral"
+        | "darkRadius"
+        | "darkFont"
+      >
+    >,
+): ThemeConfig {
+  return {
+    ...base,
+    colorShades: base.colorShades ?? { ...DEFAULT_COLOR_SHADES },
+    darkColors: base.darkColors ?? { ...base.colors },
+    darkColorShades: base.darkColorShades ??
+      base.colorShades ?? { ...DEFAULT_COLOR_SHADES },
+    darkNeutral: base.darkNeutral ?? base.neutral,
+    darkRadius: base.darkRadius ?? base.radius,
+    darkFont: base.darkFont ?? base.font,
+  };
+}
 
 export const BUILT_IN_PRESETS: ThemePreset[] = [
   {
@@ -14,7 +44,7 @@ export const BUILT_IN_PRESETS: ThemePreset[] = [
   {
     name: "Ocean",
     builtIn: true,
-    config: {
+    config: preset({
       colors: {
         primary: "cyan",
         secondary: "blue",
@@ -28,12 +58,12 @@ export const BUILT_IN_PRESETS: ThemePreset[] = [
       font: "Inter",
       lightOverrides: DEFAULT_LIGHT_OVERRIDES,
       darkOverrides: DEFAULT_DARK_OVERRIDES,
-    },
+    }),
   },
   {
     name: "Forest",
     builtIn: true,
-    config: {
+    config: preset({
       colors: {
         primary: "emerald",
         secondary: "lime",
@@ -47,12 +77,12 @@ export const BUILT_IN_PRESETS: ThemePreset[] = [
       font: "DM Sans",
       lightOverrides: DEFAULT_LIGHT_OVERRIDES,
       darkOverrides: DEFAULT_DARK_OVERRIDES,
-    },
+    }),
   },
   {
     name: "Sunset",
     builtIn: true,
-    config: {
+    config: preset({
       colors: {
         primary: "orange",
         secondary: "rose",
@@ -66,12 +96,12 @@ export const BUILT_IN_PRESETS: ThemePreset[] = [
       font: "Poppins",
       lightOverrides: DEFAULT_LIGHT_OVERRIDES,
       darkOverrides: DEFAULT_DARK_OVERRIDES,
-    },
+    }),
   },
   {
     name: "Dark Mono",
     builtIn: true,
-    config: {
+    config: preset({
       colors: {
         primary: "violet",
         secondary: "indigo",
@@ -129,12 +159,12 @@ export const BUILT_IN_PRESETS: ThemePreset[] = [
           inverted: "white",
         },
       },
-    },
+    }),
   },
   {
     name: "Rose Gold",
     builtIn: true,
-    config: {
+    config: preset({
       colors: {
         primary: "rose",
         secondary: "pink",
@@ -148,12 +178,12 @@ export const BUILT_IN_PRESETS: ThemePreset[] = [
       font: "Outfit",
       lightOverrides: DEFAULT_LIGHT_OVERRIDES,
       darkOverrides: DEFAULT_DARK_OVERRIDES,
-    },
+    }),
   },
   {
     name: "Corporate",
     builtIn: true,
-    config: {
+    config: preset({
       colors: {
         primary: "blue",
         secondary: "sky",
@@ -167,12 +197,12 @@ export const BUILT_IN_PRESETS: ThemePreset[] = [
       font: "Inter",
       lightOverrides: DEFAULT_LIGHT_OVERRIDES,
       darkOverrides: DEFAULT_DARK_OVERRIDES,
-    },
+    }),
   },
   {
     name: "Lavender",
     builtIn: true,
-    config: {
+    config: preset({
       colors: {
         primary: "purple",
         secondary: "fuchsia",
@@ -186,12 +216,12 @@ export const BUILT_IN_PRESETS: ThemePreset[] = [
       font: "Poppins",
       lightOverrides: DEFAULT_LIGHT_OVERRIDES,
       darkOverrides: DEFAULT_DARK_OVERRIDES,
-    },
+    }),
   },
   {
     name: "Minimal",
     builtIn: true,
-    config: {
+    config: preset({
       colors: {
         primary: "sky",
         secondary: "blue",
@@ -249,12 +279,12 @@ export const BUILT_IN_PRESETS: ThemePreset[] = [
           inverted: "white",
         },
       },
-    },
+    }),
   },
   {
     name: "Sahara",
     builtIn: true,
-    config: {
+    config: preset({
       colors: {
         primary: "amber",
         secondary: "orange",
@@ -268,12 +298,12 @@ export const BUILT_IN_PRESETS: ThemePreset[] = [
       font: "Raleway",
       lightOverrides: DEFAULT_LIGHT_OVERRIDES,
       darkOverrides: DEFAULT_DARK_OVERRIDES,
-    },
+    }),
   },
   {
     name: "Arctic",
     builtIn: true,
-    config: {
+    config: preset({
       colors: {
         primary: "cyan",
         secondary: "sky",
@@ -287,12 +317,12 @@ export const BUILT_IN_PRESETS: ThemePreset[] = [
       font: "Public Sans",
       lightOverrides: DEFAULT_LIGHT_OVERRIDES,
       darkOverrides: DEFAULT_DARK_OVERRIDES,
-    },
+    }),
   },
   {
     name: "Neon",
     builtIn: true,
-    config: {
+    config: preset({
       colors: {
         primary: "fuchsia",
         secondary: "violet",
@@ -306,12 +336,12 @@ export const BUILT_IN_PRESETS: ThemePreset[] = [
       font: "Outfit",
       lightOverrides: DEFAULT_LIGHT_OVERRIDES,
       darkOverrides: DEFAULT_DARK_OVERRIDES,
-    },
+    }),
   },
   {
     name: "Midnight",
     builtIn: true,
-    config: {
+    config: preset({
       colors: {
         primary: "blue",
         secondary: "indigo",
@@ -347,6 +377,6 @@ export const BUILT_IN_PRESETS: ThemePreset[] = [
           inverted: "white",
         },
       },
-    },
+    }),
   },
 ];

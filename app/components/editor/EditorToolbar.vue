@@ -45,7 +45,7 @@ const saveTooltipText = computed(() => {
     :class="
       collapsed
         ? 'flex flex-col items-center gap-1 py-2'
-        : 'flex items-center gap-1 px-4 min-h-[49px] sticky top-0 z-10 bg-(--ui-bg) border-b border-(--ui-border)'
+        : 'flex items-center gap-1 px-4 min-h-[49px] sticky top-0 z-20 bg-(--ui-bg) border-b border-(--ui-border)'
     "
   >
     <!-- Save button: quick-save if active+modified, otherwise save-as -->

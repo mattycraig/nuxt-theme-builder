@@ -10,7 +10,7 @@ import type {
   BorderTokenKey,
 } from "~/types/theme";
 import { ThemeConfigSchema } from "~/types/theme";
-import { DEFAULT_THEME, cloneTheme } from "~/utils/defaults";
+import { DEFAULT_THEME, cloneTheme, ensureDarkFields } from "~/utils/defaults";
 
 const MAX_HISTORY = 50;
 
@@ -47,7 +47,9 @@ export const useThemeStore = defineStore(
     }
 
     const canUndo = computed(() => historyIndex.value > 0);
-    const canUndoAll = computed(() => historyIndex.value > historyBaseIndex.value);
+    const canUndoAll = computed(
+      () => historyIndex.value > historyBaseIndex.value,
+    );
     const canRedo = computed(
       () => historyIndex.value < history.value.length - 1,
     );
@@ -113,6 +115,69 @@ export const useThemeStore = defineStore(
       _pushHistory();
     }
 
+    // Mode-aware setters for per-light/dark settings ─────────────────
+
+    function setSemanticColorForMode(
+      mode: "light" | "dark",
+      key: SemanticColorKey,
+      value: ChromaticPalette,
+    ) {
+      if (mode === "light") {
+        config.value.colors[key] = value;
+      } else {
+        config.value.darkColors[key] = value;
+      }
+      _pushHistory();
+    }
+
+    function setSemanticShadeForMode(
+      mode: "light" | "dark",
+      key: SemanticColorKey,
+      shade: NeutralShade,
+    ) {
+      if (mode === "light") {
+        config.value.colorShades[key] = shade;
+      } else {
+        config.value.darkColorShades[key] = shade;
+      }
+      _pushHistory();
+    }
+
+    function setNeutralForMode(mode: "light" | "dark", value: NeutralPalette) {
+      if (mode === "light") {
+        config.value.neutral = value;
+      } else {
+        config.value.darkNeutral = value;
+      }
+      _pushHistory();
+    }
+
+    function setRadiusForMode(mode: "light" | "dark", value: number) {
+      if (mode === "light") {
+        config.value.radius = value;
+      } else {
+        config.value.darkRadius = value;
+      }
+      _pushHistory();
+    }
+
+    function setRadiusVisualForMode(mode: "light" | "dark", value: number) {
+      if (mode === "light") {
+        config.value.radius = value;
+      } else {
+        config.value.darkRadius = value;
+      }
+    }
+
+    function setFontForMode(mode: "light" | "dark", value: string) {
+      if (mode === "light") {
+        config.value.font = value;
+      } else {
+        config.value.darkFont = value;
+      }
+      _pushHistory();
+    }
+
     function setTextOverride(
       mode: "light" | "dark",
       token: TextTokenKey,
@@ -170,7 +235,7 @@ export const useThemeStore = defineStore(
         );
         config.value = cloneTheme(DEFAULT_THEME);
       } else {
-        config.value = cloneTheme(result.data as ThemeConfig);
+        config.value = cloneTheme(ensureDarkFields(result.data as ThemeConfig));
       }
       _pushHistory();
       historyBaseIndex.value = historyIndex.value;
@@ -274,7 +339,7 @@ export const useThemeStore = defineStore(
         );
         return;
       }
-      config.value = cloneTheme(result.data as ThemeConfig);
+      config.value = cloneTheme(ensureDarkFields(result.data as ThemeConfig));
       activePresetName.value = preset.name;
       _pushHistory();
       historyBaseIndex.value = historyIndex.value;
@@ -299,6 +364,12 @@ export const useThemeStore = defineStore(
       setRadius,
       setRadiusVisual,
       setFont,
+      setSemanticColorForMode,
+      setSemanticShadeForMode,
+      setNeutralForMode,
+      setRadiusForMode,
+      setRadiusVisualForMode,
+      setFontForMode,
       setTextOverride,
       setBgOverride,
       setBorderOverride,
@@ -323,6 +394,11 @@ export const useThemeStore = defineStore(
             result.error.issues,
           );
           ctx.store.config = cloneTheme(DEFAULT_THEME);
+        } else {
+          // Ensure backward-compatible configs get dark mode fields filled
+          ctx.store.config = cloneTheme(
+            ensureDarkFields(result.data as ThemeConfig),
+          );
         }
 
         if (Array.isArray(ctx.store.savedPresets)) {

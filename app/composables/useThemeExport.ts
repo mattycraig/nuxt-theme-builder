@@ -8,6 +8,8 @@ import {
 import {
   generateOverrideLines,
   generateShadeOverrideLines,
+  generateDarkPaletteOverrideLines,
+  generateDarkNeutralOverrideLines,
 } from "~/utils/cssGenerator";
 
 /**
@@ -29,6 +31,11 @@ export function useThemeExport() {
     const hasShadeOverrides = SEMANTIC_COLOR_KEYS.some(
       (k) => cfg.colorShades[k] !== "500",
     );
+    const hasDarkColorDiffs = SEMANTIC_COLOR_KEYS.some(
+      (k) =>
+        cfg.darkColors[k] !== cfg.colors[k] ||
+        cfg.darkColorShades[k] !== cfg.colorShades[k],
+    );
     const lines: string[] = [];
     lines.push(`export default defineAppConfig({`);
     lines.push(`  ui: {`);
@@ -43,11 +50,23 @@ export function useThemeExport() {
     lines.push(`    },`);
     lines.push(`  },`);
     lines.push(`})`);
-    if (hasShadeOverrides) {
+    if (hasShadeOverrides || hasDarkColorDiffs) {
       lines.push(``);
       lines.push(
-        `// Shade overrides — add the CSS variables from the CSS export to your main.css`,
+        `// Dark mode and shade overrides — add the CSS variables from the CSS export to your main.css`,
       );
+    }
+    if (hasDarkColorDiffs) {
+      lines.push(`// Dark mode uses different palettes:`);
+      for (const key of SEMANTIC_COLOR_KEYS) {
+        if (cfg.darkColors[key] !== cfg.colors[key]) {
+          lines.push(
+            `//   ${key}: ${cfg.darkColors[key]} (light: ${cfg.colors[key]})`,
+          );
+        }
+      }
+    }
+    if (hasShadeOverrides) {
       for (const key of SEMANTIC_COLOR_KEYS) {
         if (cfg.colorShades[key] !== "500") {
           lines.push(
@@ -75,7 +94,7 @@ export function useThemeExport() {
     lines.push(`}`);
     lines.push(``);
 
-    // :root overrides
+    // :root overrides (light mode)
     const rootOverrideLines = generateOverrideLines(
       cfg.lightOverrides,
       DEFAULT_LIGHT_OVERRIDES,
@@ -95,15 +114,39 @@ export function useThemeExport() {
       lines.push(``);
     }
 
-    // .dark overrides
-    const darkOverrideLines = generateOverrideLines(
+    // .dark overrides — token overrides + palette/neutral/radius/font diffs
+    const darkTokenLines = generateOverrideLines(
       cfg.darkOverrides,
       DEFAULT_DARK_OVERRIDES,
     );
+    const darkPaletteLines = generateDarkPaletteOverrideLines(
+      cfg.colors,
+      cfg.colorShades,
+      cfg.darkColors,
+      cfg.darkColorShades,
+    );
+    const darkNeutralLines = generateDarkNeutralOverrideLines(
+      cfg.neutral,
+      cfg.darkNeutral,
+    );
+    const allDarkLines: string[] = [];
 
-    if (darkOverrideLines.length > 0) {
+    if (cfg.darkRadius !== cfg.radius) {
+      allDarkLines.push(`  --ui-radius: ${cfg.darkRadius}rem;`);
+    }
+    if (cfg.darkFont !== cfg.font) {
+      allDarkLines.push(
+        `  --font-sans: '${cfg.darkFont}', ui-sans-serif, system-ui, sans-serif;`,
+      );
+    }
+
+    allDarkLines.push(...darkTokenLines);
+    allDarkLines.push(...darkPaletteLines);
+    allDarkLines.push(...darkNeutralLines);
+
+    if (allDarkLines.length > 0) {
       lines.push(`.dark {`);
-      lines.push(...darkOverrideLines);
+      lines.push(...allDarkLines);
       lines.push(`}`);
     }
 

@@ -27,17 +27,12 @@ const items = CHROMATIC_PALETTES.map((p) => ({
   value: p,
 }));
 
-const shadeHexMap = computed(() =>
-  CHROMATIC_HEX_MAP[props.modelValue] ?? {},
-);
+const shadeHexMap = computed(() => CHROMATIC_HEX_MAP[props.modelValue] ?? {});
 </script>
 
 <template>
   <div>
-    <label
-      :for="inputId"
-      class="text-xs font-medium text-(--ui-text-muted) mb-1 block"
-    >
+    <label :for="inputId" class="text-xs font-medium mb-1 block">
       {{ label }}
     </label>
     <USelect

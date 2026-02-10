@@ -22,9 +22,7 @@ function onUpdate(val: number | undefined) {
 <template>
   <div>
     <div class="flex items-center justify-between mb-2">
-      <label class="text-xs font-medium text-(--ui-text-muted)"
-        >Border Radius</label
-      >
+      <label class="text-xs font-medium">Border Radius</label>
       <span class="text-xs font-mono text-(--ui-text-toned)">{{
         formatValue(modelValue)
       }}</span>
