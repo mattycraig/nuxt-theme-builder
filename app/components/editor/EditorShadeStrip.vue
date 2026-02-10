@@ -70,7 +70,7 @@ function getHex(shade: string): string {
       role="radio"
       :aria-checked="modelValue === 'black'"
       aria-label="Black"
-      class="size-5 shrink-0 rounded-sm border cursor-pointer transition-shadow focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-1"
+      class="size-5 shrink-0 rounded-sm border border-black cursor-pointer transition-shadow focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-1"
       :class="modelValue === 'black' ? 'ring-2 ring-primary-500' : ''"
       :style="{ backgroundColor: '#000000' }"
       @click="emit('update:modelValue', 'black')"

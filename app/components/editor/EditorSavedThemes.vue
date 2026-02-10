@@ -164,7 +164,11 @@ function getDropdownItems(preset: ThemePreset) {
       <p class="text-xs text-(--ui-text-muted)">
         Use the
         <span class="inline-flex items-center align-text-bottom">
-          <UIcon name="i-lucide-save" class="size-3.5" aria-hidden="true" />
+          <UIcon
+            name="i-lucide-save"
+            class="size-3.5 mx-0.5"
+            aria-hidden="true"
+          />
         </span>
         <span class="font-medium">Save</span> button in the toolbar to save your
         current theme.
@@ -176,38 +180,56 @@ function getDropdownItems(preset: ThemePreset) {
       <li
         v-for="preset in store.savedPresets"
         :key="preset.name"
-        class="rounded-lg border p-2 transition-all duration-150 group"
+        class="relative group rounded-lg transition-all duration-150 flex items-center justify-between"
         :class="
           isActive(preset)
-            ? 'border-(--ui-primary)/40 bg-(--ui-primary)/5'
-            : 'border-(--ui-border) hover:border-(--ui-border-accented) hover:bg-(--ui-bg-elevated)/50'
+            ? 'bg-(--ui-primary)/5 ring-1 ring-inset ring-(--ui-primary)/20'
+            : 'hover:bg-(--ui-bg-elevated)/50'
         "
       >
-        <!-- Top row: swatches, name, menu -->
-        <div class="flex items-center gap-2 min-w-0">
-          <button
-            type="button"
-            class="flex items-center gap-2 min-w-0 flex-1 cursor-pointer text-left"
-            :aria-label="`Load theme: ${preset.name}${isActive(preset) ? ' (active)' : ''}${isActive(preset) && store.hasUnsavedChanges ? ', modified' : ''}`"
-            @click="loadTheme(preset)"
-          >
-            <EditorPresetSwatches
-              :config="preset.config"
-              size="sm"
-              class="shrink-0"
-            />
-            <span
-              class="text-xs font-medium truncate"
-              :class="
-                isActive(preset)
-                  ? 'text-(--ui-primary)'
-                  : 'text-(--ui-text-highlighted)'
-              "
-            >
-              {{ preset.name }}
-            </span>
-          </button>
+        <button
+          type="button"
+          class="text-left p-2 cursor-pointer rounded-lg flex items-center min-w-0 flex-1"
+          :title="
+            preset.updatedAt
+              ? `Last updated ${timeAgo(preset.updatedAt)}`
+              : undefined
+          "
+          :aria-label="`Load theme: ${preset.name}${isActive(preset) ? ' (active)' : ''}${isActive(preset) && store.hasUnsavedChanges ? ', edited' : ''}`"
+          @click="loadTheme(preset)"
+        >
+          <!-- Palette strip(s) -->
+          <EditorSwatchStrip :config="preset.config" class="mr-3" />
 
+          <!-- Name -->
+          <span
+            class="text-xs font-medium truncate"
+            :class="
+              isActive(preset)
+                ? 'text-(--ui-text-default) font-semibold'
+                : 'text-(--ui-text-muted) '
+            "
+          >
+            {{ preset.name }}
+          </span>
+        </button>
+
+        <!-- Status badge -->
+        <span
+          v-if="isActive(preset) && store.hasUnsavedChanges"
+          class="absolute -top-0.5 -right-0.5 size-2 rounded-full bg-(--ui-color-warning-500) animate-pulse pointer-events-none"
+          role="status"
+          :aria-label="`${preset.name}: unsaved changes`"
+        />
+        <span
+          v-else-if="isActive(preset)"
+          class="absolute -top-0.5 -right-0.5 size-2 rounded-full bg-(--ui-color-success-500) animate-pulse pointer-events-none"
+          role="status"
+          :aria-label="`${preset.name}: active`"
+        />
+
+        <!-- Dropdown menu -->
+        <div class="px-2">
           <UDropdownMenu :items="getDropdownItems(preset)">
             <UButton
               icon="i-lucide-ellipsis"
@@ -218,64 +240,6 @@ function getDropdownItems(preset: ThemePreset) {
               @click.stop
             />
           </UDropdownMenu>
-        </div>
-
-        <!-- Bottom row: metadata + status -->
-        <div class="flex items-center justify-between gap-2 mt-1.5">
-          <span
-            class="text-[11px] text-(--ui-text-dimmed) flex items-center gap-2.5 truncate"
-          >
-            <div class="flex items-center gap-1">
-              <UIcon
-                name="i-lucide-type"
-                class="size-3.5 shrink-0"
-                aria-hidden="true"
-              />
-              <span class="truncate">{{ preset.config.font }}</span>
-            </div>
-            <div class="flex items-center gap-1">
-              <UIcon
-                name="i-lucide-square-round-corner"
-                class="size-3.5 shrink-0"
-                aria-hidden="true"
-              />
-              <span>{{ preset.config.radius }}</span>
-            </div>
-            <template v-if="preset.updatedAt">
-              <div class="flex items-center gap-1">
-                <UIcon
-                  name="i-lucide-clock"
-                  class="size-3.5 shrink-0"
-                  aria-hidden="true"
-                />
-                <span :title="new Date(preset.updatedAt).toLocaleString()">{{
-                  timeAgo(preset.updatedAt)
-                }}</span>
-              </div>
-            </template>
-          </span>
-
-          <span
-            v-if="isActive(preset)"
-            class="flex items-center gap-1 shrink-0"
-          >
-            <UBadge
-              v-if="store.hasUnsavedChanges"
-              label="Modified"
-              color="error"
-              variant="subtle"
-              size="xs"
-              class="uppercase"
-            />
-            <UBadge
-              v-else
-              label="Active"
-              color="primary"
-              variant="subtle"
-              size="xs"
-              class="uppercase"
-            />
-          </span>
         </div>
       </li>
     </ul>

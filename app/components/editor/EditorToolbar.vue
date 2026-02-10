@@ -60,7 +60,7 @@ const saveTooltipText = computed(() => {
         />
         <span
           v-if="store.hasUnsavedChanges && store.activePresetName"
-          class="absolute -top-0.5 -right-0.5 size-2 rounded-full bg-(--ui-color-warning-500) animate-pulse"
+          class="absolute top-0 right-0 size-2 rounded-full bg-(--ui-color-warning-500) animate-pulse"
           aria-hidden="true"
         />
       </span>
