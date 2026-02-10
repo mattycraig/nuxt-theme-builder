@@ -80,10 +80,18 @@ function handleImport() {
   }
 }
 
+const MAX_IMPORT_SIZE = 512 * 1024; // 512 KB
+
 function handleFileUpload(event: Event) {
   const target = event.target as HTMLInputElement;
   const file = target.files?.[0];
   if (!file) return;
+
+  if (file.size > MAX_IMPORT_SIZE) {
+    importError.value = `File too large (${(file.size / 1024).toFixed(0)} KB). Maximum is 512 KB.`;
+    target.value = "";
+    return;
+  }
 
   const reader = new FileReader();
   reader.onload = (e) => {
@@ -192,7 +200,6 @@ function handleFileUpload(event: Event) {
                 icon: 'i-lucide-x',
                 color: 'error' as const,
                 variant: 'link' as const,
-                padded: false,
               }"
               @close="importError = ''"
             />

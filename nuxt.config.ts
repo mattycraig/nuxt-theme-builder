@@ -8,6 +8,7 @@ export default defineNuxtConfig({
     "@pinia/nuxt",
     "pinia-plugin-persistedstate/nuxt",
     "@vueuse/nuxt",
+    "nuxt-security",
   ],
 
   site: {
@@ -64,17 +65,35 @@ export default defineNuxtConfig({
     },
   ],
 
-  routeRules: {
-    "/**": {
-      headers: {
-        "X-Content-Type-Options": "nosniff",
-        "X-Frame-Options": "SAMEORIGIN",
-        "Referrer-Policy": "strict-origin-when-cross-origin",
-        "Permissions-Policy": "camera=(), microphone=(), geolocation=()",
-        "Content-Security-Policy":
-          "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; font-src 'self' https://fonts.gstatic.com; connect-src 'self' https:; frame-ancestors 'self'",
+  security: {
+    headers: {
+      contentSecurityPolicy: {
+        "default-src": ["'self'"],
+        "script-src": ["'self'", "'nonce-{{nonce}}'", "'strict-dynamic'"],
+        "style-src": ["'self'", "'unsafe-inline'"],
+        "img-src": ["'self'", "data:", "https:"],
+        "font-src": ["'self'", "https://fonts.gstatic.com"],
+        "connect-src": ["'self'", "https:"],
+        "frame-ancestors": ["'self'"],
+        "base-uri": ["'none'"],
+        "object-src": ["'none'"],
+        "script-src-attr": ["'none'"],
       },
+      referrerPolicy: "strict-origin-when-cross-origin",
+      strictTransportSecurity: {
+        maxAge: 31536000,
+        includeSubdomains: true,
+      },
+      permissionsPolicy: {
+        camera: [],
+        microphone: [],
+        geolocation: [],
+      },
+      // Defaults already applied by nuxt-security:
+      // xContentTypeOptions: 'nosniff'
+      // xFrameOptions: 'SAMEORIGIN'
     },
+    nonce: true,
   },
 
   vite: {
