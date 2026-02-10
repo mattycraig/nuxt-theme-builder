@@ -41,7 +41,7 @@ const saveTooltipText = computed(() => {
 
 <template>
   <div
-    class="flex items-center gap-1 px-4 min-h-[49px] sticky top-0 z-20 bg-(--ui-bg) border-b border-(--ui-border)"
+    class="flex items-center gap-1 px-4 min-h-[64px] sticky top-0 z-20 bg-(--ui-bg) border-b border-(--ui-border)"
   >
     <!-- Save button: quick-save if active+modified, otherwise save-as -->
     <UTooltip :text="saveTooltipText">
@@ -73,7 +73,7 @@ const saveTooltipText = computed(() => {
       />
     </UTooltip>
 
-    <USeparator orientation="vertical" class="h-4 mx-0.5" />
+    <USeparator orientation="vertical" class="h-full mx-1" />
 
     <!-- Undo -->
     <UTooltip text="Undo">
@@ -114,7 +114,7 @@ const saveTooltipText = computed(() => {
       />
     </UTooltip>
 
-    <USeparator orientation="vertical" class="h-4 mx-0.5" />
+    <USeparator orientation="vertical" class="h-full mx-1" />
 
     <!-- Reset -->
     <UTooltip text="Reset to defaults">
@@ -127,6 +127,8 @@ const saveTooltipText = computed(() => {
         @click="store.resetToDefaults()"
       />
     </UTooltip>
+
+    <USeparator orientation="vertical" class="h-full mx-1" />
 
     <!-- JSON / Visual mode toggle -->
     <UTooltip

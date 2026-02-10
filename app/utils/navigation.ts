@@ -234,11 +234,6 @@ export const NAVIGATION_ITEMS: NavigationMenuItem[][] = [
       to: "/templates",
       children: templateChildren,
     },
-    {
-      label: "Help",
-      icon: "i-lucide-circle-help",
-      to: "/help",
-    },
   ],
 ];
 

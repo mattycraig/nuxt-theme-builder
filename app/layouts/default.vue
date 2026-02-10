@@ -230,7 +230,7 @@ function onSearchSelect(option: { to?: string }) {
         footer: 'border-t border-default py-4',
       }"
     >
-      <template #header>
+      <!-- <template #header>
         <p
           class="text-lg font-bold text-[var(--ui-text-highlighted)] truncate flex items-center gap-2"
           role="banner"
@@ -242,7 +242,7 @@ function onSearchSelect(option: { to?: string }) {
           />
           Nuxt UI Builder
         </p>
-      </template>
+      </template> -->
 
       <template #default>
         <ThemeEditor />
@@ -264,24 +264,26 @@ function onSearchSelect(option: { to?: string }) {
     <!-- Main Content ──────────────────────────────────────────────── -->
     <main id="maincontent" class="flex-1 h-full overflow-hidden flex flex-col">
       <!-- Bar 1: Top Navbar — page identity + global actions ────── -->
-      <UDashboardNavbar
-        title="Nuxt UI Theme Builder"
-        :ui="{ title: 'sr-only' }"
-      >
+      <UDashboardNavbar title="Nuxt UI Theme Builder">
         <template #leading>
           <UDashboardSidebarCollapse />
           <USeparator orientation="vertical" class="h-6 mx-2" />
+          <UIcon
+            name="i-lucide-palette"
+            class="size-5 text-(--ui-primary)"
+            aria-hidden="true"
+          />
         </template>
 
-        <template #trailing>
+        <template #right>
           <!-- Desktop: full horizontal navigation menu -->
           <UNavigationMenu
             :items="NAVIGATION_ITEMS"
-            class="hidden md:flex flex-1 min-w-max"
+            class="hidden lg:flex flex-1 min-w-max"
           />
 
           <!-- Mobile: compact dropdown -->
-          <UDropdownMenu :items="mobileNavItems" class="md:hidden">
+          <UDropdownMenu :items="mobileNavItems" class="lg:hidden ml-4">
             <UButton
               :label="currentPageLabel"
               variant="ghost"
@@ -289,14 +291,26 @@ function onSearchSelect(option: { to?: string }) {
               trailing-icon="i-lucide-chevron-down"
             />
           </UDropdownMenu>
-        </template>
 
-        <template #right>
-          <UDashboardSearchButton />
-          <USeparator orientation="vertical" class="h-6 mx-2" />
+          <UTooltip text="Help & Documentation">
+            <UButton
+              icon="i-lucide-circle-help"
+              aria-label="Help & Documentation"
+              variant="ghost"
+              color="neutral"
+              to="/help"
+            />
+          </UTooltip>
 
-          <!-- Future slot: localization dropdown, etc. -->
-          <UColorModeSwitch />
+          <UTooltip text="Search pages & actions">
+            <UDashboardSearchButton collapsed />
+          </UTooltip>
+
+          <USeparator orientation="vertical" class="h-6 mx-2 hidden sm:block" />
+
+          <div class="hidden sm:block">
+            <UColorModeSwitch />
+          </div>
         </template>
       </UDashboardNavbar>
 
