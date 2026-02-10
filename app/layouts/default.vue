@@ -219,18 +219,19 @@ function onSearchSelect(option: { to?: string }) {
     <UDashboardSidebar
       resizable
       collapsible
+      :collapsed-size="0"
       :min-size="300"
       :max-size="600"
       :default-size="300"
       :ui="{
+        root: 'min-w-0 overflow-hidden data-[collapsed=true]:invisible',
         header: 'border-b border-default sm:px-4',
         body: 'p-0 sm:p-0',
         footer: 'border-t border-default py-4',
       }"
     >
-      <template #header="{ collapsed }">
+      <template #header>
         <p
-          v-if="!collapsed"
           class="text-lg font-bold text-[var(--ui-text-highlighted)] truncate flex items-center gap-2"
           role="banner"
         >
@@ -241,21 +242,14 @@ function onSearchSelect(option: { to?: string }) {
           />
           Nuxt UI Builder
         </p>
-        <UIcon
-          v-else
-          name="i-lucide-palette"
-          class="size-5 text-(--ui-primary) mx-auto"
-          aria-hidden="true"
-        />
       </template>
 
-      <template #default="{ collapsed }">
-        <ThemeEditor :collapsed="collapsed" />
+      <template #default>
+        <ThemeEditor />
       </template>
 
-      <template #footer="{ collapsed }">
+      <template #footer>
         <UButton
-          v-if="!collapsed"
           icon="i-lucide-import"
           label="Export / Import Theme"
           block
@@ -264,16 +258,6 @@ function onSearchSelect(option: { to?: string }) {
           color="primary"
           @click="useExportPanel().open()"
         />
-        <UTooltip v-else text="Export / Import Theme">
-          <UButton
-            icon="i-lucide-import"
-            aria-label="Export Theme"
-            size="sm"
-            variant="solid"
-            color="primary"
-            @click="useExportPanel().open()"
-          />
-        </UTooltip>
       </template>
     </UDashboardSidebar>
 

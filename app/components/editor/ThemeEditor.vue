@@ -14,15 +14,6 @@ import {
 import { capitalize } from "~/utils/helpers";
 import { useThemeModeAccessors } from "~/composables/useThemeModeAccessors";
 
-withDefaults(
-  defineProps<{
-    collapsed?: boolean;
-  }>(),
-  {
-    collapsed: false,
-  },
-);
-
 const store = useThemeStore();
 
 const {
@@ -103,50 +94,20 @@ onMounted(() => {
     :data-hydrated="hydrated || undefined"
     class="flex flex-col h-full"
   >
-    <EditorToolbar
-      :collapsed="collapsed"
-      :json-mode="jsonMode"
-      @toggle-json-mode="toggleJsonMode"
-    />
-    <USeparator :class="collapsed ? 'w-6 my-1' : 'hidden'" />
+    <EditorToolbar :json-mode="jsonMode" @toggle-json-mode="toggleJsonMode" />
 
     <!-- JSON Editor mode -->
     <template v-if="jsonMode">
-      <!-- Collapsed: popover with JSON editor -->
-      <UPopover v-if="collapsed" :content="{ side: 'right', align: 'start' }">
-        <UTooltip text="JSON Editor" :content="{ side: 'right' }">
-          <UButton
-            icon="i-lucide-braces"
-            aria-label="JSON Editor"
-            variant="soft"
-            color="primary"
-            size="sm"
-          />
-        </UTooltip>
-        <template #content>
-          <div class="w-[480px] h-[600px] flex flex-col">
-            <EditorJsonEditor />
-          </div>
-        </template>
-      </UPopover>
-
-      <!-- Expanded: inline JSON editor -->
-      <div v-else class="flex-1 min-h-0 flex flex-col">
+      <div class="flex-1 min-h-0 flex flex-col">
         <EditorJsonEditor />
       </div>
     </template>
 
     <!-- Visual Editor mode -->
-    <div
-      v-if="!jsonMode"
-      :class="
-        collapsed ? 'flex flex-col items-center gap-1' : 'space-y-2 pt-2 pb-4'
-      "
-    >
+    <div v-if="!jsonMode" class="space-y-2 pt-2 pb-4">
       <!-- My Themes -->
       <EditorSection
         v-model:open="sectionOpen.myThemes"
-        :collapsed="collapsed"
         icon="i-lucide-bookmark"
         label="My Themes"
         default-open
@@ -154,12 +115,11 @@ onMounted(() => {
         <EditorSavedThemes />
       </EditorSection>
 
-      <USeparator v-if="!collapsed" />
+      <USeparator />
 
       <!-- Presets -->
       <EditorSection
         v-model:open="sectionOpen.presets"
-        :collapsed="collapsed"
         icon="i-lucide-layers"
         label="Theme Presets"
         default-open
@@ -167,12 +127,11 @@ onMounted(() => {
         <EditorPresetSelector />
       </EditorSection>
 
-      <USeparator v-if="!collapsed" />
+      <USeparator />
 
       <!-- Color Mode -->
       <EditorSection
         v-model:open="sectionOpen.colorMode"
-        :collapsed="collapsed"
         icon="i-lucide-sun-moon"
         label="Color Mode"
         default-open
@@ -185,12 +144,11 @@ onMounted(() => {
         </div>
       </EditorSection>
 
-      <USeparator v-if="!collapsed" />
+      <USeparator />
 
       <!-- Layout -->
       <EditorSection
         v-model:open="sectionOpen.layout"
-        :collapsed="collapsed"
         icon="i-lucide-sliders-horizontal"
         label="Layout"
         default-open
@@ -211,12 +169,11 @@ onMounted(() => {
         </div>
       </EditorSection>
 
-      <USeparator v-if="!collapsed" />
+      <USeparator />
 
       <!-- Semantic Colors -->
       <EditorSection
         v-model:open="sectionOpen.semanticColors"
-        :collapsed="collapsed"
         icon="i-lucide-palette"
         label="Semantic Colors"
         default-open
@@ -240,12 +197,11 @@ onMounted(() => {
         </div>
       </EditorSection>
 
-      <USeparator v-if="!collapsed" />
+      <USeparator />
 
       <!-- Neutral Color -->
       <EditorSection
         v-model:open="sectionOpen.neutralColor"
-        :collapsed="collapsed"
         icon="i-lucide-contrast"
         label="Neutral Color"
         default-open
@@ -261,12 +217,11 @@ onMounted(() => {
         />
       </EditorSection>
 
-      <USeparator v-if="!collapsed" />
+      <USeparator />
 
       <!-- Text Colors -->
       <EditorSection
         v-model:open="sectionOpen.textColors"
-        :collapsed="collapsed"
         icon="i-lucide-type"
         label="Text Colors"
       >
@@ -286,12 +241,11 @@ onMounted(() => {
         </div>
       </EditorSection>
 
-      <USeparator v-if="!collapsed" />
+      <USeparator />
 
       <!-- Background Colors -->
       <EditorSection
         v-model:open="sectionOpen.bgColors"
-        :collapsed="collapsed"
         icon="i-lucide-paintbrush"
         label="Background Colors"
       >
@@ -311,12 +265,11 @@ onMounted(() => {
         </div>
       </EditorSection>
 
-      <USeparator v-if="!collapsed" />
+      <USeparator />
 
       <!-- Border Colors -->
       <EditorSection
         v-model:open="sectionOpen.borderColors"
-        :collapsed="collapsed"
         icon="i-lucide-frame"
         label="Border Colors"
       >

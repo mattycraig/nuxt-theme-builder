@@ -39,6 +39,33 @@ const mdcValue = computed(
   () => `\`\`\`${props.language}\n${props.code}\n\`\`\``,
 );
 
+// Track MDC rendering: code is set but syntax highlighting hasn't painted yet
+const mdcContainerRef = useTemplateRef("mdcContainer");
+const isMdcRendering = ref(false);
+
+watch(
+  () => props.code,
+  (newCode) => {
+    if (newCode && !props.loading) {
+      isMdcRendering.value = true;
+    }
+  },
+);
+
+useMutationObserver(
+  mdcContainerRef,
+  () => {
+    if (mdcContainerRef.value?.querySelector("pre")) {
+      isMdcRendering.value = false;
+    }
+  },
+  { childList: true, subtree: true },
+);
+
+const showLoading = computed(
+  () => props.loading || (!!props.code && !props.error && isMdcRendering.value),
+);
+
 function handleCopy() {
   if (!props.code) return;
   copy(props.code);
@@ -115,12 +142,16 @@ function handleDownload() {
 
     <!-- Content area -->
     <slot>
-      <!-- Loading state -->
-      <div v-if="loading" class="flex-1 flex items-center justify-center py-16">
-        <div class="flex flex-col items-center gap-3">
+      <!-- Loading state (external fetch or MDC rendering) -->
+      <div
+        v-if="showLoading && !code"
+        class="flex-1 flex items-center justify-center py-16"
+      >
+        <div class="flex flex-col items-center gap-3" role="status">
           <UIcon
             name="i-lucide-loader-2"
             class="size-8 text-(--ui-primary) animate-spin"
+            aria-hidden="true"
           />
           <span class="text-sm text-(--ui-text-muted)">Loading source…</span>
         </div>
@@ -145,9 +176,26 @@ function handleDownload() {
       <!-- Code content with syntax highlighting -->
       <div
         v-else-if="code"
-        class="code-block__content flex-1 min-h-0 overflow-auto"
+        ref="mdcContainer"
+        class="code-block__content flex-1 min-h-0 overflow-auto relative"
         :style="maxHeight !== 'none' ? { maxHeight } : undefined"
       >
+        <!-- Overlay while MDC syntax-highlights -->
+        <div
+          v-if="isMdcRendering"
+          class="absolute inset-0 z-10 flex items-center justify-center bg-(--ui-bg)"
+        >
+          <div class="flex flex-col items-center gap-3" role="status">
+            <UIcon
+              name="i-lucide-loader-2"
+              class="size-6 text-(--ui-primary) animate-spin"
+              aria-hidden="true"
+            />
+            <span class="text-sm text-(--ui-text-muted)"
+              >Highlighting code…</span
+            >
+          </div>
+        </div>
         <MDC :value="mdcValue" />
       </div>
 
