@@ -36,11 +36,6 @@ export function usePreviewResize() {
     return PRESET_WIDTHS.find((o) => o.value === previewWidth.value)!.width;
   });
 
-  const displayWidth = computed(() => {
-    if (customWidth.value !== null) return `${customWidth.value}px`;
-    return PRESET_WIDTHS.find((o) => o.value === previewWidth.value)!.width;
-  });
-
   // Selecting a preset clears any custom width
   watch(previewWidth, () => {
     customWidth.value = null;
@@ -101,7 +96,6 @@ export function usePreviewResize() {
     previewArea,
     PRESET_WIDTHS,
     currentPreviewWidth,
-    displayWidth,
     startResize,
     onCustomWidthInput,
   };

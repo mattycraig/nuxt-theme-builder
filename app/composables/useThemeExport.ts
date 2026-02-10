@@ -5,12 +5,8 @@ import {
   DEFAULT_LIGHT_OVERRIDES,
   DEFAULT_DARK_OVERRIDES,
 } from "~/utils/defaults";
-import {
-  generateOverrideLines,
-  generateShadeOverrideLines,
-  generateDarkPaletteOverrideLines,
-  generateDarkNeutralOverrideLines,
-} from "~/utils/cssGenerator";
+import { generateExportCSS } from "~/utils/cssGenerator";
+import { downloadFile } from "~/utils/helpers";
 
 /**
  * Composable for exporting, importing, and sharing theme configurations.
@@ -78,80 +74,13 @@ export function useThemeExport() {
     return lines.join("\n");
   });
 
-  const cssExport = computed(() => {
-    const cfg = store.config;
-    const lines: string[] = [];
-
-    lines.push(`@import "tailwindcss";`);
-    lines.push(`@import "@nuxt/ui";`);
-    lines.push(``);
-
-    // @theme for font (Tailwind v4 convention)
-    lines.push(`@theme {`);
-    lines.push(
-      `  --font-sans: '${cfg.font}', ui-sans-serif, system-ui, sans-serif;`,
-    );
-    lines.push(`}`);
-    lines.push(``);
-
-    // :root overrides (light mode)
-    const rootOverrideLines = generateOverrideLines(
-      cfg.lightOverrides,
+  const cssExport = computed(() =>
+    generateExportCSS(
+      store.config,
       DEFAULT_LIGHT_OVERRIDES,
-    );
-    const shadeOverrideLines = generateShadeOverrideLines(
-      cfg.colors,
-      cfg.colorShades,
-    );
-    const rootLines: string[] = [`  --ui-radius: ${cfg.radius}rem;`];
-    rootLines.push(...rootOverrideLines);
-    rootLines.push(...shadeOverrideLines);
-
-    if (rootLines.length > 0) {
-      lines.push(`:root {`);
-      lines.push(...rootLines);
-      lines.push(`}`);
-      lines.push(``);
-    }
-
-    // .dark overrides — token overrides + palette/neutral/radius/font diffs
-    const darkTokenLines = generateOverrideLines(
-      cfg.darkOverrides,
       DEFAULT_DARK_OVERRIDES,
-    );
-    const darkPaletteLines = generateDarkPaletteOverrideLines(
-      cfg.colors,
-      cfg.colorShades,
-      cfg.darkColors,
-      cfg.darkColorShades,
-    );
-    const darkNeutralLines = generateDarkNeutralOverrideLines(
-      cfg.neutral,
-      cfg.darkNeutral,
-    );
-    const allDarkLines: string[] = [];
-
-    if (cfg.darkRadius !== cfg.radius) {
-      allDarkLines.push(`  --ui-radius: ${cfg.darkRadius}rem;`);
-    }
-    if (cfg.darkFont !== cfg.font) {
-      allDarkLines.push(
-        `  --font-sans: '${cfg.darkFont}', ui-sans-serif, system-ui, sans-serif;`,
-      );
-    }
-
-    allDarkLines.push(...darkTokenLines);
-    allDarkLines.push(...darkPaletteLines);
-    allDarkLines.push(...darkNeutralLines);
-
-    if (allDarkLines.length > 0) {
-      lines.push(`.dark {`);
-      lines.push(...allDarkLines);
-      lines.push(`}`);
-    }
-
-    return lines.join("\n");
-  });
+    ),
+  );
 
   const jsonExport = computed(() => {
     return JSON.stringify(store.config, null, 2);
@@ -178,21 +107,6 @@ export function useThemeExport() {
         error: `Failed to parse JSON: ${e instanceof Error ? e.message : String(e)}`,
       };
     }
-  }
-
-  function downloadFile(
-    content: string,
-    filename: string,
-    mimeType: string = "text/plain",
-  ) {
-    if (!import.meta.client) return;
-    const blob = new Blob([content], { type: mimeType });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = filename;
-    a.click();
-    URL.revokeObjectURL(url);
   }
 
   return {

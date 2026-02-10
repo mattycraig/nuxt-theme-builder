@@ -12,6 +12,7 @@ import {
   BORDER_TOKEN_KEYS,
 } from "~/types/theme";
 import { capitalize } from "~/utils/helpers";
+import { useThemeModeAccessors } from "~/composables/useThemeModeAccessors";
 
 withDefaults(
   defineProps<{
@@ -23,7 +24,16 @@ withDefaults(
 );
 
 const store = useThemeStore();
-const colorMode = useColorMode();
+
+const {
+  mode,
+  currentColors,
+  currentColorShades,
+  currentNeutral,
+  currentRadius,
+  currentFont,
+  overrides,
+} = useThemeModeAccessors();
 
 const SECTION_KEYS = [
   "myThemes",
@@ -69,35 +79,6 @@ function onRadiusChange(val: number) {
   store.setRadiusVisualForMode(mode.value, val);
   debouncedRadiusCommit(val);
 }
-
-const mode = computed<"light" | "dark">(() =>
-  colorMode.value === "dark" ? "dark" : "light",
-);
-
-// Mode-aware computed properties for all settings
-const currentColors = computed(() =>
-  mode.value === "light" ? store.config.colors : store.config.darkColors,
-);
-const currentColorShades = computed(() =>
-  mode.value === "light"
-    ? store.config.colorShades
-    : store.config.darkColorShades,
-);
-const currentNeutral = computed(() =>
-  mode.value === "light" ? store.config.neutral : store.config.darkNeutral,
-);
-const currentRadius = computed(() =>
-  mode.value === "light" ? store.config.radius : store.config.darkRadius,
-);
-const currentFont = computed(() =>
-  mode.value === "light" ? store.config.font : store.config.darkFont,
-);
-
-const overrides = computed(() =>
-  mode.value === "light"
-    ? store.config.lightOverrides
-    : store.config.darkOverrides,
-);
 
 function onTextOverride(token: TextTokenKey, shade: NeutralShade) {
   store.setTextOverride(mode.value, token, shade);

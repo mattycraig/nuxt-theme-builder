@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { downloadFile } from "~/utils/helpers";
+
 const props = withDefaults(
   defineProps<{
     code: string;
@@ -44,14 +46,8 @@ function handleCopy() {
 }
 
 function handleDownload() {
-  if (!props.code || !import.meta.client) return;
-  const blob = new Blob([props.code], { type: props.downloadMimeType });
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement("a");
-  a.href = url;
-  a.download = props.filename;
-  a.click();
-  URL.revokeObjectURL(url);
+  if (!props.code) return;
+  downloadFile(props.code, props.filename, props.downloadMimeType);
   toast.add({
     title: "File downloaded",
     icon: "i-lucide-download",

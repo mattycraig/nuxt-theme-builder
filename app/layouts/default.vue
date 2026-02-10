@@ -26,6 +26,8 @@ const route = useRoute();
 const colorMode = useColorMode();
 const store = useThemeStore();
 
+const { quickSave, openSaveAs } = useSaveThemeModal();
+
 // Iframe Preview ────────────────────────────────────────────────────────
 const { previewFrame, iframeLoading, iframeInitialSrc, handleIframeLoad } =
   usePreviewIframe();
@@ -38,7 +40,6 @@ const {
   previewArea,
   PRESET_WIDTHS,
   currentPreviewWidth,
-  displayWidth,
   startResize,
   onCustomWidthInput,
 } = usePreviewResize();
@@ -105,7 +106,6 @@ const searchGroups = computed(() => [
 ]);
 
 function buildQuickActions() {
-  const { quickSave, openSaveAs } = useSaveThemeModal();
   return [
     {
       label: "Toggle Color Mode",
@@ -185,7 +185,9 @@ useHead({
   link: [
     {
       rel: "canonical",
-      href: computed(() => `https://nuxt-theme-builder.vercel.app${route.path}`),
+      href: computed(
+        () => `https://nuxt-theme-builder.vercel.app${route.path}`,
+      ),
     },
   ],
 });
@@ -232,7 +234,11 @@ function onSearchSelect(option: { to?: string }) {
           class="text-lg font-bold text-[var(--ui-text-highlighted)] truncate flex items-center gap-2"
           role="banner"
         >
-          <UIcon name="i-lucide-palette" class="size-5 text-(--ui-primary)" aria-hidden="true" />
+          <UIcon
+            name="i-lucide-palette"
+            class="size-5 text-(--ui-primary)"
+            aria-hidden="true"
+          />
           Nuxt UI Builder
         </p>
         <UIcon
@@ -274,7 +280,10 @@ function onSearchSelect(option: { to?: string }) {
     <!-- Main Content ──────────────────────────────────────────────── -->
     <main id="maincontent" class="flex-1 h-full overflow-hidden flex flex-col">
       <!-- Bar 1: Top Navbar — page identity + global actions ────── -->
-      <UDashboardNavbar title="Nuxt UI Theme Builder" :ui="{ title: 'sr-only' }">
+      <UDashboardNavbar
+        title="Nuxt UI Theme Builder"
+        :ui="{ title: 'sr-only' }"
+      >
         <template #leading>
           <UDashboardSidebarCollapse />
           <USeparator orientation="vertical" class="h-6 mx-2" />
@@ -348,12 +357,12 @@ function onSearchSelect(option: { to?: string }) {
           <UPopover>
             <UTooltip text="Set custom preview width">
               <UButton
-                :label="displayWidth"
+                :label="currentPreviewWidth"
                 variant="subtle"
                 size="sm"
                 color="neutral"
                 class="font-mono tabular-nums"
-                :aria-label="`Current preview width: ${displayWidth}`"
+                :aria-label="`Current preview width: ${currentPreviewWidth}`"
               />
             </UTooltip>
             <template #content>

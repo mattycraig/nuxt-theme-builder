@@ -26,57 +26,33 @@ const exportTabs: TabsItem[] = [
 const { appConfigExport, cssExport, jsonExport, importJSON } = useThemeExport();
 const toast = useToast();
 
-const currentCode = computed(() => {
-  switch (activeTab.value) {
-    case "appconfig":
-      return appConfigExport.value;
-    case "css":
-      return cssExport.value;
-    case "json":
-      return jsonExport.value;
-    default:
-      return "";
-  }
-});
+const TAB_META: Record<
+  ExportTab,
+  { filename: string; language: string; mimeType: string }
+> = {
+  appconfig: {
+    filename: "app.config.ts",
+    language: "ts",
+    mimeType: "text/typescript",
+  },
+  css: { filename: "main.css", language: "css", mimeType: "text/css" },
+  json: {
+    filename: "theme.json",
+    language: "json",
+    mimeType: "application/json",
+  },
+};
 
-const currentFilename = computed(() => {
-  switch (activeTab.value) {
-    case "appconfig":
-      return "app.config.ts";
-    case "css":
-      return "main.css";
-    case "json":
-      return "theme.json";
-    default:
-      return "";
-  }
-});
+const exportSources: Record<ExportTab, ComputedRef<string>> = {
+  appconfig: appConfigExport,
+  css: cssExport,
+  json: jsonExport,
+};
 
-const currentLanguage = computed(() => {
-  switch (activeTab.value) {
-    case "appconfig":
-      return "ts";
-    case "css":
-      return "css";
-    case "json":
-      return "json";
-    default:
-      return "text";
-  }
-});
-
-const currentMimeType = computed(() => {
-  switch (activeTab.value) {
-    case "appconfig":
-      return "text/typescript";
-    case "css":
-      return "text/css";
-    case "json":
-      return "application/json";
-    default:
-      return "text/plain";
-  }
-});
+const currentCode = computed(() => exportSources[activeTab.value]?.value ?? "");
+const currentMeta = computed(
+  () => TAB_META[activeTab.value] ?? TAB_META.appconfig,
+);
 
 const importOpen = ref(false);
 const importText = ref("");
@@ -150,9 +126,9 @@ function handleFileUpload(event: Event) {
 
       <CodeBlock
         :code="currentCode"
-        :filename="currentFilename"
-        :language="currentLanguage"
-        :download-mime-type="currentMimeType"
+        :filename="currentMeta.filename"
+        :language="currentMeta.language"
+        :download-mime-type="currentMeta.mimeType"
         max-height="18rem"
       />
     </section>

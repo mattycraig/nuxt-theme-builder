@@ -177,10 +177,18 @@ export const FONT_OPTIONS = [
 
 import { z } from "zod";
 
+export const DEFAULT_COLOR_SHADES: SemanticShades = {
+  primary: "500",
+  secondary: "500",
+  success: "500",
+  info: "500",
+  warning: "500",
+  error: "500",
+};
+
 const chromaticPaletteSchema = z.enum(CHROMATIC_PALETTES);
 const neutralPaletteSchema = z.enum(NEUTRAL_PALETTES);
 const neutralShadeSchema = z.enum(SHADE_VALUES);
-const numericShadeSchema = z.enum(NUMERIC_SHADE_KEYS);
 
 function shadeRecordSchema<T extends readonly string[]>(keys: T) {
   const shape = {} as Record<string, z.ZodType<string>>;
@@ -200,15 +208,6 @@ const tokenOverridesSchema = z.object({
   border: borderTokenOverridesSchema,
 });
 
-const defaultColorShades = {
-  primary: "500" as const,
-  secondary: "500" as const,
-  success: "500" as const,
-  info: "500" as const,
-  warning: "500" as const,
-  error: "500" as const,
-};
-
 const semanticColorsSchema = z.object({
   primary: chromaticPaletteSchema,
   secondary: chromaticPaletteSchema,
@@ -227,7 +226,7 @@ const semanticShadesSchema = z
     warning: neutralShadeSchema,
     error: neutralShadeSchema,
   })
-  .default(defaultColorShades);
+  .default(DEFAULT_COLOR_SHADES);
 
 const rawThemeSchema = z.object({
   colors: semanticColorsSchema,

@@ -1,5 +1,11 @@
-import { describe, it, expect } from "vitest";
-import { typedEntries, timeAgo } from "~/utils/helpers";
+import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
+import {
+  typedEntries,
+  capitalize,
+  timeAgo,
+  sanitizeNavigationPath,
+  downloadFile,
+} from "~/utils/helpers";
 
 describe("typedEntries", () => {
   it("returns entries of a simple object", () => {
@@ -27,6 +33,28 @@ describe("typedEntries", () => {
   });
 });
 
+describe("capitalize", () => {
+  it("capitalizes the first letter of a lowercase string", () => {
+    expect(capitalize("hello")).toBe("Hello");
+  });
+
+  it("returns already-capitalized string unchanged", () => {
+    expect(capitalize("Hello")).toBe("Hello");
+  });
+
+  it("handles single character", () => {
+    expect(capitalize("a")).toBe("A");
+  });
+
+  it("returns empty string for empty input", () => {
+    expect(capitalize("")).toBe("");
+  });
+
+  it("preserves rest of string", () => {
+    expect(capitalize("fooBar")).toBe("FooBar");
+  });
+});
+
 describe("timeAgo", () => {
   it("returns 'just now' for timestamps less than 60 seconds ago", () => {
     expect(timeAgo(Date.now() - 30_000)).toBe("just now");
@@ -50,5 +78,81 @@ describe("timeAgo", () => {
 
   it("returns years for old timestamps", () => {
     expect(timeAgo(Date.now() - 400 * 86_400_000)).toBe("1y ago");
+  });
+});
+
+describe("sanitizeNavigationPath", () => {
+  it("returns pathname for a valid relative path", () => {
+    expect(sanitizeNavigationPath("/components/buttons")).toBe(
+      "/components/buttons",
+    );
+  });
+
+  it("returns pathname for a clean absolute URL on same origin", () => {
+    const result = sanitizeNavigationPath(
+      `${window.location.origin}/blocks/hero`,
+    );
+    expect(result).toBe("/blocks/hero");
+  });
+
+  it("rejects cross-origin URLs", () => {
+    expect(sanitizeNavigationPath("https://evil.com/steal")).toBeNull();
+  });
+
+  it("resolves path traversal to a clean path", () => {
+    // new URL resolves .. segments, result is /etc/passwd which passes the regex
+    expect(sanitizeNavigationPath("/path/../etc/passwd")).toBe("/etc/passwd");
+  });
+
+  it("rejects non-string input", () => {
+    expect(sanitizeNavigationPath(123 as unknown as string)).toBeNull();
+  });
+
+  it("returns root for empty string", () => {
+    // new URL("", origin) resolves to origin root
+    expect(sanitizeNavigationPath("")).toBe("/");
+  });
+});
+
+describe("downloadFile", () => {
+  let createElementSpy: ReturnType<typeof vi.spyOn>;
+  let createObjectURLSpy: ReturnType<typeof vi.spyOn>;
+  let revokeObjectURLSpy: ReturnType<typeof vi.spyOn>;
+  let mockAnchor: {
+    href: string;
+    download: string;
+    click: ReturnType<typeof vi.fn>;
+  };
+
+  beforeEach(() => {
+    mockAnchor = { href: "", download: "", click: vi.fn() };
+    createElementSpy = vi
+      .spyOn(document, "createElement")
+      .mockReturnValue(mockAnchor as unknown as HTMLElement);
+    createObjectURLSpy = vi
+      .spyOn(URL, "createObjectURL")
+      .mockReturnValue("blob:test-url");
+    revokeObjectURLSpy = vi
+      .spyOn(URL, "revokeObjectURL")
+      .mockImplementation(() => {});
+  });
+
+  afterEach(() => {
+    createElementSpy.mockRestore();
+    createObjectURLSpy.mockRestore();
+    revokeObjectURLSpy.mockRestore();
+  });
+
+  it("creates a blob and triggers download", () => {
+    downloadFile("hello world", "test.txt", "text/plain");
+    expect(createObjectURLSpy).toHaveBeenCalledOnce();
+    expect(mockAnchor.download).toBe("test.txt");
+    expect(mockAnchor.click).toHaveBeenCalledOnce();
+    expect(revokeObjectURLSpy).toHaveBeenCalledWith("blob:test-url");
+  });
+
+  it("uses default mime type when not provided", () => {
+    downloadFile("content", "file.txt");
+    expect(createObjectURLSpy).toHaveBeenCalledOnce();
   });
 });

@@ -22,9 +22,39 @@ describe("useThemeExport", () => {
     });
 
     it("reflects store changes", () => {
-      store.setSemanticColor("primary", "red");
+      store.setSemanticColorForMode("light", "primary", "red");
       const output = exportComposable.appConfigExport.value;
       expect(output).toContain("primary: 'red'");
+    });
+
+    it("includes all semantic color keys", () => {
+      const output = exportComposable.appConfigExport.value;
+      expect(output).toContain("primary:");
+      expect(output).toContain("secondary:");
+      expect(output).toContain("success:");
+      expect(output).toContain("info:");
+      expect(output).toContain("warning:");
+      expect(output).toContain("error:");
+    });
+
+    it("adds shade override comment when shade differs from 500", () => {
+      store.setSemanticShadeForMode("light", "primary", "400");
+      const output = exportComposable.appConfigExport.value;
+      expect(output).toContain("shifted from default 500");
+      expect(output).toContain("400");
+    });
+
+    it("adds dark palette comment when dark color differs from light", () => {
+      store.setSemanticColorForMode("dark", "primary", "red");
+      const output = exportComposable.appConfigExport.value;
+      expect(output).toContain("Dark mode uses different palettes");
+      expect(output).toContain("red");
+    });
+
+    it("contains ui.colors structure", () => {
+      const output = exportComposable.appConfigExport.value;
+      expect(output).toContain("ui: {");
+      expect(output).toContain("colors: {");
     });
   });
 
@@ -46,7 +76,7 @@ describe("useThemeExport", () => {
     });
 
     it("reflects font changes", () => {
-      store.setFont("DM Sans");
+      store.setFontForMode("light", "DM Sans");
       const output = exportComposable.cssExport.value;
       expect(output).toContain("--font-sans: 'DM Sans'");
     });
@@ -61,7 +91,7 @@ describe("useThemeExport", () => {
     });
 
     it("reflects store changes", () => {
-      store.setRadius(1.5);
+      store.setRadiusForMode("light", 1.5);
       const parsed = JSON.parse(exportComposable.jsonExport.value);
       expect(parsed.radius).toBe(1.5);
     });
@@ -94,6 +124,52 @@ describe("useThemeExport", () => {
       const originalPrimary = store.config.colors.primary;
       exportComposable.importJSON("bad json");
       expect(store.config.colors.primary).toBe(originalPrimary);
+    });
+
+    it("handles deeply nested invalid fields", () => {
+      const payload = JSON.stringify({
+        ...DEFAULT_THEME,
+        lightOverrides: { text: { dimmed: "invalid-shade" } },
+      });
+      const result = exportComposable.importJSON(payload);
+      expect(result.success).toBe(false);
+    });
+
+    it("imports config with optional dark fields omitted", () => {
+      const {
+        darkColors,
+        darkColorShades,
+        darkNeutral,
+        darkRadius,
+        darkFont,
+        ...rest
+      } = cloneTheme(DEFAULT_THEME);
+      const result = exportComposable.importJSON(JSON.stringify(rest));
+      expect(result.success).toBe(true);
+      // Dark fields should be filled from light values after schema transform
+      expect(store.config.darkColors.primary).toBe(rest.colors.primary);
+    });
+  });
+
+  describe("jsonExport round-trip", () => {
+    it("exported JSON can be re-imported", () => {
+      store.setSemanticColorForMode("light", "primary", "pink");
+      store.setRadiusForMode("light", 0.75);
+      const json = exportComposable.jsonExport.value;
+      store.resetToDefaults();
+
+      const result = exportComposable.importJSON(json);
+      expect(result.success).toBe(true);
+      expect(store.config.colors.primary).toBe("pink");
+      expect(store.config.radius).toBe(0.75);
+    });
+
+    it("includes dark mode fields in JSON export", () => {
+      store.setSemanticColorForMode("dark", "primary", "rose");
+      store.setNeutralForMode("dark", "zinc");
+      const parsed = JSON.parse(exportComposable.jsonExport.value);
+      expect(parsed.darkColors.primary).toBe("rose");
+      expect(parsed.darkNeutral).toBe("zinc");
     });
   });
 });

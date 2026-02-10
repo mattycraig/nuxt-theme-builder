@@ -241,6 +241,42 @@ export function generateDarkNeutralOverrideLines(
 }
 
 /**
+ * Generate a complete export-ready CSS string including @import and @theme preamble.
+ * Used by useThemeExport for the CSS export tab.
+ */
+export function generateExportCSS(
+  config: ThemeConfig,
+  lightDefaults: TokenOverrides,
+  darkDefaults: TokenOverrides,
+): string {
+  const lines: string[] = [];
+
+  lines.push(`@import "tailwindcss";`);
+  lines.push(`@import "@nuxt/ui";`);
+  lines.push(``);
+  lines.push(`@theme {`);
+  lines.push(
+    `  --font-sans: '${sanitizeCSSValue(config.font)}', ui-sans-serif, system-ui, sans-serif;`,
+  );
+  lines.push(`}`);
+  lines.push(``);
+
+  const { rootCSS, darkCSS } = generateThemeCSS(
+    config,
+    lightDefaults,
+    darkDefaults,
+  );
+
+  lines.push(rootCSS);
+  if (darkCSS) {
+    lines.push(``);
+    lines.push(darkCSS);
+  }
+
+  return lines.join("\n");
+}
+
+/**
  * Generate the complete theme CSS override string for both light and dark modes.
  * Used by both useThemeApply (DOM injection) and useThemeExport (export output).
  */

@@ -10,7 +10,7 @@ import type {
   BorderTokenKey,
 } from "~/types/theme";
 import { ThemeConfigSchema } from "~/types/theme";
-import { DEFAULT_THEME, cloneTheme, ensureDarkFields } from "~/utils/defaults";
+import { DEFAULT_THEME, cloneTheme } from "~/utils/defaults";
 
 const MAX_HISTORY = 50;
 
@@ -84,36 +84,6 @@ export const useThemeStore = defineStore(
     }
 
     // Setters (each pushes history for undo support) ────────────────
-
-    function setSemanticColor(key: SemanticColorKey, value: ChromaticPalette) {
-      config.value.colors[key] = value;
-      _pushHistory();
-    }
-
-    function setSemanticShade(key: SemanticColorKey, shade: NeutralShade) {
-      config.value.colorShades[key] = shade;
-      _pushHistory();
-    }
-
-    function setNeutral(value: NeutralPalette) {
-      config.value.neutral = value;
-      _pushHistory();
-    }
-
-    function setRadius(value: number) {
-      config.value.radius = value;
-      _pushHistory();
-    }
-
-    /** Update radius visually without pushing history — use for continuous slider drag */
-    function setRadiusVisual(value: number) {
-      config.value.radius = value;
-    }
-
-    function setFont(value: string) {
-      config.value.font = value;
-      _pushHistory();
-    }
 
     // Mode-aware setters for per-light/dark settings ─────────────────
 
@@ -235,7 +205,7 @@ export const useThemeStore = defineStore(
         );
         config.value = cloneTheme(DEFAULT_THEME);
       } else {
-        config.value = cloneTheme(ensureDarkFields(result.data as ThemeConfig));
+        config.value = cloneTheme(result.data as ThemeConfig);
       }
       _pushHistory();
       historyBaseIndex.value = historyIndex.value;
@@ -339,7 +309,7 @@ export const useThemeStore = defineStore(
         );
         return;
       }
-      config.value = cloneTheme(ensureDarkFields(result.data as ThemeConfig));
+      config.value = cloneTheme(result.data as ThemeConfig);
       activePresetName.value = preset.name;
       _pushHistory();
       historyBaseIndex.value = historyIndex.value;
@@ -358,12 +328,6 @@ export const useThemeStore = defineStore(
       undo,
       undoAll,
       redo,
-      setSemanticColor,
-      setSemanticShade,
-      setNeutral,
-      setRadius,
-      setRadiusVisual,
-      setFont,
       setSemanticColorForMode,
       setSemanticShadeForMode,
       setNeutralForMode,
@@ -395,10 +359,7 @@ export const useThemeStore = defineStore(
           );
           ctx.store.config = cloneTheme(DEFAULT_THEME);
         } else {
-          // Ensure backward-compatible configs get dark mode fields filled
-          ctx.store.config = cloneTheme(
-            ensureDarkFields(result.data as ThemeConfig),
-          );
+          ctx.store.config = cloneTheme(result.data as ThemeConfig);
         }
 
         if (Array.isArray(ctx.store.savedPresets)) {

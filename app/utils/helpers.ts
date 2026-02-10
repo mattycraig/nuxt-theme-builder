@@ -16,6 +16,41 @@ export function capitalize(s: string): string {
 }
 
 /**
+ * Validate postMessage navigation paths — allow only clean relative paths.
+ * Returns the sanitized pathname or null if the path is invalid/unsafe.
+ */
+export function sanitizeNavigationPath(raw: string): string | null {
+  if (typeof raw !== "string") return null;
+  try {
+    const url = new URL(raw, window.location.origin);
+    if (url.origin !== window.location.origin) return null;
+    const pathname = url.pathname;
+    if (/[^a-zA-Z0-9/_-]/.test(pathname)) return null;
+    return pathname;
+  } catch {
+    return null;
+  }
+}
+
+/**
+ * Trigger a browser file download from a string content.
+ */
+export function downloadFile(
+  content: string,
+  filename: string,
+  mimeType: string = "text/plain",
+) {
+  if (typeof document === "undefined") return;
+  const blob = new Blob([content], { type: mimeType });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = filename;
+  a.click();
+  URL.revokeObjectURL(url);
+}
+
+/**
  * Format a timestamp into a human-readable relative time string.
  */
 export function timeAgo(timestamp: number): string {

@@ -13,21 +13,13 @@ const props = withDefaults(
   },
 );
 
-function lightHex(key: string): string {
-  const color = props.config.colors?.[key as keyof typeof props.config.colors];
-  const shade =
-    props.config.colorShades?.[key as keyof typeof props.config.colorShades] ??
-    "500";
-  return CHROMATIC_HEX_MAP[color as string]?.[shade] ?? "#71717a";
-}
-
-function darkHex(key: string): string {
-  const color =
-    props.config.darkColors?.[key as keyof typeof props.config.darkColors];
-  const shade =
-    props.config.darkColorShades?.[
-      key as keyof typeof props.config.darkColorShades
-    ] ?? "500";
+function getColorHex(
+  colors: Record<string, string>,
+  shades: Record<string, string>,
+  key: string,
+): string {
+  const color = colors[key];
+  const shade = shades[key] ?? "500";
   return CHROMATIC_HEX_MAP[color as string]?.[shade] ?? "#71717a";
 }
 
@@ -64,7 +56,9 @@ const ariaLabel = computed(() => {
         v-for="key in SEMANTIC_COLOR_KEYS"
         :key="`l-${key}`"
         class="flex-1 mx-[0.5px]"
-        :style="{ backgroundColor: lightHex(key) }"
+        :style="{
+          backgroundColor: getColorHex(config.colors, config.colorShades, key),
+        }"
         aria-hidden="true"
       />
       <span
@@ -78,7 +72,13 @@ const ariaLabel = computed(() => {
         v-for="key in SEMANTIC_COLOR_KEYS"
         :key="`d-${key}`"
         class="flex-1 mx-[0.5px]"
-        :style="{ backgroundColor: darkHex(key) }"
+        :style="{
+          backgroundColor: getColorHex(
+            config.darkColors,
+            config.darkColorShades,
+            key,
+          ),
+        }"
         aria-hidden="true"
       />
       <span

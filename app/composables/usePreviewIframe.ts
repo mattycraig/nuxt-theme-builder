@@ -1,4 +1,5 @@
 import { useThemeStore } from "~/stores/theme";
+import { sanitizeNavigationPath } from "~/utils/helpers";
 
 /**
  * Manages the iframe-based preview panel communication.
@@ -76,20 +77,6 @@ export function usePreviewIframe() {
   );
 
   // Inbound Message Handler ─────────────────────────────────────────
-
-  /** Validate postMessage navigation paths — allow only clean relative paths */
-  function sanitizeNavigationPath(raw: string): string | null {
-    if (typeof raw !== "string") return null;
-    try {
-      const url = new URL(raw, window.location.origin);
-      if (url.origin !== window.location.origin) return null;
-      const pathname = url.pathname;
-      if (/[^a-zA-Z0-9/_-]/.test(pathname)) return null;
-      return pathname;
-    } catch {
-      return null;
-    }
-  }
 
   function handleIframeMessage(event: MessageEvent) {
     if (event.origin !== window.location.origin) return;

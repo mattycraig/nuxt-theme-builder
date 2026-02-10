@@ -4,8 +4,8 @@ import type {
   TextTokenOverrides,
   BgTokenOverrides,
   BorderTokenOverrides,
-  SemanticShades,
 } from "~/types/theme";
+import { DEFAULT_COLOR_SHADES } from "~/types/theme";
 import { toRaw } from "vue";
 
 // Light Mode Token Defaults ──────────────────────────────────────────────
@@ -75,14 +75,8 @@ export const DEFAULT_DARK_OVERRIDES: TokenOverrides = {
   border: { ...DEFAULT_BORDER_DARK },
 };
 
-export const DEFAULT_COLOR_SHADES: SemanticShades = {
-  primary: "500",
-  secondary: "500",
-  success: "500",
-  info: "500",
-  warning: "500",
-  error: "500",
-};
+// Re-export DEFAULT_COLOR_SHADES from types for backward compatibility
+export { DEFAULT_COLOR_SHADES } from "~/types/theme";
 
 export const DEFAULT_THEME: ThemeConfig = {
   colors: {
@@ -465,19 +459,4 @@ export function shadeToCSS(shade: string): string {
  */
 export function cloneTheme(theme: ThemeConfig): ThemeConfig {
   return structuredClone(toRaw(theme));
-}
-
-/**
- * Ensure a config has all dark-mode-specific fields.
- * Fills missing dark* fields from their light equivalents for backward compatibility.
- */
-export function ensureDarkFields(config: ThemeConfig): ThemeConfig {
-  return {
-    ...config,
-    darkColors: config.darkColors ?? { ...config.colors },
-    darkColorShades: config.darkColorShades ?? { ...config.colorShades },
-    darkNeutral: config.darkNeutral ?? config.neutral,
-    darkRadius: config.darkRadius ?? config.radius,
-    darkFont: config.darkFont ?? config.font,
-  };
 }
