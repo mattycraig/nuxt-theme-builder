@@ -26,6 +26,9 @@ logs
 # VS Code MCP config (contains API keys)
 .vscode/mcp.json
 
+# Test coverage
+coverage/
+
 # Playwright
 tests/e2e/screenshots/
 tests/e2e/test-results/

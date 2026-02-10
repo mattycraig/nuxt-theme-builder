@@ -1,0 +1,112 @@
+name: Lighthouse
+
+on:
+  deployment_status:
+
+permissions:
+  contents: read
+  deployments: read
+  statuses: write
+  pull-requests: write
+
+jobs:
+  lighthouse:
+    name: Lighthouse Audit
+    runs-on: ubuntu-latest
+    if: >
+      github.event.deployment_status.state == 'success' &&
+      github.event.deployment_status.environment == 'Preview'
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+
+      - name: Audit preview URL with Lighthouse
+        id: lighthouse
+        uses: treosh/lighthouse-ci-action@v12
+        with:
+          urls: ${{ github.event.deployment_status.target_url }}
+          uploadArtifacts: true
+          temporaryPublicStorage: true
+          configJson: |
+            {
+              "ci": {
+                "assert": {
+                  "assertions": {
+                    "categories:performance": ["warn", { "minScore": 0.8 }],
+                    "categories:accessibility": ["error", { "minScore": 0.9 }],
+                    "categories:best-practices": ["warn", { "minScore": 0.9 }],
+                    "categories:seo": ["warn", { "minScore": 0.8 }]
+                  }
+                }
+              }
+            }
+
+      - name: Format Lighthouse results
+        id: format
+        if: always()
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const results = ${{ steps.lighthouse.outputs.manifest }};
+            const links = ${{ steps.lighthouse.outputs.links }};
+
+            if (!results || !results.length) {
+              core.info('No Lighthouse results to report');
+              return;
+            }
+
+            const result = results[0];
+            const summary = result.summary;
+            const url = Object.values(links)[0];
+
+            const score = (v) => `${Math.round(v * 100)}`;
+            const emoji = (v) => v >= 0.9 ? '🟢' : v >= 0.5 ? '🟡' : '🔴';
+
+            const body = [
+              `### 🔦 Lighthouse Report`,
+              '',
+              `| Category | Score |`,
+              `| --- | --- |`,
+              `| ${emoji(summary.performance)} Performance | ${score(summary.performance)} |`,
+              `| ${emoji(summary.accessibility)} Accessibility | ${score(summary.accessibility)} |`,
+              `| ${emoji(summary['best-practices'])} Best Practices | ${score(summary['best-practices'])} |`,
+              `| ${emoji(summary.seo)} SEO | ${score(summary.seo)} |`,
+              '',
+              `🔗 [Full Report](${url})`,
+            ].join('\n');
+
+            const { data: prs } = await github.rest.repos.listPullRequestsAssociatedWithCommit({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              commit_sha: context.sha,
+            });
+
+            if (prs.length > 0) {
+              const prNumber = prs[0].number;
+
+              const { data: comments } = await github.rest.issues.listComments({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: prNumber,
+              });
+              const existing = comments.find(c =>
+                c.user.type === 'Bot' && c.body.includes('Lighthouse Report')
+              );
+
+              if (existing) {
+                await github.rest.issues.updateComment({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  comment_id: existing.id,
+                  body,
+                });
+              } else {
+                await github.rest.issues.createComment({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  issue_number: prNumber,
+                  body,
+                });
+              }
+            }

@@ -9,5 +9,12 @@ export default defineVitestConfig({
       },
     },
     include: ["tests/**/*.test.ts"],
+    coverage: {
+      provider: "v8",
+      reporter: ["text", "json-summary", "html"],
+      reportsDirectory: "coverage",
+      include: ["app/**/*.{ts,vue}"],
+      exclude: ["app/types/**", "app/assets/**", "app/data/**"],
+    },
   },
 });

@@ -1,75 +1,83 @@
-# Nuxt Content Starter
+# Nuxt UI Theme Builder
 
-Look at the [Nuxt Content documentation](https://content.nuxt.com) to learn more.
+[![CI](https://github.com/mattycraig/nuxt-theme-builder/actions/workflows/ci.yml/badge.svg)](https://github.com/mattycraig/nuxt-theme-builder/actions/workflows/ci.yml)
+[![Dependency Review](https://github.com/mattycraig/nuxt-theme-builder/actions/workflows/security.yml/badge.svg)](https://github.com/mattycraig/nuxt-theme-builder/actions/workflows/security.yml)
+
+A single-page Nuxt 4 app for visually configuring [Nuxt UI v4](https://ui.nuxt.com) design tokens — colors, radius, font, neutral shades — and exporting the result as `app.config.ts`, CSS, or JSON.
+
+**Live:** [nuxt-theme-builder.vercel.app](https://nuxt-theme-builder.vercel.app)
 
 ## Setup
 
-Make sure to install dependencies:
-
 ```bash
-# npm
-npm install
-
-# pnpm
 pnpm install
-
-# yarn
-yarn install
-
-# bun
-bun install
 ```
 
-## Development Server
-
-Start the development server on `http://localhost:3000`:
+## Development
 
 ```bash
-# npm
-npm run dev
-
-# pnpm
 pnpm dev
-
-# yarn
-yarn dev
-
-# bun
-bun run dev
 ```
 
-## Production
+Open [http://localhost:3000](http://localhost:3000).
 
-Build the application for production:
+## Testing
 
 ```bash
-# npm
-npm run build
+# Unit tests (Vitest)
+pnpm test
 
-# pnpm
+# Unit tests in watch mode
+pnpm test:watch
+
+# Unit tests with coverage
+pnpm test -- --coverage
+
+# E2E tests (Playwright)
+pnpm test:e2e
+
+# E2E with browser UI
+pnpm test:e2e:ui
+```
+
+## Build
+
+```bash
 pnpm build
-
-# yarn
-yarn build
-
-# bun
-bun run build
+pnpm preview    # preview production build locally
 ```
 
-Locally preview production build:
+## CI/CD
 
-```bash
-# npm
-npm run preview
+This project uses **GitHub Actions** for continuous integration and **Vercel** for deployment.
 
-# pnpm
-pnpm preview
+### Workflows
 
-# yarn
-yarn preview
+| Workflow                                                 | Trigger               | What it does                                                  |
+| -------------------------------------------------------- | --------------------- | ------------------------------------------------------------- |
+| **CI** (`.github/workflows/ci.yml`)                      | Push/PR to `main`     | Lint, typecheck, unit tests (with coverage), E2E tests, build |
+| **Dependency Review** (`.github/workflows/security.yml`) | PR to `main`          | Scans dependency changes for known vulnerabilities            |
+| **Lighthouse** (`.github/workflows/lighthouse.yml`)      | Vercel preview deploy | Audits performance, accessibility, best practices, SEO        |
 
-# bun
-bun run preview
-```
+### Deployment
 
-Check out the [deployment documentation](https://nuxt.com/docs/getting-started/deployment) for more information.
+Vercel auto-deploys on every push:
+
+- **Preview:** Every PR gets a unique preview URL
+- **Production:** Merges to `main` deploy to [nuxt-theme-builder.vercel.app](https://nuxt-theme-builder.vercel.app)
+
+CI acts as the quality gate — all checks must pass before PRs can be merged.
+
+### Recommended Branch Protection Rules
+
+Configure these in **GitHub → Settings → Branches → Branch protection rules** for `main`:
+
+- **Require status checks to pass before merging** — select: `Lint`, `Typecheck`, `Unit Tests`, `E2E Tests`, `Build`
+- **Require branches to be up to date before merging**
+- **Require pull request reviews before merging** (1 approval)
+- **Do not allow bypassing the above settings**
+- **Automatically delete head branches**
+
+## License
+
+[MIT](./LICENSE)
