@@ -12,6 +12,12 @@ const renameInput = ref("");
 const renameError = ref("");
 
 const deletingName = ref<string | null>(null);
+const deleteModalOpen = computed({
+  get: () => deletingName.value !== null,
+  set: (val: boolean) => {
+    if (!val) deletingName.value = null;
+  },
+});
 
 const statusMessage = ref("");
 
@@ -89,7 +95,7 @@ function confirmDelete() {
   if (!deletingName.value) return;
   const name = deletingName.value;
   store.deletePreset(name);
-  deletingName.value = null;
+  deleteModalOpen.value = false;
   toast.add({
     title: "Theme deleted",
     description: `"${name}" removed`,
@@ -100,7 +106,7 @@ function confirmDelete() {
 }
 
 function cancelDelete() {
-  deletingName.value = null;
+  deleteModalOpen.value = false;
 }
 
 function isActive(preset: ThemePreset) {
@@ -256,7 +262,7 @@ function getDropdownItems(preset: ThemePreset) {
 
     <!-- Rename modal -->
     <UModal
-      :open="renameModalOpen"
+      v-model:open="renameModalOpen"
       title="Rename theme"
       :description="`Rename &quot;${renameTarget}&quot; to a new name.`"
       @close="closeRenameModal"
@@ -277,8 +283,9 @@ function getDropdownItems(preset: ThemePreset) {
               :aria-label="`Rename theme: ${renameTarget}`"
               :aria-invalid="renameError ? true : undefined"
               :aria-describedby="renameError ? 'rename-modal-error' : undefined"
-              size="sm"
+              size="lg"
               autofocus
+              class="w-full"
               @keyup.enter="confirmRename"
               @keyup.escape="closeRenameModal"
             />
@@ -317,7 +324,7 @@ function getDropdownItems(preset: ThemePreset) {
 
     <!-- Delete confirmation modal -->
     <UModal
-      :open="deletingName !== null"
+      v-model:open="deleteModalOpen"
       title="Delete theme"
       :description="`Permanently delete the theme '${deletingName}'.`"
       @close="cancelDelete"

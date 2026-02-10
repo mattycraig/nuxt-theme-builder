@@ -6,7 +6,7 @@ const { isOpen, themeName, isOverwrite, confirm, cancel } = useSaveThemeModal();
 
 <template>
   <UModal
-    :open="isOpen"
+    v-model:open="isOpen"
     title="Save theme"
     :description="
       isOverwrite
