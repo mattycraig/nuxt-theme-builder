@@ -22,6 +22,10 @@ export default defineNuxtConfig({
       link: [
         { rel: "icon", type: "image/svg+xml", href: "/favicon.svg" },
         { rel: "apple-touch-icon", href: "/apple-touch-icon.svg" },
+        { rel: "dns-prefetch", href: "https://picsum.photos" },
+        { rel: "preconnect", href: "https://picsum.photos", crossorigin: "" },
+        { rel: "dns-prefetch", href: "https://i.pravatar.cc" },
+        { rel: "preconnect", href: "https://i.pravatar.cc", crossorigin: "" },
       ],
       meta: [
         {

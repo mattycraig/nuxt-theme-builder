@@ -8,6 +8,18 @@ useThemeApply();
 const store = useThemeStore();
 const colorMode = useColorMode();
 const router = useRouter();
+const route = useRoute();
+
+useHead({
+  link: [
+    {
+      rel: "canonical",
+      href: computed(
+        () => `https://nuxt-theme-builder.vercel.app${route.path}`,
+      ),
+    },
+  ],
+});
 
 // Flag to suppress navigate-parent when the parent itself triggered the navigation
 const navigatingFromParent = ref(false);

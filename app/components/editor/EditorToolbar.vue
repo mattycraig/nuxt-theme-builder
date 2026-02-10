@@ -73,7 +73,7 @@ const saveTooltipText = computed(() => {
       />
     </UTooltip>
 
-    <USeparator orientation="vertical" class="h-full mx-1" />
+    <USeparator orientation="vertical" class="h-full mx-2" />
 
     <!-- Undo -->
     <UTooltip text="Undo">
@@ -114,7 +114,7 @@ const saveTooltipText = computed(() => {
       />
     </UTooltip>
 
-    <USeparator orientation="vertical" class="h-full mx-1" />
+    <USeparator orientation="vertical" class="h-full mx-2" />
 
     <!-- Reset -->
     <UTooltip text="Reset to defaults">
@@ -128,7 +128,7 @@ const saveTooltipText = computed(() => {
       />
     </UTooltip>
 
-    <USeparator orientation="vertical" class="h-full mx-1" />
+    <!-- <USeparator orientation="vertical" class="h-full mx-2" /> -->
 
     <!-- JSON / Visual mode toggle -->
     <UTooltip

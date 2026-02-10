@@ -3,7 +3,11 @@ import * as z from "zod";
 import type { FormSubmitEvent, AuthFormField } from "@nuxt/ui";
 
 definePageMeta({ layout: "preview" });
-useSeoMeta({ title: "Login — Nuxt UI Theme Builder" });
+useSeoMeta({
+  title: "Login — Nuxt UI Theme Builder",
+  description:
+    "Authentication page template with sign-in and sign-up forms, social login providers, and form validation — built with Nuxt UI v4 components.",
+});
 
 const toast = useToast();
 

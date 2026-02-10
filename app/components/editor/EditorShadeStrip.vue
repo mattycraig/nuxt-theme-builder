@@ -26,7 +26,7 @@ function getHex(shade: string): string {
 
 <template>
   <div
-    class="flex items-center gap-1"
+    class="flex items-center gap-1 mt-2"
     role="radiogroup"
     :aria-label="ariaLabel"
   >

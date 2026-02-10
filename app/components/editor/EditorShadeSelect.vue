@@ -59,7 +59,6 @@ const shadeHexMap = computed(() => NEUTRAL_HEX_MAP[props.neutralPalette] ?? {});
     </USelect>
 
     <EditorShadeStrip
-      class="mt-2"
       :model-value="modelValue"
       :hex-map="shadeHexMap"
       :aria-label="`${label} shade picker`"
