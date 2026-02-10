@@ -67,88 +67,44 @@ function applyChanges() {
 function resetEditorText() {
   syncFromStore();
 }
-
-const { copy, copied } = useClipboard();
-
-function handleCopy() {
-  if (!jsonText.value) return;
-  copy(jsonText.value);
-  toast.add({
-    title: "Copied to clipboard",
-    icon: "i-lucide-check",
-    color: "success",
-  });
-}
-
-const lineCount = computed(() =>
-  jsonText.value ? jsonText.value.split("\n").length : 0,
-);
+const editorFilename = computed(() => {
+  const name = store.activePresetName;
+  return name ? `${name}.json` : "theme.json";
+});
 </script>
 
 <template>
-  <div
-    class="flex flex-col h-full"
-    role="region"
-    aria-label="JSON theme editor"
+  <CodeBlock
+    :code="jsonText"
+    :filename="editorFilename"
+    language="json"
+    icon="i-lucide-braces"
+    class="flex-1 min-h-0 m-2"
   >
-    <!-- Toolbar -->
-    <div
-      class="flex items-center justify-between px-3 py-1.5 border-b border-(--ui-border) bg-(--ui-bg-elevated)/50"
-    >
-      <div class="flex items-center gap-2 min-w-0">
-        <UIcon
-          name="i-lucide-braces"
-          class="size-3.5 text-(--ui-text-dimmed) shrink-0"
-        />
-        <span class="text-xs font-mono text-(--ui-text-muted) truncate">
-          theme.json
-        </span>
-        <UBadge
-          v-if="lineCount > 0"
-          :label="`${lineCount} lines`"
-          variant="subtle"
-          color="neutral"
-          size="xs"
-        />
-        <UBadge
-          v-if="isDirty"
-          label="Modified"
-          variant="subtle"
-          color="warning"
-          size="xs"
-        />
-      </div>
+    <template #toolbar-badges>
+      <UBadge
+        v-if="isDirty"
+        label="Modified"
+        variant="subtle"
+        color="warning"
+        size="xs"
+      />
+    </template>
 
-      <div class="flex items-center gap-0.5">
-        <UTooltip :text="copied ? 'Copied!' : 'Copy JSON'">
-          <UButton
-            :icon="copied ? 'i-lucide-check' : 'i-lucide-copy'"
-            :color="copied ? 'success' : 'neutral'"
-            :aria-label="
-              copied ? 'Copied to clipboard' : 'Copy JSON to clipboard'
-            "
-            variant="ghost"
-            size="xs"
-            :disabled="!jsonText"
-            @click="handleCopy"
-          />
-        </UTooltip>
-      </div>
-    </div>
-
-    <!-- Editor area -->
-    <div class="flex-1 min-h-0 overflow-auto">
+    <!-- Editable textarea styled to match Shiki code theme -->
+    <div class="flex-1 min-h-0">
       <label for="json-editor-textarea" class="sr-only">
         Theme configuration JSON
       </label>
       <textarea
         id="json-editor-textarea"
         :value="jsonText"
+        wrap="soft"
         spellcheck="false"
         autocomplete="off"
         autocorrect="off"
         autocapitalize="off"
-        class="json-editor-textarea w-full h-full min-h-[400px] p-3 font-mono text-[13px] leading-[1.7] resize-none border-0 outline-none bg-transparent text-(--ui-text-highlighted)"
+        class="json-editor-textarea w-full h-full p-3 resize-none border-0 outline-none bg-transparent text-(--ui-text-highlighted) whitespace-pre-wrap break-all"
         :class="{
           'ring-2 ring-inset ring-(--ui-color-error-500)': parseError,
         }"
@@ -158,63 +114,77 @@ const lineCount = computed(() =>
       />
     </div>
 
-    <!-- Error display -->
-    <div
-      v-if="parseError"
-      id="json-editor-error"
-      role="alert"
-      class="px-3 py-2 border-t border-(--ui-color-error-500)/30 bg-(--ui-color-error-500)/5"
-    >
-      <div class="flex items-start gap-2">
-        <UIcon
-          name="i-lucide-alert-circle"
-          class="size-4 text-(--ui-color-error-500) shrink-0 mt-0.5"
-        />
-        <pre
-          class="text-xs text-(--ui-color-error-500) whitespace-pre-wrap break-words font-mono flex-1"
-          >{{ parseError }}</pre
-        >
+    <template #footer>
+      <!-- Error display -->
+      <div
+        v-if="parseError"
+        id="json-editor-error"
+        role="alert"
+        class="px-3 py-2 border-t border-(--ui-color-error-500)/30 bg-(--ui-color-error-500)/5"
+      >
+        <div class="flex items-start gap-2">
+          <UIcon
+            name="i-lucide-alert-circle"
+            class="size-4 text-(--ui-color-error-500) shrink-0 mt-0.5"
+          />
+          <pre
+            class="text-xs text-(--ui-color-error-500) whitespace-pre-wrap break-words font-mono flex-1 w-full pr-6"
+            >{{ parseError }}</pre
+          >
+        </div>
       </div>
-    </div>
 
-    <!-- Action bar -->
-    <div
-      class="flex items-center gap-2 px-3 py-2 border-t border-(--ui-border) bg-(--ui-bg-elevated)/50"
-    >
-      <UButton
-        label="Apply"
-        icon="i-lucide-check"
-        size="sm"
-        color="primary"
-        :disabled="!isDirty"
-        @click="applyChanges"
-      />
-      <UButton
-        label="Reset"
-        icon="i-lucide-rotate-ccw"
-        size="sm"
-        variant="ghost"
-        color="neutral"
-        :disabled="!isDirty"
-        @click="resetEditorText"
-      />
-      <span v-if="!isDirty" class="text-xs text-(--ui-text-dimmed) ml-auto">
-        In sync with theme
-      </span>
-      <span v-else class="text-xs text-(--ui-color-warning-500) ml-auto">
-        Unapplied changes
-      </span>
-    </div>
-  </div>
+      <!-- Action bar -->
+      <div
+        class="flex items-center gap-2 px-3 py-2 border-t border-(--ui-border) bg-(--ui-bg-elevated)/50"
+      >
+        <UButton
+          label="Apply"
+          icon="i-lucide-check"
+          size="sm"
+          color="primary"
+          :disabled="!isDirty"
+          @click="applyChanges"
+        />
+        <UButton
+          label="Reset"
+          icon="i-lucide-rotate-ccw"
+          size="sm"
+          variant="ghost"
+          color="neutral"
+          :disabled="!isDirty"
+          @click="resetEditorText"
+        />
+        <UBadge
+          v-if="!isDirty"
+          label="In sync"
+          variant="subtle"
+          color="success"
+          size="xs"
+          class="ml-auto"
+        />
+        <UBadge
+          v-else
+          label="Unsaved"
+          variant="subtle"
+          color="warning"
+          size="xs"
+          class="ml-auto"
+        />
+      </div>
+    </template>
+  </CodeBlock>
 </template>
 
 <style scoped>
 .json-editor-textarea {
-  tab-size: 2;
-  -moz-tab-size: 2;
   font-family:
     ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, "Liberation Mono",
     monospace;
+  font-size: 0.8125rem;
+  line-height: 1.7;
+  tab-size: 2;
+  -moz-tab-size: 2;
 }
 
 .json-editor-textarea::placeholder {
@@ -225,7 +195,6 @@ const lineCount = computed(() =>
   outline: none;
 }
 
-/* Ensure sr-only hides the label visually but keeps it accessible */
 .sr-only {
   position: absolute;
   width: 1px;

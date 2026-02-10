@@ -67,18 +67,21 @@ export default defineNuxtConfig({
 
   security: {
     headers: {
-      contentSecurityPolicy: {
-        "default-src": ["'self'"],
-        "script-src": ["'self'", "'nonce-{{nonce}}'", "'strict-dynamic'"],
-        "style-src": ["'self'", "'unsafe-inline'"],
-        "img-src": ["'self'", "data:", "https:"],
-        "font-src": ["'self'", "https://fonts.gstatic.com"],
-        "connect-src": ["'self'", "https:"],
-        "frame-ancestors": ["'self'"],
-        "base-uri": ["'none'"],
-        "object-src": ["'none'"],
-        "script-src-attr": ["'none'"],
-      },
+      contentSecurityPolicy:
+        process.env.NODE_ENV === "development"
+          ? false
+          : {
+              "default-src": ["'self'"],
+              "script-src": ["'self'", "'nonce-{{nonce}}'", "'strict-dynamic'"],
+              "style-src": ["'self'", "'unsafe-inline'"],
+              "img-src": ["'self'", "data:", "https:"],
+              "font-src": ["'self'", "https://fonts.gstatic.com"],
+              "connect-src": ["'self'", "https:"],
+              "frame-ancestors": ["'self'"],
+              "base-uri": ["'none'"],
+              "object-src": ["'none'"],
+              "script-src-attr": ["'none'"],
+            },
       referrerPolicy: "strict-origin-when-cross-origin",
       strictTransportSecurity: {
         maxAge: 31536000,

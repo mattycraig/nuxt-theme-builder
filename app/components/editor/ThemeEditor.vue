@@ -98,8 +98,11 @@ onMounted(() => {
 </script>
 
 <template>
-  <!-- Undo / Redo / Reset toolbar -->
-  <div data-testid="theme-editor" :data-hydrated="hydrated || undefined">
+  <div
+    data-testid="theme-editor"
+    :data-hydrated="hydrated || undefined"
+    class="flex flex-col h-full"
+  >
     <EditorToolbar
       :collapsed="collapsed"
       :json-mode="jsonMode"
@@ -128,10 +131,7 @@ onMounted(() => {
       </UPopover>
 
       <!-- Expanded: inline JSON editor -->
-      <div
-        v-else
-        class="flex-1 min-h-0 flex flex-col border-t border-(--ui-border)"
-      >
+      <div v-else class="flex-1 min-h-0 flex flex-col">
         <EditorJsonEditor />
       </div>
     </template>

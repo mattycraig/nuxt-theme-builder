@@ -15,6 +15,8 @@ const deletingName = ref<string | null>(null);
 
 const statusMessage = ref("");
 
+const exportPanel = useExportPanel();
+
 function loadTheme(preset: ThemePreset) {
   store.loadPreset(preset);
   toast.add({
@@ -126,9 +128,17 @@ function getDropdownItems(preset: ThemePreset) {
         onSelect: () => duplicateTheme(preset),
       },
       {
-        label: "Export JSON",
+        label: "Download JSON",
         icon: "i-lucide-download",
         onSelect: () => exportThemeJSON(preset),
+      },
+      {
+        label: "Export theme",
+        icon: "i-lucide-import",
+        onSelect: () => {
+          loadTheme(preset);
+          exportPanel.open();
+        },
       },
     ],
     [
@@ -229,7 +239,7 @@ function getDropdownItems(preset: ThemePreset) {
         />
 
         <!-- Dropdown menu -->
-        <div class="px-2">
+        <div class="px-2 flex items-center">
           <UDropdownMenu :items="getDropdownItems(preset)">
             <UButton
               icon="i-lucide-ellipsis"

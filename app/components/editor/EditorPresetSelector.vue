@@ -59,6 +59,16 @@ const selectedPresetName = ref<string>("");
 let skipNextWatch = false;
 
 onMounted(() => {
+  // Restore selectedPresetName from the store if a preset is already active
+  if (store.activePresetName) {
+    const match = BUILT_IN_PRESETS.find(
+      (p) => p.name === store.activePresetName,
+    );
+    selectedPresetName.value = match?.name ?? "";
+    return;
+  }
+
+  // Only auto-load the first built-in preset on initial app load (no saved presets, no active preset)
   if (store.savedPresets.length === 0 && BUILT_IN_PRESETS.length > 0) {
     const defaultPreset = BUILT_IN_PRESETS[0]!;
     selectedPresetName.value = defaultPreset.name;

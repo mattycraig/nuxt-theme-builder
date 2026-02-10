@@ -10,6 +10,8 @@ const props = withDefaults(
     loading?: boolean;
     error?: string;
     downloadMimeType?: string;
+    hideDownload?: boolean;
+    icon?: string;
   }>(),
   {
     language: "vue",
@@ -17,6 +19,8 @@ const props = withDefaults(
     loading: false,
     error: "",
     downloadMimeType: "text/plain",
+    hideDownload: false,
+    icon: "i-lucide-file-code",
   },
 );
 
@@ -58,7 +62,7 @@ function handleDownload() {
 
 <template>
   <div
-    class="rounded-lg border border-(--ui-border) overflow-hidden bg-(--ui-bg) code-block min-h-[200px]"
+    class="flex flex-col rounded-lg border border-(--ui-border) overflow-hidden bg-(--ui-bg) code-block min-h-[200px] min-w-0"
     role="region"
     :aria-label="`Source code for ${filename}`"
   >
@@ -67,10 +71,7 @@ function handleDownload() {
       class="flex items-center justify-between px-3 py-1.5 border-b border-(--ui-border) bg-(--ui-bg-elevated)/50"
     >
       <div class="flex items-center gap-2 min-w-0">
-        <UIcon
-          name="i-lucide-file-code"
-          class="size-3.5 text-(--ui-text-dimmed) shrink-0"
-        />
+        <UIcon :name="icon" class="size-3.5 text-(--ui-text-dimmed) shrink-0" />
         <span class="text-xs font-mono text-(--ui-text-muted) truncate">
           {{ filename }}
         </span>
@@ -81,9 +82,10 @@ function handleDownload() {
           color="neutral"
           size="xs"
         />
+        <slot name="toolbar-badges" />
       </div>
 
-      <div class="flex items-center gap-0.5">
+      <div class="flex items-center gap-0.5 ml-2">
         <UTooltip :text="copied ? 'Copied!' : 'Copy to clipboard'">
           <UButton
             :icon="copied ? 'i-lucide-check' : 'i-lucide-copy'"
@@ -97,7 +99,7 @@ function handleDownload() {
             @click="handleCopy"
           />
         </UTooltip>
-        <UTooltip text="Download file">
+        <UTooltip v-if="!hideDownload" text="Download file">
           <UButton
             icon="i-lucide-download"
             aria-label="Download file"
@@ -111,46 +113,52 @@ function handleDownload() {
       </div>
     </div>
 
-    <!-- Loading state -->
-    <div v-if="loading" class="flex items-center justify-center py-16">
-      <div class="flex flex-col items-center gap-3">
-        <UIcon
-          name="i-lucide-loader-2"
-          class="size-8 text-(--ui-primary) animate-spin"
-        />
-        <span class="text-sm text-(--ui-text-muted)">Loading source…</span>
+    <!-- Content area -->
+    <slot>
+      <!-- Loading state -->
+      <div v-if="loading" class="flex-1 flex items-center justify-center py-16">
+        <div class="flex flex-col items-center gap-3">
+          <UIcon
+            name="i-lucide-loader-2"
+            class="size-8 text-(--ui-primary) animate-spin"
+          />
+          <span class="text-sm text-(--ui-text-muted)">Loading source…</span>
+        </div>
       </div>
-    </div>
 
-    <!-- Error state -->
-    <div
-      v-else-if="error"
-      class="flex flex-col items-center justify-center gap-4 p-8"
-    >
-      <UIcon name="i-lucide-alert-circle" class="size-10 text-(--ui-error)" />
-      <p class="text-sm text-(--ui-text-muted)">{{ error }}</p>
-      <UButton
-        label="Retry"
-        icon="i-lucide-refresh-cw"
-        variant="soft"
-        size="sm"
-        @click="emit('retry')"
-      />
-    </div>
+      <!-- Error state -->
+      <div
+        v-else-if="error"
+        class="flex-1 flex flex-col items-center justify-center gap-4 p-8"
+      >
+        <UIcon name="i-lucide-alert-circle" class="size-10 text-(--ui-error)" />
+        <p class="text-sm text-(--ui-text-muted)">{{ error }}</p>
+        <UButton
+          label="Retry"
+          icon="i-lucide-refresh-cw"
+          variant="soft"
+          size="sm"
+          @click="emit('retry')"
+        />
+      </div>
 
-    <!-- Code content with syntax highlighting -->
-    <div
-      v-else-if="code"
-      class="code-block__content overflow-auto"
-      :style="maxHeight !== 'none' ? { maxHeight } : undefined"
-    >
-      <MDC :value="mdcValue" />
-    </div>
+      <!-- Code content with syntax highlighting -->
+      <div
+        v-else-if="code"
+        class="code-block__content flex-1 min-h-0 overflow-auto"
+        :style="maxHeight !== 'none' ? { maxHeight } : undefined"
+      >
+        <MDC :value="mdcValue" />
+      </div>
 
-    <!-- Empty state -->
-    <div v-else class="flex items-center justify-center py-12">
-      <p class="text-sm text-(--ui-text-muted)">No source code available.</p>
-    </div>
+      <!-- Empty state -->
+      <div v-else class="flex-1 flex items-center justify-center py-12">
+        <p class="text-sm text-(--ui-text-muted)">No source code available.</p>
+      </div>
+    </slot>
+
+    <!-- Footer -->
+    <slot name="footer" />
   </div>
 </template>
 
