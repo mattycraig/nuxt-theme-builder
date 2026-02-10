@@ -3,11 +3,11 @@ import { useSaveThemeModal } from "~/composables/useSaveThemeModal";
 
 defineProps<{
   collapsed?: boolean;
-  allExpanded?: boolean;
+  jsonMode?: boolean;
 }>();
 
 const emit = defineEmits<{
-  "toggle-sections": [];
+  "toggle-json-mode": [];
 }>();
 
 const store = useThemeStore();
@@ -167,26 +167,21 @@ const saveTooltipText = computed(() => {
       />
     </UTooltip>
 
-    <!-- Collapse/Expand -->
+    <!-- JSON / Visual mode toggle -->
     <UTooltip
-      v-if="!collapsed"
-      :text="allExpanded ? 'Collapse all sections' : 'Expand all sections'"
+      :text="jsonMode ? 'Switch to visual editor' : 'Switch to JSON editor'"
       :content="collapsed ? { side: 'right' } : undefined"
     >
       <UButton
-        :icon="
-          allExpanded
-            ? 'i-lucide-chevrons-up-down'
-            : 'i-lucide-chevrons-down-up'
-        "
+        :icon="jsonMode ? 'i-lucide-sliders-horizontal' : 'i-lucide-braces'"
         :aria-label="
-          allExpanded ? 'Collapse all sections' : 'Expand all sections'
+          jsonMode ? 'Switch to visual editor' : 'Switch to JSON editor'
         "
-        variant="ghost"
-        color="neutral"
+        :variant="jsonMode ? 'soft' : 'ghost'"
+        :color="jsonMode ? 'primary' : 'neutral'"
         size="sm"
         class="ml-auto"
-        @click="emit('toggle-sections')"
+        @click="emit('toggle-json-mode')"
       />
     </UTooltip>
   </div>

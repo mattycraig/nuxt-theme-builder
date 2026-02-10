@@ -64,13 +64,6 @@ const sectionOpen = reactive<Record<SectionKey, boolean>>(
   ) as Record<SectionKey, boolean>,
 );
 
-const allExpanded = computed(() => SECTION_KEYS.every((k) => sectionOpen[k]));
-
-function toggleSections() {
-  const value = !allExpanded.value;
-  for (const key of SECTION_KEYS) sectionOpen[key] = value;
-}
-
 const debouncedRadiusCommit = useDebounceFn((val: number) => {
   store.setRadiusForMode(mode.value, val);
 }, 300);
@@ -93,6 +86,12 @@ function onBorderOverride(token: BorderTokenKey, shade: NeutralShade) {
 }
 
 const hydrated = ref(false);
+const jsonMode = ref(false);
+
+function toggleJsonMode() {
+  jsonMode.value = !jsonMode.value;
+}
+
 onMounted(() => {
   hydrated.value = true;
 });
@@ -103,13 +102,43 @@ onMounted(() => {
   <div data-testid="theme-editor" :data-hydrated="hydrated || undefined">
     <EditorToolbar
       :collapsed="collapsed"
-      :all-expanded="allExpanded"
-      @toggle-sections="toggleSections"
+      :json-mode="jsonMode"
+      @toggle-json-mode="toggleJsonMode"
     />
     <USeparator :class="collapsed ? 'w-6 my-1' : 'hidden'" />
 
-    <!-- Sections (collapsed → popover, expanded → collapsible) -->
+    <!-- JSON Editor mode -->
+    <template v-if="jsonMode">
+      <!-- Collapsed: popover with JSON editor -->
+      <UPopover v-if="collapsed" :content="{ side: 'right', align: 'start' }">
+        <UTooltip text="JSON Editor" :content="{ side: 'right' }">
+          <UButton
+            icon="i-lucide-braces"
+            aria-label="JSON Editor"
+            variant="soft"
+            color="primary"
+            size="sm"
+          />
+        </UTooltip>
+        <template #content>
+          <div class="w-[480px] h-[600px] flex flex-col">
+            <EditorJsonEditor />
+          </div>
+        </template>
+      </UPopover>
+
+      <!-- Expanded: inline JSON editor -->
+      <div
+        v-else
+        class="flex-1 min-h-0 flex flex-col border-t border-(--ui-border)"
+      >
+        <EditorJsonEditor />
+      </div>
+    </template>
+
+    <!-- Visual Editor mode -->
     <div
+      v-if="!jsonMode"
       :class="
         collapsed ? 'flex flex-col items-center gap-1' : 'space-y-2 pt-2 pb-4'
       "
