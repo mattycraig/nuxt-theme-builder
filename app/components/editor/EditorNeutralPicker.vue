@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import type { NeutralPalette } from "~/types/theme";
-import { NEUTRAL_PALETTES } from "~/types/theme";
+import { NEUTRAL_PALETTES, NUMERIC_SHADE_KEYS } from "~/types/theme";
 import { NEUTRAL_SWATCH_HEX, NEUTRAL_HEX_MAP } from "~/utils/defaults";
 import { capitalize } from "~/utils/helpers";
 
@@ -14,20 +14,6 @@ const emit = defineEmits<{
 }>();
 
 const inputId = useId();
-
-const SHADE_KEYS = [
-  "50",
-  "100",
-  "200",
-  "300",
-  "400",
-  "500",
-  "600",
-  "700",
-  "800",
-  "900",
-  "950",
-] as const;
 
 const items = NEUTRAL_PALETTES.map((p) => ({
   label: capitalize(p),
@@ -71,14 +57,14 @@ function getShadeHex(shade: string): string {
       </template>
     </USelect>
 
-    <!-- Shade preview strip: 50–950 of selected neutral -->
+    <!-- View-only shade preview strip -->
     <div
       class="mt-1.5 flex"
       role="img"
       :aria-label="`${capitalize(modelValue)} palette shades from 50 to 950`"
     >
       <span
-        v-for="shade in SHADE_KEYS"
+        v-for="shade in NUMERIC_SHADE_KEYS"
         :key="shade"
         class="flex-1 h-4 first:rounded-l-sm last:rounded-r-sm"
         :style="{ backgroundColor: getShadeHex(shade) }"
