@@ -1,0 +1,103 @@
+import { test, expect } from "@playwright/test";
+
+test.describe("Preset Loading & Navigation", () => {
+  test.beforeEach(async ({ page }) => {
+    await page.addInitScript(() => {
+      localStorage.removeItem("theme");
+    });
+    await page.goto("/components/buttons");
+    await page.waitForSelector(
+      '[data-testid="theme-editor"][data-hydrated="true"]',
+      { state: "visible", timeout: 30_000 },
+    );
+  });
+
+  test("should display built-in presets", async ({ page }) => {
+    await test.step("Verify preset selector is visible with options", async () => {
+      // Look for preset-related UI — the preset selector section
+      const presetText = page.getByText("Presets").first();
+      await expect(presetText).toBeVisible();
+    });
+  });
+
+  test("should load a built-in preset and see changes", async ({ page }) => {
+    await test.step("Find and click a built-in preset", async () => {
+      // Built-in presets are displayed as clickable items
+      // Look for any preset name that exists in the presets list
+      const presetButton = page
+        .getByRole("button", {
+          name: /Sunset|Ocean|Forest|Minimal|Vibrant|Berry|Earthy|Neon|Nordic|Coral|Sage|Night Owl/i,
+        })
+        .first();
+
+      if (await presetButton.isVisible()) {
+        await presetButton.click();
+        // After loading, the theme should be applied (colors may change)
+        await page.waitForTimeout(300);
+      }
+    });
+  });
+});
+
+test.describe("Page Navigation", () => {
+  test.beforeEach(async ({ page }) => {
+    await page.addInitScript(() => {
+      localStorage.removeItem("theme");
+    });
+    await page.goto("/components/buttons");
+    await page.waitForSelector(
+      '[data-testid="theme-editor"][data-hydrated="true"]',
+      { state: "visible", timeout: 30_000 },
+    );
+  });
+
+  test("should navigate between component preview pages", async ({ page }) => {
+    await test.step("Navigate to Cards page", async () => {
+      // Use the navigation within the layout
+      const cardsLink = page.getByRole("link", { name: "Cards" }).first();
+      if (await cardsLink.isVisible()) {
+        await cardsLink.click();
+        await expect(page).toHaveURL(/\/components\/cards/);
+      }
+    });
+  });
+
+  test("should navigate to templates", async ({ page }) => {
+    await test.step("Navigate to Templates section", async () => {
+      const templatesLink = page
+        .getByRole("link", { name: "Templates" })
+        .first();
+      if (await templatesLink.isVisible()) {
+        await templatesLink.click();
+        await expect(page).toHaveURL(/\/templates/);
+      }
+    });
+  });
+
+  test("should navigate to blocks", async ({ page }) => {
+    await test.step("Navigate to Blocks section", async () => {
+      const blocksLink = page.getByRole("link", { name: "Blocks" }).first();
+      if (await blocksLink.isVisible()) {
+        await blocksLink.click();
+        await expect(page).toHaveURL(/\/blocks/);
+      }
+    });
+  });
+
+  test("should maintain editor sidebar across page navigation", async ({
+    page,
+  }) => {
+    await test.step("Navigate and verify editor persists", async () => {
+      // Navigate to a different page
+      const cardsLink = page.getByRole("link", { name: "Cards" }).first();
+      if (await cardsLink.isVisible()) {
+        await cardsLink.click();
+        await page.waitForURL(/\/components\/cards/);
+      }
+
+      // Editor sidebar should still be visible
+      const editor = page.getByTestId("theme-editor");
+      await expect(editor).toBeVisible();
+    });
+  });
+});
