@@ -1,5 +1,7 @@
 import { useThemeStore } from "~/stores/theme";
 import { sanitizeNavigationPath } from "~/utils/helpers";
+import { ThemeConfigSchema } from "~/types/theme";
+import type { ThemeConfig } from "~/types/theme";
 
 /**
  * Manages the iframe-based preview panel communication.
@@ -14,6 +16,8 @@ export function usePreviewIframe() {
   const store = useThemeStore();
   const route = useRoute();
   const colorMode = useColorMode();
+  const toast = useToast();
+  const { openSaveAs } = useSaveThemeModal();
 
   const previewFrame = ref<HTMLIFrameElement>();
   const iframeLoading = ref(true);
@@ -105,6 +109,23 @@ export function usePreviewIframe() {
           navigateIframe(iframeSrc.value);
         }
         break;
+
+      case "apply-ai-theme": {
+        const validated = ThemeConfigSchema.safeParse(event.data.config);
+        if (validated.success) {
+          store.loadConfig(validated.data as ThemeConfig);
+          toast.add({
+            title: "Theme applied",
+            description: "You can undo with Ctrl+Z or continue refining.",
+            color: "success",
+            icon: "i-lucide-check-circle",
+          });
+          if (event.data.save) {
+            openSaveAs();
+          }
+        }
+        break;
+      }
     }
   }
 

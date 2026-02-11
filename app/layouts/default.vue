@@ -168,6 +168,8 @@ const PAGE_DESCRIPTIONS: Record<string, string> = {
   "/": "A visual design-token editor for Nuxt UI v4. Configure colors, radius, fonts, and shades — preview every component live — then export and drop into your project.",
   "/help":
     "Learn how to use the Nuxt UI Theme Builder — configure design tokens, preview components, and export your theme as app.config.ts, CSS, or JSON.",
+  "/ai":
+    "Generate custom Nuxt UI themes with AI — describe your design vision and get a complete theme configuration you can apply instantly.",
   // Component pages
   "/components":
     "Browse individual Nuxt UI v4 components — buttons, badges, alerts, cards, inputs, tables, and more — all styled with your current theme settings.",

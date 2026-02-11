@@ -139,7 +139,11 @@ onMounted(() => {
         <div class="flex items-center gap-2">
           <UColorModeSwitch />
           <span class="text-xs text-[var(--ui-text-toned)]">
-            Editing <strong>{{ mode }}</strong> mode settings
+            Editing
+            <ClientOnly>
+              <strong>{{ mode }}</strong>
+            </ClientOnly>
+            mode settings
           </span>
         </div>
       </EditorSection>
@@ -155,7 +159,9 @@ onMounted(() => {
       >
         <template #heading>
           Layout
-          <UBadge :label="mode" variant="subtle" size="xs" class="ml-1" />
+          <ClientOnly>
+            <UBadge :label="mode" variant="subtle" size="xs" class="ml-1" />
+          </ClientOnly>
         </template>
         <div class="space-y-3">
           <EditorFontPicker
@@ -180,7 +186,9 @@ onMounted(() => {
       >
         <template #heading>
           Semantic Colors
-          <UBadge :label="mode" variant="subtle" size="xs" class="ml-1" />
+          <ClientOnly>
+            <UBadge :label="mode" variant="subtle" size="xs" class="ml-1" />
+          </ClientOnly>
         </template>
         <div class="space-y-4">
           <EditorColorPicker
@@ -208,7 +216,9 @@ onMounted(() => {
       >
         <template #heading>
           Neutral Color
-          <UBadge :label="mode" variant="subtle" size="xs" class="ml-1" />
+          <ClientOnly>
+            <UBadge :label="mode" variant="subtle" size="xs" class="ml-1" />
+          </ClientOnly>
         </template>
         <EditorNeutralPicker
           :model-value="currentNeutral"
@@ -227,7 +237,9 @@ onMounted(() => {
       >
         <template #heading>
           Text Colors
-          <UBadge :label="mode" variant="subtle" size="xs" class="ml-1" />
+          <ClientOnly>
+            <UBadge :label="mode" variant="subtle" size="xs" class="ml-1" />
+          </ClientOnly>
         </template>
         <div class="space-y-4">
           <EditorShadeSelect
@@ -251,7 +263,9 @@ onMounted(() => {
       >
         <template #heading>
           Background Colors
-          <UBadge :label="mode" variant="subtle" size="xs" class="ml-1" />
+          <ClientOnly>
+            <UBadge :label="mode" variant="subtle" size="xs" class="ml-1" />
+          </ClientOnly>
         </template>
         <div class="space-y-4">
           <EditorShadeSelect
@@ -275,7 +289,9 @@ onMounted(() => {
       >
         <template #heading>
           Border Colors
-          <UBadge :label="mode" variant="subtle" size="xs" class="ml-1" />
+          <ClientOnly>
+            <UBadge :label="mode" variant="subtle" size="xs" class="ml-1" />
+          </ClientOnly>
         </template>
         <div class="space-y-4">
           <EditorShadeSelect

@@ -217,6 +217,11 @@ export const NAVIGATION_ITEMS: NavigationMenuItem[][] = [
       to: "/",
     },
     {
+      label: "AI Generate",
+      icon: "i-lucide-sparkles",
+      to: "/ai",
+    },
+    {
       label: "Components",
       icon: "i-lucide-layout-grid",
       to: "/components",
