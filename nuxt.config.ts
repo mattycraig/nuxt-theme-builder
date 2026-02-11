@@ -154,6 +154,11 @@ export default defineNuxtConfig({
   },
 
   routeRules: {
+    // XSS validator disabled because this endpoint accepts raw source code
+    // strings (e.g. Vue SFC, TypeScript) that inherently contain HTML-like
+    // syntax which triggers false positives. The returned HTML is generated
+    // by Shiki (which escapes code tokens) and is only rendered via v-html
+    // in CodeBlock.vue with CSP nonce protection.
     "/api/highlight": {
       security: {
         xssValidator: false,

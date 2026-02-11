@@ -36,7 +36,7 @@ function getHighlighter(): Promise<Highlighter> {
       ],
     });
   }
-  return highlighterPromise;
+  return highlighterPromise!;
 }
 
 export default defineEventHandler(async (event) => {
@@ -45,9 +45,10 @@ export default defineEventHandler(async (event) => {
   try {
     body = await readBody<{ code: string; lang?: string }>(event);
   } catch (err) {
+    console.error("[Highlight] Failed to parse request body:", err);
     throw createError({
       statusCode: 400,
-      statusMessage: `Failed to parse request body: ${err instanceof Error ? err.message : String(err)}`,
+      statusMessage: "Failed to parse request body.",
     });
   }
 
@@ -81,9 +82,10 @@ export default defineEventHandler(async (event) => {
 
     return { html };
   } catch (err) {
+    console.error("[Highlight] Syntax highlighting failed:", err);
     throw createError({
       statusCode: 500,
-      statusMessage: `Highlight failed: ${err instanceof Error ? err.message : String(err)}`,
+      statusMessage: "Syntax highlighting failed. Please try again.",
     });
   }
 });
