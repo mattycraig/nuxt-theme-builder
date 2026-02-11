@@ -9,6 +9,7 @@ import { useSourceCode } from "~/composables/useSourceCode";
 
 useThemeApply();
 useKeyboardShortcuts();
+useCookieConsent();
 
 // Source code viewer ────────────────────────────────────────────────────
 const {
@@ -235,6 +236,13 @@ const PAGE_DESCRIPTIONS: Record<string, string> = {
     "Preview a rich text editor template styled with your theme — toolbar, content area, and formatting controls.",
   "/templates/error-page":
     "Preview an error page template styled with your theme — 404 and 500 error states with illustrations and navigation links.",
+  // Utility pages
+  "/privacy":
+    "Privacy policy for the Nuxt UI Theme Builder — learn what data is stored locally and how your preferences are handled.",
+  "/about":
+    "Learn about the Nuxt UI Theme Builder — a free, open-source visual editor for Nuxt UI v4 design tokens.",
+  "/contact":
+    "Get in touch with the Nuxt UI Theme Builder team — report bugs, request features, or join the community.",
 };
 
 const DEFAULT_DESCRIPTION =
@@ -305,7 +313,7 @@ function onSearchSelect(option: { to?: string }) {
         root: 'min-w-0 overflow-hidden data-[collapsed=true]:invisible',
         header: 'border-b border-default sm:px-4',
         body: 'p-0 sm:p-0',
-        footer: 'border-t border-default py-4',
+        footer: 'border-t border-default py-4 flex-col',
       }"
     >
       <!-- <template #header>
@@ -336,6 +344,31 @@ function onSearchSelect(option: { to?: string }) {
           color="primary"
           @click="useExportPanel().open()"
         />
+        <nav
+          aria-label="Utility pages"
+          class="mt-2 flex items-center justify-center gap-1 text-xs text-(--ui-text-muted)"
+        >
+          <NuxtLink
+            to="/about"
+            class="hover:text-(--ui-text-highlighted) transition-colors px-1 py-0.5 rounded focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--ui-primary)"
+          >
+            About
+          </NuxtLink>
+          <span aria-hidden="true">&middot;</span>
+          <NuxtLink
+            to="/privacy"
+            class="hover:text-(--ui-text-highlighted) transition-colors px-1 py-0.5 rounded focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--ui-primary)"
+          >
+            Privacy
+          </NuxtLink>
+          <span aria-hidden="true">&middot;</span>
+          <NuxtLink
+            to="/contact"
+            class="hover:text-(--ui-text-highlighted) transition-colors px-1 py-0.5 rounded focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--ui-primary)"
+          >
+            Contact
+          </NuxtLink>
+        </nav>
       </template>
     </UDashboardSidebar>
 

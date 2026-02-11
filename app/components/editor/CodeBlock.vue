@@ -181,7 +181,7 @@ function handleDownload() {
       <!-- Code content with syntax highlighting -->
       <div
         v-else-if="code"
-        class="code-block__content flex-1 min-h-0 overflow-auto relative"
+        class="code-block__content flex-1 min-h-0 overflow-auto relative px-4 py-2"
         :style="maxHeight !== 'none' ? { maxHeight } : undefined"
       >
         <!-- Overlay while highlighting -->
