@@ -126,6 +126,22 @@ export function useAiChat() {
     });
   }
 
+  function regenerateLastMessage() {
+    const lastUserIndex = messages.value
+      .map((m, i) => ({ role: m.role, index: i }))
+      .filter((m) => m.role === "user")
+      .pop();
+
+    if (!lastUserIndex) return;
+
+    const lastUserMessage = messages.value[lastUserIndex.index];
+    if (!lastUserMessage) return;
+    // Remove everything from that user message onward
+    messages.value = messages.value.slice(0, lastUserIndex.index);
+
+    sendMessage(lastUserMessage.content);
+  }
+
   function clearChat() {
     messages.value = [];
     error.value = null;
@@ -136,6 +152,7 @@ export function useAiChat() {
     isGenerating: computed(() => isGenerating.value),
     error: computed(() => error.value),
     sendMessage,
+    regenerateLastMessage,
     applyTheme,
     clearChat,
   };

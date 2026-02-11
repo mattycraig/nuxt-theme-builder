@@ -1,14 +1,22 @@
 <script setup lang="ts">
 import type { AiMessage } from "~/types/ai";
 
-const { messages, isGenerating, error, sendMessage, clearChat } = useAiChat();
+const {
+  messages,
+  isGenerating,
+  error,
+  sendMessage,
+  regenerateLastMessage,
+  clearChat,
+} = useAiChat();
 const { isConfigured, model, availableModels } = useAiSettings();
 
 const settingsOpen = ref(false);
 
 const chatStatus = computed<"ready" | "submitted" | "streaming" | "error">(
   () => {
-    if (isGenerating.value) return "streaming";
+    if (error.value) return "error";
+    if (isGenerating.value) return "submitted";
     return "ready";
   },
 );
@@ -57,6 +65,10 @@ function copyMessage(
       copied.value = false;
     }, 2000);
   }
+}
+
+function regenerate() {
+  regenerateLastMessage();
 }
 
 const quickChats = [
@@ -270,20 +282,24 @@ function handlePromptSelect(prompt: string) {
             should-auto-scroll
             :messages="chatMessages"
             :status="chatStatus"
-            :assistant="
-              chatStatus !== 'streaming'
-                ? {
-                    avatar: { icon: 'i-lucide-sparkles' },
-                    actions: [
+            :assistant="{
+              avatar: { icon: 'i-lucide-sparkles' },
+              actions:
+                chatStatus === 'ready'
+                  ? [
                       {
                         label: 'Copy',
                         icon: copied ? 'i-lucide-copy-check' : 'i-lucide-copy',
                         onClick: copyMessage,
                       },
-                    ],
-                  }
-                : { avatar: { icon: 'i-lucide-sparkles' }, actions: [] }
-            "
+                      {
+                        label: 'Regenerate',
+                        icon: 'i-lucide-refresh-cw',
+                        onClick: regenerate,
+                      },
+                    ]
+                  : [],
+            }"
             :user="{
               avatar: { icon: 'i-lucide-user' },
               variant: 'soft',
@@ -317,14 +333,28 @@ function handlePromptSelect(prompt: string) {
             </template>
 
             <template #indicator>
-              <UButton
-                class="px-0"
-                color="neutral"
-                variant="link"
-                loading
-                loading-icon="i-lucide-loader"
-                label="Generating theme..."
-              />
+              <div class="flex items-center gap-3 px-4 py-3">
+                <div class="flex items-center gap-2">
+                  <span
+                    class="flex gap-1"
+                    aria-label="Generating theme"
+                    role="status"
+                  >
+                    <span
+                      class="size-2 rounded-full bg-(--ui-primary) animate-bounce [animation-delay:0ms]"
+                    />
+                    <span
+                      class="size-2 rounded-full bg-(--ui-primary) animate-bounce [animation-delay:150ms]"
+                    />
+                    <span
+                      class="size-2 rounded-full bg-(--ui-primary) animate-bounce [animation-delay:300ms]"
+                    />
+                  </span>
+                  <span class="text-sm text-(--ui-text-muted) ml-1"
+                    >Generating theme&hellip;</span
+                  >
+                </div>
+              </div>
             </template>
           </UChatMessages>
 
