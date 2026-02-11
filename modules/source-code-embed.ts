@@ -1,4 +1,4 @@
-import { defineNuxtModule } from "@nuxt/kit";
+import { defineNuxtModule } from "nuxt/kit";
 import { readFileSync, readdirSync, statSync } from "node:fs";
 import { join, relative } from "node:path";
 

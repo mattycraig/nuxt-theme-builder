@@ -59,9 +59,13 @@ const items: SelectMenuItem[] = categoryOrder.flatMap((cat, i) => {
       @update:model-value="emit('update:modelValue', $event as string)"
     >
       <template #item-label="{ item }">
-        <span :style="{ fontFamily: item.label }" class="font-medium">{{
-          item.label
-        }}</span>
+        <span
+          v-if="item && typeof item === 'object' && 'label' in item"
+          :style="{ fontFamily: item.label as string }"
+          class="font-medium"
+        >
+          {{ item.label }}
+        </span>
       </template>
     </USelectMenu>
   </div>

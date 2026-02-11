@@ -1,4 +1,6 @@
 import { defineEventHandler, getRouterParam, createError } from "h3";
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-ignore — virtual module injected by source-code-embed Nuxt module at build time
 import sourceCodeMap from "#source-code-map";
 
 const sources = sourceCodeMap as Record<string, string>;
