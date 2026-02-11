@@ -1,5 +1,6 @@
 import { describe, it, expect, beforeEach, vi } from "vitest";
 import { mockNuxtImport } from "@nuxt/test-utils/runtime";
+import { _resetSourceCodeState } from "~/composables/useSourceCode";
 
 const routeRef = reactive({ path: "/templates/dashboard" });
 mockNuxtImport("useRoute", () => {
@@ -22,6 +23,7 @@ vi.mock("@vueuse/core", async (importOriginal) => {
 
 describe("useSourceCode", () => {
   beforeEach(() => {
+    _resetSourceCodeState();
     routeRef.path = "/templates/dashboard";
     copiedRef.value = false;
     copyFn.mockClear();

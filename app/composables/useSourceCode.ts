@@ -1,10 +1,26 @@
 /**
  * Manages the preview/code view toggle and source code fetching.
- * Fetches .vue source from the server API on demand and caches results.
+ *
+ * Singleton pattern — state refs are module-level so every component
+ * calling `useSourceCode()` shares the same view mode and source data.
+ * Watchers are re-registered per caller but operate on the same refs
+ * (idempotent) and are properly cleaned up by Vue on component unmount.
  */
 
-// Module-level cache shared across all composable instances
 const sourceCache = new Map<string, string>();
+const _viewMode = ref<"preview" | "code">("preview");
+const _sourceCode = ref("");
+const _isLoadingSource = ref(false);
+const _sourceError = ref("");
+
+/** Reset singleton state — exposed for test isolation */
+export function _resetSourceCodeState() {
+  _viewMode.value = "preview";
+  _sourceCode.value = "";
+  _isLoadingSource.value = false;
+  _sourceError.value = "";
+  sourceCache.clear();
+}
 
 function stripLeadingSlash(path: string): string {
   return path.replace(/^\//, "");
@@ -12,12 +28,6 @@ function stripLeadingSlash(path: string): string {
 
 export function useSourceCode() {
   const route = useRoute();
-
-  const viewMode = ref<"preview" | "code">("preview");
-  const sourceCode = ref("");
-  const isLoadingSource = ref(false);
-  const sourceError = ref("");
-
   const { copy, copied } = useClipboard();
 
   const routeKey = computed(() => stripLeadingSlash(route.path));
@@ -29,59 +39,64 @@ export function useSourceCode() {
 
   const sourceFilePath = computed(() => `app/pages/${routeKey.value}.vue`);
 
-  watch(
-    () => route.path,
-    () => {
-      viewMode.value = "preview";
-      sourceError.value = "";
-    },
-  );
-
   async function fetchSource() {
     const key = routeKey.value;
     if (!key) return;
 
     if (sourceCache.has(key)) {
-      sourceCode.value = sourceCache.get(key)!;
+      _sourceCode.value = sourceCache.get(key)!;
       return;
     }
 
-    isLoadingSource.value = true;
-    sourceError.value = "";
+    _isLoadingSource.value = true;
+    _sourceError.value = "";
 
     try {
       const content = await $fetch<string>(`/api/source/${key}`, {
         responseType: "text",
       });
       sourceCache.set(key, content);
-      sourceCode.value = content;
+      _sourceCode.value = content;
     } catch {
-      sourceError.value = "Failed to load source code.";
-      sourceCode.value = "";
+      _sourceError.value = "Failed to load source code.";
+      _sourceCode.value = "";
     } finally {
-      isLoadingSource.value = false;
+      _isLoadingSource.value = false;
     }
   }
 
   function setViewMode(mode: "preview" | "code") {
-    viewMode.value = mode;
+    _viewMode.value = mode;
+  }
+
+  // Reset to preview when the route changes
+  watch(
+    () => route.path,
+    () => {
+      _viewMode.value = "preview";
+      _sourceError.value = "";
+    },
+  );
+
+  // Auto-fetch source on switch to code view
+  watch(_viewMode, (mode) => {
     if (mode === "code" && !sourceCache.has(routeKey.value)) {
       fetchSource();
     }
-  }
+  });
 
   function copySource() {
-    if (sourceCode.value) {
-      copy(sourceCode.value);
+    if (_sourceCode.value) {
+      copy(_sourceCode.value);
     }
   }
 
   return {
-    viewMode,
-    sourceCode,
+    viewMode: _viewMode,
+    sourceCode: _sourceCode,
     sourceFilePath,
-    isLoadingSource,
-    sourceError,
+    isLoadingSource: _isLoadingSource,
+    sourceError: _sourceError,
     hasSourcePage,
     copied,
     setViewMode,

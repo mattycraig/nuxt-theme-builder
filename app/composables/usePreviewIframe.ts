@@ -178,7 +178,9 @@ export function usePreviewIframe() {
     previewFrame,
     iframeLoading,
     iframeReady,
+    iframeSrc,
     iframeInitialSrc,
     handleIframeLoad,
+    syncThemeToIframe: postToIframe,
   };
 }

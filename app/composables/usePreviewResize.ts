@@ -5,7 +5,7 @@
  * Both left and right handles move symmetrically to keep the preview centered.
  */
 
-const PRESET_WIDTHS = [
+export const PRESET_WIDTHS = [
   {
     value: "mobile" as const,
     icon: "i-lucide-smartphone",

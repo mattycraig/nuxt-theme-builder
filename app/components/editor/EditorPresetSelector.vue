@@ -172,7 +172,7 @@ function onPresetSelect(name: string) {
       </USelectMenu>
 
       <!-- Random theme -->
-      <UTooltip text="I'm feeling lucky!">
+      <UTooltip text="Generate random theme">
         <UButton
           icon="i-lucide-dices"
           aria-label="Generate random theme"
