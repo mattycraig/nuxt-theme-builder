@@ -298,7 +298,13 @@ export default defineEventHandler(async (event) => {
     });
   }
 
-  const { prompt, apiKey, provider: _provider, model, conversationHistory } = parsed.data;
+  const {
+    prompt,
+    apiKey,
+    provider: _provider,
+    model,
+    conversationHistory,
+  } = parsed.data;
 
   try {
     const openai = createOpenAI({ apiKey });
