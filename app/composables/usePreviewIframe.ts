@@ -18,6 +18,7 @@ export function usePreviewIframe() {
   const colorMode = useColorMode();
   const toast = useToast();
   const { openSaveAs } = useSaveThemeModal();
+  const exportPanel = useExportPanel();
 
   const previewFrame = ref<HTMLIFrameElement>();
   const iframeLoading = ref(true);
@@ -122,6 +123,20 @@ export function usePreviewIframe() {
           });
           if (event.data.save) {
             openSaveAs();
+          }
+          if (event.data.export) {
+            exportPanel.open();
+          }
+        }
+        break;
+      }
+
+      case "keyboard-shortcut": {
+        if (event.data.key === "z") {
+          if (event.data.shift) {
+            store.redo();
+          } else {
+            store.undo();
           }
         }
         break;

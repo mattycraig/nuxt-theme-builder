@@ -43,7 +43,7 @@ const previewArea = defineModel<HTMLElement | undefined>("previewArea");
         <iframe
           ref="previewFrame"
           :src="iframeInitialSrc"
-          sandbox="allow-scripts allow-same-origin"
+          sandbox="allow-scripts allow-same-origin allow-popups allow-popups-to-escape-sandbox"
           title="Theme preview"
           width="100%"
           height="100%"

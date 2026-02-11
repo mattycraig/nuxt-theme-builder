@@ -74,13 +74,27 @@ function handleMessage(event: MessageEvent) {
   }
 }
 
+// Forward undo/redo shortcuts to the parent frame
+function handleKeydown(e: KeyboardEvent) {
+  const mod = e.ctrlKey || e.metaKey;
+  if (!mod || e.key !== "z") return;
+
+  e.preventDefault();
+  window.parent?.postMessage(
+    { type: "keyboard-shortcut", key: "z", shift: e.shiftKey },
+    window.location.origin,
+  );
+}
+
 onMounted(() => {
   window.addEventListener("message", handleMessage);
+  document.addEventListener("keydown", handleKeydown);
   window.parent?.postMessage({ type: "preview-ready" }, window.location.origin);
 });
 
 onUnmounted(() => {
   window.removeEventListener("message", handleMessage);
+  document.removeEventListener("keydown", handleKeydown);
 });
 
 // Allow scrolling inside the iframe (main.css sets body overflow:hidden)

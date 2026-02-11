@@ -148,18 +148,6 @@ function handlePromptSelect(prompt: string) {
 
         <AiSidebar @select-prompt="handlePromptSelect" />
       </template>
-
-      <template #footer>
-        <UButton
-          label="Back to Editor"
-          icon="i-lucide-palette"
-          color="neutral"
-          variant="ghost"
-          block
-          to="/"
-          aria-label="Back to Editor"
-        />
-      </template>
     </UDashboardSidebar>
 
     <!-- Main chat panel -->

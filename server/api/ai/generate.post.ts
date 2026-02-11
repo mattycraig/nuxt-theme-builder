@@ -131,6 +131,10 @@ const aiThemeSchema = z.object({
   neutral: neutralPaletteSchema,
   radius: z.number().min(0).max(2),
   font: z.enum(FONT_OPTIONS),
+  darkColors: semanticColorsSchema,
+  darkNeutral: neutralPaletteSchema,
+  darkRadius: z.number().min(0).max(2),
+  darkFont: z.enum(FONT_OPTIONS),
   lightOverrides: tokenOverridesSchema.nullable(),
   darkOverrides: tokenOverridesSchema.nullable(),
   explanation: z.string(),
@@ -191,6 +195,8 @@ const requestSchema = z.object({
 
 const SYSTEM_PROMPT = `You are a UI theme designer for Nuxt UI v4. Generate beautiful, harmonious themes by selecting from the available design tokens.
 
+IMPORTANT: You must generate SEPARATE color palettes for light mode and dark mode. The light and dark modes should feel cohesive but are free to use different palettes, neutrals, fonts, and radii to optimize readability and aesthetics in each mode.
+
 ## Available Values
 
 ### Color Palettes (for semantic colors)
@@ -211,11 +217,24 @@ Options: slate (cool blue-gray), gray (pure gray), zinc (warm gray), neutral (tr
 ### Border Radius
 Range: 0 to 2 (in rem). 0 = sharp corners, 0.375 = standard, 0.5 = moderately rounded, 1 = very rounded
 
-### Fonts (pick ONE)
+### Fonts (pick ONE per mode)
 Sans-serif: Public Sans, DM Sans, Figtree, Geist, Inter, Lato, Montserrat, Nunito, Open Sans, Outfit, Plus Jakarta Sans, Poppins, Raleway, Roboto, Source Sans 3, Space Grotesk, Work Sans
 Serif: Lora, Merriweather, Playfair Display, Source Serif 4, Libre Baskerville, DM Serif Display, Crimson Text
 Monospace: JetBrains Mono, Fira Code, Source Code Pro, IBM Plex Mono, Space Mono
 Display: Sora, Archivo, Lexend, Urbanist, Bricolage Grotesque
+
+## Light Mode vs Dark Mode
+
+You MUST provide two separate sets of colors, neutral, radius, and font:
+- **colors / neutral / radius / font** — used in LIGHT mode
+- **darkColors / darkNeutral / darkRadius / darkFont** — used in DARK mode
+
+These CAN and SHOULD differ when appropriate. Consider:
+- Dark mode often benefits from slightly softer or more saturated hues that glow nicely on dark backgrounds (e.g., sky instead of blue, violet instead of indigo)
+- Light mode primaries that are vivid (like blue-600) may look harsh in dark mode — shift to a neighboring palette or lighter variant
+- The neutral palette may differ: cool slate for light mode, warmer zinc for dark mode, or vice versa
+- Font and radius can stay the same for consistency, but feel free to change them if it improves the dark mode aesthetic
+- DO NOT just copy the light mode values to dark mode. Thoughtfully adapt them.
 
 ### Token Overrides (OPTIONAL — shade values for light and dark mode)
 These are optional. Only include them if the user asks for fine-grained control over text/bg/border shades, or if you have a strong design reason.
@@ -237,25 +256,30 @@ Available shades: white, black, 50, 100, 200, 300, 400, 500, 600, 700, 800, 900,
 3. Keep warning colors warm (amber/yellow/orange) and error colors attention-grabbing (red/rose)
 4. Font choice should match the theme mood — serif for elegance, sans-serif for modern, monospace for technical
 5. Radius should match the theme personality — sharp for professional/technical, rounded for friendly/playful
+6. Dark mode should feel intentional, not like a copy of light mode — adapt palettes for optimal contrast and vibrancy on dark surfaces
 
 ## Example Outputs
 
 ### Professional Blue Theme
 colors: { primary: "blue", secondary: "sky", success: "emerald", info: "cyan", warning: "amber", error: "rose" }
 neutral: "slate", radius: 0.375, font: "Inter"
-lightOverrides.text: { dimmed: "400", muted: "500", toned: "600", default: "700", highlighted: "900", inverted: "white" }
-lightOverrides.bg: { default: "white", muted: "50", elevated: "100", accented: "200", inverted: "900" }
-lightOverrides.border: { default: "200", muted: "200", accented: "300", inverted: "900" }
-darkOverrides.text: { dimmed: "500", muted: "400", toned: "300", default: "200", highlighted: "white", inverted: "900" }
-darkOverrides.bg: { default: "900", muted: "800", elevated: "800", accented: "700", inverted: "white" }
-darkOverrides.border: { default: "800", muted: "700", accented: "700", inverted: "white" }
+darkColors: { primary: "sky", secondary: "indigo", success: "emerald", info: "teal", warning: "amber", error: "pink" }
+darkNeutral: "zinc", darkRadius: 0.375, darkFont: "Inter"
 
 ### Warm Creative Theme
 colors: { primary: "orange", secondary: "rose", success: "emerald", info: "sky", warning: "yellow", error: "red" }
 neutral: "stone", radius: 0.75, font: "Playfair Display"
+darkColors: { primary: "amber", secondary: "pink", success: "teal", info: "cyan", warning: "yellow", error: "rose" }
+darkNeutral: "neutral", darkRadius: 0.75, darkFont: "Playfair Display"
+
+### Tech Startup Theme
+colors: { primary: "violet", secondary: "fuchsia", success: "green", info: "blue", warning: "amber", error: "red" }
+neutral: "gray", radius: 0.5, font: "Space Grotesk"
+darkColors: { primary: "purple", secondary: "pink", success: "emerald", info: "sky", warning: "yellow", error: "rose" }
+darkNeutral: "slate", darkRadius: 0.5, darkFont: "Space Grotesk"
 
 ONLY use values from the lists above. Do not invent custom colors, fonts, or shades.
-Provide a brief "explanation" field describing your design choices and why they work well together.`;
+Provide a brief "explanation" field describing your design choices for BOTH light and dark modes and why they work well together.`;
 
 // Per-IP rate limiting (simple in-memory store)
 const rateLimitMap = new Map<string, { count: number; resetAt: number }>();
@@ -344,8 +368,16 @@ export default defineEventHandler(async (event) => {
       abortSignal: AbortSignal.timeout(60_000),
     });
 
-    const { explanation, lightOverrides, darkOverrides, ...themeFields } =
-      result.object;
+    const {
+      explanation,
+      lightOverrides,
+      darkOverrides,
+      darkColors,
+      darkNeutral,
+      darkRadius,
+      darkFont,
+      ...lightFields
+    } = result.object;
 
     const DEFAULT_COLOR_SHADES = {
       primary: "500" as const,
@@ -357,15 +389,15 @@ export default defineEventHandler(async (event) => {
     };
 
     const themeConfig = {
-      ...themeFields,
+      ...lightFields,
       lightOverrides: lightOverrides ?? FALLBACK_LIGHT_OVERRIDES,
       darkOverrides: darkOverrides ?? FALLBACK_DARK_OVERRIDES,
       colorShades: { ...DEFAULT_COLOR_SHADES },
-      darkColors: { ...themeFields.colors },
+      darkColors: darkColors ?? lightFields.colors,
       darkColorShades: { ...DEFAULT_COLOR_SHADES },
-      darkNeutral: themeFields.neutral,
-      darkRadius: themeFields.radius,
-      darkFont: themeFields.font,
+      darkNeutral: darkNeutral ?? lightFields.neutral,
+      darkRadius: darkRadius ?? lightFields.radius,
+      darkFont: darkFont ?? lightFields.font,
     };
 
     return {
