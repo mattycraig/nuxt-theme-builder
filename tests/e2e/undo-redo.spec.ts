@@ -25,7 +25,10 @@ test.describe("Undo / Redo Flow", () => {
       const valueAfterChange = await slider.getAttribute("aria-valuenow");
 
       // Click undo button
-      const undoButton = page.getByRole("button", { name: "Undo" });
+      const undoButton = page.getByRole("button", {
+        name: "Undo",
+        exact: true,
+      });
       await expect(undoButton).toBeEnabled();
       await undoButton.click();
 
@@ -51,7 +54,10 @@ test.describe("Undo / Redo Flow", () => {
       const valueAfterChange = await slider.getAttribute("aria-valuenow");
 
       // Undo
-      const undoButton = page.getByRole("button", { name: "Undo" });
+      const undoButton = page.getByRole("button", {
+        name: "Undo",
+        exact: true,
+      });
       await undoButton.click();
       await page.waitForTimeout(200);
 
@@ -111,7 +117,10 @@ test.describe("Undo / Redo Flow", () => {
     await test.step("Verify undo button state on fresh load", async () => {
       // On initial load, undo should be disabled (no changes made)
       // Note: resetToDefaults in store pushes an entry, so this may depend on initial state
-      const undoButton = page.getByRole("button", { name: "Undo" });
+      const undoButton = page.getByRole("button", {
+        name: "Undo",
+        exact: true,
+      });
       await expect(undoButton).toBeVisible();
     });
   });

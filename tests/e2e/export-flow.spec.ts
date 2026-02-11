@@ -27,7 +27,9 @@ test.describe("Export Flow", () => {
       ).toBeVisible();
 
       // Check the export tabs are present
-      await expect(page.getByText("app.config.ts")).toBeVisible();
+      await expect(
+        page.getByRole("tab", { name: "app.config.ts" }),
+      ).toBeVisible();
       await expect(page.getByRole("tab", { name: "CSS" })).toBeVisible();
       await expect(page.getByRole("tab", { name: "JSON" })).toBeVisible();
     });
@@ -70,7 +72,7 @@ test.describe("Export Flow", () => {
     });
 
     await test.step("Switch back to app.config.ts tab", async () => {
-      await page.getByText("app.config.ts").click();
+      await page.getByRole("tab", { name: "app.config.ts" }).click();
       await expect(page.getByText("export default")).toBeVisible();
     });
   });
