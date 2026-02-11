@@ -28,22 +28,48 @@ const modelItems = computed(() =>
 
 const keyManagementLinks: Record<string, string> = {
   openai: "https://platform.openai.com/api-keys",
+  anthropic: "https://console.anthropic.com/settings/keys",
+  google: "https://aistudio.google.com/app/apikey",
+};
+
+const keyPlaceholders: Record<string, string> = {
+  openai: "sk-...",
+  anthropic: "sk-ant-...",
+  google: "AIza...",
 };
 </script>
 
 <template>
-  <div class="space-y-4">
+  <div class="space-y-6">
     <UAlert
       icon="i-lucide-shield"
-      color="neutral"
+      color="warning"
       variant="subtle"
-      title="Privacy"
+      title="Privacy Note"
       description="Your API key is forwarded to the AI provider and never logged or stored on our servers. Use a dedicated key with spend limits."
       :ui="{
         title: 'text-sm font-semibold',
         description: 'text-xs',
       }"
     />
+
+    <!-- Provider -->
+    <UFormField
+      label="Provider"
+      required
+      :ui="{
+        description: 'text-xs',
+      }"
+    >
+      <template #description> Select your AI service provider.</template>
+      <USelect
+        :model-value="provider"
+        :items="providerItems"
+        value-key="value"
+        class="w-full mt-2"
+        @update:model-value="provider = $event"
+      />
+    </UFormField>
 
     <!-- API Key -->
     <UFormField
@@ -66,11 +92,11 @@ const keyManagementLinks: Record<string, string> = {
         <span v-else>monthly spend limit</span>
         for this tool.
       </template>
-      <div class="flex gap-2 mt-4">
+      <div class="flex gap-2 mt-2">
         <UInput
           :model-value="apiKey"
           :type="showKey ? 'text' : 'password'"
-          placeholder="sk-..."
+          :placeholder="keyPlaceholders[provider] || 'Enter API key'"
           class="flex-1"
           autocomplete="off"
           @update:model-value="apiKey = $event as string"
@@ -100,31 +126,29 @@ const keyManagementLinks: Record<string, string> = {
     <UCheckbox
       :model-value="persistKey"
       label="Remember my key"
-      description="Stores key in browser storage. Uncheck to clear on tab close."
+      description="Stores api key in browser storage. Uncheck to clear on tab close."
       :ui="{
-        description: 'text-xs mt-2',
+        description: 'text-xs mt-1',
       }"
       @update:model-value="persistKey = $event as boolean"
     />
 
-    <!-- Provider -->
-    <UFormField label="Provider">
-      <USelect
-        :model-value="provider"
-        :items="providerItems"
-        value-key="value"
-        class="w-full"
-        @update:model-value="provider = $event"
-      />
-    </UFormField>
-
     <!-- Model -->
-    <UFormField label="Model">
+    <UFormField
+      label="Model"
+      required
+      :ui="{
+        description: 'text-xs',
+      }"
+    >
+      <template #description>
+        Select the AI model to use for theme generation.
+      </template>
       <USelect
         :model-value="model"
         :items="modelItems"
         value-key="value"
-        class="w-full"
+        class="w-full mt-1"
         @update:model-value="model = $event"
       />
     </UFormField>

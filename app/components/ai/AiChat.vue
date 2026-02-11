@@ -1,10 +1,10 @@
 <script setup lang="ts">
 import type { AiMessage } from "~/types/ai";
 
-const sidebarOpen = ref(false);
-
 const { messages, isGenerating, error, sendMessage, clearChat } = useAiChat();
 const { isConfigured, model, availableModels } = useAiSettings();
+
+const settingsOpen = ref(false);
 
 const chatStatus = computed<"ready" | "submitted" | "streaming" | "error">(
   () => {
@@ -96,10 +96,11 @@ function handlePromptSelect(prompt: string) {
     <!-- Sidebar -->
     <UDashboardSidebar
       id="ai-sidebar"
-      v-model:open="sidebarOpen"
+      collapsible
+      :collapsed-size="0"
       class="bg-elevated/50"
       :ui="{
-        root: 'min-w-[300px]',
+        root: 'min-w-[300px] overflow-hidden data-[collapsed=true]:invisible data-[collapsed=true]:min-w-0',
       }"
     >
       <template #header>
@@ -154,6 +155,8 @@ function handlePromptSelect(prompt: string) {
       <template #header>
         <UDashboardNavbar title="AI Theme Generator" :ui="{ title: 'sr-only' }">
           <template #leading>
+            <UDashboardSidebarCollapse />
+            <USeparator orientation="vertical" class="h-6 mx-2" />
             <div class="flex items-center gap-3">
               <div class="relative hidden sm:block">
                 <UAvatar icon="i-lucide-sparkles" color="primary" size="xs" />
@@ -185,17 +188,6 @@ function handlePromptSelect(prompt: string) {
                 class="hidden sm:block"
                 :aria-label="`AI model: ${modelItems.find((m) => m.value === model)?.label}`"
               />
-              <UColorModeSwitch />
-              <UTooltip text="Back to Editor">
-                <UButton
-                  icon="i-lucide-palette"
-                  variant="ghost"
-                  color="neutral"
-                  size="sm"
-                  to="/"
-                  aria-label="Back to Editor"
-                />
-              </UTooltip>
               <UDropdownMenu
                 :items="[
                   [
@@ -215,6 +207,16 @@ function handlePromptSelect(prompt: string) {
                   aria-label="Conversation options"
                 />
               </UDropdownMenu>
+              <UTooltip text="AI Settings">
+                <UButton
+                  icon="i-lucide-settings"
+                  variant="ghost"
+                  color="neutral"
+                  size="sm"
+                  aria-label="Open AI settings"
+                  @click="settingsOpen = true"
+                />
+              </UTooltip>
             </div>
           </template>
         </UDashboardNavbar>
@@ -243,15 +245,23 @@ function handlePromptSelect(prompt: string) {
               Describe the look and feel you want, and I'll generate a matching
               Nuxt UI theme. You can refine the result through conversation.
             </p>
-            <UAlert
-              v-if="!isConfigured"
-              icon="i-lucide-key"
-              color="warning"
-              variant="subtle"
-              title="API key required"
-              description="Enter your OpenAI API key in the settings panel to get started."
-              class="max-w-md text-left"
-            />
+            <div v-if="!isConfigured" class="max-w-md w-full space-y-4">
+              <UAlert
+                icon="i-lucide-key"
+                color="warning"
+                variant="subtle"
+                title="API key required"
+                description="Enter your chosen model's API key in the settings panel to get started."
+                class="text-left"
+              />
+              <UButton
+                icon="i-lucide-settings"
+                label="Open Settings"
+                color="primary"
+                block
+                @click="settingsOpen = true"
+              />
+            </div>
           </div>
 
           <!-- Chat messages -->
@@ -357,6 +367,7 @@ function handlePromptSelect(prompt: string) {
                   ? 'Describe your ideal theme...'
                   : 'Enter your API key in settings to start...'
               "
+              :disabled="!isConfigured || isGenerating"
               :ui="{ base: 'px-1.5' }"
               @submit="onSubmit"
             >
@@ -369,7 +380,6 @@ function handlePromptSelect(prompt: string) {
                     value-key="value"
                     size="xs"
                     variant="ghost"
-                    class="sm:hidden"
                     :aria-label="`AI model: ${modelItems.find((m) => m.value === model)?.label}`"
                   />
                 </div>
@@ -389,4 +399,15 @@ function handlePromptSelect(prompt: string) {
       </template>
     </UDashboardPanel>
   </UDashboardGroup>
+
+  <!-- Settings slideover -->
+  <USlideover
+    v-model:open="settingsOpen"
+    title="AI Settings"
+    description="Configure your AI provider and API key."
+  >
+    <template #body>
+      <AiSettingsPanel />
+    </template>
+  </USlideover>
 </template>

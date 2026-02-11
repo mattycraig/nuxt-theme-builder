@@ -6,6 +6,8 @@ import {
   NoObjectGeneratedError,
 } from "ai";
 import { createOpenAI } from "@ai-sdk/openai";
+import { createAnthropic } from "@ai-sdk/anthropic";
+import { createGoogleGenerativeAI } from "@ai-sdk/google";
 
 const ALL_PALETTES = [
   "red",
@@ -175,7 +177,7 @@ const FALLBACK_DARK_OVERRIDES: z.infer<typeof tokenOverridesSchema> = {
 const requestSchema = z.object({
   prompt: z.string().min(1).max(2000),
   apiKey: z.string().min(1),
-  provider: z.enum(["openai"]),
+  provider: z.enum(["openai", "anthropic", "google"]),
   model: z.string().min(1),
   conversationHistory: z
     .array(
@@ -298,16 +300,27 @@ export default defineEventHandler(async (event) => {
     });
   }
 
-  const {
-    prompt,
-    apiKey,
-    provider: _provider,
-    model,
-    conversationHistory,
-  } = parsed.data;
+  const { prompt, apiKey, provider, model, conversationHistory } = parsed.data;
 
   try {
-    const openai = createOpenAI({ apiKey });
+    function getProviderModel(p: string, m: string, key: string) {
+      switch (p) {
+        case "anthropic": {
+          const anthropic = createAnthropic({ apiKey: key });
+          return anthropic(m);
+        }
+        case "google": {
+          const google = createGoogleGenerativeAI({ apiKey: key });
+          return google(m);
+        }
+        default: {
+          const openai = createOpenAI({ apiKey: key });
+          return openai(m);
+        }
+      }
+    }
+
+    const aiModel = getProviderModel(provider, model, apiKey);
 
     const messages: {
       role: "user" | "assistant" | "system";
@@ -324,7 +337,7 @@ export default defineEventHandler(async (event) => {
     messages.push({ role: "user", content: prompt });
 
     const result = await generateObject({
-      model: openai(model),
+      model: aiModel,
       schema: aiThemeSchema,
       messages,
       maxRetries: 2,

@@ -2,61 +2,20 @@
 const emit = defineEmits<{
   selectPrompt: [prompt: string];
 }>();
-
-const settingsOpen = ref(true);
-const templatesOpen = ref(false);
 </script>
 
 <template>
   <div class="flex flex-col gap-1">
-    <!-- Settings section -->
-    <UCollapsible v-model:open="settingsOpen">
-      <UButton
-        icon="i-lucide-settings"
-        variant="ghost"
-        color="neutral"
-        block
-        class="justify-between"
-        :ui="{
-          trailingIcon:
-            'transition-transform duration-200 group-data-[state=open]:rotate-180',
-        }"
-        trailing-icon="i-lucide-chevron-down"
-      >
-        <span class="text-xs font-semibold uppercase tracking-wide">
-          Settings
-        </span>
-      </UButton>
-      <template #content>
-        <div class="px-2 pb-3 pt-2">
-          <AiSettingsPanel />
-        </div>
-      </template>
-    </UCollapsible>
-
     <!-- Prompt templates section -->
-    <UCollapsible v-model:open="templatesOpen">
-      <UButton
-        icon="i-lucide-lightbulb"
-        variant="ghost"
-        color="neutral"
-        block
-        class="justify-between"
-        :ui="{
-          trailingIcon:
-            'transition-transform duration-200 group-data-[state=open]:rotate-180',
-        }"
-        trailing-icon="i-lucide-chevron-down"
+    <div class="px-1 pt-2">
+      <h2
+        class="flex items-center gap-2 pb-2 text-sm font-semibold tracking-wide"
       >
-        <span class="text-xs font-semibold uppercase tracking-wide">
-          Prompt Templates
-        </span>
-      </UButton>
-      <template #content>
-        <div class="px-2 pb-3 pt-2">
-          <AiPromptTemplates @select="emit('selectPrompt', $event)" />
-        </div>
-      </template>
-    </UCollapsible>
+        <UIcon name="i-lucide-lightbulb" class="size-4" aria-hidden="true" />
+        Prompt Templates
+      </h2>
+      <USeparator class="my-2" />
+      <AiPromptTemplates @select="emit('selectPrompt', $event)" />
+    </div>
   </div>
 </template>

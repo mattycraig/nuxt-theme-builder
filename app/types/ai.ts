@@ -13,6 +13,8 @@ export interface AiProviderOption {
 
 export const AI_PROVIDER_OPTIONS: AiProviderOption[] = [
   { label: "OpenAI", value: "openai", icon: "i-lucide-bot" },
+  { label: "Anthropic", value: "anthropic", icon: "i-lucide-brain" },
+  { label: "Google Gemini", value: "google", icon: "i-lucide-sparkles" },
 ];
 
 export interface AiModelOption {
@@ -34,8 +36,40 @@ export const AI_MODELS: Record<AiProvider, AiModelOption[]> = {
       description: "Quick iterations.",
     },
   ],
-  anthropic: [],
-  google: [],
+  anthropic: [
+    {
+      label: "Claude Sonnet 4.5",
+      value: "claude-sonnet-4-5",
+      description: "Best balance of speed and quality.",
+    },
+    {
+      label: "Claude Haiku 4.5",
+      value: "claude-haiku-4-5",
+      description: "Fastest and most affordable.",
+    },
+    {
+      label: "Claude Opus 4.6",
+      value: "claude-opus-4-6",
+      description: "Most capable for complex themes.",
+    },
+  ],
+  google: [
+    {
+      label: "Gemini 2.5 Flash",
+      value: "gemini-2.5-flash",
+      description: "Fast and cost-effective.",
+    },
+    {
+      label: "Gemini 2.5 Pro",
+      value: "gemini-2.5-pro",
+      description: "Advanced reasoning and quality.",
+    },
+    {
+      label: "Gemini 2.0 Flash",
+      value: "gemini-2.0-flash",
+      description: "Quick iterations.",
+    },
+  ],
 };
 
 // AI Settings ────────────────────────────────────────────────────────────
