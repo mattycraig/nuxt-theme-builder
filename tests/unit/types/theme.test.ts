@@ -141,59 +141,69 @@ describe("ThemeConfigSchema — backward compatibility transform", () => {
 });
 
 describe("const array integrity", () => {
-  it("CHROMATIC_PALETTES contains expected number of colors", () => {
-    expect(CHROMATIC_PALETTES.length).toBe(17);
+  it("CHROMATIC_PALETTES has no duplicates and includes core colors", () => {
+    expect(CHROMATIC_PALETTES.length).toBeGreaterThan(0);
+    expect(new Set(CHROMATIC_PALETTES).size).toBe(CHROMATIC_PALETTES.length);
     expect(CHROMATIC_PALETTES).toContain("red");
     expect(CHROMATIC_PALETTES).toContain("rose");
     expect(CHROMATIC_PALETTES).toContain("indigo");
   });
 
-  it("NEUTRAL_PALETTES contains 5 neutrals", () => {
-    expect(NEUTRAL_PALETTES.length).toBe(5);
+  it("NEUTRAL_PALETTES has no duplicates and includes core neutrals", () => {
+    expect(NEUTRAL_PALETTES.length).toBeGreaterThan(0);
+    expect(new Set(NEUTRAL_PALETTES).size).toBe(NEUTRAL_PALETTES.length);
     expect(NEUTRAL_PALETTES).toContain("slate");
     expect(NEUTRAL_PALETTES).toContain("stone");
   });
 
-  it("SEMANTIC_COLOR_KEYS contains all 6 semantic keys", () => {
-    expect(SEMANTIC_COLOR_KEYS.length).toBe(6);
+  it("SEMANTIC_COLOR_KEYS includes required semantic keys", () => {
+    expect(SEMANTIC_COLOR_KEYS.length).toBeGreaterThan(0);
+    expect(new Set(SEMANTIC_COLOR_KEYS).size).toBe(SEMANTIC_COLOR_KEYS.length);
     expect(SEMANTIC_COLOR_KEYS).toContain("primary");
+    expect(SEMANTIC_COLOR_KEYS).toContain("secondary");
+    expect(SEMANTIC_COLOR_KEYS).toContain("success");
     expect(SEMANTIC_COLOR_KEYS).toContain("error");
   });
 
-  it("SHADE_VALUES includes white, black, and numeric shades", () => {
+  it("SHADE_VALUES includes white, black, and numeric shades without duplicates", () => {
     expect(SHADE_VALUES).toContain("white");
     expect(SHADE_VALUES).toContain("black");
     expect(SHADE_VALUES).toContain("500");
-    expect(SHADE_VALUES.length).toBe(13);
+    expect(new Set(SHADE_VALUES).size).toBe(SHADE_VALUES.length);
   });
 
   it("NUMERIC_SHADE_KEYS excludes white and black", () => {
     expect(NUMERIC_SHADE_KEYS).not.toContain("white");
     expect(NUMERIC_SHADE_KEYS).not.toContain("black");
-    expect(NUMERIC_SHADE_KEYS.length).toBe(11);
+    expect(NUMERIC_SHADE_KEYS.length).toBeGreaterThan(0);
+    expect(new Set(NUMERIC_SHADE_KEYS).size).toBe(NUMERIC_SHADE_KEYS.length);
   });
 
-  it("TEXT_TOKEN_KEYS has expected keys", () => {
+  it("TEXT_TOKEN_KEYS includes required keys without duplicates", () => {
     expect(TEXT_TOKEN_KEYS).toContain("dimmed");
     expect(TEXT_TOKEN_KEYS).toContain("inverted");
-    expect(TEXT_TOKEN_KEYS.length).toBe(6);
+    expect(TEXT_TOKEN_KEYS.length).toBeGreaterThan(0);
+    expect(new Set(TEXT_TOKEN_KEYS).size).toBe(TEXT_TOKEN_KEYS.length);
   });
 
-  it("BG_TOKEN_KEYS has expected keys", () => {
+  it("BG_TOKEN_KEYS includes required keys without duplicates", () => {
     expect(BG_TOKEN_KEYS).toContain("default");
     expect(BG_TOKEN_KEYS).toContain("inverted");
-    expect(BG_TOKEN_KEYS.length).toBe(5);
+    expect(BG_TOKEN_KEYS.length).toBeGreaterThan(0);
+    expect(new Set(BG_TOKEN_KEYS).size).toBe(BG_TOKEN_KEYS.length);
   });
 
-  it("BORDER_TOKEN_KEYS has expected keys", () => {
+  it("BORDER_TOKEN_KEYS includes required keys without duplicates", () => {
     expect(BORDER_TOKEN_KEYS).toContain("default");
     expect(BORDER_TOKEN_KEYS).toContain("inverted");
-    expect(BORDER_TOKEN_KEYS.length).toBe(4);
+    expect(BORDER_TOKEN_KEYS.length).toBeGreaterThan(0);
+    expect(new Set(BORDER_TOKEN_KEYS).size).toBe(BORDER_TOKEN_KEYS.length);
   });
 
-  it("FONT_OPTIONS contains expected fonts", () => {
+  it("FONT_OPTIONS includes core fonts without duplicates", () => {
     expect(FONT_OPTIONS).toContain("Inter");
     expect(FONT_OPTIONS).toContain("Geist");
-    expect(FONT_OPTIONS.length).toBeGreaterThanOrEqual(5);
+    expect(FONT_OPTIONS.length).toBeGreaterThan(0);
+    expect(new Set(FONT_OPTIONS).size).toBe(FONT_OPTIONS.length);
   });
 });

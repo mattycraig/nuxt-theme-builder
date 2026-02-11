@@ -14,7 +14,7 @@ import {
   DEFAULT_THEME,
   cloneTheme,
 } from "~/utils/defaults";
-import { DEFAULT_COLOR_SHADES } from "~/types/theme";
+import { DEFAULT_COLOR_SHADES, NUMERIC_SHADE_KEYS } from "~/types/theme";
 
 describe("generateOverrideLines", () => {
   it("returns empty array when overrides match defaults", () => {
@@ -156,14 +156,14 @@ describe("generateShadeOverrideLines", () => {
   it("flattens palette to white for shade 'white'", () => {
     const shades = { ...DEFAULT_COLOR_SHADES, primary: "white" as const };
     const lines = generateShadeOverrideLines(DEFAULT_THEME.colors, shades);
-    expect(lines.length).toBe(11); // 11 numeric shade keys
+    expect(lines.length).toBe(NUMERIC_SHADE_KEYS.length);
     expect(lines.every((l) => l.includes("#ffffff"))).toBe(true);
   });
 
   it("flattens palette to black for shade 'black'", () => {
     const shades = { ...DEFAULT_COLOR_SHADES, primary: "black" as const };
     const lines = generateShadeOverrideLines(DEFAULT_THEME.colors, shades);
-    expect(lines.length).toBe(11);
+    expect(lines.length).toBe(NUMERIC_SHADE_KEYS.length);
     expect(lines.every((l) => l.includes("#000000"))).toBe(true);
   });
 
@@ -222,7 +222,7 @@ describe("generateDarkPaletteOverrideLines", () => {
       darkShades,
     );
     const primaryLines = lines.filter((l) => l.includes("--ui-color-primary-"));
-    expect(primaryLines.length).toBe(11);
+    expect(primaryLines.length).toBe(NUMERIC_SHADE_KEYS.length);
     expect(primaryLines.every((l) => l.includes("#ffffff"))).toBe(true);
   });
 });
@@ -235,7 +235,7 @@ describe("generateDarkNeutralOverrideLines", () => {
 
   it("generates neutral shade overrides when dark differs", () => {
     const lines = generateDarkNeutralOverrideLines("slate", "zinc");
-    expect(lines.length).toBe(11);
+    expect(lines.length).toBe(NUMERIC_SHADE_KEYS.length);
     expect(lines.every((l) => l.includes("--ui-color-neutral-"))).toBe(true);
   });
 

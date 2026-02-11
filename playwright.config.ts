@@ -6,8 +6,8 @@ export default defineConfig({
   outputDir: "./tests/e2e/test-results",
   fullyParallel: true,
   forbidOnly: !!process.env.CI,
-  retries: process.env.CI ? 2 : 1,
-  workers: process.env.CI ? 1 : 3,
+  retries: process.env.CI ? 2 : 0,
+  workers: process.env.CI ? 1 : undefined,
   reporter: process.env.CI ? [["html", { open: "never" }], ["github"]] : "html",
   use: {
     baseURL: "http://localhost:3000",

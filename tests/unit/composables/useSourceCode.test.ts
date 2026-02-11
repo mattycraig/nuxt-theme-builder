@@ -110,5 +110,12 @@ describe("useSourceCode", () => {
       copySource();
       expect(copyFn).not.toHaveBeenCalled();
     });
+
+    it("calls copy with sourceCode content when not empty", () => {
+      const { sourceCode, copySource } = useSourceCode();
+      sourceCode.value = "<template>Hello</template>";
+      copySource();
+      expect(copyFn).toHaveBeenCalledWith("<template>Hello</template>");
+    });
   });
 });

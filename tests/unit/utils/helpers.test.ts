@@ -118,6 +118,7 @@ describe("downloadFile", () => {
   let createElementSpy: ReturnType<typeof vi.spyOn>;
   let createObjectURLSpy: ReturnType<typeof vi.spyOn>;
   let revokeObjectURLSpy: ReturnType<typeof vi.spyOn>;
+  let capturedBlob: Blob | null;
   let mockAnchor: {
     href: string;
     download: string;
@@ -125,13 +126,17 @@ describe("downloadFile", () => {
   };
 
   beforeEach(() => {
+    capturedBlob = null;
     mockAnchor = { href: "", download: "", click: vi.fn() };
     createElementSpy = vi
       .spyOn(document, "createElement")
       .mockReturnValue(mockAnchor as unknown as HTMLElement);
     createObjectURLSpy = vi
       .spyOn(URL, "createObjectURL")
-      .mockReturnValue("blob:test-url");
+      .mockImplementation((blob: Blob) => {
+        capturedBlob = blob;
+        return "blob:test-url";
+      });
     revokeObjectURLSpy = vi
       .spyOn(URL, "revokeObjectURL")
       .mockImplementation(() => {});
@@ -143,16 +148,26 @@ describe("downloadFile", () => {
     revokeObjectURLSpy.mockRestore();
   });
 
-  it("creates a blob and triggers download", () => {
+  it("creates a blob with correct content and mime type, then triggers download", () => {
     downloadFile("hello world", "test.txt", "text/plain");
     expect(createObjectURLSpy).toHaveBeenCalledOnce();
+    expect(capturedBlob).toBeInstanceOf(Blob);
+    expect(capturedBlob!.type).toBe("text/plain");
+    expect(capturedBlob!.size).toBe(11);
     expect(mockAnchor.download).toBe("test.txt");
     expect(mockAnchor.click).toHaveBeenCalledOnce();
     expect(revokeObjectURLSpy).toHaveBeenCalledWith("blob:test-url");
   });
 
-  it("uses default mime type when not provided", () => {
+  it("uses default mime type text/plain when not provided", () => {
     downloadFile("content", "file.txt");
-    expect(createObjectURLSpy).toHaveBeenCalledOnce();
+    expect(capturedBlob).toBeInstanceOf(Blob);
+    expect(capturedBlob!.type).toBe("text/plain");
+  });
+
+  it("creates blob with custom mime type", () => {
+    downloadFile('{"key": "value"}', "data.json", "application/json");
+    expect(capturedBlob!.type).toBe("application/json");
+    expect(capturedBlob!.size).toBe(16);
   });
 });

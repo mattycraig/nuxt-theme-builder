@@ -3,6 +3,9 @@ import { mockNuxtImport } from "@nuxt/test-utils/runtime";
 import { useThemeStore } from "~/stores/theme";
 import { DEFAULT_THEME } from "~/utils/defaults";
 
+// Mock returns a ref — matches how the composable uses colorMode.value
+// The real useColorMode() also has .preference and .forced, but this composable
+// only reads .value, so a plain ref is sufficient here.
 const colorModeRef = ref("light");
 mockNuxtImport("useColorMode", () => {
   return () => colorModeRef;

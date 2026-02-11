@@ -152,7 +152,7 @@ async function clearAiStorage(page: Page) {
 }
 
 /** Intercept the /api/ai/generate POST and return a mock success response. */
-async function mockGenerateSuccess(page: Page, delay = 300) {
+async function mockGenerateSuccess(page: Page, delay = 50) {
   await page.route("**/api/ai/generate", async (route: Route) => {
     if (delay > 0) await new Promise((r) => setTimeout(r, delay));
     await route.fulfill({
@@ -191,7 +191,6 @@ async function mockGenerateHang(page: Page) {
 async function gotoAi(page: Page, retries = 3) {
   for (let attempt = 1; attempt <= retries; attempt++) {
     await page.goto(AI_URL);
-    await page.waitForLoadState("networkidle");
 
     // Check for Nuxt error page (429 Too Many Requests, 500, etc.)
     const errorHeading = page
@@ -200,7 +199,7 @@ async function gotoAi(page: Page, retries = 3) {
         hasText:
           /^(500|429|Too Many Requests|Server Error|Internal Server Error)$/,
       });
-    if (await errorHeading.isVisible({ timeout: 1000 }).catch(() => false)) {
+    if (await errorHeading.isVisible({ timeout: 2_000 }).catch(() => false)) {
       if (attempt < retries) {
         await page.waitForTimeout(2000 * attempt);
         continue;
@@ -580,7 +579,6 @@ test.describe("AI Theme Generation — Sidebar & Prompt Templates", () => {
         .first();
       if (await collapseBtn.isVisible({ timeout: 3_000 }).catch(() => false)) {
         await collapseBtn.click();
-        await page.waitForTimeout(500);
       }
     });
   });
@@ -1357,15 +1355,15 @@ test.describe("AI Theme Generation — API Request Validation", () => {
     });
 
     await test.step("Verify conversation history is included", async () => {
-      await page.waitForTimeout(1000);
-
-      expect(lastCapturedBody).not.toBeNull();
-      const history = lastCapturedBody!.conversationHistory as Array<{
-        role: string;
-        content: string;
-      }>;
-      expect(history).toBeDefined();
-      expect(history.length).toBeGreaterThanOrEqual(2);
+      await expect(async () => {
+        expect(lastCapturedBody).not.toBeNull();
+        const history = lastCapturedBody!.conversationHistory as Array<{
+          role: string;
+          content: string;
+        }>;
+        expect(history).toBeDefined();
+        expect(history.length).toBeGreaterThanOrEqual(2);
+      }).toPass({ timeout: 5_000 });
     });
   });
 });

@@ -66,8 +66,6 @@ test.describe("Theme Editing - Color & Radius", () => {
         .first();
       if (await darkModeButton.isVisible()) {
         await darkModeButton.click();
-        // Page should have dark class or color-scheme change
-        await page.waitForTimeout(500);
       }
     });
   });

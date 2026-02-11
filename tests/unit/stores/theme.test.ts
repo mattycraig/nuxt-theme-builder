@@ -100,11 +100,7 @@ describe("useThemeStore", () => {
   });
 
   describe("undo/redo", () => {
-    it("cannot undo/redo from initial state (after resetToDefaults)", () => {
-      // resetToDefaults pushed one entry, so canUndo depends on whether there
-      // was a prior entry. After beforeEach (which calls resetToDefaults once),
-      // the history has the initial default plus the reset — so canUndo is true.
-      // Let's start from a fresh perspective:
+    it("canUndo is true after making changes", () => {
       store.setRadiusForMode("light", 0.5);
       store.setRadiusForMode("light", 1.0);
       expect(store.canUndo).toBe(true);

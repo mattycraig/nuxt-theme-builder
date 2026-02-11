@@ -33,8 +33,6 @@ test.describe("Preset Loading & Navigation", () => {
 
       if (await presetButton.isVisible()) {
         await presetButton.click();
-        // After loading, the theme should be applied (colors may change)
-        await page.waitForTimeout(300);
       }
     });
   });

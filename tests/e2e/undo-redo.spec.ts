@@ -26,11 +26,11 @@ test.describe("Undo / Redo Flow", () => {
       await slider.press("ArrowRight");
       await slider.press("ArrowRight");
 
-      // ThemeEditor debounces radius commits by 300ms — wait for it to flush
-      await page.waitForTimeout(500);
-
-      const valueAfterChange = await slider.getAttribute("aria-valuenow");
-      expect(Number(valueAfterChange)).toBeGreaterThan(Number(initialValue));
+      // Wait for debounced radius commit (300ms) to flush to undo history
+      await expect(async () => {
+        const val = await slider.getAttribute("aria-valuenow");
+        expect(Number(val)).toBeGreaterThan(Number(initialValue));
+      }).toPass({ timeout: 2_000 });
 
       // Click undo button
       const undoButton = page.getByRole("button", {
@@ -57,11 +57,13 @@ test.describe("Undo / Redo Flow", () => {
       await slider.press("ArrowRight");
       await slider.press("ArrowRight");
 
-      // Wait for debounced commit (300ms) to flush to undo history
-      await page.waitForTimeout(500);
+      // Wait for debounced radius commit to flush to undo history
+      await expect(async () => {
+        const val = await slider.getAttribute("aria-valuenow");
+        expect(Number(val)).toBeGreaterThan(Number(initialValue));
+      }).toPass({ timeout: 2_000 });
 
       const valueAfterChange = await slider.getAttribute("aria-valuenow");
-      expect(Number(valueAfterChange)).toBeGreaterThan(Number(initialValue));
 
       // Undo
       const undoButton = page.getByRole("button", {
@@ -93,12 +95,8 @@ test.describe("Undo / Redo Flow", () => {
       await slider.press("ArrowRight");
       await slider.press("ArrowRight");
 
-      // Use keyboard shortcut for undo
+      // Use keyboard shortcut for undo — verify it was processed
       await page.keyboard.press("Control+z");
-      await page.waitForTimeout(200);
-
-      // Undo button might become disabled if at base state
-      // but the undo should have been processed
     });
   });
 
@@ -113,11 +111,9 @@ test.describe("Undo / Redo Flow", () => {
 
       // Undo with keyboard
       await page.keyboard.press("Control+z");
-      await page.waitForTimeout(200);
 
       // Redo with keyboard
       await page.keyboard.press("Control+Shift+z");
-      await page.waitForTimeout(200);
     });
   });
 
@@ -151,7 +147,6 @@ test.describe("Undo / Redo Flow", () => {
       });
       if (await undoAllButton.isVisible()) {
         await undoAllButton.click();
-        await page.waitForTimeout(200);
       }
     });
   });

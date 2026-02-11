@@ -26,13 +26,6 @@ test.describe("Theme Saving - Unified Flow", () => {
       );
       await expect(hintText).toBeVisible();
     });
-
-    await test.step("Screenshot empty state", async () => {
-      await page.screenshot({
-        path: "tests/e2e/screenshots/my-themes-empty-state.png",
-        fullPage: false,
-      });
-    });
   });
 
   test("should save a new theme via toolbar save button", async ({ page }) => {
@@ -56,13 +49,6 @@ test.describe("Theme Saving - Unified Flow", () => {
       await expect(
         page.getByRole("button", { name: /Load theme: Test Theme/ }),
       ).toBeVisible();
-    });
-
-    await test.step("Screenshot saved theme", async () => {
-      await page.screenshot({
-        path: "tests/e2e/screenshots/my-themes-with-saved-theme.png",
-        fullPage: false,
-      });
     });
   });
 
@@ -93,13 +79,6 @@ test.describe("Theme Saving - Unified Flow", () => {
 
       const updateButton = page.getByRole("button", { name: "Update" });
       await expect(updateButton).toBeVisible();
-    });
-
-    await test.step("Screenshot overwrite warning", async () => {
-      await page.screenshot({
-        path: "tests/e2e/screenshots/save-modal-overwrite-warning.png",
-        fullPage: false,
-      });
     });
   });
 
@@ -134,13 +113,6 @@ test.describe("Theme Saving - Unified Flow", () => {
         page.getByRole("menuitem", { name: "Delete" }),
       ).toBeVisible();
     });
-
-    await test.step("Screenshot dropdown menu", async () => {
-      await page.screenshot({
-        path: "tests/e2e/screenshots/my-themes-dropdown-menu.png",
-        fullPage: false,
-      });
-    });
   });
 
   test("should show active theme indicator after saving", async ({ page }) => {
@@ -155,13 +127,6 @@ test.describe("Theme Saving - Unified Flow", () => {
       await expect(
         page.getByRole("button", { name: /Load theme: Active Theme/ }),
       ).toBeVisible();
-    });
-
-    await test.step("Screenshot active theme state", async () => {
-      await page.screenshot({
-        path: "tests/e2e/screenshots/my-themes-active-indicator.png",
-        fullPage: false,
-      });
     });
   });
 
@@ -203,13 +168,6 @@ test.describe("Theme Saving - Unified Flow", () => {
         page.getByRole("button", { name: /Load theme: Renamed Theme/ }),
       ).toBeVisible();
     });
-
-    await test.step("Screenshot rename result", async () => {
-      await page.screenshot({
-        path: "tests/e2e/screenshots/my-themes-rename-result.png",
-        fullPage: false,
-      });
-    });
   });
 
   test("should show delete confirmation modal", async ({ page }) => {
@@ -237,13 +195,6 @@ test.describe("Theme Saving - Unified Flow", () => {
       ).toBeVisible();
       await expect(page.getByRole("button", { name: "Cancel" })).toBeVisible();
     });
-
-    await test.step("Screenshot delete modal", async () => {
-      await page.screenshot({
-        path: "tests/e2e/screenshots/my-themes-delete-modal.png",
-        fullPage: false,
-      });
-    });
   });
 
   test("should show active theme name and save-as button in toolbar", async ({
@@ -266,13 +217,6 @@ test.describe("Theme Saving - Unified Flow", () => {
         name: "Save as new theme",
       });
       await expect(saveAsButton).toBeVisible();
-    });
-
-    await test.step("Screenshot toolbar with active theme", async () => {
-      await page.screenshot({
-        path: "tests/e2e/screenshots/toolbar-active-theme-save.png",
-        fullPage: false,
-      });
     });
   });
 
@@ -299,13 +243,6 @@ test.describe("Theme Saving - Unified Flow", () => {
         name: /unsaved changes/i,
       });
       await expect(unsavedIndicator).toBeVisible();
-    });
-
-    await test.step("Screenshot unsaved changes indicator", async () => {
-      await page.screenshot({
-        path: "tests/e2e/screenshots/my-themes-modified-badge.png",
-        fullPage: false,
-      });
     });
   });
 });
