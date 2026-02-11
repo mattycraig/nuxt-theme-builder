@@ -148,7 +148,6 @@ function handleFileUpload(event: Event) {
       <UCollapsible v-model:open="importOpen" class="flex flex-col gap-3">
         <button
           class="group flex items-center justify-between w-full text-left"
-          aria-expanded="false"
         >
           <div class="flex items-center gap-2">
             <UIcon

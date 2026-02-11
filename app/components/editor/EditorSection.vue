@@ -5,10 +5,13 @@ const props = withDefaults(
     label: string;
     defaultOpen?: boolean;
     open?: boolean;
+    /** When set, appends a mode badge (e.g. "light"/"dark") next to the label */
+    modeBadge?: string;
   }>(),
   {
     defaultOpen: false,
     open: undefined,
+    modeBadge: undefined,
   },
 );
 
@@ -56,7 +59,17 @@ watch(
       trailing-icon="i-lucide-chevron-down"
     >
       <span class="text-xs font-semibold uppercase tracking-wide">
-        <slot name="heading">{{ label }}</slot>
+        <slot name="heading">
+          {{ label }}
+          <ClientOnly v-if="modeBadge">
+            <UBadge
+              :label="modeBadge"
+              variant="subtle"
+              size="xs"
+              class="ml-1"
+            />
+          </ClientOnly>
+        </slot>
       </span>
     </UButton>
     <template #content>

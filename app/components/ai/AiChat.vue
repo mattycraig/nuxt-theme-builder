@@ -287,13 +287,11 @@ function handlePromptSelect(prompt: string) {
                   ? [
                       {
                         label: 'Copy',
-                        'aria-label': 'Copy',
                         icon: copied ? 'i-lucide-copy-check' : 'i-lucide-copy',
                         onClick: copyMessage,
                       },
                       {
                         label: 'Regenerate',
-                        'aria-label': 'Regenerate',
                         icon: 'i-lucide-refresh-cw',
                         onClick: regenerate,
                       },

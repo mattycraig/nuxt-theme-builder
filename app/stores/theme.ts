@@ -85,18 +85,27 @@ export const useThemeStore = defineStore(
 
     // Setters (each pushes history for undo support) ────────────────
 
-    // Mode-aware setters for per-light/dark settings ─────────────────
+    /** Resolve the config field for light vs dark mode */
+    function _modeField<K extends keyof ThemeConfig>(
+      mode: "light" | "dark",
+      lightKey: K,
+      darkKey: K,
+    ): K {
+      return mode === "light" ? lightKey : darkKey;
+    }
+
+    function _overrides(mode: "light" | "dark") {
+      return mode === "light"
+        ? config.value.lightOverrides
+        : config.value.darkOverrides;
+    }
 
     function setSemanticColorForMode(
       mode: "light" | "dark",
       key: SemanticColorKey,
       value: AnyPalette,
     ) {
-      if (mode === "light") {
-        config.value.colors[key] = value;
-      } else {
-        config.value.darkColors[key] = value;
-      }
+      config.value[_modeField(mode, "colors", "darkColors")][key] = value;
       _pushHistory();
     }
 
@@ -105,46 +114,28 @@ export const useThemeStore = defineStore(
       key: SemanticColorKey,
       shade: NeutralShade,
     ) {
-      if (mode === "light") {
-        config.value.colorShades[key] = shade;
-      } else {
-        config.value.darkColorShades[key] = shade;
-      }
+      config.value[_modeField(mode, "colorShades", "darkColorShades")][key] =
+        shade;
       _pushHistory();
     }
 
     function setNeutralForMode(mode: "light" | "dark", value: NeutralPalette) {
-      if (mode === "light") {
-        config.value.neutral = value;
-      } else {
-        config.value.darkNeutral = value;
-      }
+      config.value[_modeField(mode, "neutral", "darkNeutral")] = value;
       _pushHistory();
     }
 
     function setRadiusForMode(mode: "light" | "dark", value: number) {
-      if (mode === "light") {
-        config.value.radius = value;
-      } else {
-        config.value.darkRadius = value;
-      }
+      config.value[_modeField(mode, "radius", "darkRadius")] = value;
       _pushHistory();
     }
 
+    /** Update radius without creating history entry (used during drag) */
     function setRadiusVisualForMode(mode: "light" | "dark", value: number) {
-      if (mode === "light") {
-        config.value.radius = value;
-      } else {
-        config.value.darkRadius = value;
-      }
+      config.value[_modeField(mode, "radius", "darkRadius")] = value;
     }
 
     function setFontForMode(mode: "light" | "dark", value: string) {
-      if (mode === "light") {
-        config.value.font = value;
-      } else {
-        config.value.darkFont = value;
-      }
+      config.value[_modeField(mode, "font", "darkFont")] = value;
       _pushHistory();
     }
 
@@ -153,11 +144,7 @@ export const useThemeStore = defineStore(
       token: TextTokenKey,
       shade: NeutralShade,
     ) {
-      const target =
-        mode === "light"
-          ? config.value.lightOverrides
-          : config.value.darkOverrides;
-      target.text[token] = shade;
+      _overrides(mode).text[token] = shade;
       _pushHistory();
     }
 
@@ -166,11 +153,7 @@ export const useThemeStore = defineStore(
       token: BgTokenKey,
       shade: NeutralShade,
     ) {
-      const target =
-        mode === "light"
-          ? config.value.lightOverrides
-          : config.value.darkOverrides;
-      target.bg[token] = shade;
+      _overrides(mode).bg[token] = shade;
       _pushHistory();
     }
 
@@ -179,11 +162,7 @@ export const useThemeStore = defineStore(
       token: BorderTokenKey,
       shade: NeutralShade,
     ) {
-      const target =
-        mode === "light"
-          ? config.value.lightOverrides
-          : config.value.darkOverrides;
-      target.border[token] = shade;
+      _overrides(mode).border[token] = shade;
       _pushHistory();
     }
 

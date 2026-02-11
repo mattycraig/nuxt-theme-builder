@@ -1,6 +1,3 @@
-import { useThemeStore } from "~/stores/theme";
-import { useSaveThemeModal } from "~/composables/useSaveThemeModal";
-
 /**
  * Registers global keyboard shortcuts for the theme editor.
  *
@@ -18,42 +15,32 @@ export function useKeyboardShortcuts() {
     const mod = e.ctrlKey || e.metaKey;
     if (!mod) return;
 
-    switch (true) {
-      case !e.shiftKey && e.key === "z":
-        e.preventDefault();
-        store.undo();
-        break;
+    const key = e.key.toLowerCase();
 
-      case e.shiftKey && e.key === "z":
-        e.preventDefault();
-        store.redo();
-        break;
-
-      case !e.shiftKey && e.key === "s":
-        e.preventDefault();
-        if (store.activePresetName && store.hasUnsavedChanges) {
-          quickSave();
-        } else {
-          openSaveAs();
-        }
-        break;
-
-      case e.shiftKey && e.key === "s":
-        e.preventDefault();
+    if (key === "z" && !e.shiftKey) {
+      e.preventDefault();
+      store.undo();
+    } else if (key === "z" && e.shiftKey) {
+      e.preventDefault();
+      store.redo();
+    } else if (key === "s" && !e.shiftKey) {
+      e.preventDefault();
+      if (store.activePresetName && store.hasUnsavedChanges) {
+        quickSave();
+      } else {
         openSaveAs();
-        break;
+      }
+    } else if (key === "s" && e.shiftKey) {
+      e.preventDefault();
+      openSaveAs();
     }
   }
 
   onMounted(() => {
-    if (import.meta.client) {
-      document.addEventListener("keydown", handleKeydown);
-    }
+    document.addEventListener("keydown", handleKeydown);
   });
 
   onUnmounted(() => {
-    if (import.meta.client) {
-      document.removeEventListener("keydown", handleKeydown);
-    }
+    document.removeEventListener("keydown", handleKeydown);
   });
 }

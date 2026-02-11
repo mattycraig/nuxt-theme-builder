@@ -155,14 +155,9 @@ onMounted(() => {
         v-model:open="sectionOpen.layout"
         icon="i-lucide-sliders-horizontal"
         label="Layout"
+        :mode-badge="mode"
         default-open
       >
-        <template #heading>
-          Layout
-          <ClientOnly>
-            <UBadge :label="mode" variant="subtle" size="xs" class="ml-1" />
-          </ClientOnly>
-        </template>
         <div class="space-y-3">
           <EditorFontPicker
             :model-value="currentFont"
@@ -182,14 +177,9 @@ onMounted(() => {
         v-model:open="sectionOpen.semanticColors"
         icon="i-lucide-palette"
         label="Semantic Colors"
+        :mode-badge="mode"
         default-open
       >
-        <template #heading>
-          Semantic Colors
-          <ClientOnly>
-            <UBadge :label="mode" variant="subtle" size="xs" class="ml-1" />
-          </ClientOnly>
-        </template>
         <div class="space-y-4">
           <EditorColorPicker
             v-for="key in SEMANTIC_COLOR_KEYS"
@@ -212,14 +202,9 @@ onMounted(() => {
         v-model:open="sectionOpen.neutralColor"
         icon="i-lucide-contrast"
         label="Neutral Color"
+        :mode-badge="mode"
         default-open
       >
-        <template #heading>
-          Neutral Color
-          <ClientOnly>
-            <UBadge :label="mode" variant="subtle" size="xs" class="ml-1" />
-          </ClientOnly>
-        </template>
         <EditorNeutralPicker
           :model-value="currentNeutral"
           label="Neutral"
@@ -234,13 +219,8 @@ onMounted(() => {
         v-model:open="sectionOpen.textColors"
         icon="i-lucide-type"
         label="Text Colors"
+        :mode-badge="mode"
       >
-        <template #heading>
-          Text Colors
-          <ClientOnly>
-            <UBadge :label="mode" variant="subtle" size="xs" class="ml-1" />
-          </ClientOnly>
-        </template>
         <div class="space-y-4">
           <EditorShadeSelect
             v-for="token in TEXT_TOKEN_KEYS"
@@ -260,13 +240,8 @@ onMounted(() => {
         v-model:open="sectionOpen.bgColors"
         icon="i-lucide-paintbrush"
         label="Background Colors"
+        :mode-badge="mode"
       >
-        <template #heading>
-          Background Colors
-          <ClientOnly>
-            <UBadge :label="mode" variant="subtle" size="xs" class="ml-1" />
-          </ClientOnly>
-        </template>
         <div class="space-y-4">
           <EditorShadeSelect
             v-for="token in BG_TOKEN_KEYS"
@@ -286,13 +261,8 @@ onMounted(() => {
         v-model:open="sectionOpen.borderColors"
         icon="i-lucide-frame"
         label="Border Colors"
+        :mode-badge="mode"
       >
-        <template #heading>
-          Border Colors
-          <ClientOnly>
-            <UBadge :label="mode" variant="subtle" size="xs" class="ml-1" />
-          </ClientOnly>
-        </template>
         <div class="space-y-4">
           <EditorShadeSelect
             v-for="token in BORDER_TOKEN_KEYS"

@@ -1,3 +1,5 @@
+import type { ThemeConfig } from "~/types/theme";
+
 /**
  * Provides mode-aware computed accessors for the current theme settings.
  * Reads from the light or dark config branch based on the active color mode.
@@ -10,33 +12,19 @@ export function useThemeModeAccessors() {
     colorMode.value === "dark" ? "dark" : "light",
   );
 
-  const currentColors = computed(() =>
-    mode.value === "light" ? store.config.colors : store.config.darkColors,
-  );
+  /** Pick the light or dark config field based on current mode */
+  function modeField<K extends keyof ThemeConfig>(lightKey: K, darkKey: K) {
+    return computed(
+      () => store.config[mode.value === "light" ? lightKey : darkKey],
+    );
+  }
 
-  const currentColorShades = computed(() =>
-    mode.value === "light"
-      ? store.config.colorShades
-      : store.config.darkColorShades,
-  );
-
-  const currentNeutral = computed(() =>
-    mode.value === "light" ? store.config.neutral : store.config.darkNeutral,
-  );
-
-  const currentRadius = computed(() =>
-    mode.value === "light" ? store.config.radius : store.config.darkRadius,
-  );
-
-  const currentFont = computed(() =>
-    mode.value === "light" ? store.config.font : store.config.darkFont,
-  );
-
-  const overrides = computed(() =>
-    mode.value === "light"
-      ? store.config.lightOverrides
-      : store.config.darkOverrides,
-  );
+  const currentColors = modeField("colors", "darkColors");
+  const currentColorShades = modeField("colorShades", "darkColorShades");
+  const currentNeutral = modeField("neutral", "darkNeutral");
+  const currentRadius = modeField("radius", "darkRadius");
+  const currentFont = modeField("font", "darkFont");
+  const overrides = modeField("lightOverrides", "darkOverrides");
 
   return {
     mode,

@@ -4,32 +4,38 @@
  * Supports preset widths (mobile/tablet/desktop) and free-form drag resize.
  * Both left and right handles move symmetrically to keep the preview centered.
  */
+
+const PRESET_WIDTHS = [
+  {
+    value: "mobile" as const,
+    icon: "i-lucide-smartphone",
+    label: "Mobile",
+    width: "375px",
+  },
+  {
+    value: "tablet" as const,
+    icon: "i-lucide-tablet",
+    label: "Tablet",
+    width: "768px",
+  },
+  {
+    value: "desktop" as const,
+    icon: "i-lucide-monitor",
+    label: "Desktop",
+    width: "100%",
+  },
+] as const;
+
+const MIN_RESIZE_WIDTH = 320;
+
 export function usePreviewResize() {
   const previewWidth = ref<"mobile" | "tablet" | "desktop">("desktop");
   const customWidth = ref<number | null>(null);
   const isDragging = ref(false);
   const previewArea = ref<HTMLElement>();
 
-  const PRESET_WIDTHS = [
-    {
-      value: "mobile" as const,
-      icon: "i-lucide-smartphone",
-      label: "Mobile",
-      width: "375px",
-    },
-    {
-      value: "tablet" as const,
-      icon: "i-lucide-tablet",
-      label: "Tablet",
-      width: "768px",
-    },
-    {
-      value: "desktop" as const,
-      icon: "i-lucide-monitor",
-      label: "Desktop",
-      width: "100%",
-    },
-  ];
+  // Track active drag listeners for cleanup on unmount
+  let cleanupDrag: (() => void) | null = null;
 
   const currentPreviewWidth = computed(() => {
     if (customWidth.value !== null) return `${customWidth.value}px`;
@@ -64,17 +70,20 @@ export function usePreviewResize() {
     function onMouseMove(ev: MouseEvent) {
       const dx = ev.clientX - startX;
       const delta = side === "right" ? dx * 2 : -dx * 2;
-      const newWidth = Math.round(
-        Math.max(320, Math.min(startWidth + delta, maxW)),
+      customWidth.value = Math.round(
+        Math.max(MIN_RESIZE_WIDTH, Math.min(startWidth + delta, maxW)),
       );
-      customWidth.value = newWidth;
     }
 
     function onMouseUp() {
       isDragging.value = false;
       document.removeEventListener("mousemove", onMouseMove);
       document.removeEventListener("mouseup", onMouseUp);
+      cleanupDrag = null;
     }
+
+    // Store cleanup in case component unmounts mid-drag
+    cleanupDrag = onMouseUp;
 
     document.addEventListener("mousemove", onMouseMove);
     document.addEventListener("mouseup", onMouseUp);
@@ -82,12 +91,16 @@ export function usePreviewResize() {
 
   function onCustomWidthInput(val: string | number) {
     const num = Number(val);
-    if (!isNaN(num) && num >= 320) {
+    if (!isNaN(num) && num >= MIN_RESIZE_WIDTH) {
       customWidth.value = Math.min(num, previewArea.value?.clientWidth ?? 1920);
     } else if (val === "" || val == null) {
       customWidth.value = null;
     }
   }
+
+  onUnmounted(() => {
+    cleanupDrag?.();
+  });
 
   return {
     previewWidth,
