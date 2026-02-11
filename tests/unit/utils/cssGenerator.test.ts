@@ -239,9 +239,11 @@ describe("generateDarkNeutralOverrideLines", () => {
     expect(lines.every((l) => l.includes("--ui-color-neutral-"))).toBe(true);
   });
 
-  it("uses hex values from the dark neutral palette", () => {
+  it("uses color values from the dark neutral palette", () => {
     const lines = generateDarkNeutralOverrideLines("slate", "stone");
-    expect(lines.some((l) => l.includes("#78716c"))).toBe(true);
+    expect(lines.some((l) => l.includes("oklch(0.709 0.01 56.259)"))).toBe(
+      true,
+    );
   });
 });
 

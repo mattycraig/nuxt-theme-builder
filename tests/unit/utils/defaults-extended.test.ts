@@ -86,7 +86,7 @@ describe("Hex maps", () => {
       const shades = NEUTRAL_HEX_MAP[palette]!;
       for (const shade of NUMERIC_SHADE_KEYS) {
         expect(shades[shade]).toBeDefined();
-        expect(shades[shade]).toMatch(/^#[0-9a-f]{6}$/i);
+        expect(shades[shade]).toMatch(/^(#[0-9a-f]{6}|oklch\(.+\))$/i);
       }
       expect(shades.white).toBe("#ffffff");
       expect(shades.black).toBe("#000000");
@@ -104,7 +104,7 @@ describe("Hex maps", () => {
       const shades = CHROMATIC_HEX_MAP[palette]!;
       for (const shade of NUMERIC_SHADE_KEYS) {
         expect(shades[shade]).toBeDefined();
-        expect(shades[shade]).toMatch(/^#[0-9a-f]{6}$/i);
+        expect(shades[shade]).toMatch(/^(#[0-9a-f]{6}|oklch\(.+\))$/i);
       }
     }
   });
@@ -112,7 +112,9 @@ describe("Hex maps", () => {
   it("CHROMATIC_SWATCH_HEX has all chromatic palettes", () => {
     for (const palette of CHROMATIC_PALETTES) {
       expect(CHROMATIC_SWATCH_HEX[palette]).toBeDefined();
-      expect(CHROMATIC_SWATCH_HEX[palette]).toMatch(/^#[0-9a-f]{6}$/i);
+      expect(CHROMATIC_SWATCH_HEX[palette]).toMatch(
+        /^(#[0-9a-f]{6}|oklch\(.+\))$/i,
+      );
     }
   });
 
