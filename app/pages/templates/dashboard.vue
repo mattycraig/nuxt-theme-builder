@@ -200,7 +200,7 @@ const tableColumns: TableColumn<Order>[] = [
     accessorKey: "status",
     header: "Status",
     cell: ({ row }) => {
-      const color = (statusColor[row.original.status] as any) || "neutral";
+      const color = (statusColor[row.original.status] as string) || "neutral";
       return h(UBadge, {
         label: row.original.status,
         color,

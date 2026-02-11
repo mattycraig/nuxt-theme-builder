@@ -1,7 +1,5 @@
-import { describe, it, expect, beforeEach, vi, afterEach } from "vitest";
+import { describe, it, expect, beforeEach, vi } from "vitest";
 import { useThemeStore } from "~/stores/theme";
-import { useSaveThemeModal } from "~/composables/useSaveThemeModal";
-import { useKeyboardShortcuts } from "~/composables/useKeyboardShortcuts";
 
 describe("useKeyboardShortcuts", () => {
   let store: ReturnType<typeof useThemeStore>;
@@ -18,7 +16,7 @@ describe("useKeyboardShortcuts", () => {
 
   describe("handleKeydown logic (direct invocation)", () => {
     it("Ctrl+Z calls store.undo", () => {
-      const undoSpy = vi.spyOn(store, "undo");
+      vi.spyOn(store, "undo");
       store.setRadiusForMode("light", 0.5);
       store.setRadiusForMode("light", 1.0);
 
@@ -29,7 +27,7 @@ describe("useKeyboardShortcuts", () => {
     });
 
     it("Ctrl+Shift+Z calls store.redo after undo", () => {
-      const redoSpy = vi.spyOn(store, "redo");
+      vi.spyOn(store, "redo");
       store.setRadiusForMode("light", 0.5);
       store.setRadiusForMode("light", 1.0);
       store.undo();

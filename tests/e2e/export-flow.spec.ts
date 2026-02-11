@@ -4,8 +4,9 @@ test.describe("Export Flow", () => {
   test.beforeEach(async ({ page }) => {
     await page.addInitScript(() => {
       localStorage.removeItem("theme");
+      localStorage.removeItem("theme-builder");
     });
-    await page.goto("/components/buttons");
+    await page.goto("/");
     await page.waitForSelector(
       '[data-testid="theme-editor"][data-hydrated="true"]',
       { state: "visible", timeout: 30_000 },
@@ -21,7 +22,9 @@ test.describe("Export Flow", () => {
     });
 
     await test.step("Verify export panel is visible with tabs", async () => {
-      await expect(page.getByText("Export / Import")).toBeVisible();
+      await expect(
+        page.getByRole("heading", { name: "Export / Import" }),
+      ).toBeVisible();
 
       // Check the export tabs are present
       await expect(page.getByText("app.config.ts")).toBeVisible();
@@ -78,7 +81,9 @@ test.describe("Export Flow", () => {
         .getByRole("button", { name: /Export/i })
         .first()
         .click();
-      await expect(page.getByText("Export / Import")).toBeVisible();
+      await expect(
+        page.getByRole("heading", { name: "Export / Import" }),
+      ).toBeVisible();
 
       // Close using the close button
       const closeButton = page.getByRole("button", {
@@ -87,7 +92,9 @@ test.describe("Export Flow", () => {
       await closeButton.click();
 
       // Panel should be closed
-      await expect(page.getByText("Export / Import").first()).not.toBeVisible();
+      await expect(
+        page.getByRole("heading", { name: "Export / Import" }),
+      ).not.toBeVisible();
     });
   });
 });

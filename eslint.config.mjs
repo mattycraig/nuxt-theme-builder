@@ -4,6 +4,9 @@ import tseslint from "typescript-eslint";
 
 export default withNuxt(
   {
+    ignores: [".agents/**"],
+  },
+  {
     files: ["**/*.vue"],
     languageOptions: {
       parserOptions: {

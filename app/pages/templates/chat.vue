@@ -118,10 +118,13 @@ const chatStatus = ref<"ready" | "submitted" | "streaming" | "error">("ready");
 // ── Copy action ─────────────────────────────────────────────────────────────
 const copied = ref(false);
 
-function copyMessage(_e: MouseEvent, message: any) {
+function copyMessage(
+  _e: MouseEvent,
+  message: { parts?: Array<{ type: string; text?: string }> },
+) {
   const text = message.parts
-    ?.filter((p: any) => p.type === "text")
-    .map((p: any) => p.text)
+    ?.filter((p) => p.type === "text")
+    .map((p) => p.text)
     .join("");
   if (text) {
     navigator.clipboard.writeText(text);

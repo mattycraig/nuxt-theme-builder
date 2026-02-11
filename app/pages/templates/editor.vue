@@ -492,8 +492,10 @@ const emojiItems: EditorEmojiMenuItem[] = gitHubEmojis.filter(
 );
 
 // ── Drag handle items ───────────────────────────────────────────────────────
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 const selectedNode = ref<{ node: any; pos: number }>();
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 function onNodeChange(event: { node: any; pos: number }) {
   selectedNode.value = event;
 }

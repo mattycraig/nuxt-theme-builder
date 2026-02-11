@@ -98,7 +98,6 @@ describe("useSaveThemeModal", () => {
 
     it("does nothing when no unsaved changes", () => {
       store.savePreset("Test");
-      const originalUpdatedAt = store.savedPresets[0]!.updatedAt;
       modal.quickSave();
       // Preset should still be the same (no update triggered)
       expect(store.savedPresets[0]!.name).toBe("Test");

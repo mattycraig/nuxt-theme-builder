@@ -4,8 +4,9 @@ test.describe("Undo / Redo Flow", () => {
   test.beforeEach(async ({ page }) => {
     await page.addInitScript(() => {
       localStorage.removeItem("theme");
+      localStorage.removeItem("theme-builder");
     });
-    await page.goto("/components/buttons");
+    await page.goto("/");
     await page.waitForSelector(
       '[data-testid="theme-editor"][data-hydrated="true"]',
       { state: "visible", timeout: 30_000 },

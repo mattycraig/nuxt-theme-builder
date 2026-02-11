@@ -1,3 +1,5 @@
+import { z } from "zod";
+
 // Color Palette Constants ─────────────────────────────────────────────────
 // Tailwind CSS color palette names available for semantic color assignment.
 
@@ -281,8 +283,6 @@ export function getFontFallbackStack(fontName: string): string {
 // Zod Validation Schemas ──────────────────────────────────────────────────
 // Used by the store to validate persisted state and imported configs.
 
-import { z } from "zod";
-
 export const DEFAULT_COLOR_SHADES: SemanticShades = {
   primary: "500",
   secondary: "500",
@@ -292,7 +292,7 @@ export const DEFAULT_COLOR_SHADES: SemanticShades = {
   error: "500",
 };
 
-const chromaticPaletteSchema = z.enum(CHROMATIC_PALETTES);
+const _chromaticPaletteSchema = z.enum(CHROMATIC_PALETTES);
 const neutralPaletteSchema = z.enum(NEUTRAL_PALETTES);
 const anyPaletteSchema = z.enum(ALL_PALETTES);
 const neutralShadeSchema = z.enum(SHADE_VALUES);

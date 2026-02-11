@@ -4,6 +4,7 @@ test.describe("Theme Saving - Unified Flow", () => {
   test.beforeEach(async ({ page }) => {
     await page.addInitScript(() => {
       localStorage.removeItem("theme");
+      localStorage.removeItem("theme-builder");
     });
     await page.goto("/");
     // Wait for Vue hydration — data-hydrated is set in onMounted
@@ -127,7 +128,7 @@ test.describe("Theme Saving - Unified Flow", () => {
         page.getByRole("menuitem", { name: "Duplicate" }),
       ).toBeVisible();
       await expect(
-        page.getByRole("menuitem", { name: "Export JSON" }),
+        page.getByRole("menuitem", { name: "Download JSON" }),
       ).toBeVisible();
       await expect(
         page.getByRole("menuitem", { name: "Delete" }),
@@ -293,12 +294,14 @@ test.describe("Theme Saving - Unified Flow", () => {
       await slider.press("ArrowRight");
     });
 
-    await test.step("Verify Modified badge appears", async () => {
-      const modifiedBadge = page.getByText("Modified", { exact: true });
-      await expect(modifiedBadge).toBeVisible();
+    await test.step("Verify unsaved changes indicator appears", async () => {
+      const unsavedIndicator = page.getByRole("status", {
+        name: /unsaved changes/i,
+      });
+      await expect(unsavedIndicator).toBeVisible();
     });
 
-    await test.step("Screenshot modified badge", async () => {
+    await test.step("Screenshot unsaved changes indicator", async () => {
       await page.screenshot({
         path: "tests/e2e/screenshots/my-themes-modified-badge.png",
         fullPage: false,
