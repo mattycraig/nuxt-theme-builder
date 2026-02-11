@@ -13,6 +13,16 @@ const { isConfigured, model, availableModels } = useAiSettings();
 
 const settingsOpen = ref(false);
 
+// Defer localStorage-dependent state to avoid SSR hydration mismatch:
+// useLocalStorage returns default (no key) during SSR, but the real value on
+// the client. Vue 3.5+ doesn't patch attribute mismatches, so we wait until
+// mounted to reflect the true isConfigured state.
+const hydrated = ref(false);
+onMounted(() => {
+  hydrated.value = true;
+});
+const isReady = computed(() => hydrated.value && isConfigured.value);
+
 const chatStatus = computed<"ready" | "submitted" | "streaming" | "error">(
   () => {
     if (error.value) return "error";
@@ -245,7 +255,7 @@ function handlePromptSelect(prompt: string) {
               Describe the look and feel you want, and I'll generate a matching
               Nuxt UI theme. You can refine the result through conversation.
             </p>
-            <div v-if="!isConfigured" class="max-w-md w-full space-y-4">
+            <div v-if="!isReady" class="max-w-md w-full space-y-4">
               <UAlert
                 icon="i-lucide-key"
                 color="warning"
@@ -277,11 +287,13 @@ function handlePromptSelect(prompt: string) {
                   ? [
                       {
                         label: 'Copy',
+                        'aria-label': 'Copy',
                         icon: copied ? 'i-lucide-copy-check' : 'i-lucide-copy',
                         onClick: copyMessage,
                       },
                       {
                         label: 'Regenerate',
+                        'aria-label': 'Regenerate',
                         icon: 'i-lucide-refresh-cw',
                         onClick: regenerate,
                       },
@@ -350,7 +362,7 @@ function handlePromptSelect(prompt: string) {
           <div class="sticky bottom-0 z-10 bg-(--ui-bg) pt-2">
             <!-- Quick chat suggestions -->
             <div
-              v-if="isConfigured && chatMessages.length <= 1"
+              v-if="isReady && chatMessages.length <= 1"
               class="flex gap-2 pb-3 overflow-x-auto sm:flex-wrap sm:overflow-visible scrollbar-none"
             >
               <UButton
@@ -381,11 +393,11 @@ function handlePromptSelect(prompt: string) {
               v-model="inputText"
               variant="subtle"
               :placeholder="
-                isConfigured
+                isReady
                   ? 'Describe your ideal theme...'
                   : 'Enter your API key in settings to start...'
               "
-              :disabled="!isConfigured || isGenerating"
+              :disabled="!isReady || isGenerating"
               :ui="{ base: 'px-1.5' }"
               @submit="onSubmit"
             >

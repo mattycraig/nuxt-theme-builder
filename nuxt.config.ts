@@ -111,6 +111,7 @@ export default defineNuxtConfig({
   ],
 
   security: {
+    rateLimiter: process.env.NODE_ENV === "development" ? false : undefined,
     headers: {
       contentSecurityPolicy:
         process.env.NODE_ENV === "development"

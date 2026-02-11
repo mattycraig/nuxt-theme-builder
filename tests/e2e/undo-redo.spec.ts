@@ -18,11 +18,19 @@ test.describe("Undo / Redo Flow", () => {
       const slider = page.getByRole("slider", { name: "Thumb" });
       if (!(await slider.isVisible())) return;
 
+      // Capture initial value before any changes
+      const initialValue = await slider.getAttribute("aria-valuenow");
+
       // Move slider to change radius
       await slider.focus();
       await slider.press("ArrowRight");
       await slider.press("ArrowRight");
+
+      // ThemeEditor debounces radius commits by 300ms — wait for it to flush
+      await page.waitForTimeout(500);
+
       const valueAfterChange = await slider.getAttribute("aria-valuenow");
+      expect(Number(valueAfterChange)).toBeGreaterThan(Number(initialValue));
 
       // Click undo button
       const undoButton = page.getByRole("button", {
@@ -32,14 +40,8 @@ test.describe("Undo / Redo Flow", () => {
       await expect(undoButton).toBeEnabled();
       await undoButton.click();
 
-      // Wait for undo to take effect
-      await page.waitForTimeout(200);
-
-      // Value should have reverted
-      const valueAfterUndo = await slider.getAttribute("aria-valuenow");
-      if (valueAfterChange !== null && valueAfterUndo !== null) {
-        expect(Number(valueAfterUndo)).toBeLessThan(Number(valueAfterChange));
-      }
+      // Use auto-retrying assertion for the slider to revert
+      await expect(slider).toHaveAttribute("aria-valuenow", initialValue!);
     });
   });
 
@@ -48,29 +50,37 @@ test.describe("Undo / Redo Flow", () => {
       const slider = page.getByRole("slider", { name: "Thumb" });
       if (!(await slider.isVisible())) return;
 
+      // Capture initial value
+      const initialValue = await slider.getAttribute("aria-valuenow");
+
       await slider.focus();
       await slider.press("ArrowRight");
       await slider.press("ArrowRight");
+
+      // Wait for debounced commit (300ms) to flush to undo history
+      await page.waitForTimeout(500);
+
       const valueAfterChange = await slider.getAttribute("aria-valuenow");
+      expect(Number(valueAfterChange)).toBeGreaterThan(Number(initialValue));
 
       // Undo
       const undoButton = page.getByRole("button", {
         name: "Undo",
         exact: true,
       });
+      await expect(undoButton).toBeEnabled();
       await undoButton.click();
-      await page.waitForTimeout(200);
+
+      // Wait for slider to revert
+      await expect(slider).toHaveAttribute("aria-valuenow", initialValue!);
 
       // Redo
       const redoButton = page.getByRole("button", { name: "Redo" });
       await expect(redoButton).toBeEnabled();
       await redoButton.click();
-      await page.waitForTimeout(200);
 
-      const valueAfterRedo = await slider.getAttribute("aria-valuenow");
-      if (valueAfterChange !== null && valueAfterRedo !== null) {
-        expect(Number(valueAfterRedo)).toBe(Number(valueAfterChange));
-      }
+      // Wait for slider to restore
+      await expect(slider).toHaveAttribute("aria-valuenow", valueAfterChange!);
     });
   });
 
