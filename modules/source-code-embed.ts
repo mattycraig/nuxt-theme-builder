@@ -31,6 +31,7 @@ export default defineNuxtModule({
     walkDir(pagesDir);
 
     nuxt.options.nitro.virtual = nuxt.options.nitro.virtual || {};
-    nuxt.options.nitro.virtual["#source-code-map"] = `export default ${JSON.stringify(sourceMap)}`;
+    nuxt.options.nitro.virtual["#source-code-map"] =
+      `export default ${JSON.stringify(sourceMap)}`;
   },
 });
