@@ -35,35 +35,40 @@ const lineCount = computed(() =>
   props.code ? props.code.split("\n").length : 0,
 );
 
-const mdcValue = computed(
-  () => `\`\`\`${props.language}\n${props.code}\n\`\`\``,
-);
-
-// Track MDC rendering: code is set but syntax highlighting hasn't painted yet
-const mdcContainerRef = useTemplateRef("mdcContainer");
-const isMdcRendering = ref(false);
+// Syntax highlighting via POST endpoint (avoids GET 414 URI Too Long for large files)
+const highlightedHtml = ref("");
+const isHighlighting = ref(false);
 
 watch(
   () => props.code,
-  (newCode) => {
-    if (newCode && !props.loading) {
-      isMdcRendering.value = true;
+  async (code) => {
+    if (!code) {
+      highlightedHtml.value = "";
+      return;
+    }
+    isHighlighting.value = true;
+    try {
+      const result = await $fetch<{ html: string }>("/api/highlight", {
+        method: "POST",
+        body: { code, lang: props.language },
+      });
+      highlightedHtml.value = result.html;
+    } catch {
+      // Fallback: render as plain preformatted text
+      const escaped = code
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;");
+      highlightedHtml.value = `<pre><code>${escaped}</code></pre>`;
+    } finally {
+      isHighlighting.value = false;
     }
   },
-);
-
-useMutationObserver(
-  mdcContainerRef,
-  () => {
-    if (mdcContainerRef.value?.querySelector("pre")) {
-      isMdcRendering.value = false;
-    }
-  },
-  { childList: true, subtree: true },
+  { immediate: true },
 );
 
 const showLoading = computed(
-  () => props.loading || (!!props.code && !props.error && isMdcRendering.value),
+  () => props.loading || (!!props.code && !props.error && isHighlighting.value),
 );
 
 function handleCopy() {
@@ -176,13 +181,12 @@ function handleDownload() {
       <!-- Code content with syntax highlighting -->
       <div
         v-else-if="code"
-        ref="mdcContainer"
         class="code-block__content flex-1 min-h-0 overflow-auto relative"
         :style="maxHeight !== 'none' ? { maxHeight } : undefined"
       >
-        <!-- Overlay while MDC syntax-highlights -->
+        <!-- Overlay while highlighting -->
         <div
-          v-if="isMdcRendering"
+          v-if="isHighlighting"
           class="absolute inset-0 z-10 flex items-center justify-center bg-(--ui-bg)"
         >
           <div class="flex flex-col items-center gap-3" role="status">
@@ -196,7 +200,8 @@ function handleDownload() {
             >
           </div>
         </div>
-        <MDC :value="mdcValue" />
+        <!-- eslint-disable-next-line vue/no-v-html -->
+        <div v-html="highlightedHtml" />
       </div>
 
       <!-- Empty state -->

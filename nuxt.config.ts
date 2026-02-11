@@ -118,7 +118,12 @@ export default defineNuxtConfig({
           ? false
           : {
               "default-src": ["'self'"],
-              "script-src": ["'self'", "'nonce-{{nonce}}'", "'strict-dynamic'"],
+              "script-src": [
+                "'self'",
+                "'nonce-{{nonce}}'",
+                "'strict-dynamic'",
+                "'wasm-unsafe-eval'",
+              ],
               "style-src": ["'self'", "'unsafe-inline'"],
               "img-src": ["'self'", "data:", "https:"],
               "font-src": ["'self'", "https://fonts.gstatic.com"],
@@ -143,6 +148,17 @@ export default defineNuxtConfig({
       // xFrameOptions: 'SAMEORIGIN'
     },
     nonce: true,
+    xssValidator: {
+      throwError: true,
+    },
+  },
+
+  routeRules: {
+    "/api/highlight": {
+      security: {
+        xssValidator: false,
+      },
+    },
   },
 
   vite: {
