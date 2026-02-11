@@ -147,28 +147,42 @@ function onPresetSelect(name: string) {
 
 <template>
   <div class="space-y-2">
-    <USelectMenu
-      :model-value="selectedPresetName"
-      :items="presetItems"
-      value-key="value"
-      class="w-full"
-      placeholder="Select a preset..."
-      :ui="{
-        label: 'text-muted uppercase text-xs',
-      }"
-      @update:model-value="onPresetSelect($event as string)"
-    >
-      <!-- Custom dropdown items: swatches + name -->
-      <template #item="{ item }">
-        <div
-          v-if="'config' in item"
-          class="flex items-center gap-2 min-w-0 w-full py-0.5"
-        >
-          <EditorSwatchStrip :config="item.config" />
-          <span class="text-sm truncate">{{ item.label }}</span>
-        </div>
-      </template>
-    </USelectMenu>
+    <div class="flex items-center gap-2">
+      <USelectMenu
+        :model-value="selectedPresetName"
+        :items="presetItems"
+        value-key="value"
+        class="w-full"
+        placeholder="Select a preset..."
+        :ui="{
+          label: 'text-muted uppercase text-xs',
+        }"
+        @update:model-value="onPresetSelect($event as string)"
+      >
+        <!-- Custom dropdown items: swatches + name -->
+        <template #item="{ item }">
+          <div
+            v-if="'config' in item"
+            class="flex items-center gap-2 min-w-0 w-full py-0.5"
+          >
+            <EditorSwatchStrip :config="item.config" />
+            <span class="text-sm truncate">{{ item.label }}</span>
+          </div>
+        </template>
+      </USelectMenu>
+
+      <!-- Random theme -->
+      <UTooltip text="I'm feeling lucky!">
+        <UButton
+          icon="i-lucide-dices"
+          aria-label="Generate random theme"
+          variant="ghost"
+          color="neutral"
+          size="sm"
+          @click="store.randomizeTheme()"
+        />
+      </UTooltip>
+    </div>
 
     <!-- Selected preset swatch preview below (only when preset selected and no saved theme active) -->
     <div v-if="selectedPreset" class="flex items-center gap-2 px-1">

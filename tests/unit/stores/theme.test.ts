@@ -252,9 +252,7 @@ describe("useThemeStore", () => {
       store.duplicatePreset("Source");
       store.setSemanticColorForMode("light", "primary", "blue");
       store.savePreset("Source"); // overwrite
-      const copy = store.savedPresets.find(
-        (p) => p.name === "Copy of Source",
-      );
+      const copy = store.savedPresets.find((p) => p.name === "Copy of Source");
       expect(copy!.config.colors.primary).toBe("red");
     });
   });
@@ -407,8 +405,8 @@ describe("useThemeStore", () => {
   });
 
   describe("activePresetName", () => {
-    it("is empty by default", () => {
-      expect(store.activePresetName).toBe("");
+    it("is 'Default' by default", () => {
+      expect(store.activePresetName).toBe("Default");
     });
 
     it("is set when saving a preset", () => {
@@ -422,10 +420,10 @@ describe("useThemeStore", () => {
       expect(store.activePresetName).toBe("Loaded");
     });
 
-    it("is cleared when resetting to defaults", () => {
+    it("is set to 'Default' when resetting to defaults", () => {
       store.savePreset("Active");
       store.resetToDefaults();
-      expect(store.activePresetName).toBe("");
+      expect(store.activePresetName).toBe("Default");
     });
 
     it("is cleared when deleting the active preset", () => {

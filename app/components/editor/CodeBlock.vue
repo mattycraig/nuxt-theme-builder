@@ -152,14 +152,7 @@ function handleDownload() {
         v-if="showLoading && !code"
         class="flex-1 flex items-center justify-center py-16"
       >
-        <div class="flex flex-col items-center gap-3" role="status">
-          <UIcon
-            name="i-lucide-loader-2"
-            class="size-8 text-(--ui-primary) animate-spin"
-            aria-hidden="true"
-          />
-          <span class="text-sm text-(--ui-text-muted)">Loading source…</span>
-        </div>
+        <LoadingSpinner label="Loading source…" />
       </div>
 
       <!-- Error state -->
@@ -189,16 +182,7 @@ function handleDownload() {
           v-if="isHighlighting"
           class="absolute inset-0 z-10 flex items-center justify-center bg-(--ui-bg)"
         >
-          <div class="flex flex-col items-center gap-3" role="status">
-            <UIcon
-              name="i-lucide-loader-2"
-              class="size-6 text-(--ui-primary) animate-spin"
-              aria-hidden="true"
-            />
-            <span class="text-sm text-(--ui-text-muted)"
-              >Highlighting code…</span
-            >
-          </div>
+          <LoadingSpinner label="Highlighting code…" size="sm" />
         </div>
         <!-- eslint-disable-next-line vue/no-v-html -->
         <div v-html="highlightedHtml" />

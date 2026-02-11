@@ -169,7 +169,7 @@ function getDropdownItems(preset: ThemePreset) {
     <!-- Empty state -->
     <div
       v-if="store.savedPresets.length === 0"
-      class="text-center py-6 space-y-2"
+      class="text-center py-2 space-y-2"
     >
       <UIcon
         name="i-lucide-bookmark"
@@ -189,6 +189,25 @@ function getDropdownItems(preset: ThemePreset) {
         <span class="font-medium">Save</span> button in the toolbar to save your
         current theme, or use the presets below.
       </p>
+      <div class="flex flex-col items-center justify-center gap-2 pt-1">
+        <UButton
+          to="/ai"
+          label="Generate with AI"
+          icon="i-lucide-sparkles"
+          variant="soft"
+          color="primary"
+          size="xs"
+        />
+        <UButton
+          label="I'm feeling lucky!"
+          icon="i-lucide-dices"
+          variant="outline"
+          color="neutral"
+          size="xs"
+          aria-label="Generate random theme"
+          @click="store.randomizeTheme()"
+        />
+      </div>
     </div>
 
     <!-- Saved themes list -->

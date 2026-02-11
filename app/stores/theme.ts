@@ -3,13 +3,20 @@ import type {
   ThemePreset,
   SemanticColorKey,
   AnyPalette,
+  ChromaticPalette,
   NeutralPalette,
   NeutralShade,
   TextTokenKey,
   BgTokenKey,
   BorderTokenKey,
 } from "~/types/theme";
-import { ThemeConfigSchema } from "~/types/theme";
+import {
+  ThemeConfigSchema,
+  CHROMATIC_PALETTES,
+  NEUTRAL_PALETTES,
+  SEMANTIC_COLOR_KEYS,
+  FONT_OPTIONS,
+} from "~/types/theme";
 import { DEFAULT_THEME, cloneTheme } from "~/utils/defaults";
 
 const MAX_HISTORY = 50;
@@ -170,9 +177,51 @@ export const useThemeStore = defineStore(
 
     function resetToDefaults() {
       config.value = cloneTheme(DEFAULT_THEME);
-      activePresetName.value = "";
+      activePresetName.value = "Default";
       _pushHistory();
       historyBaseIndex.value = historyIndex.value;
+    }
+
+    function randomizeTheme() {
+      const pick = <T>(arr: readonly T[]): T =>
+        arr[Math.floor(Math.random() * arr.length)]!;
+      const randRadius = +(Math.random() * 1.5).toFixed(3);
+      const font = pick(FONT_OPTIONS);
+      const neutral = pick(NEUTRAL_PALETTES);
+
+      // Constrain semantic roles to sensible color spectrums
+      const SEMANTIC_SPECTRUM: Partial<
+        Record<SemanticColorKey, readonly ChromaticPalette[]>
+      > = {
+        success: ["lime", "green", "emerald", "teal"],
+        info: ["cyan", "sky", "blue", "indigo"],
+        warning: ["yellow", "amber", "orange"],
+        error: ["red", "rose", "pink", "fuchsia"],
+      };
+
+      const pickForKey = (key: SemanticColorKey) =>
+        pick(SEMANTIC_SPECTRUM[key] ?? CHROMATIC_PALETTES);
+
+      const lightColors = {} as Record<string, string>;
+      const darkColors = {} as Record<string, string>;
+      for (const key of SEMANTIC_COLOR_KEYS) {
+        lightColors[key] = pickForKey(key);
+        darkColors[key] = pickForKey(key);
+      }
+
+      config.value = {
+        ...cloneTheme(DEFAULT_THEME),
+        colors: lightColors as ThemeConfig["colors"],
+        darkColors: darkColors as ThemeConfig["darkColors"],
+        neutral,
+        darkNeutral: pick(NEUTRAL_PALETTES),
+        radius: randRadius,
+        darkRadius: randRadius,
+        font,
+        darkFont: font,
+      };
+      activePresetName.value = "";
+      _pushHistory();
     }
 
     function loadConfig(newConfig: ThemeConfig) {
@@ -317,6 +366,7 @@ export const useThemeStore = defineStore(
       setBgOverride,
       setBorderOverride,
       resetToDefaults,
+      randomizeTheme,
       loadConfig,
       _syncConfig,
       savePreset,

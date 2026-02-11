@@ -66,15 +66,7 @@ const previewArea = defineModel<HTMLElement | undefined>("previewArea");
             v-if="iframeLoading"
             class="absolute inset-0 flex items-center justify-center bg-(--ui-bg)/60 backdrop-blur-sm z-10"
           >
-            <div class="flex flex-col items-center gap-3">
-              <UIcon
-                name="i-lucide-loader-2"
-                class="size-8 text-(--ui-primary) animate-spin"
-              />
-              <span class="text-sm text-(--ui-text-muted)">
-                Loading preview…
-              </span>
-            </div>
+            <LoadingSpinner label="Loading preview…" />
           </div>
         </Transition>
       </div>

@@ -128,8 +128,6 @@ const saveTooltipText = computed(() => {
       />
     </UTooltip>
 
-    <!-- <USeparator orientation="vertical" class="h-full mx-2" /> -->
-
     <!-- JSON / Visual mode toggle -->
     <UTooltip
       :text="jsonMode ? 'Switch to visual editor' : 'Switch to JSON editor'"
