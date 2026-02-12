@@ -63,18 +63,16 @@ useSeoMeta({
   ogTitle: seoTitle,
   ogDescription: seoDescription,
   ogType: "website",
-  ogImage: "https://nuxt-theme-builder.vercel.app/og-image.png",
+  ogImage: "https://www.nuxt-ui-themes.com/og-image.png",
   twitterCard: "summary_large_image",
-  twitterImage: "https://nuxt-theme-builder.vercel.app/og-image.png",
+  twitterImage: "https://www.nuxt-ui-themes.com/og-image.png",
 });
 
 useHead({
   link: [
     {
       rel: "canonical",
-      href: computed(
-        () => `https://nuxt-theme-builder.vercel.app${route.path}`,
-      ),
+      href: computed(() => `https://www.nuxt-ui-themes.com${route.path}`),
     },
   ],
 });

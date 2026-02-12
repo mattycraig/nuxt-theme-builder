@@ -29,7 +29,7 @@ export default defineNuxtConfig({
   },
 
   site: {
-    url: "https://nuxt-theme-builder.vercel.app",
+    url: "https://www.nuxt-ui-themes.com",
     name: "Nuxt UI Theme Builder",
   },
 
@@ -47,7 +47,7 @@ export default defineNuxtConfig({
       meta: [
         {
           name: "og:image",
-          content: "https://nuxt-theme-builder.vercel.app/og-image.png",
+          content: "https://www.nuxt-ui-themes.com/og-image.png",
         },
       ],
     },

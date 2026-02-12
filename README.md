@@ -5,7 +5,7 @@
 
 A single-page Nuxt 4 app for visually configuring [Nuxt UI v4](https://ui.nuxt.com) design tokens — colors, radius, font, neutral shades — and exporting the result as `app.config.ts`, CSS, or JSON.
 
-**Live:** [nuxt-theme-builder.vercel.app](https://nuxt-theme-builder.vercel.app)
+**Live:** [nuxt-theme-builder.vercel.app](https://www.nuxt-ui-themes.com)
 
 ## Setup
 
@@ -64,7 +64,7 @@ This project uses **GitHub Actions** for continuous integration and **Vercel** f
 Vercel auto-deploys on every push:
 
 - **Preview:** Every PR gets a unique preview URL
-- **Production:** Merges to `main` deploy to [nuxt-theme-builder.vercel.app](https://nuxt-theme-builder.vercel.app)
+- **Production:** Merges to `main` deploy to [nuxt-theme-builder.vercel.app](https://www.nuxt-ui-themes.com)
 
 CI acts as the quality gate — all checks must pass before PRs can be merged.
 

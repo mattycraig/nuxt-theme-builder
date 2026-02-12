@@ -18,9 +18,9 @@ export default defineEventHandler(async (event) => {
     });
   }
 
-  // 30-day auth cookie (HTTP-only, secure in production)
+  // 30-day auth cookie (readable by client-side middleware)
   setCookie(event, "launch_access", "granted", {
-    httpOnly: true,
+    httpOnly: false,
     secure: process.env.NODE_ENV === "production",
     sameSite: "lax",
     path: "/",

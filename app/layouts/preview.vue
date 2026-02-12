@@ -14,9 +14,7 @@ useHead({
   link: [
     {
       rel: "canonical",
-      href: computed(
-        () => `https://nuxt-theme-builder.vercel.app${route.path}`,
-      ),
+      href: computed(() => `https://www.nuxt-ui-themes.com${route.path}`),
     },
   ],
 });
