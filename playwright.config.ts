@@ -26,7 +26,7 @@ export default defineConfig({
   ],
   webServer: {
     command: isCI
-      ? "[ -d .output ] || NODE_OPTIONS=--max-old-space-size=4096 pnpm build; pnpm preview --port 3000 --host 0.0.0.0"
+      ? "[ -d .output ] || NODE_OPTIONS=--max-old-space-size=4096 pnpm build; NITRO_HOST=0.0.0.0 NITRO_PORT=3000 node .output/server/index.mjs"
       : "pnpm dev",
     url: "http://localhost:3000",
     reuseExistingServer: !isCI,
