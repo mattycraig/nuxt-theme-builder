@@ -57,12 +57,17 @@ const currentMeta = computed(
 const importOpen = ref(true);
 const importText = ref("");
 const importError = ref("");
+const MAX_IMPORT_SIZE = 512 * 1024; // 512 KB
 
 function handleImport() {
   importError.value = "";
   const trimmed = importText.value.trim();
   if (!trimmed) {
     importError.value = "Please paste theme JSON to import.";
+    return;
+  }
+  if (trimmed.length > MAX_IMPORT_SIZE) {
+    importError.value = "Pasted JSON is too large. Maximum is 512 KB.";
     return;
   }
   const result = importJSON(trimmed);
@@ -79,8 +84,6 @@ function handleImport() {
     importError.value = result.error || "Invalid theme JSON.";
   }
 }
-
-const MAX_IMPORT_SIZE = 512 * 1024; // 512 KB
 
 function handleFileUpload(event: Event) {
   const target = event.target as HTMLInputElement;

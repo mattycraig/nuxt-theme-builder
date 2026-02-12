@@ -1,4 +1,5 @@
 import { defineEventHandler, getRouterParam, createError } from "h3";
+import { isAllowedSourcePath } from "~/utils/security";
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore — virtual module injected by source-code-embed Nuxt module at build time
 import sourceCodeMap from "#source-code-map";
@@ -13,6 +14,11 @@ export default defineEventHandler(async (event) => {
   }
 
   const safePath = rawPath.replace(/[\\]/g, "/").replace(/\.vue$/, "");
+
+  if (!isAllowedSourcePath(safePath)) {
+    throw createError({ statusCode: 403, statusMessage: "Path not allowed" });
+  }
+
   const candidates = [`${safePath}.vue`, `${safePath}/index.vue`];
 
   let content: string | undefined;

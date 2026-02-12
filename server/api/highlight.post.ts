@@ -1,4 +1,6 @@
 import { createHighlighter, type Highlighter } from "shiki";
+import { z } from "zod";
+import { isSafeHighlightedHtml } from "~/utils/security";
 
 let highlighterPromise: Promise<Highlighter> | null = null;
 
@@ -19,6 +21,13 @@ const LANG_ALIAS: Record<string, string> = {
   ts: "typescript",
   js: "javascript",
 };
+
+const MAX_CODE_CHARS = 200_000;
+
+const highlightRequestSchema = z.object({
+  code: z.string().min(1).max(MAX_CODE_CHARS),
+  lang: z.string().max(32).optional(),
+});
 
 function getHighlighter(): Promise<Highlighter> {
   if (!highlighterPromise) {
@@ -52,14 +61,17 @@ export default defineEventHandler(async (event) => {
     });
   }
 
-  if (!body?.code) {
+  const parsed = highlightRequestSchema.safeParse(body);
+  if (!parsed.success) {
     throw createError({
       statusCode: 400,
-      statusMessage: "Missing code in request body",
+      statusMessage: "Invalid request body",
     });
   }
 
-  const rawLang = body.lang || "vue";
+  const { code, lang: requestedLang } = parsed.data;
+
+  const rawLang = requestedLang || "vue";
   const lang = LANG_ALIAS[rawLang] || rawLang;
 
   if (!SUPPORTED_LANGS.includes(rawLang as (typeof SUPPORTED_LANGS)[number])) {
@@ -72,13 +84,20 @@ export default defineEventHandler(async (event) => {
   try {
     const highlighter = await getHighlighter();
 
-    const html = highlighter.codeToHtml(body.code, {
+    const html = highlighter.codeToHtml(code, {
       lang,
       themes: {
         light: "github-light",
         dark: "github-dark",
       },
     });
+
+    if (!isSafeHighlightedHtml(html)) {
+      throw createError({
+        statusCode: 500,
+        statusMessage: "Generated highlighted output failed safety checks.",
+      });
+    }
 
     return { html };
   } catch (err) {

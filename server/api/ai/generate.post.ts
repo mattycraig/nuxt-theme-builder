@@ -180,16 +180,17 @@ const FALLBACK_DARK_OVERRIDES: z.infer<typeof tokenOverridesSchema> = {
 
 const requestSchema = z.object({
   prompt: z.string().min(1).max(2000),
-  apiKey: z.string().min(1),
+  apiKey: z.string().min(1).max(512),
   provider: z.enum(["openai", "anthropic", "google"]),
-  model: z.string().min(1),
+  model: z.string().min(1).max(128),
   conversationHistory: z
     .array(
       z.object({
         role: z.enum(["user", "assistant"]),
-        content: z.string(),
+        content: z.string().min(1).max(4000),
       }),
     )
+    .max(6)
     .nullable(),
 });
 
@@ -285,9 +286,21 @@ Provide a brief "explanation" field describing your design choices for BOTH ligh
 const rateLimitMap = new Map<string, { count: number; resetAt: number }>();
 const RATE_LIMIT_WINDOW = 60_000;
 const RATE_LIMIT_MAX = 20;
+const RATE_LIMIT_STORE_MAX_KEYS = 10_000;
+
+// Evicts expired entries when the map exceeds the key cap to prevent unbounded memory growth
+function compactRateLimitMap(now: number) {
+  if (rateLimitMap.size < RATE_LIMIT_STORE_MAX_KEYS) return;
+  for (const [key, entry] of rateLimitMap.entries()) {
+    if (entry.resetAt <= now) {
+      rateLimitMap.delete(key);
+    }
+  }
+}
 
 function checkRateLimit(ip: string): boolean {
   const now = Date.now();
+  compactRateLimitMap(now);
   const entry = rateLimitMap.get(ip);
 
   if (!entry || now > entry.resetAt) {
@@ -325,6 +338,18 @@ export default defineEventHandler(async (event) => {
   }
 
   const { prompt, apiKey, provider, model, conversationHistory } = parsed.data;
+
+  const totalChars =
+    prompt.length +
+    (conversationHistory?.reduce((sum, msg) => sum + msg.content.length, 0) ??
+      0);
+
+  if (totalChars > 20_000) {
+    throw createError({
+      statusCode: 413,
+      statusMessage: "Prompt payload is too large.",
+    });
+  }
 
   try {
     function getProviderModel(p: string, m: string, key: string) {

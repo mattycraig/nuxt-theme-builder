@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import type { AiMessage } from "~/types/ai";
+import { sanitizeMarkdownInput } from "~/utils/markdown";
 
 const {
   messages,
@@ -51,7 +52,15 @@ const chatMessages = computed<ChatMsg[]>(() =>
     .map((msg: AiMessage) => ({
       id: msg.id,
       role: msg.role as "user" | "assistant",
-      parts: [{ type: "text" as const, text: msg.content }],
+      parts: [
+        {
+          type: "text" as const,
+          text:
+            msg.role === "assistant"
+              ? sanitizeMarkdownInput(msg.content)
+              : msg.content,
+        },
+      ],
     })),
 );
 
