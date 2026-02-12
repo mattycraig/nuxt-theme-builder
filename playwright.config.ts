@@ -25,7 +25,9 @@ export default defineConfig({
     },
   ],
   webServer: {
-    command: isCI ? "pnpm preview --port 3000 --host 0.0.0.0" : "pnpm dev",
+    command: isCI
+      ? "[ -d .output ] || NODE_OPTIONS=--max-old-space-size=4096 pnpm build; pnpm preview --port 3000 --host 0.0.0.0"
+      : "pnpm dev",
     url: "http://localhost:3000",
     reuseExistingServer: !isCI,
     timeout: 180_000,
