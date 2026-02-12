@@ -1,88 +1,129 @@
 # Nuxt UI Theme Builder — Copilot Instructions
 
-## Project Overview
+## Project Scope
 
-A single-page Nuxt 4 app for visually configuring **Nuxt UI v4** design tokens (colors, radius, font, neutral shades) and exporting the result as `app.config.ts`, CSS, or JSON. Built with **Nuxt UI v4**, **Pinia** (persisted state), **Tailwind CSS v4**, and **VueUse**.
+Nuxt 4 app for building, previewing, and exporting Nuxt UI v4 theme systems.
 
-## Architecture
+Current product surface includes:
 
-```
-app/
-├── pages/index.vue          # Single page — wires sidebar editor + preview pane via UDashboardGroup
-├── stores/theme.ts          # Pinia store: single source of truth (ThemeConfig), undo/redo, presets
-├── composables/
-│   ├── useThemeApply.ts     # Reactively applies store → DOM (appConfig colors + useHead CSS injection)
-│   └── useThemeExport.ts    # Generates export strings (app.config, CSS, JSON) + import/share helpers
-├── types/theme.ts           # All type definitions and const arrays (palettes, shades, semantic keys)
-├── utils/
-│   ├── defaults.ts          # DEFAULT_THEME, token defaults per mode, hex maps, shadeToCSS(), cloneTheme()
-│   └── presets.ts           # BUILT_IN_PRESETS array
-└── components/
-    ├── editor/              # Sidebar controls — each is a focused picker/selector
-    └── preview/             # Read-only Nuxt UI component showcases (PreviewButtons, PreviewCards, etc.)
-```
+- Multi-route preview site (`/components`, `/blocks`, `/templates`, utility pages)
+- Theme editing workspace with iframe preview + source-code mode
+- AI-assisted theme generation (`/ai`) with user-provided API keys
+- Optional launch gate (`/coming-soon`) controlled by runtime config
 
-### Data Flow
+## Core Architecture
 
-1. **User edits** → editor components call `useThemeStore()` actions (e.g., `setSemanticColor`, `setRadius`)
-2. **Store** updates `config` ref and pushes to undo history
-3. **`useThemeApply()`** (called once in `pages/index.vue`) watches the store and:
-   - Writes semantic color names to `useAppConfig().ui.colors` (Nuxt UI handles CSS variable injection)
-   - Injects radius, font, and token overrides via `useHead()` computed `<style>`
-4. **Preview components** re-render automatically since they use Nuxt UI components that read CSS variables
+### Layout Model
 
-### Two-Strategy Theme Application (`useThemeApply`)
+- `app.vue` selects active layout dynamically:
+  - `default`: full editor + preview shell
+  - `preview`: iframe-safe render/sync mode (`?preview`)
+  - `coming-soon`: gated launch page
+- `layouts/default.vue` is the main orchestration layer for:
+  - theme apply
+  - keyboard shortcuts
+  - command palette
+  - iframe preview sync
+  - source code viewing
 
-- **Palette colors** → mutate `appConfig.ui.colors` (Nuxt UI's runtime plugin injects CSS vars)
-- **Radius, font, token overrides** → generate CSS string and inject via `useHead({ style: [...] })`
+### Theme State + Application
 
-This split exists because Nuxt UI only handles named color palette assignment at runtime, not arbitrary CSS variable overrides.
+- Single source of truth: `app/stores/theme.ts`
+- Strict type/schema contract: `app/types/theme.ts` + `ThemeConfigSchema`
+- Two-strategy apply model in `app/composables/useThemeApply.ts`:
+  1. semantic palette names → `useAppConfig().ui.colors`
+  2. radius/font/token overrides → injected CSS variables via `useHead`
 
-## Key Conventions
+Do not collapse these two paths into one.
 
-### Type System (`types/theme.ts`)
+### Server APIs
 
-All selectable values are defined as `const` arrays with derived union types:
+- `POST /api/ai/generate`: provider-backed theme generation with validation, retries, timeout handling, and per-IP in-memory rate limiting
+- `POST /api/auth/launch`: launch gate password check + cookie issuance
+- `POST /api/highlight`: Shiki highlighting for source viewer
+- `GET /api/source/[...path]`: returns embedded page source from virtual module map
 
-```ts
-export const CHROMATIC_PALETTES = ["red", "orange", ...] as const;
-export type ChromaticPalette = (typeof CHROMATIC_PALETTES)[number];
-```
+## Working Rules
 
-Always use these arrays for iteration in components and the types for props/params.
+### General
 
-### Store Pattern (`stores/theme.ts`)
+- Use Composition API + `<script setup lang="ts">`.
+- Keep all public data contracts typed and schema-validated.
+- Prefer extending existing composables over adding page-level ad hoc state.
+- Preserve route-safe and origin-safe behavior in iframe messaging code.
 
-- **Setup store** syntax (not options API) with `defineStore("theme", () => { ... })`
-- Every mutation calls `_pushHistory()` for undo/redo support
-- State is persisted to localStorage via `pinia-plugin-persistedstate` (picks `config` and `savedPresets`)
-- Use `cloneTheme()` (JSON deep clone) when copying `ThemeConfig` to avoid reference sharing
+### Store & Persistence
 
-### Component Conventions
+- Keep store as setup-style `defineStore`.
+- Preserve history semantics (`undo`, `redo`, `undoAll`) and push history for user-facing mutations.
+- Persisted state must remain compatible and validated on hydrate.
 
-- **Editor components** use `modelValue` / `update:modelValue` pattern — they don't access the store directly; the parent (`ThemeEditor.vue`) wires props ↔ store actions
-- **Preview components** are stateless templates — they render Nuxt UI components with semantic colors (`color="primary"`, etc.) and require no props
-- Components are auto-imported with `pathPrefix: false` (see `nuxt.config.ts`), so use `<EditorColorPicker>` not `<editor-EditorColorPicker>`
-- Icons use the **Lucide** icon set via `@iconify-json/lucide` (format: `i-lucide-icon-name`)
-- CSS custom properties use Nuxt UI's `--ui-*` token names (e.g., `text-(--ui-text-muted)`, `var(--ui-border)`)
+### Navigation & Discoverability
 
-### Adding a New Preview Component
+- Update `app/utils/navigation.ts` when adding/changing preview routes.
+- Keep command palette results in sync through `useLayoutNavigation` and `useCommandPalette`.
 
-1. Create `app/components/preview/PreviewFoo.vue` — stateless, uses Nuxt UI components with semantic `color` props
-2. Add `<PreviewFoo />` to `ThemePreview.vue` (separated by `<USeparator />`)
+### Source Viewer
 
-### Adding a New Theme Property
+- Source mode only applies to `/blocks/*` and `/templates/*` routes.
+- If source retrieval behavior changes, keep these in sync:
+  - `modules/source-code-embed.ts`
+  - `server/api/source/[...path].get.ts`
+  - `app/composables/useSourceCode.ts`
 
-1. Add the field to `ThemeConfig` in `types/theme.ts`
-2. Add a default value in `DEFAULT_THEME` (`utils/defaults.ts`)
-3. Add a store action in `stores/theme.ts` (must call `_pushHistory()`)
-4. Add CSS variable generation in `useThemeApply.ts` and `useThemeExport.ts`
-5. Create or update an editor component, wired through `ThemeEditor.vue`
+### AI Features
 
-## Development
+- Provider/model options come from `app/types/ai.ts`.
+- Server route must continue to validate request/response shape with `zod`.
+- Never trust generated payloads without schema validation before applying to store.
 
-- **Package manager**: pnpm (enforced via `packageManager` field)
-- **Dev server**: `pnpm dev` → `http://localhost:3000`
-- **No test suite** currently exists
-- **Fonts**: Registered in `nuxt.config.ts` `fonts.families` — must match `FONT_OPTIONS` in `types/theme.ts`
-- **Keyboard shortcuts**: Ctrl+Z / Ctrl+Shift+Z for undo/redo (registered in `pages/index.vue`)
+### Security
+
+- Respect `nuxt-security` constraints and existing CSP behavior.
+- Keep explicit path sanitization for source API and navigation helper usage.
+- Preserve launch-gate behavior split between middleware + auth API route.
+
+## Conventions
+
+- Components are auto-imported with `pathPrefix: false`.
+- Icons use lucide iconify names (`i-lucide-*`).
+- Theme token values should come from constants/unions in `app/types/theme.ts`.
+- For copy/export logic, use utilities/composables (`useThemeExport`, `cssGenerator`) instead of duplicating serialization logic.
+
+## Tests & Quality Gates
+
+- Unit tests: `tests/unit/**` (Vitest + Nuxt env)
+- E2E tests: `tests/e2e/**` (Playwright)
+- CI pipeline runs: lint → typecheck → unit coverage → e2e → build
+- Pre-commit runs `lint-staged` (`*.ts`, `*.vue` via ESLint fix)
+
+## Environment Variables
+
+- `NUXT_PUBLIC_COMING_SOON_ENABLED` — enables production launch gating
+- `NUXT_COMING_SOON_PASSWORD` — password expected by `/api/auth/launch`
+
+AI API keys are entered by users in the app UI; they are not loaded from server env by default.
+
+## Change Patterns
+
+### Add a theme field
+
+1. Update type/schema in `app/types/theme.ts`
+2. Add defaults in `app/utils/defaults.ts`
+3. Wire store mutation(s) in `app/stores/theme.ts`
+4. Apply CSS/runtime mapping in `app/composables/useThemeApply.ts`
+5. Add export handling in `app/composables/useThemeExport.ts`
+6. Add/update editor UI and tests
+
+### Add preview route
+
+1. Create page under `app/pages/components|blocks|templates`
+2. Register in `app/utils/navigation.ts`
+3. Verify preview iframe navigation sync and command palette listing
+4. Verify source mode behavior when route belongs to blocks/templates
+
+### Add AI model/provider option
+
+1. Update `app/types/ai.ts`
+2. Ensure server provider factory supports the value
+3. Verify AI settings panel and generate flow tests
