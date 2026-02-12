@@ -4,12 +4,15 @@ const props = defineProps<{
   iframeLoading: boolean;
   isDragging: boolean;
   currentPreviewWidth: string;
+  currentPreviewHeight: string;
 }>();
 
 const emit = defineEmits<{
   iframeLoad: [];
   startResize: [event: MouseEvent, side: "left" | "right"];
+  startHeightResize: [event: MouseEvent];
   keyboardResize: [delta: number];
+  keyboardHeightResize: [delta: number];
 }>();
 
 const previewFrame = defineModel<HTMLIFrameElement | undefined>("previewFrame");
@@ -18,6 +21,12 @@ const previewArea = defineModel<HTMLElement | undefined>("previewArea");
 const numericWidth = computed(() => {
   const w = props.currentPreviewWidth;
   const parsed = parseInt(w, 10);
+  return isNaN(parsed) ? undefined : parsed;
+});
+
+const numericHeight = computed(() => {
+  const h = props.currentPreviewHeight;
+  const parsed = parseInt(h, 10);
   return isNaN(parsed) ? undefined : parsed;
 });
 
@@ -38,6 +47,19 @@ function handleDragKeydown(event: KeyboardEvent, side: "left" | "right") {
   if (event.shiftKey) delta *= KEYBOARD_STEP_LARGE / KEYBOARD_STEP;
   emit("keyboardResize", delta * 2);
 }
+
+function handleHeightDragKeydown(event: KeyboardEvent) {
+  let delta = 0;
+
+  if (event.key === "ArrowDown") delta = KEYBOARD_STEP;
+  else if (event.key === "ArrowUp") delta = -KEYBOARD_STEP;
+  else return;
+
+  event.preventDefault();
+
+  if (event.shiftKey) delta *= KEYBOARD_STEP_LARGE / KEYBOARD_STEP;
+  emit("keyboardHeightResize", delta);
+}
 </script>
 
 <template>
@@ -47,9 +69,14 @@ function handleDragKeydown(event: KeyboardEvent, side: "left" | "right") {
   >
     <div
       data-preview-wrapper
-      class="relative h-full mx-auto"
-      :class="[isDragging ? '' : 'transition-[width] duration-300 ease-in-out']"
-      :style="{ width: currentPreviewWidth, maxWidth: '100%' }"
+      class="relative mx-auto"
+      :class="[isDragging ? '' : 'transition-[width,height] duration-300 ease-in-out']"
+      :style="{
+        width: currentPreviewWidth,
+        maxWidth: '100%',
+        height: currentPreviewHeight,
+        maxHeight: '100%',
+      }"
     >
       <!-- Left drag handle -->
       <div
@@ -117,6 +144,23 @@ function handleDragKeydown(event: KeyboardEvent, side: "left" | "right") {
       >
         <div
           class="w-1 h-16 rounded-full bg-(--ui-border-accented) group-hover:bg-(--ui-primary) transition-colors"
+        />
+      </div>
+
+      <!-- Bottom drag handle -->
+      <div
+        role="separator"
+        tabindex="0"
+        aria-orientation="horizontal"
+        aria-label="Resize preview panel height"
+        aria-valuemin="200"
+        :aria-valuenow="numericHeight"
+        class="absolute -bottom-3 left-0 right-0 h-3 cursor-row-resize group flex items-center justify-center z-10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-(--ui-primary) rounded"
+        @mousedown.prevent="emit('startHeightResize', $event)"
+        @keydown="handleHeightDragKeydown($event)"
+      >
+        <div
+          class="h-1 w-16 rounded-full bg-(--ui-border-accented) group-hover:bg-(--ui-primary) transition-colors"
         />
       </div>
     </div>

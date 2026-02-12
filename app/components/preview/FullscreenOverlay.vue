@@ -8,7 +8,10 @@ const {
   fullscreenViewMode,
   fullscreenPreviewWidth,
   fullscreenCustomWidth,
+  fullscreenPreviewHeight,
+  fullscreenCustomHeight,
   fullscreenCurrentWidth,
+  fullscreenCurrentHeight,
   toggle,
 } = usePreviewFullscreen();
 
@@ -148,7 +151,7 @@ onUnmounted(() => {
       >
         <!-- Fullscreen toolbar -->
         <div
-          class="flex items-center justify-between p-4 border-b border-(--ui-border) bg-(--ui-bg-elevated) shrink-0"
+          class="flex items-center justify-between p-4 border-b border-(--ui-border) bg-(--ui-bg) shrink-0"
           role="toolbar"
           aria-label="Fullscreen preview controls"
         >
@@ -168,10 +171,12 @@ onUnmounted(() => {
             </UBadge>
           </div>
 
-          <PreviewWidthControls
-            v-model:active-preset="fullscreenPreviewWidth"
+          <PreviewViewportSettings
+            v-model:active-width="fullscreenPreviewWidth"
             v-model:custom-width="fullscreenCustomWidth"
-            input-id="fs-custom-width"
+            v-model:active-height="fullscreenPreviewHeight"
+            v-model:custom-height="fullscreenCustomHeight"
+            id-prefix="fs"
           />
 
           <div class="flex items-center gap-2">
@@ -184,8 +189,6 @@ onUnmounted(() => {
             />
 
             <ViewModeToggle v-if="hasSourcePage" v-model="fullscreenViewMode" />
-
-            <USeparator orientation="vertical" class="h-6 mx-2" :ui="{border:'dark:border-accented'}" />
 
             <UTooltip text="Exit fullscreen (Esc)">
               <UButton
@@ -214,11 +217,16 @@ onUnmounted(() => {
         <!-- Fullscreen iframe preview -->
         <div
           v-show="fullscreenViewMode === 'preview' || !hasSourcePage"
-          class="flex-1 overflow-hidden flex justify-center bg-(--ui-bg-muted)"
+          class="flex-1 overflow-hidden flex justify-center items-start bg-(--ui-bg-muted)"
         >
           <div
-            class="h-full transition-[width] duration-300 ease-in-out"
-            :style="{ width: fullscreenCurrentWidth, maxWidth: '100%' }"
+            class="transition-[width,height] duration-300 ease-in-out mx-auto border border-default border-t-0"
+            :style="{
+              width: fullscreenCurrentWidth,
+              maxWidth: '100%',
+              height: fullscreenCurrentHeight,
+              maxHeight: '100%',
+            }"
           >
             <iframe
               ref="fullscreenFrame"

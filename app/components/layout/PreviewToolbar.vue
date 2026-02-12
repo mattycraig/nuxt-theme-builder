@@ -6,6 +6,13 @@ const previewWidth = defineModel<"mobile" | "tablet" | "desktop">(
 const customWidth = defineModel<number | null>("customWidth", {
   required: true,
 });
+const previewHeight = defineModel<"short" | "medium" | "auto">(
+  "previewHeight",
+  { required: true },
+);
+const customHeight = defineModel<number | null>("customHeight", {
+  required: true,
+});
 
 const { breadcrumbItems } = useLayoutNavigation();
 const { viewMode, hasSourcePage } = useSourceCode();
@@ -24,21 +31,19 @@ const exportPanel = useExportPanel();
       :ui="{ linkLeadingIcon: 'size-4', link: 'text-xs' }"
     />
 
-    <PreviewWidthControls
-      v-model:active-preset="previewWidth"
-      v-model:custom-width="customWidth"
-      input-id="main-custom-width"
-      class="absolute left-1/2 -translate-x-1/2"
-    />
+    <!-- Center: width presets + viewport settings -->
+    <div class="absolute left-1/2 -translate-x-1/2">
+      <PreviewViewportControls
+        v-model:active-width="previewWidth"
+        v-model:custom-width="customWidth"
+        v-model:active-height="previewHeight"
+        v-model:custom-height="customHeight"
+      />
+    </div>
 
+    <!-- Right: view toggle, fullscreen, export -->
     <div class="flex items-center gap-2">
       <ViewModeToggle v-if="hasSourcePage" v-model="viewMode" />
-
-      <USeparator
-        v-if="hasSourcePage"
-        orientation="vertical"
-        class="h-6 mx-2"
-      />
 
       <!-- Fullscreen toggle -->
       <UTooltip :text="isFullscreen ? 'Exit fullscreen' : 'Fullscreen preview'">
@@ -57,7 +62,11 @@ const exportPanel = useExportPanel();
         />
       </UTooltip>
 
-      <USeparator orientation="vertical" class="h-6 mx-2" :ui="{border:'dark:border-accented'}" />
+      <USeparator
+        orientation="vertical"
+        class="h-6 mx-1"
+        :ui="{ border: 'dark:border-accented' }"
+      />
 
       <!-- Export/Import Button -->
       <UButton

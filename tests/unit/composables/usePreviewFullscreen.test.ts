@@ -11,6 +11,8 @@ describe("usePreviewFullscreen", () => {
     fullscreen.fullscreenViewMode.value = "preview";
     fullscreen.fullscreenPreviewWidth.value = "desktop";
     fullscreen.fullscreenCustomWidth.value = null;
+    fullscreen.fullscreenPreviewHeight.value = "auto";
+    fullscreen.fullscreenCustomHeight.value = null;
   });
 
   describe("initial state", () => {
@@ -32,6 +34,18 @@ describe("usePreviewFullscreen", () => {
 
     it("returns 100% width for desktop preset", () => {
       expect(fullscreen.fullscreenCurrentWidth.value).toBe("100%");
+    });
+
+    it("defaults to auto height preset", () => {
+      expect(fullscreen.fullscreenPreviewHeight.value).toBe("auto");
+    });
+
+    it("has no custom height initially", () => {
+      expect(fullscreen.fullscreenCustomHeight.value).toBeNull();
+    });
+
+    it("returns 100% height for auto preset", () => {
+      expect(fullscreen.fullscreenCurrentHeight.value).toBe("100%");
     });
   });
 
@@ -63,6 +77,18 @@ describe("usePreviewFullscreen", () => {
       fullscreen.fullscreenCustomWidth.value = 500;
       fullscreen.toggle();
       expect(fullscreen.fullscreenCustomWidth.value).toBeNull();
+    });
+
+    it("resets height preset to auto when entering fullscreen", () => {
+      fullscreen.fullscreenPreviewHeight.value = "short";
+      fullscreen.toggle();
+      expect(fullscreen.fullscreenPreviewHeight.value).toBe("auto");
+    });
+
+    it("clears custom height when entering fullscreen", () => {
+      fullscreen.fullscreenCustomHeight.value = 600;
+      fullscreen.toggle();
+      expect(fullscreen.fullscreenCustomHeight.value).toBeNull();
     });
 
     it("does not reset state when exiting fullscreen", () => {
@@ -103,6 +129,34 @@ describe("usePreviewFullscreen", () => {
     });
   });
 
+  describe("fullscreenCurrentHeight", () => {
+    it("returns 480px for short preset", () => {
+      fullscreen.fullscreenPreviewHeight.value = "short";
+      expect(fullscreen.fullscreenCurrentHeight.value).toBe("480px");
+    });
+
+    it("returns 720px for medium preset", () => {
+      fullscreen.fullscreenPreviewHeight.value = "medium";
+      expect(fullscreen.fullscreenCurrentHeight.value).toBe("720px");
+    });
+
+    it("returns 100% for auto preset", () => {
+      fullscreen.fullscreenPreviewHeight.value = "auto";
+      expect(fullscreen.fullscreenCurrentHeight.value).toBe("100%");
+    });
+
+    it("returns custom height in px when set", () => {
+      fullscreen.fullscreenCustomHeight.value = 500;
+      expect(fullscreen.fullscreenCurrentHeight.value).toBe("500px");
+    });
+
+    it("custom height takes priority over preset", () => {
+      fullscreen.fullscreenPreviewHeight.value = "short";
+      fullscreen.fullscreenCustomHeight.value = 900;
+      expect(fullscreen.fullscreenCurrentHeight.value).toBe("900px");
+    });
+  });
+
   describe("preset clears custom width", () => {
     it("clears custom width when preset changes", async () => {
       fullscreen.fullscreenCustomWidth.value = 600;
@@ -121,6 +175,24 @@ describe("usePreviewFullscreen", () => {
     });
   });
 
+  describe("preset clears custom height", () => {
+    it("clears custom height when height preset changes", async () => {
+      fullscreen.fullscreenCustomHeight.value = 600;
+      fullscreen.fullscreenPreviewHeight.value = "short";
+      await nextTick();
+      expect(fullscreen.fullscreenCustomHeight.value).toBeNull();
+    });
+
+    it("clears custom height when switching from short to auto", async () => {
+      fullscreen.fullscreenPreviewHeight.value = "short";
+      await nextTick();
+      fullscreen.fullscreenCustomHeight.value = 500;
+      fullscreen.fullscreenPreviewHeight.value = "auto";
+      await nextTick();
+      expect(fullscreen.fullscreenCustomHeight.value).toBeNull();
+    });
+  });
+
   describe("singleton behavior", () => {
     it("shares state across multiple calls", () => {
       const a = usePreviewFullscreen();
@@ -136,11 +208,54 @@ describe("usePreviewFullscreen", () => {
       expect(b.fullscreenCustomWidth.value).toBe(777);
     });
 
+    it("shares custom height across instances", () => {
+      const a = usePreviewFullscreen();
+      const b = usePreviewFullscreen();
+      a.fullscreenCustomHeight.value = 555;
+      expect(b.fullscreenCustomHeight.value).toBe(555);
+    });
+
     it("shares view mode across instances", () => {
       const a = usePreviewFullscreen();
       const b = usePreviewFullscreen();
       a.fullscreenViewMode.value = "code";
       expect(b.fullscreenViewMode.value).toBe("code");
+    });
+  });
+
+  describe("resetSize", () => {
+    it("resets width preset to desktop", () => {
+      fullscreen.fullscreenPreviewWidth.value = "mobile";
+      fullscreen.resetSize();
+      expect(fullscreen.fullscreenPreviewWidth.value).toBe("desktop");
+    });
+
+    it("resets height preset to auto", () => {
+      fullscreen.fullscreenPreviewHeight.value = "short";
+      fullscreen.resetSize();
+      expect(fullscreen.fullscreenPreviewHeight.value).toBe("auto");
+    });
+
+    it("clears custom width", () => {
+      fullscreen.fullscreenCustomWidth.value = 600;
+      fullscreen.resetSize();
+      expect(fullscreen.fullscreenCustomWidth.value).toBeNull();
+    });
+
+    it("clears custom height", () => {
+      fullscreen.fullscreenCustomHeight.value = 500;
+      fullscreen.resetSize();
+      expect(fullscreen.fullscreenCustomHeight.value).toBeNull();
+    });
+
+    it("resets all dimensions at once", () => {
+      fullscreen.fullscreenPreviewWidth.value = "tablet";
+      fullscreen.fullscreenPreviewHeight.value = "medium";
+      fullscreen.fullscreenCustomWidth.value = 999;
+      fullscreen.fullscreenCustomHeight.value = 777;
+      fullscreen.resetSize();
+      expect(fullscreen.fullscreenCurrentWidth.value).toBe("100%");
+      expect(fullscreen.fullscreenCurrentHeight.value).toBe("100%");
     });
   });
 });

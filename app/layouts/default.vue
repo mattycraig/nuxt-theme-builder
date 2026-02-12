@@ -34,12 +34,17 @@ const { previewFrame, iframeLoading, iframeInitialSrc, handleIframeLoad } =
 // Preview resize ────────────────────────────────────────────────────────
 const {
   previewWidth,
+  previewHeight,
   customWidth,
+  customHeight,
   isDragging,
   previewArea,
   currentPreviewWidth,
+  currentPreviewHeight,
   startResize,
+  startHeightResize,
   handleKeyboardResize,
+  handleKeyboardHeightResize,
 } = usePreviewResize();
 
 // Fullscreen (singleton — shared with PreviewFullscreenOverlay)
@@ -97,6 +102,8 @@ useHead({
       <LayoutPreviewToolbar
         v-model:preview-width="previewWidth"
         v-model:custom-width="customWidth"
+        v-model:preview-height="previewHeight"
+        v-model:custom-height="customHeight"
       />
 
       <!-- Source code view (replaces iframe when active) -->
@@ -120,9 +127,12 @@ useHead({
         :iframe-loading="iframeLoading"
         :is-dragging="isDragging"
         :current-preview-width="currentPreviewWidth"
+        :current-preview-height="currentPreviewHeight"
         @iframe-load="handleIframeLoad"
         @start-resize="startResize"
+        @start-height-resize="startHeightResize"
         @keyboard-resize="handleKeyboardResize"
+        @keyboard-height-resize="handleKeyboardHeightResize"
       />
     </main>
 

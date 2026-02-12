@@ -26,11 +26,35 @@ export const PRESET_WIDTHS = [
   },
 ] as const;
 
+export const PRESET_HEIGHTS = [
+  {
+    value: "short" as const,
+    icon: "i-lucide-rectangle-horizontal",
+    label: "Short (480px)",
+    height: "480px",
+  },
+  {
+    value: "medium" as const,
+    icon: "i-lucide-square",
+    label: "Medium (720px)",
+    height: "720px",
+  },
+  {
+    value: "auto" as const,
+    icon: "i-lucide-move-vertical",
+    label: "Auto (fill)",
+    height: "100%",
+  },
+] as const;
+
 const MIN_RESIZE_WIDTH = 320;
+const MIN_RESIZE_HEIGHT = 200;
 
 export function usePreviewResize() {
   const previewWidth = ref<"mobile" | "tablet" | "desktop">("desktop");
+  const previewHeight = ref<"short" | "medium" | "auto">("auto");
   const customWidth = ref<number | null>(null);
+  const customHeight = ref<number | null>(null);
   const isDragging = ref(false);
   const previewArea = ref<HTMLElement>();
 
@@ -42,9 +66,18 @@ export function usePreviewResize() {
     return PRESET_WIDTHS.find((o) => o.value === previewWidth.value)!.width;
   });
 
-  // Selecting a preset clears any custom width
+  const currentPreviewHeight = computed(() => {
+    if (customHeight.value !== null) return `${customHeight.value}px`;
+    return PRESET_HEIGHTS.find((o) => o.value === previewHeight.value)!.height;
+  });
+
+  // Selecting a preset clears any custom dimension
   watch(previewWidth, () => {
     customWidth.value = null;
+  });
+
+  watch(previewHeight, () => {
+    customHeight.value = null;
   });
 
   /**
@@ -98,6 +131,15 @@ export function usePreviewResize() {
     }
   }
 
+  function onCustomHeightInput(val: string | number) {
+    const num = Number(val);
+    if (!isNaN(num) && num >= MIN_RESIZE_HEIGHT) {
+      customHeight.value = Math.min(num, previewArea.value?.clientHeight ?? 1080);
+    } else if (val === "" || val == null) {
+      customHeight.value = null;
+    }
+  }
+
   function handleKeyboardResize(delta: number) {
     const area = previewArea.value;
     if (!area) return;
@@ -113,19 +155,87 @@ export function usePreviewResize() {
     );
   }
 
+  /**
+   * Start a vertical drag-resize from the bottom edge.
+   */
+  function startHeightResize(e: MouseEvent) {
+    e.preventDefault();
+    isDragging.value = true;
+
+    const area = previewArea.value;
+    if (!area) return;
+
+    const startY = e.clientY;
+    const iframeWrapper = area.querySelector(
+      "[data-preview-wrapper]",
+    ) as HTMLElement | null;
+    if (!iframeWrapper) return;
+
+    const startHeight = iframeWrapper.getBoundingClientRect().height;
+    const maxH = area.clientHeight;
+
+    function onMouseMove(ev: MouseEvent) {
+      const dy = ev.clientY - startY;
+      customHeight.value = Math.round(
+        Math.max(MIN_RESIZE_HEIGHT, Math.min(startHeight + dy, maxH)),
+      );
+    }
+
+    function onMouseUp() {
+      isDragging.value = false;
+      document.removeEventListener("mousemove", onMouseMove);
+      document.removeEventListener("mouseup", onMouseUp);
+      cleanupDrag = null;
+    }
+
+    cleanupDrag = onMouseUp;
+    document.addEventListener("mousemove", onMouseMove);
+    document.addEventListener("mouseup", onMouseUp);
+  }
+
+  function handleKeyboardHeightResize(delta: number) {
+    const area = previewArea.value;
+    if (!area) return;
+    const maxH = area.clientHeight;
+    const wrapper = area.querySelector(
+      "[data-preview-wrapper]",
+    ) as HTMLElement | null;
+    const currentH = wrapper
+      ? wrapper.getBoundingClientRect().height
+      : maxH;
+    customHeight.value = Math.round(
+      Math.max(MIN_RESIZE_HEIGHT, Math.min(currentH + delta, maxH)),
+    );
+  }
+
+  function resetSize() {
+    previewWidth.value = "desktop";
+    previewHeight.value = "auto";
+    customWidth.value = null;
+    customHeight.value = null;
+  }
+
   onUnmounted(() => {
     cleanupDrag?.();
   });
 
   return {
     previewWidth,
+    previewHeight,
     customWidth,
+    customHeight,
     isDragging,
     previewArea,
     PRESET_WIDTHS,
+    PRESET_HEIGHTS,
     currentPreviewWidth,
+    currentPreviewHeight,
     startResize,
+    startHeightResize,
     onCustomWidthInput,
+    onCustomHeightInput,
     handleKeyboardResize,
+    handleKeyboardHeightResize,
+    resetSize,
   };
 }
