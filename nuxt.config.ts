@@ -33,6 +33,11 @@ export default defineNuxtConfig({
     name: "Nuxt UI Theme Builder",
   },
 
+  sitemap: {
+    // No dynamic sources in this project — all routes are file-based
+    zeroRuntime: true,
+  },
+
   app: {
     head: {
       htmlAttrs: { lang: "en" },
