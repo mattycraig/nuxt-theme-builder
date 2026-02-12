@@ -85,7 +85,7 @@ Do not collapse these two paths into one.
 
 ## Conventions
 
-- Components are auto-imported with `pathPrefix: false`.
+- Components are auto-imported with `pathPrefix: true` — the folder path provides the name prefix, so filenames omit the folder name (e.g., `editor/ColorPicker.vue` resolves to `<EditorColorPicker />`).
 - Icons use lucide iconify names (`i-lucide-*`).
 - Theme token values should come from constants/unions in `app/types/theme.ts`.
 - For copy/export logic, use utilities/composables (`useThemeExport`, `cssGenerator`) instead of duplicating serialization logic.

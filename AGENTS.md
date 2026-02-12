@@ -42,10 +42,19 @@ app/
 │   ├── templates/**/*.vue          # Full-page template routes
 │   └── about/help/privacy/contact.vue
 ├── components/
-│   ├── editor/                     # Theme editor UI (store-driven)
-│   ├── preview/                    # Preview surfaces + code view
-│   ├── layout/                     # Navbar/sidebar/toolbar shell pieces
-│   └── ai/                         # AI chat/settings UI
+│   ├── ThemeEditor.vue             # Editor orchestrator (root-level, no prefix)
+│   ├── ThemePreview.vue            # Preview orchestrator (root-level, no prefix)
+│   ├── CodeBlock.vue               # Code display (root-level, no prefix)
+│   ├── SaveThemeModal.vue          # Save modal (root-level, no prefix)
+│   ├── SourceCodeView.vue          # Source viewer (root-level, no prefix)
+│   ├── ViewModeToggle.vue          # Preview/source toggle (root-level, no prefix)
+│   ├── LoadingSpinner.vue          # Shared spinner (root-level, no prefix)
+│   ├── ai/                         # AI chat/settings UI (→ <Ai*>)
+│   ├── editor/                     # Theme editor controls (→ <Editor*>)
+│   │   ├── export/                 # Export panel & slideover (→ <EditorExport*>)
+│   │   └── preset/                 # Preset selector (→ <EditorPreset*>)
+│   ├── layout/                     # Navbar/sidebar/toolbar (→ <Layout*>)
+│   └── preview/                    # Component demo panels (→ <Preview*>)
 ├── composables/                    # App behavior modules (theme, iframe sync, source mode, AI, etc.)
 ├── stores/theme.ts                 # Single source of truth for ThemeConfig + history/presets
 ├── types/                          # Theme + AI contracts and unions
