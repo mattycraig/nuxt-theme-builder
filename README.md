@@ -1,6 +1,7 @@
 # Nuxt UI Theme Builder
 
 [![CI](https://github.com/mattycraig/nuxt-theme-builder/actions/workflows/ci.yml/badge.svg)](https://github.com/mattycraig/nuxt-theme-builder/actions/workflows/ci.yml)
+[![E2E Full Nightly](https://github.com/mattycraig/nuxt-theme-builder/actions/workflows/e2e-nightly.yml/badge.svg)](https://github.com/mattycraig/nuxt-theme-builder/actions/workflows/e2e-nightly.yml)
 [![Dependency Review](https://github.com/mattycraig/nuxt-theme-builder/actions/workflows/security.yml/badge.svg)](https://github.com/mattycraig/nuxt-theme-builder/actions/workflows/security.yml)
 
 Visual builder for [Nuxt UI v4](https://ui.nuxt.com) themes.
@@ -108,6 +109,9 @@ pnpm test
 pnpm test:watch
 pnpm test:coverage
 pnpm test:e2e
+pnpm test:e2e:smoke
+pnpm test:e2e:ci
+pnpm test:e2e:full
 pnpm test:e2e:headed
 pnpm test:e2e:ui
 ```
@@ -116,6 +120,9 @@ pnpm test:e2e:ui
 
 - **Unit:** Vitest with Nuxt environment (`happy-dom`)
 - **E2E:** Playwright (Chromium)
+- **CI E2E (fast path):** smoke suite only (`pnpm test:e2e:ci`)
+- **Nightly E2E (full regression):** `.github/workflows/e2e-nightly.yml` runs `pnpm test:e2e:full` daily at 03:00 UTC
+- **Manual full regression:** run the nightly workflow via `workflow_dispatch` or execute `pnpm test:e2e:full` locally
 - Coverage output: `coverage/`
 - Playwright output: `playwright-report/`, `tests/e2e/test-results/`
 
@@ -131,6 +138,7 @@ pnpm test:e2e:ui
 GitHub Actions workflows:
 
 - `ci.yml` (push/PR to `master`): lint, typecheck, unit coverage, e2e, build
+- `e2e-nightly.yml` (schedule + manual): full Playwright regression suite
 - `security.yml` (PR to `master`): dependency review with high-severity fail threshold
 - `lighthouse.yml` (Preview deployments): Lighthouse audit + PR comment
 
@@ -144,7 +152,7 @@ Deployment:
 - Use `pnpm` (enforced by `packageManager`).
 - Keep navigation additions synced in `app/utils/navigation.ts`.
 - For theme model changes, update types → defaults → store → apply/export composables → tests.
-- Ensure `pnpm lint`, `pnpm typecheck`, `pnpm test`, and `pnpm test:e2e` pass before merging.
+- Ensure `pnpm lint`, `pnpm typecheck`, `pnpm test`, and `pnpm test:e2e:ci` pass before merging.
 
 ## License
 

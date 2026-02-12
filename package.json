@@ -15,6 +15,9 @@
     "test:coverage": "vitest run --coverage",
     "prepare": "husky",
     "test:e2e": "playwright test",
+    "test:e2e:full": "playwright test",
+    "test:e2e:smoke": "playwright test tests/e2e/smoke",
+    "test:e2e:ci": "playwright test tests/e2e/smoke",
     "test:e2e:headed": "playwright test --headed",
     "test:e2e:ui": "playwright test --ui"
   },

@@ -1,14 +1,16 @@
 import { defineConfig, devices } from "@playwright/test";
 import "dotenv/config";
 
+const isCI = Boolean(process.env.CI);
+
 export default defineConfig({
   testDir: "./tests/e2e",
   outputDir: "./tests/e2e/test-results",
   fullyParallel: true,
-  forbidOnly: !!process.env.CI,
-  retries: process.env.CI ? 2 : 0,
-  workers: process.env.CI ? 1 : undefined,
-  reporter: process.env.CI ? [["html", { open: "never" }], ["github"]] : "html",
+  forbidOnly: isCI,
+  retries: isCI ? 1 : 0,
+  workers: isCI ? 2 : undefined,
+  reporter: isCI ? [["html", { open: "never" }], ["github"]] : "html",
   use: {
     baseURL: "http://localhost:3000",
     trace: "on-first-retry",
@@ -21,9 +23,11 @@ export default defineConfig({
     },
   ],
   webServer: {
-    command: "pnpm dev",
+    command: isCI
+      ? "pnpm build && pnpm preview --port 3000 --host 0.0.0.0"
+      : "pnpm dev",
     url: "http://localhost:3000",
-    reuseExistingServer: !process.env.CI,
+    reuseExistingServer: !isCI,
     timeout: 120_000,
   },
 });
