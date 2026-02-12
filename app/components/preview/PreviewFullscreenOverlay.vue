@@ -81,6 +81,41 @@ onKeyStroke("Escape", () => {
   if (isFullscreen.value) isFullscreen.value = false;
 });
 
+// Focus management: trap focus inside dialog and restore on close
+const dialogRef = ref<HTMLElement>();
+const triggerElement = ref<HTMLElement | null>(null);
+
+watch(isFullscreen, async (open) => {
+  if (open) {
+    triggerElement.value = document.activeElement as HTMLElement | null;
+    await nextTick();
+    const firstFocusable = dialogRef.value?.querySelector<HTMLElement>(
+      'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])',
+    );
+    firstFocusable?.focus();
+  } else {
+    triggerElement.value?.focus();
+    triggerElement.value = null;
+  }
+});
+
+function handleKeydownTrap(event: KeyboardEvent) {
+  if (event.key !== "Tab") return;
+  const focusable = dialogRef.value?.querySelectorAll<HTMLElement>(
+    'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])',
+  );
+  if (!focusable?.length) return;
+  const first = focusable[0]!;
+  const last = focusable[focusable.length - 1]!;
+  if (event.shiftKey && document.activeElement === first) {
+    event.preventDefault();
+    last.focus();
+  } else if (!event.shiftKey && document.activeElement === last) {
+    event.preventDefault();
+    first.focus();
+  }
+}
+
 onMounted(() => {
   if (import.meta.client) {
     window.addEventListener("message", handleMessage);
@@ -104,9 +139,12 @@ onUnmounted(() => {
     >
       <div
         v-if="isFullscreen"
+        ref="dialogRef"
         class="fixed inset-0 z-50 bg-(--ui-bg) flex flex-col"
         role="dialog"
+        aria-modal="true"
         aria-label="Fullscreen preview"
+        @keydown="handleKeydownTrap"
       >
         <!-- Fullscreen toolbar -->
         <div
@@ -147,7 +185,7 @@ onUnmounted(() => {
 
             <ViewModeToggle v-if="hasSourcePage" v-model="fullscreenViewMode" />
 
-            <USeparator orientation="vertical" class="h-6 mx-2" />
+            <USeparator orientation="vertical" class="h-6 mx-2" :ui="{border:'dark:border-accented'}" />
 
             <UTooltip text="Exit fullscreen (Esc)">
               <UButton

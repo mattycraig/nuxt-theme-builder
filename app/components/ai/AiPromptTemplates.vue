@@ -37,7 +37,7 @@ function templatesForCategory(category: string) {
           <button
             v-for="template in templatesForCategory(category)"
             :key="template.id"
-            class="flex items-start gap-2.5 w-full px-2 py-2 rounded-[var(--ui-radius)] hover:bg-(--ui-bg-elevated) transition-colors text-left group"
+            class="flex items-start gap-2.5 w-full px-2 py-2 rounded-[var(--ui-radius)] hover:bg-(--ui-bg-elevated) transition-colors text-left group focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-(--ui-primary)"
             @click="emit('select', template.prompt)"
           >
             <UIcon

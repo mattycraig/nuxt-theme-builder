@@ -1,4 +1,4 @@
-import { describe, it, expect, beforeEach } from "vitest";
+import { describe, it, expect, beforeEach, vi } from "vitest";
 
 describe("usePreviewResize", () => {
   let resize: ReturnType<typeof usePreviewResize>;
@@ -112,6 +112,77 @@ describe("usePreviewResize", () => {
     it("accepts exactly 320", () => {
       resize.onCustomWidthInput("320");
       expect(resize.customWidth.value).toBe(320);
+    });
+  });
+
+  describe("handleKeyboardResize", () => {
+    function setupArea(areaWidth: number, wrapperWidth: number) {
+      const wrapper = document.createElement("div");
+      wrapper.setAttribute("data-preview-wrapper", "");
+      vi.spyOn(wrapper, "getBoundingClientRect").mockReturnValue({
+        width: wrapperWidth,
+        height: 0,
+        x: 0,
+        y: 0,
+        top: 0,
+        left: 0,
+        bottom: 0,
+        right: 0,
+        toJSON: () => {},
+      });
+
+      const area = document.createElement("div");
+      area.appendChild(wrapper);
+      Object.defineProperty(area, "clientWidth", { value: areaWidth });
+
+      resize.previewArea.value = area;
+    }
+
+    it("increases width by positive delta", () => {
+      setupArea(1200, 800);
+      resize.handleKeyboardResize(40);
+      expect(resize.customWidth.value).toBe(840);
+    });
+
+    it("decreases width by negative delta", () => {
+      setupArea(1200, 800);
+      resize.handleKeyboardResize(-40);
+      expect(resize.customWidth.value).toBe(760);
+    });
+
+    it("clamps to minimum 320", () => {
+      setupArea(1200, 350);
+      resize.handleKeyboardResize(-100);
+      expect(resize.customWidth.value).toBe(320);
+    });
+
+    it("clamps to maximum area width", () => {
+      setupArea(1000, 950);
+      resize.handleKeyboardResize(200);
+      expect(resize.customWidth.value).toBe(1000);
+    });
+
+    it("does nothing when previewArea is not set", () => {
+      resize.customWidth.value = 500;
+      resize.handleKeyboardResize(40);
+      // customWidth unchanged because area is undefined
+      expect(resize.customWidth.value).toBe(500);
+    });
+
+    it("uses area clientWidth as fallback when wrapper is missing", () => {
+      const area = document.createElement("div");
+      Object.defineProperty(area, "clientWidth", { value: 1000 });
+      resize.previewArea.value = area;
+
+      resize.handleKeyboardResize(-100);
+      expect(resize.customWidth.value).toBe(900);
+    });
+
+    it("rounds result to nearest integer", () => {
+      setupArea(1200, 805);
+      resize.handleKeyboardResize(33);
+      expect(resize.customWidth.value).toBe(838);
+      expect(Number.isInteger(resize.customWidth.value)).toBe(true);
     });
   });
 });

@@ -98,6 +98,21 @@ export function usePreviewResize() {
     }
   }
 
+  function handleKeyboardResize(delta: number) {
+    const area = previewArea.value;
+    if (!area) return;
+    const maxW = area.clientWidth;
+    const wrapper = area.querySelector(
+      "[data-preview-wrapper]",
+    ) as HTMLElement | null;
+    const currentW = wrapper
+      ? wrapper.getBoundingClientRect().width
+      : maxW;
+    customWidth.value = Math.round(
+      Math.max(MIN_RESIZE_WIDTH, Math.min(currentW + delta, maxW)),
+    );
+  }
+
   onUnmounted(() => {
     cleanupDrag?.();
   });
@@ -111,5 +126,6 @@ export function usePreviewResize() {
     currentPreviewWidth,
     startResize,
     onCustomWidthInput,
+    handleKeyboardResize,
   };
 }

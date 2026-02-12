@@ -84,7 +84,7 @@ function getShadeHex(palette: NeutralPalette, shade: string): string {
         >
           {{ capitalize(palette) }}
         </span>
-        <span class="flex flex-1 min-w-0">
+        <span class="flex flex-1 min-w-0" aria-hidden="true">
           <span
             v-for="shade in NUMERIC_SHADE_KEYS"
             :key="shade"

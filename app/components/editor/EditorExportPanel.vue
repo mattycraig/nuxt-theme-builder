@@ -151,6 +151,8 @@ function handleFileUpload(event: Event) {
       <UCollapsible v-model:open="importOpen" class="flex flex-col gap-3">
         <button
           class="group flex items-center justify-between w-full text-left"
+          :aria-expanded="importOpen"
+          aria-controls="import-content"
         >
           <div class="flex items-center gap-2">
             <UIcon
@@ -171,7 +173,7 @@ function handleFileUpload(event: Event) {
         </button>
 
         <template #content>
-          <div class="flex flex-col gap-3">
+          <div id="import-content" class="flex flex-col gap-3">
             <p class="text-xs text-(--ui-text-muted)">
               Paste a theme JSON or upload a
               <code

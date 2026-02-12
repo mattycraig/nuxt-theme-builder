@@ -43,7 +43,7 @@ useSeoMeta({
         <div
           class="size-16 rounded-2xl bg-(--ui-color-primary-500) flex items-center justify-center"
         >
-          <UIcon name="i-lucide-palette" class="size-8 text-white" />
+          <UIcon name="i-lucide-palette" class="size-8 text-white" aria-hidden="true" />
         </div>
       </div>
 

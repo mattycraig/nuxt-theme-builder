@@ -39,6 +39,7 @@ const {
   previewArea,
   currentPreviewWidth,
   startResize,
+  handleKeyboardResize,
 } = usePreviewResize();
 
 // Fullscreen (singleton — shared with PreviewFullscreenOverlay)
@@ -121,6 +122,7 @@ useHead({
         :current-preview-width="currentPreviewWidth"
         @iframe-load="handleIframeLoad"
         @start-resize="startResize"
+        @keyboard-resize="handleKeyboardResize"
       />
     </main>
 

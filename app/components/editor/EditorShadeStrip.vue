@@ -56,7 +56,7 @@ function getHex(shade: string): string {
           type="button"
           role="radio"
           :aria-checked="modelValue === s"
-          :aria-label="`Shade ${s}`"
+          :aria-label="`Shade ${s} — ${getHex(s)}`"
           class="w-full h-5 first:rounded-l-sm last:rounded-r-sm relative cursor-pointer transition-transform hover:scale-y-125 focus-visible:z-10 focus-visible:ring-2 focus-visible:ring-offset-1 focus-visible:outline-none mx-[0.5px]"
           :class="[
             modelValue === s

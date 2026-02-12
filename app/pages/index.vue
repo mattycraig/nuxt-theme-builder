@@ -130,6 +130,7 @@ const sections = [
                 <UIcon
                   :name="feature.icon"
                   class="size-5 text-(--ui-primary)"
+                  aria-hidden="true"
                 />
               </div>
               <div>
@@ -161,35 +162,38 @@ const sections = [
           </p>
         </div>
         <div class="grid sm:grid-cols-3 gap-6">
-          <NuxtLink
+          <UCard
             v-for="section in sections"
             :key="section.title"
-            :to="section.to"
-            class="block"
+            class="relative hover:ring-2 hover:ring-(--ui-primary)/40 transition-all h-full"
           >
-            <UCard
-              class="hover:ring-2 hover:ring-(--ui-primary)/40 transition-all cursor-pointer h-full"
-            >
-              <div class="text-center py-4">
-                <div
-                  class="size-14 rounded-xl bg-(--ui-primary)/10 flex items-center justify-center mx-auto mb-4"
-                >
-                  <UIcon
-                    :name="section.icon"
-                    class="size-7 text-(--ui-primary)"
-                  />
-                </div>
-                <h3
-                  class="text-lg font-semibold text-(--ui-text-highlighted) mb-2"
-                >
-                  {{ section.title }}
-                </h3>
-                <p class="text-sm text-(--ui-text-muted)">
-                  {{ section.description }}
-                </p>
+            <div class="text-center py-4">
+              <div
+                class="size-14 rounded-xl bg-(--ui-primary)/10 flex items-center justify-center mx-auto mb-4"
+              >
+                <UIcon
+                  :name="section.icon"
+                  class="size-7 text-(--ui-primary)"
+                  aria-hidden="true"
+                />
               </div>
-            </UCard>
-          </NuxtLink>
+              <h3
+                class="text-lg font-semibold text-(--ui-text-highlighted) mb-2"
+              >
+                <NuxtLink
+                  :to="section.to"
+                  class="after:absolute after:inset-0 focus-visible:outline-none"
+                >
+                  <span class="relative z-10 focus-visible:ring-2 focus-visible:ring-(--ui-primary) focus-visible:outline-none rounded">
+                    {{ section.title }}
+                  </span>
+                </NuxtLink>
+              </h3>
+              <p class="text-sm text-(--ui-text-muted)">
+                {{ section.description }}
+              </p>
+            </div>
+          </UCard>
         </div>
       </div>
     </section>
@@ -200,6 +204,7 @@ const sections = [
         <UIcon
           name="i-lucide-arrow-left"
           class="size-5 text-(--ui-text-muted) mb-3"
+          aria-hidden="true"
         />
         <p class="text-(--ui-text-muted)">
           Open the

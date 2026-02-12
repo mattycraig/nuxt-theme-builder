@@ -176,6 +176,8 @@ function handleDownload() {
         v-else-if="code"
         class="code-block__content flex-1 min-h-0 overflow-auto relative px-4 py-2"
         :style="maxHeight !== 'none' ? { maxHeight } : undefined"
+        role="region"
+        :aria-label="`Source code${filename ? ': ' + filename : ''}`"
       >
         <!-- Overlay while highlighting -->
         <div

@@ -35,3 +35,9 @@ tests/e2e/test-results/
 playwright-report/
 blob-report/
 
+# Playwright MCP (browser automation logs/screenshots)
+.playwright-mcp/
+
+# Accidental CLI artifacts
+--port/
+

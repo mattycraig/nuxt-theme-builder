@@ -6,7 +6,7 @@ const contactMethods = [
     icon: "i-lucide-message-circle",
     title: "GitHub Issues",
     description: "Report bugs or request features through our issue tracker.",
-    href: "https://github.com/your-org/nuxt-theme-builder/issues",
+    href: "https://github.com/mattycraig/nuxt-theme-builder/issues",
     label: "Open an Issue",
   },
   {
@@ -14,7 +14,7 @@ const contactMethods = [
     title: "GitHub Discussions",
     description:
       "Ask questions, share ideas, or show off your themes with the community.",
-    href: "https://github.com/your-org/nuxt-theme-builder/discussions",
+    href: "https://github.com/mattycraig/nuxt-theme-builder/discussions",
     label: "Join the Discussion",
   },
   {

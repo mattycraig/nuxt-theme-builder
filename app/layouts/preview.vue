@@ -107,7 +107,7 @@ useHead({
 </script>
 
 <template>
-  <div class="min-h-screen bg-(--ui-bg)">
+  <main class="min-h-screen bg-(--ui-bg)">
     <slot />
-  </div>
+  </main>
 </template>

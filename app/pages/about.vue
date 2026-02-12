@@ -20,7 +20,7 @@ import aboutMd from "~/data/about.md?raw";
           {
             label: 'View on GitHub',
             icon: 'i-lucide-github',
-            to: 'https://github.com/your-org/nuxt-theme-builder',
+            to: 'https://github.com/mattycraig/nuxt-theme-builder',
             target: '_blank',
             variant: 'outline',
             color: 'neutral',

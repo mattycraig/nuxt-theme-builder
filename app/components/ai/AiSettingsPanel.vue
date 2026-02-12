@@ -94,6 +94,7 @@ const keyPlaceholders: Record<string, string> = {
       </template>
       <div class="flex gap-2 mt-2">
         <UInput
+          id="ai-api-key"
           :model-value="apiKey"
           :type="showKey ? 'text' : 'password'"
           :placeholder="keyPlaceholders[provider] || 'Enter API key'"

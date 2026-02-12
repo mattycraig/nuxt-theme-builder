@@ -5,8 +5,8 @@ useThemeApply();
 </script>
 
 <template>
-  <div>
+  <main>
     <slot />
     <SaveThemeModal />
-  </div>
+  </main>
 </template>

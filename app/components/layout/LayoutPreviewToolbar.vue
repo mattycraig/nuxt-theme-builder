@@ -57,7 +57,7 @@ const exportPanel = useExportPanel();
         />
       </UTooltip>
 
-      <USeparator orientation="vertical" class="h-6 mx-2" />
+      <USeparator orientation="vertical" class="h-6 mx-2" :ui="{border:'dark:border-accented'}" />
 
       <!-- Export/Import Button -->
       <UButton

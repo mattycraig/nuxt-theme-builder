@@ -1,5 +1,5 @@
 <script setup lang="ts">
-defineProps<{
+const props = defineProps<{
   iframeInitialSrc: string;
   iframeLoading: boolean;
   isDragging: boolean;
@@ -9,10 +9,35 @@ defineProps<{
 const emit = defineEmits<{
   iframeLoad: [];
   startResize: [event: MouseEvent, side: "left" | "right"];
+  keyboardResize: [delta: number];
 }>();
 
 const previewFrame = defineModel<HTMLIFrameElement | undefined>("previewFrame");
 const previewArea = defineModel<HTMLElement | undefined>("previewArea");
+
+const numericWidth = computed(() => {
+  const w = props.currentPreviewWidth;
+  const parsed = parseInt(w, 10);
+  return isNaN(parsed) ? undefined : parsed;
+});
+
+const KEYBOARD_STEP = 20;
+const KEYBOARD_STEP_LARGE = 80;
+
+function handleDragKeydown(event: KeyboardEvent, side: "left" | "right") {
+  const direction = side === "right" ? 1 : -1;
+  let delta = 0;
+
+  if (event.key === "ArrowRight") delta = KEYBOARD_STEP * direction;
+  else if (event.key === "ArrowLeft") delta = -KEYBOARD_STEP * direction;
+  else if (event.key === "Home" || event.key === "End") delta = 0;
+  else return;
+
+  event.preventDefault();
+
+  if (event.shiftKey) delta *= KEYBOARD_STEP_LARGE / KEYBOARD_STEP;
+  emit("keyboardResize", delta * 2);
+}
 </script>
 
 <template>
@@ -28,17 +53,24 @@ const previewArea = defineModel<HTMLElement | undefined>("previewArea");
     >
       <!-- Left drag handle -->
       <div
-        class="absolute -left-3 top-0 bottom-0 w-3 cursor-col-resize group flex items-center justify-center z-10"
+        role="separator"
+        tabindex="0"
+        aria-orientation="vertical"
+        aria-label="Resize preview panel (left handle)"
+        aria-valuemin="320"
+        :aria-valuenow="numericWidth"
+        class="absolute -left-3 top-0 bottom-0 w-3 cursor-col-resize group flex items-center justify-center z-10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-(--ui-primary) rounded"
         @mousedown.prevent="emit('startResize', $event, 'left')"
+        @keydown="handleDragKeydown($event, 'left')"
       >
         <div
-          class="w-1 h-16 rounded-full bg-(--ui-border) group-hover:bg-(--ui-primary) transition-colors"
+          class="w-1 h-16 rounded-full bg-(--ui-border-accented) group-hover:bg-(--ui-primary) transition-colors"
         />
       </div>
 
       <!-- Iframe -->
       <div
-        class="relative h-full rounded-xl border border-(--ui-border) shadow-xl overflow-hidden"
+        class="relative h-full rounded-xl border border-(--ui-border-accented) shadow-xl overflow-hidden"
       >
         <iframe
           ref="previewFrame"
@@ -73,11 +105,18 @@ const previewArea = defineModel<HTMLElement | undefined>("previewArea");
 
       <!-- Right drag handle -->
       <div
-        class="absolute -right-3 top-0 bottom-0 w-3 cursor-col-resize group flex items-center justify-center z-10"
+        role="separator"
+        tabindex="0"
+        aria-orientation="vertical"
+        aria-label="Resize preview panel (right handle)"
+        aria-valuemin="320"
+        :aria-valuenow="numericWidth"
+        class="absolute -right-3 top-0 bottom-0 w-3 cursor-col-resize group flex items-center justify-center z-10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-(--ui-primary) rounded"
         @mousedown.prevent="emit('startResize', $event, 'right')"
+        @keydown="handleDragKeydown($event, 'right')"
       >
         <div
-          class="w-1 h-16 rounded-full bg-(--ui-border) group-hover:bg-(--ui-primary) transition-colors"
+          class="w-1 h-16 rounded-full bg-(--ui-border-accented) group-hover:bg-(--ui-primary) transition-colors"
         />
       </div>
     </div>
