@@ -21,6 +21,13 @@ export default defineNuxtConfig({
     },
   },
 
+  runtimeConfig: {
+    comingSoonPassword: process.env.NUXT_COMING_SOON_PASSWORD || "",
+    public: {
+      comingSoonEnabled: process.env.NUXT_PUBLIC_COMING_SOON_ENABLED === "true",
+    },
+  },
+
   site: {
     url: "https://nuxt-theme-builder.vercel.app",
     name: "Nuxt UI Theme Builder",
@@ -163,6 +170,9 @@ export default defineNuxtConfig({
       security: {
         xssValidator: false,
       },
+    },
+    "/coming-soon": {
+      index: false,
     },
   },
 
