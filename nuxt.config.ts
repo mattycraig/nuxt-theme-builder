@@ -172,7 +172,9 @@ export default defineNuxtConfig({
       },
     },
     "/coming-soon": {
-      index: false,
+      headers: {
+        "X-Robots-Tag": "noindex, nofollow",
+      },
     },
   },
 

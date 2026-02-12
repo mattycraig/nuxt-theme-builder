@@ -47,6 +47,11 @@ jobs:
         if: steps.playwright-cache.outputs.cache-hit == 'true'
         run: npx playwright install-deps chromium
 
+      - name: Build app for E2E preview
+        run: pnpm build
+        env:
+          NODE_OPTIONS: --max-old-space-size=4096
+
       - name: Run full E2E suite
         run: pnpm test:e2e:full
 

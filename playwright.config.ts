@@ -1,7 +1,9 @@
 import { defineConfig, devices } from "@playwright/test";
 import "dotenv/config";
 
-const isCI = Boolean(process.env.CI);
+const isCI =
+  (globalThis as { process?: { env?: Record<string, string | undefined> } })
+    .process?.env?.CI === "true";
 
 export default defineConfig({
   testDir: "./tests/e2e",
@@ -23,11 +25,9 @@ export default defineConfig({
     },
   ],
   webServer: {
-    command: isCI
-      ? "pnpm build && pnpm preview --port 3000 --host 0.0.0.0"
-      : "pnpm dev",
+    command: isCI ? "pnpm preview --port 3000 --host 0.0.0.0" : "pnpm dev",
     url: "http://localhost:3000",
     reuseExistingServer: !isCI,
-    timeout: 120_000,
+    timeout: 180_000,
   },
 });
