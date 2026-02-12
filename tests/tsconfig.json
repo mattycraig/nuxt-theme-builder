@@ -1,0 +1,18 @@
+{
+  "compilerOptions": {
+    "target": "ESNext",
+    "module": "preserve",
+    "moduleResolution": "Bundler",
+    "strict": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "noEmit": true,
+    "jsx": "preserve",
+    "jsxImportSource": "vue",
+    "paths": {
+      "~/*": ["../app/*"],
+      "@/*": ["../app/*"]
+    }
+  },
+  "include": ["./**/*", "../.nuxt/nuxt.d.ts"]
+}

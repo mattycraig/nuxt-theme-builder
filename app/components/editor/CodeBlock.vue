@@ -206,7 +206,7 @@ function handleDownload() {
   border: none;
   min-height: 100%;
   font-size: 0.8125rem;
-  line-height: 0.75;
+  line-height: 1.5;
   background-color: transparent;
   padding-top: 0;
 }
