@@ -206,7 +206,7 @@ function clearFilters() {
           <li v-for="item in cat.items" :key="String(item.to)">
             <NuxtLink
               :to="String(item.to)"
-              class="block"
+              class="block h-full"
               :aria-label="`View ${item.label} component. ${item.description || ''}`"
             >
               <UCard
