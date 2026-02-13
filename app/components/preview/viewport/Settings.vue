@@ -101,12 +101,7 @@ function onCustomHeightInput(val: string | number) {
               class="text-xs font-semibold uppercase tracking-wide mb-2 flex items-center gap-2"
             >
               Width
-              <UBadge
-                variant="subtle"
-                size="xs"
-                color="neutral"
-                class="font-mono tabular-nums"
-              >
+              <UBadge variant="subtle" size="xs" color="primary">
                 {{ currentWidthLabel }}
               </UBadge>
             </legend>
@@ -148,12 +143,7 @@ function onCustomHeightInput(val: string | number) {
               class="text-xs font-semibold uppercase tracking-wide mb-2 flex items-center gap-2"
             >
               Height
-              <UBadge
-                variant="subtle"
-                size="xs"
-                color="neutral"
-                class="font-mono tabular-nums"
-              >
+              <UBadge variant="subtle" size="xs" color="primary">
                 {{ currentHeightLabel }}
               </UBadge>
             </legend>

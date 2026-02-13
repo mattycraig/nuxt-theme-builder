@@ -58,16 +58,13 @@ watch(
       }"
       trailing-icon="i-lucide-chevron-down"
     >
-      <span class="text-xs font-semibold uppercase tracking-wide">
+      <span
+        class="text-xs font-semibold uppercase tracking-wide flex items-center gap-2"
+      >
         <slot name="heading">
           {{ label }}
           <ClientOnly v-if="modeBadge">
-            <UBadge
-              :label="modeBadge"
-              variant="subtle"
-              size="xs"
-              class="ml-1"
-            />
+            <UBadge :label="modeBadge" variant="subtle" size="xs" />
           </ClientOnly>
         </slot>
       </span>
