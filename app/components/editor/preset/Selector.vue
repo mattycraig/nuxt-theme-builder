@@ -179,7 +179,7 @@ function onPresetSelect(name: string) {
           aria-label="Generate random theme"
           variant="ghost"
           color="neutral"
-          size="sm"
+          size="md"
           @click="store.randomizeTheme()"
         />
       </UTooltip>
