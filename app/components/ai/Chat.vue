@@ -123,7 +123,7 @@ function handlePromptSelect(prompt: string) {
 </script>
 
 <template>
-  <UDashboardGroup unit="px">
+  <UDashboardGroup unit="px" :data-hydrated="hydrated ? 'true' : undefined">
     <!-- Sidebar -->
     <UDashboardSidebar
       id="ai-sidebar"

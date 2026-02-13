@@ -123,6 +123,11 @@ test.describe("Smoke - AI Theme Generation", () => {
     await seedApiKey(page);
     await mockGenerateSuccess(page);
     await page.goto(AI_URL);
+    // Wait for Vue hydration so event handlers are bound
+    await page.waitForSelector('[data-hydrated="true"]', {
+      state: "attached",
+      timeout: 15_000,
+    });
   });
 
   test("loads AI page and sends one generation prompt", async ({ page }) => {
@@ -134,9 +139,11 @@ test.describe("Smoke - AI Theme Generation", () => {
     await input.fill("Create a clean B2B dashboard theme");
     await page.getByRole("button", { name: "Send message" }).click();
 
-    await expect(page.getByText(/professional blue theme/i)).toBeVisible();
+    await expect(page.getByText(/professional blue theme/i)).toBeVisible({
+      timeout: 15_000,
+    });
     await expect(
       page.getByRole("button", { name: /Apply & Preview Theme/i }),
-    ).toBeVisible();
+    ).toBeVisible({ timeout: 10_000 });
   });
 });

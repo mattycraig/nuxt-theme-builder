@@ -99,9 +99,9 @@ test.describe("Fullscreen Preview", () => {
       });
       await dialog.getByRole("button", { name: "Mobile" }).click();
 
-      // Width label should update
+      // Width label should update in the viewport settings button
       const widthButton = dialog.getByRole("button", {
-        name: /Current preview width/,
+        name: /Viewport settings/,
       });
       await expect(widthButton).toContainText("375px");
     });
@@ -113,7 +113,7 @@ test.describe("Fullscreen Preview", () => {
       await dialog.getByRole("button", { name: "Tablet" }).click();
 
       const widthButton = dialog.getByRole("button", {
-        name: /Current preview width/,
+        name: /Viewport settings/,
       });
       await expect(widthButton).toContainText("768px");
     });

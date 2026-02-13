@@ -55,13 +55,35 @@ const sectionOpen = reactive<Record<SectionKey, boolean>>(
   ) as Record<SectionKey, boolean>,
 );
 
-const debouncedRadiusCommit = useDebounceFn((val: number) => {
-  store.setRadiusForMode(mode.value, val);
-}, 300);
+// Manual debounce for radius commit — avoids reliance on useDebounceFn's .cancel()
+let _radiusCommitTimer: ReturnType<typeof setTimeout> | null = null;
+
+function _cancelRadiusCommit() {
+  if (_radiusCommitTimer) {
+    clearTimeout(_radiusCommitTimer);
+    _radiusCommitTimer = null;
+  }
+}
+
+function _scheduleRadiusCommit(val: number) {
+  _cancelRadiusCommit();
+  _radiusCommitTimer = setTimeout(() => {
+    _radiusCommitTimer = null;
+    store.setRadiusForMode(mode.value, val);
+  }, 300);
+}
+
+// Cancel stale debounced radius commits after undo/redo/undoAll
+watch(
+  () => store.historyNavCount,
+  () => {
+    _cancelRadiusCommit();
+  },
+);
 
 function onRadiusChange(val: number) {
   store.setRadiusVisualForMode(mode.value, val);
-  debouncedRadiusCommit(val);
+  _scheduleRadiusCommit(val);
 }
 
 function onTextOverride(token: TextTokenKey, shade: NeutralShade) {
@@ -85,6 +107,10 @@ function toggleJsonMode() {
 
 onMounted(() => {
   hydrated.value = true;
+});
+
+onUnmounted(() => {
+  _cancelRadiusCommit();
 });
 </script>
 

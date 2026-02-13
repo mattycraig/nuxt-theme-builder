@@ -46,7 +46,19 @@ export const useThemeStore = defineStore(
      */
     const historyBaseIndex = ref(0);
 
+    /** Incremented on undo/redo/undoAll so UI can cancel stale debounced ops */
+    const historyNavCount = ref(0);
+
+    // Guard flag to prevent history pushes while restoring from undo/redo
+    let _restoringFromHistory = false;
+
     function _pushHistory() {
+      if (_restoringFromHistory) return;
+      // Skip if config is identical to current history entry (prevents
+      // stale debounced commits from destroying the redo stack after undo)
+      const currentSnapshot = JSON.stringify(config.value);
+      if (JSON.stringify(history.value[historyIndex.value]) === currentSnapshot)
+        return;
       const newHistory = history.value.slice(0, historyIndex.value + 1);
       newHistory.push(cloneTheme(config.value));
       if (newHistory.length > MAX_HISTORY) {
@@ -77,22 +89,34 @@ export const useThemeStore = defineStore(
 
     function undo() {
       if (!canUndo.value) return;
+      _restoringFromHistory = true;
+      historyNavCount.value++;
       historyIndex.value--;
       config.value = cloneTheme(history.value[historyIndex.value]!);
+      _restoringFromHistory = false;
     }
 
     function undoAll() {
       if (!canUndoAll.value) return;
+      _restoringFromHistory = true;
+      historyNavCount.value++;
       const target = Math.max(historyBaseIndex.value, 0);
-      if (historyIndex.value === target) return;
+      if (historyIndex.value === target) {
+        _restoringFromHistory = false;
+        return;
+      }
       historyIndex.value = target;
       config.value = cloneTheme(history.value[target]!);
+      _restoringFromHistory = false;
     }
 
     function redo() {
       if (!canRedo.value) return;
+      _restoringFromHistory = true;
+      historyNavCount.value++;
       historyIndex.value++;
       config.value = cloneTheme(history.value[historyIndex.value]!);
+      _restoringFromHistory = false;
     }
 
     // Setters (each pushes history for undo support) ────────────────
@@ -367,6 +391,7 @@ export const useThemeStore = defineStore(
       canUndo,
       canUndoAll,
       canRedo,
+      historyNavCount,
       undo,
       undoAll,
       redo,

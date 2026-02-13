@@ -204,6 +204,12 @@ async function gotoAi(page: Page, retries = 3) {
       }
       throw new Error(`Server returned error page after ${retries} attempts`);
     }
+
+    // Wait for Vue hydration so event handlers are bound
+    await page.waitForSelector('[data-hydrated="true"]', {
+      state: "attached",
+      timeout: 15_000,
+    });
     return;
   }
 }
