@@ -9,7 +9,7 @@ const _saveModalName = ref("");
  *
  * This is a singleton pattern — multiple callers (toolbar, keyboard shortcut,
  * saved-themes section) all control the same modal. The actual `<UModal>` is
- * rendered once in `SaveThemeModal.vue`.
+ * rendered once in `shared/SaveThemeModal.vue`.
  */
 export function useSaveThemeModal() {
   const store = useThemeStore();

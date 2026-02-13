@@ -14,6 +14,6 @@
         },
       ]"
     />
-    <PreviewNavigation />
+    <ShowcaseNavigation />
   </div>
 </template>

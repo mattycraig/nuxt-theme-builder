@@ -7,6 +7,6 @@ useThemeApply();
 <template>
   <main>
     <slot />
-    <SaveThemeModal />
+    <SharedSaveThemeModal />
   </main>
 </template>

@@ -14,6 +14,6 @@
         },
       ]"
     />
-    <PreviewMisc />
+    <ShowcaseMisc />
   </div>
 </template>

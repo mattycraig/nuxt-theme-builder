@@ -14,6 +14,6 @@
         },
       ]"
     />
-    <PreviewCards />
+    <ShowcaseCards />
   </div>
 </template>

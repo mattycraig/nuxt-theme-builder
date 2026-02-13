@@ -193,12 +193,10 @@ async function gotoAi(page: Page, retries = 3) {
     await page.goto(AI_URL);
 
     // Check for Nuxt error page (429 Too Many Requests, 500, etc.)
-    const errorHeading = page
-      .locator("h1")
-      .filter({
-        hasText:
-          /^(500|429|Too Many Requests|Server Error|Internal Server Error)$/,
-      });
+    const errorHeading = page.locator("h1").filter({
+      hasText:
+        /^(500|429|Too Many Requests|Server Error|Internal Server Error)$/,
+    });
     if (await errorHeading.isVisible({ timeout: 2_000 }).catch(() => false)) {
       if (attempt < retries) {
         await page.waitForTimeout(2000 * attempt);
@@ -1420,7 +1418,7 @@ test.describe("AI Theme Generation — Apply Theme Integration", () => {
     });
 
     await test.step("Verify save modal or theme applied toast appears", async () => {
-      // In preview mode the SaveThemeModal is not in the layout, but
+      // In preview mode the SharedSaveThemeModal is not in the layout, but
       // localApplyTheme() still runs and shows "Theme applied" toast.
       await expect(page.getByText("Theme applied").first()).toBeVisible({
         timeout: 5_000,

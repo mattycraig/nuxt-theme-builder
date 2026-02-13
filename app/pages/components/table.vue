@@ -14,6 +14,6 @@
         },
       ]"
     />
-    <PreviewTable />
+    <ShowcaseTable />
   </div>
 </template>

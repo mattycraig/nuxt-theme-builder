@@ -98,7 +98,7 @@ function onCustomHeightInput(val: string | number) {
         <fieldset>
           <div class="flex items-center gap-1 justify-between">
             <legend
-              class="text-xs font-semibold text-(--ui-text-muted) uppercase tracking-wide mb-2 flex items-center gap-2"
+              class="text-xs font-semibold uppercase tracking-wide mb-2 flex items-center gap-2"
             >
               Width
               <UBadge
@@ -110,7 +110,7 @@ function onCustomHeightInput(val: string | number) {
                 {{ currentWidthLabel }}
               </UBadge>
             </legend>
-            <PreviewPresetButtons
+            <PreviewViewportPresetButtons
               :options="PRESET_WIDTHS"
               :active-preset="activeWidth"
               :custom-value="customWidth"
@@ -145,7 +145,7 @@ function onCustomHeightInput(val: string | number) {
         <fieldset>
           <div class="flex items-center gap-1 justify-between">
             <legend
-              class="text-xs font-semibold text-(--ui-text-muted) uppercase tracking-wide mb-2 flex items-center gap-2"
+              class="text-xs font-semibold uppercase tracking-wide mb-2 flex items-center gap-2"
             >
               Height
               <UBadge
@@ -157,7 +157,7 @@ function onCustomHeightInput(val: string | number) {
                 {{ currentHeightLabel }}
               </UBadge>
             </legend>
-            <PreviewPresetButtons
+            <PreviewViewportPresetButtons
               :options="PRESET_HEIGHTS"
               :active-preset="activeHeight"
               :custom-value="customHeight"

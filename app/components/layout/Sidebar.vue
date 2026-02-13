@@ -24,7 +24,7 @@ const footerLinks = UTILITY_NAV_ITEMS.filter((item) =>
     }"
   >
     <template #default>
-      <ThemeEditor />
+      <EditorPanel />
     </template>
 
     <template #footer>

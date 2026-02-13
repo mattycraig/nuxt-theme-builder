@@ -25,7 +25,7 @@ withDefaults(
 
 <template>
   <div class="flex items-center gap-3">
-    <PreviewPresetButtons
+    <PreviewViewportPresetButtons
       :options="PRESET_WIDTHS"
       :active-preset="activeWidth"
       :custom-value="customWidth"

@@ -14,6 +14,6 @@
         },
       ]"
     />
-    <PreviewInputs />
+    <ShowcaseInputs />
   </div>
 </template>

@@ -14,6 +14,6 @@
         },
       ]"
     />
-    <PreviewProgress />
+    <ShowcaseProgress />
   </div>
 </template>

@@ -188,7 +188,10 @@ onUnmounted(() => {
               class="h-6 mx-2"
             />
 
-            <ViewModeToggle v-if="hasSourcePage" v-model="fullscreenViewMode" />
+            <PreviewViewModeToggle
+              v-if="hasSourcePage"
+              v-model="fullscreenViewMode"
+            />
 
             <UTooltip text="Exit fullscreen (Esc)">
               <UButton
@@ -204,7 +207,7 @@ onUnmounted(() => {
         </div>
 
         <!-- Fullscreen source code view -->
-        <SourceCodeView
+        <PreviewSourceCode
           v-if="fullscreenViewMode === 'code' && hasSourcePage"
           :source="sourceCode"
           :file-path="sourceFilePath"

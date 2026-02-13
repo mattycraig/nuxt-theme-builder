@@ -19,6 +19,6 @@
       ]"
     />
 
-    <ThemePreview />
+    <ShowcaseAll />
   </div>
 </template>

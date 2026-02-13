@@ -70,7 +70,9 @@ function handleHeightDragKeydown(event: KeyboardEvent) {
     <div
       data-preview-wrapper
       class="relative mx-auto"
-      :class="[isDragging ? '' : 'transition-[width,height] duration-300 ease-in-out']"
+      :class="[
+        isDragging ? '' : 'transition-[width,height] duration-300 ease-in-out',
+      ]"
       :style="{
         width: currentPreviewWidth,
         maxWidth: '100%',
@@ -125,7 +127,7 @@ function handleHeightDragKeydown(event: KeyboardEvent) {
             v-if="iframeLoading"
             class="absolute inset-0 flex items-center justify-center bg-(--ui-bg)/60 backdrop-blur-sm z-10"
           >
-            <LoadingSpinner label="Loading preview…" />
+            <SharedLoadingSpinner label="Loading preview…" />
           </div>
         </Transition>
       </div>

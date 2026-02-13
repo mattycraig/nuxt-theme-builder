@@ -43,7 +43,7 @@ const exportPanel = useExportPanel();
 
     <!-- Right: view toggle, fullscreen, export -->
     <div class="flex items-center gap-2">
-      <ViewModeToggle v-if="hasSourcePage" v-model="viewMode" />
+      <PreviewViewModeToggle v-if="hasSourcePage" v-model="viewMode" />
 
       <!-- Fullscreen toggle -->
       <UTooltip :text="isFullscreen ? 'Exit fullscreen' : 'Fullscreen preview'">

@@ -14,6 +14,6 @@
         },
       ]"
     />
-    <PreviewBadges />
+    <ShowcaseBadges />
   </div>
 </template>

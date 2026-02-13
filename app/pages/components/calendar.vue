@@ -14,6 +14,6 @@
         },
       ]"
     />
-    <PreviewCalendar />
+    <ShowcaseCalendar />
   </div>
 </template>

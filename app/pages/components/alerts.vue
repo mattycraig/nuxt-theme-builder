@@ -14,6 +14,6 @@
         },
       ]"
     />
-    <PreviewAlerts />
+    <ShowcaseAlerts />
   </div>
 </template>

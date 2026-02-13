@@ -152,7 +152,7 @@ function handleDownload() {
         v-if="showLoading && !code"
         class="flex-1 flex items-center justify-center py-16"
       >
-        <LoadingSpinner label="Loading source…" />
+        <SharedLoadingSpinner label="Loading source…" />
       </div>
 
       <!-- Error state -->
@@ -184,7 +184,7 @@ function handleDownload() {
           v-if="isHighlighting"
           class="absolute inset-0 z-10 flex items-center justify-center bg-(--ui-bg)"
         >
-          <LoadingSpinner label="Highlighting code…" size="sm" />
+          <SharedLoadingSpinner label="Highlighting code…" size="sm" />
         </div>
         <!-- eslint-disable-next-line vue/no-v-html -->
         <div v-html="highlightedHtml" />

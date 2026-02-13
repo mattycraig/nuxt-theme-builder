@@ -107,7 +107,7 @@ useHead({
       />
 
       <!-- Source code view (replaces iframe when active) -->
-      <SourceCodeView
+      <PreviewSourceCode
         v-if="viewMode === 'code' && hasSourcePage && !isPreviewFullscreen"
         :source="sourceCode"
         :file-path="sourceFilePath"
@@ -152,7 +152,7 @@ useHead({
     </div>
 
     <!-- Singleton modals rendered at layout level -->
-    <SaveThemeModal />
+    <SharedSaveThemeModal />
     <EditorExportSlideover />
 
     <SpeedInsights />

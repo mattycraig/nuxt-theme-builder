@@ -14,6 +14,6 @@
         },
       ]"
     />
-    <PreviewButtons />
+    <ShowcaseButtons />
   </div>
 </template>

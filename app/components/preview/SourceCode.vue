@@ -18,7 +18,7 @@ const emit = defineEmits<{
     <div
       class="relative h-full w-full rounded-xl shadow-xl overflow-hidden source-code-wrapper"
     >
-      <CodeBlock
+      <SharedCodeBlock
         :code="source"
         :filename="filePath"
         language="vue"

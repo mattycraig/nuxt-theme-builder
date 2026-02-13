@@ -74,7 +74,7 @@ const editorFilename = computed(() => {
 </script>
 
 <template>
-  <CodeBlock
+  <SharedCodeBlock
     :code="jsonText"
     :filename="editorFilename"
     language="json"
@@ -173,7 +173,7 @@ const editorFilename = computed(() => {
         />
       </div>
     </template>
-  </CodeBlock>
+  </SharedCodeBlock>
 </template>
 
 <style scoped>

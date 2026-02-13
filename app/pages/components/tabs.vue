@@ -14,6 +14,6 @@
         },
       ]"
     />
-    <PreviewTabs />
+    <ShowcaseTabs />
   </div>
 </template>

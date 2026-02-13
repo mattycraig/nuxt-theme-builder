@@ -14,6 +14,6 @@
         },
       ]"
     />
-    <PreviewDropdown />
+    <ShowcaseDropdown />
   </div>
 </template>

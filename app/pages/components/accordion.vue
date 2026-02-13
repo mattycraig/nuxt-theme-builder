@@ -14,6 +14,6 @@
         },
       ]"
     />
-    <PreviewAccordion />
+    <ShowcaseAccordion />
   </div>
 </template>

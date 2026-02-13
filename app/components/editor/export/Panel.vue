@@ -135,7 +135,7 @@ function handleFileUpload(event: Event) {
         class="mb-3"
       />
 
-      <CodeBlock
+      <SharedCodeBlock
         :code="currentCode"
         :filename="currentMeta.filename"
         :language="currentMeta.language"
