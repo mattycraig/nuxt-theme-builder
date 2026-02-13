@@ -336,7 +336,6 @@ const isPreview = computed(() => "preview" in route.query);
     <UDashboardSidebar
       id="dashboard-sidebar"
       collapsible
-      resizable
       :ui="{ footer: 'border-t border-default' }"
       class="bg-elevated/50"
     >
@@ -421,7 +420,8 @@ const isPreview = computed(() => "preview" in route.query);
               <UButton
                 label="Add Widget"
                 icon="i-lucide-plus"
-                color="primary"
+                color="neutral"
+                variant="outline"
                 size="sm"
               />
             </div>
