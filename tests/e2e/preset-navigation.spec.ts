@@ -100,4 +100,49 @@ test.describe("Page Navigation", () => {
       await expect(editor).toBeVisible();
     });
   });
+
+  test("should show 3-level breadcrumbs on nested routes", async ({
+    page,
+  }) => {
+    await test.step("Navigate directly to a nested component page", async () => {
+      await page.goto("/components/cards");
+      await page.waitForSelector(
+        '[data-testid="theme-editor"][data-hydrated="true"]',
+        { state: "visible", timeout: 30_000 },
+      );
+    });
+
+    await test.step("Verify breadcrumb shows Home > Components > Cards", async () => {
+      const breadcrumb = page.getByRole("navigation", { name: "breadcrumb" });
+      await expect(breadcrumb).toBeVisible();
+      await expect(breadcrumb).toContainText("Home");
+      await expect(breadcrumb).toContainText("Components");
+      await expect(breadcrumb).toContainText("Cards");
+
+      const componentsLink = breadcrumb.getByRole("link", {
+        name: "Components",
+      });
+      await expect(componentsLink).toBeVisible();
+      await expect(componentsLink).toHaveAttribute("href", "/components");
+    });
+  });
+
+  test("should show 2-level breadcrumbs on top-level routes", async ({
+    page,
+  }) => {
+    await test.step("Navigate directly to Templates top-level page", async () => {
+      await page.goto("/templates");
+      await page.waitForSelector(
+        '[data-testid="theme-editor"][data-hydrated="true"]',
+        { state: "visible", timeout: 30_000 },
+      );
+    });
+
+    await test.step("Verify breadcrumb shows Home > Templates only", async () => {
+      const breadcrumb = page.getByRole("navigation", { name: "breadcrumb" });
+      await expect(breadcrumb).toBeVisible();
+      await expect(breadcrumb).toContainText("Home");
+      await expect(breadcrumb).toContainText("Templates");
+    });
+  });
 });
