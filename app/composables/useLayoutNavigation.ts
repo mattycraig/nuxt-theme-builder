@@ -1,5 +1,8 @@
 import {
   NAVIGATION_ITEMS,
+  COMPONENT_NAV_ITEMS,
+  BLOCK_NAV_ITEMS,
+  TEMPLATE_NAV_ITEMS,
   UTILITY_NAV_ITEMS,
   flattenNavigationItems,
 } from "~/utils/navigation";
@@ -15,6 +18,13 @@ export function useLayoutNavigation() {
 
   const allNavItems = computed(() => [
     ...flattenNavigationItems(NAVIGATION_ITEMS),
+    ...[...COMPONENT_NAV_ITEMS, ...BLOCK_NAV_ITEMS, ...TEMPLATE_NAV_ITEMS].map(
+      (item) => ({
+        label: item.label ?? "",
+        icon: item.icon as string | undefined,
+        to: item.to ? String(item.to) : undefined,
+      }),
+    ),
     ...UTILITY_NAV_ITEMS.map((item) => ({
       label: item.label ?? "",
       icon: item.icon as string | undefined,
@@ -34,31 +44,30 @@ export function useLayoutNavigation() {
 
     if (route.path === "/") return items;
 
-    const topLevel = (NAVIGATION_ITEMS[0] ?? []).find(
-      (nav) =>
-        nav.to === route.path ||
-        nav.children?.some((c) => c.to && route.path.startsWith(String(c.to))),
-    );
+    const segments = route.path.split("/").filter(Boolean);
 
-    if (topLevel) {
-      items.push({
-        label: topLevel.label ?? "",
-        icon: topLevel.icon as string | undefined,
-        to: String(topLevel.to),
-      });
-
-      if (topLevel.to !== route.path) {
-        const child = topLevel.children?.find(
-          (c) => String(c.to) === route.path,
-        );
-        if (child) {
-          items.push({
-            label: child.label ?? "",
-            icon: child.icon as string | undefined,
-            to: String(child.to),
-          });
-        }
+    // Add parent section breadcrumb for nested routes (e.g. /components/buttons → "Components")
+    if (segments.length > 1) {
+      const parentPath = `/${segments[0]}`;
+      const parentNav = (NAVIGATION_ITEMS[0] ?? []).find(
+        (i) => String(i.to) === parentPath,
+      );
+      if (parentNav) {
+        items.push({
+          label: parentNav.label ?? segments[0]!,
+          icon: parentNav.icon as string | undefined,
+          to: parentPath,
+        });
       }
+    }
+
+    const match = allNavItems.value.find((i) => i.to === route.path);
+    if (match) {
+      items.push({
+        label: match.label,
+        icon: match.icon,
+        to: match.to,
+      });
     }
 
     return items;
@@ -69,11 +78,6 @@ export function useLayoutNavigation() {
       label: item.label,
       icon: item.icon as string,
       to: String(item.to),
-      children: item.children?.map((child) => ({
-        label: child.label,
-        icon: child.icon as string,
-        to: child.to ? String(child.to) : undefined,
-      })),
     })),
   ]);
 

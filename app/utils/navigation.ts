@@ -2,7 +2,7 @@ import type { NavigationMenuItem } from "@nuxt/ui";
 
 // Component Navigation ────────────────────────────────────────────────────
 
-const componentChildren: NavigationMenuItem[] = [
+export const COMPONENT_NAV_ITEMS: NavigationMenuItem[] = [
   {
     label: "All Components",
     icon: "i-lucide-layout-grid",
@@ -97,7 +97,7 @@ const componentChildren: NavigationMenuItem[] = [
 
 // Block Navigation ────────────────────────────────────────────────────────
 
-const blockChildren: NavigationMenuItem[] = [
+export const BLOCK_NAV_ITEMS: NavigationMenuItem[] = [
   {
     label: "All Blocks",
     icon: "i-lucide-blocks",
@@ -144,7 +144,7 @@ const blockChildren: NavigationMenuItem[] = [
 
 // Template Navigation ─────────────────────────────────────────────────────
 
-const templateChildren: NavigationMenuItem[] = [
+export const TEMPLATE_NAV_ITEMS: NavigationMenuItem[] = [
   {
     label: "All Templates",
     icon: "i-lucide-app-window",
@@ -250,19 +250,16 @@ export const NAVIGATION_ITEMS: NavigationMenuItem[][] = [
       label: "Components",
       icon: "i-lucide-layout-grid",
       to: "/components",
-      children: componentChildren,
     },
     {
       label: "Blocks",
       icon: "i-lucide-blocks",
       to: "/blocks",
-      children: blockChildren,
     },
     {
       label: "Templates",
       icon: "i-lucide-app-window",
       to: "/templates",
-      children: templateChildren,
     },
   ],
 ];

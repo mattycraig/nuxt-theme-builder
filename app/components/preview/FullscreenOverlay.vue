@@ -171,7 +171,7 @@ onUnmounted(() => {
             </UBadge>
           </div>
 
-          <PreviewViewportSettings
+          <PreviewViewportControls
             v-model:active-width="fullscreenPreviewWidth"
             v-model:custom-width="fullscreenCustomWidth"
             v-model:active-height="fullscreenPreviewHeight"

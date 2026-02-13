@@ -1,5 +1,11 @@
 import { describe, it, expect } from "vitest";
-import { NAVIGATION_ITEMS, flattenNavigationItems } from "~/utils/navigation";
+import {
+  NAVIGATION_ITEMS,
+  COMPONENT_NAV_ITEMS,
+  BLOCK_NAV_ITEMS,
+  TEMPLATE_NAV_ITEMS,
+  flattenNavigationItems,
+} from "~/utils/navigation";
 
 describe("NAVIGATION_ITEMS", () => {
   it("is a non-empty nested array", () => {
@@ -18,46 +24,29 @@ describe("NAVIGATION_ITEMS", () => {
 
   it("contains core navigation categories", () => {
     const topLabels = NAVIGATION_ITEMS.flat().map((item) => item.label);
-    // At minimum, navigation should have a home entry and grouping items with children
     expect(topLabels.length).toBeGreaterThan(0);
+    expect(topLabels).toContain("Components");
+    expect(topLabels).toContain("Blocks");
+    expect(topLabels).toContain("Templates");
+  });
+
+  it("navigation items are flat with no children", () => {
     const itemsWithChildren = NAVIGATION_ITEMS.flat().filter(
       (item) => item.children && item.children.length > 0,
     );
-    expect(itemsWithChildren.length).toBeGreaterThan(0);
+    expect(itemsWithChildren.length).toBe(0);
   });
 
-  it("items with children have properly structured children", () => {
-    const itemsWithChildren = NAVIGATION_ITEMS.flat().filter(
-      (item) => item.children && item.children.length > 0,
-    );
-    for (const item of itemsWithChildren) {
-      expect(item.label).toBeTruthy();
-      expect(item.children!.length).toBeGreaterThan(0);
-    }
-  });
-
-  it("all children have labels and to paths", () => {
-    for (const group of NAVIGATION_ITEMS) {
-      for (const item of group) {
-        if (item.children) {
-          for (const child of item.children) {
-            expect(child.label).toBeTruthy();
-            expect(child.to).toBeTruthy();
-          }
-        }
-      }
-    }
-  });
-
-  it("no duplicate routes across children within the same group", () => {
-    for (const group of NAVIGATION_ITEMS) {
-      for (const item of group) {
-        if (!item.children) continue;
-        const childRoutes = item.children
-          .filter((c) => c.to)
-          .map((c) => String(c.to));
-        const unique = new Set(childRoutes);
-        expect(childRoutes.length).toBe(unique.size);
+  it("sub-page arrays have properly structured items", () => {
+    for (const items of [
+      COMPONENT_NAV_ITEMS,
+      BLOCK_NAV_ITEMS,
+      TEMPLATE_NAV_ITEMS,
+    ]) {
+      expect(items.length).toBeGreaterThan(0);
+      for (const item of items) {
+        expect(item.label).toBeTruthy();
+        expect(item.to).toBeTruthy();
       }
     }
   });
@@ -70,12 +59,12 @@ describe("flattenNavigationItems", () => {
     expect(flat.length).toBeGreaterThan(0);
   });
 
-  it("includes both top-level and child items", () => {
+  it("includes both top-level and sub-page items", () => {
     const flat = flattenNavigationItems(NAVIGATION_ITEMS);
     const labels = flat.map((f) => f.label);
-    // Should include more items than just top-level (children are flattened)
+    // Should include top-level items
     const topLevelCount = NAVIGATION_ITEMS.flat().length;
-    expect(flat.length).toBeGreaterThan(topLevelCount);
+    expect(flat.length).toBe(topLevelCount);
     // All labels should be non-empty strings
     for (const label of labels) {
       expect(label).toBeTruthy();
@@ -107,10 +96,10 @@ describe("flattenNavigationItems", () => {
     expect(flat).toEqual([]);
   });
 
-  it("flattened count exceeds top-level count when children exist", () => {
+  it("flattened count equals top-level count with no children", () => {
     const flat = flattenNavigationItems(NAVIGATION_ITEMS);
     const flatCount = flat.length;
     const topLevelCount = NAVIGATION_ITEMS.flat().length;
-    expect(flatCount).toBeGreaterThan(topLevelCount);
+    expect(flatCount).toBe(topLevelCount);
   });
 });

@@ -95,15 +95,16 @@ describe("useLayoutNavigation", () => {
       expect(nav.breadcrumbItems.value[1].label).toBe("AI Generate");
     });
 
-    it("returns Home + parent + child for a nested route", () => {
+    it("returns Home + section + page for a sub-page route", () => {
       mockRoute.path = "/components/buttons";
       expect(nav.breadcrumbItems.value).toHaveLength(3);
       expect(nav.breadcrumbItems.value[0].label).toBe("Home");
       expect(nav.breadcrumbItems.value[1].label).toBe("Components");
+      expect(nav.breadcrumbItems.value[1].to).toBe("/components");
       expect(nav.breadcrumbItems.value[2].label).toBe("Buttons");
     });
 
-    it("returns Home + parent for a parent page with children", () => {
+    it("returns Home + parent for a parent page", () => {
       mockRoute.path = "/components";
       expect(nav.breadcrumbItems.value).toHaveLength(2);
       expect(nav.breadcrumbItems.value[1].label).toBe("Components");
@@ -118,6 +119,7 @@ describe("useLayoutNavigation", () => {
       mockRoute.path = "/templates/dashboard";
       expect(nav.breadcrumbItems.value[0].icon).toBe("i-lucide-home");
       expect(nav.breadcrumbItems.value[1].icon).toBeDefined();
+      expect(nav.breadcrumbItems.value[2].icon).toBeDefined();
     });
 
     it("includes 'to' paths in breadcrumb items", () => {
@@ -150,13 +152,12 @@ describe("useLayoutNavigation", () => {
       }
     });
 
-    it("preserves children on items that have them", () => {
+    it("items do not have children", () => {
       const items = nav.mobileNavItems.value[0];
       const componentItem = items.find(
         (i: { label: string }) => i.label === "Components",
       );
-      expect(componentItem?.children).toBeDefined();
-      expect(componentItem.children.length).toBeGreaterThan(0);
+      expect(componentItem?.children).toBeUndefined();
     });
   });
 });
