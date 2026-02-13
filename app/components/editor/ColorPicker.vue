@@ -2,7 +2,7 @@
 import type { SelectMenuItem } from "@nuxt/ui";
 import type { AnyPalette, NeutralShade } from "~/types/theme";
 import { PALETTE_CATEGORY_ORDER, PALETTE_CATEGORIES } from "~/types/theme";
-import { ALL_SWATCH_HEX, ALL_HEX_MAP } from "~/utils/defaults";
+import { ALL_SWATCH_HEX, ALL_HEX_MAP } from "~/utils/colorPalettes";
 import { capitalize } from "~/utils/helpers";
 
 const props = withDefaults(

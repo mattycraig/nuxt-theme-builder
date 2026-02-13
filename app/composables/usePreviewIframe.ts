@@ -2,6 +2,7 @@ import { useThemeStore } from "~/stores/theme";
 import { sanitizeNavigationPath } from "~/utils/helpers";
 import { ThemeConfigSchema } from "~/types/theme";
 import type { ThemeConfig } from "~/types/theme";
+import { MSG } from "~/utils/iframeProtocol";
 
 /**
  * Manages the iframe-based preview panel communication.
@@ -41,17 +42,17 @@ export function usePreviewIframe() {
 
   function syncThemeToIframe(config: unknown) {
     postToIframe({
-      type: "theme-sync",
+      type: MSG.THEME_SYNC,
       config: structuredClone(toRaw(config)),
     });
   }
 
   function syncColorModeToIframe(mode: string) {
-    postToIframe({ type: "colormode-sync", mode });
+    postToIframe({ type: MSG.COLORMODE_SYNC, mode });
   }
 
   function navigateIframe(path: string) {
-    postToIframe({ type: "navigate", path });
+    postToIframe({ type: MSG.NAVIGATE, path });
   }
 
   // Watchers ────────────────────────────────────────────────────────
@@ -87,11 +88,11 @@ export function usePreviewIframe() {
     if (event.origin !== window.location.origin) return;
 
     switch (event.data?.type) {
-      case "navigate-done":
+      case MSG.NAVIGATE_DONE:
         iframeLoading.value = false;
         break;
 
-      case "navigate-parent": {
+      case MSG.NAVIGATE_PARENT: {
         const path = sanitizeNavigationPath(String(event.data.path));
         if (path && path !== route.path) {
           navigatingFromIframe.value = true;
@@ -100,7 +101,7 @@ export function usePreviewIframe() {
         break;
       }
 
-      case "preview-ready":
+      case MSG.PREVIEW_READY:
         iframeReady.value = true;
         iframeLoading.value = false;
         syncThemeToIframe(store.config);
@@ -111,7 +112,7 @@ export function usePreviewIframe() {
         }
         break;
 
-      case "apply-ai-theme": {
+      case MSG.APPLY_AI_THEME: {
         const validated = ThemeConfigSchema.safeParse(event.data.config);
         if (validated.success) {
           store.loadConfig(validated.data as ThemeConfig);
@@ -131,7 +132,7 @@ export function usePreviewIframe() {
         break;
       }
 
-      case "keyboard-shortcut": {
+      case MSG.KEYBOARD_SHORTCUT: {
         if (event.data.key === "z") {
           if (event.data.shift) {
             store.redo();
@@ -152,7 +153,7 @@ export function usePreviewIframe() {
    */
   function handleIframeLoad() {
     if (!iframeReady.value) {
-      postToIframe({ type: "request-ready" });
+      postToIframe({ type: MSG.REQUEST_READY });
     }
   }
 
@@ -162,7 +163,7 @@ export function usePreviewIframe() {
       // Re-request readiness in case iframe loaded before hydration
       nextTick(() => {
         if (!iframeReady.value && previewFrame.value?.contentWindow) {
-          postToIframe({ type: "request-ready" });
+          postToIframe({ type: MSG.REQUEST_READY });
         }
       });
     }
@@ -181,6 +182,6 @@ export function usePreviewIframe() {
     iframeSrc,
     iframeInitialSrc,
     handleIframeLoad,
-    syncThemeToIframe: postToIframe,
+    syncThemeToIframe,
   };
 }

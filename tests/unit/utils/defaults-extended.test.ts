@@ -5,13 +5,15 @@ import {
   DEFAULT_THEME,
   DEFAULT_LIGHT_OVERRIDES,
   DEFAULT_DARK_OVERRIDES,
+} from "~/utils/defaults";
+import {
   NEUTRAL_HEX_MAP,
   CHROMATIC_SWATCH_HEX,
   CHROMATIC_HEX_MAP,
   NEUTRAL_SWATCH_HEX,
   ALL_SWATCH_HEX,
   ALL_HEX_MAP,
-} from "~/utils/defaults";
+} from "~/utils/colorPalettes";
 import {
   CHROMATIC_PALETTES,
   NEUTRAL_PALETTES,

@@ -256,6 +256,11 @@ const FONT_ENTRIES: FontEntry[] = [
 
 export { FONT_ENTRIES };
 
+/**
+ * Cast required so Zod's `z.enum()` receives a readonly tuple
+ * `[string, ...string[]]` (at least one element). `FONT_ENTRIES.map()`
+ * returns `string[]`, which doesn't satisfy the tuple constraint.
+ */
 export const FONT_OPTIONS = FONT_ENTRIES.map(
   (f) => f.name,
 ) as unknown as readonly string[] & readonly [string, ...string[]];
@@ -352,6 +357,11 @@ const rawThemeSchema = z.object({
   darkFont: z.enum(FONT_OPTIONS).optional(),
 });
 
+/**
+ * Backward-compatibility transform: dark-mode fields were added after
+ * launch, so persisted configs may lack them. `.optional()` + `.transform()`
+ * fills missing dark-mode values by mirroring the light-mode counterpart.
+ */
 export const ThemeConfigSchema = rawThemeSchema.transform((data) => ({
   ...data,
   darkColors: data.darkColors ?? { ...data.colors },

@@ -2,6 +2,7 @@
 import { useThemeApply } from "~/composables/useThemeApply";
 import { useThemeStore } from "~/stores/theme";
 import { sanitizeNavigationPath } from "~/utils/helpers";
+import { MSG } from "~/utils/iframeProtocol";
 
 useThemeApply();
 
@@ -36,7 +37,7 @@ router.afterEach((to) => {
     return;
   }
   window.parent?.postMessage(
-    { type: "navigate-parent", path: to.path },
+    { type: MSG.NAVIGATE_PARENT, path: to.path },
     window.location.origin,
   );
 });
@@ -45,26 +46,26 @@ router.afterEach((to) => {
 function handleMessage(event: MessageEvent) {
   if (event.origin !== window.location.origin) return;
 
-  if (event.data?.type === "theme-sync") {
+  if (event.data?.type === MSG.THEME_SYNC) {
     store._syncConfig(event.data.config);
   }
-  if (event.data?.type === "colormode-sync") {
+  if (event.data?.type === MSG.COLORMODE_SYNC) {
     colorMode.preference = event.data.mode;
   }
-  if (event.data?.type === "request-ready") {
+  if (event.data?.type === MSG.REQUEST_READY) {
     window.parent?.postMessage(
-      { type: "preview-ready" },
+      { type: MSG.PREVIEW_READY },
       window.location.origin,
     );
   }
-  if (event.data?.type === "navigate") {
+  if (event.data?.type === MSG.NAVIGATE) {
     const safePath = sanitizeNavigationPath(String(event.data.path));
     if (safePath) {
       navigatingFromParent.value = true;
       router.push(safePath).then(() => {
         navigatingFromParent.value = false;
         window.parent?.postMessage(
-          { type: "navigate-done" },
+          { type: MSG.NAVIGATE_DONE },
           window.location.origin,
         );
       });
@@ -79,7 +80,7 @@ function handleKeydown(e: KeyboardEvent) {
 
   e.preventDefault();
   window.parent?.postMessage(
-    { type: "keyboard-shortcut", key: "z", shift: e.shiftKey },
+    { type: MSG.KEYBOARD_SHORTCUT, key: "z", shift: e.shiftKey },
     window.location.origin,
   );
 }
@@ -87,7 +88,10 @@ function handleKeydown(e: KeyboardEvent) {
 onMounted(() => {
   window.addEventListener("message", handleMessage);
   document.addEventListener("keydown", handleKeydown);
-  window.parent?.postMessage({ type: "preview-ready" }, window.location.origin);
+  window.parent?.postMessage(
+    { type: MSG.PREVIEW_READY },
+    window.location.origin,
+  );
 });
 
 onUnmounted(() => {

@@ -130,8 +130,3 @@ export interface AiGenerateResponse {
   themeConfig: ThemeConfig;
   explanation: string;
 }
-
-export interface AiGenerateError {
-  error: string;
-  code?: string;
-}

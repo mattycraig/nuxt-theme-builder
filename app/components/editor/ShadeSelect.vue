@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import type { NeutralShade, NeutralPalette } from "~/types/theme";
 import { SHADE_VALUES } from "~/types/theme";
-import { NEUTRAL_HEX_MAP } from "~/utils/defaults";
+import { NEUTRAL_HEX_MAP } from "~/utils/colorPalettes";
 
 const props = defineProps<{
   modelValue: NeutralShade;

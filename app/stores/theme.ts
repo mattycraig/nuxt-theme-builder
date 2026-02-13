@@ -39,6 +39,11 @@ export const useThemeStore = defineStore(
 
     const history = shallowRef<ThemeConfig[]>([cloneTheme(DEFAULT_THEME)]);
     const historyIndex = ref(0);
+    /**
+     * Snapshot index used by `undoAll()` to jump back to the state
+     * when the user last loaded a config, preset, or reset to defaults.
+     * Updated in `loadConfig`, `loadPreset`, and `resetToDefaults`.
+     */
     const historyBaseIndex = ref(0);
 
     function _pushHistory() {
@@ -239,7 +244,13 @@ export const useThemeStore = defineStore(
       historyBaseIndex.value = historyIndex.value;
     }
 
-    /** Silently update config from iframe sync — no history push */
+    /**
+     * Silently update config from iframe sync — no history push.
+     *
+     * Unlike `loadConfig`, this is for continuous sync (e.g., parent
+     * pushing theme changes to the preview iframe) where each update
+     * must not pollute the undo history or reset the undo-all anchor.
+     */
     function _syncConfig(newConfig: unknown) {
       const result = ThemeConfigSchema.safeParse(newConfig);
       if (!result.success) return;
@@ -346,16 +357,21 @@ export const useThemeStore = defineStore(
     // Public API ─────────────────────────────────────────────────────
 
     return {
+      // State
       config,
       savedPresets,
       activePresetName,
       hasUnsavedChanges,
+
+      // History
       canUndo,
       canUndoAll,
       canRedo,
       undo,
       undoAll,
       redo,
+
+      // Per-field setters
       setSemanticColorForMode,
       setSemanticShadeForMode,
       setNeutralForMode,
@@ -365,10 +381,14 @@ export const useThemeStore = defineStore(
       setTextOverride,
       setBgOverride,
       setBorderOverride,
+
+      // Config management
       resetToDefaults,
       randomizeTheme,
       loadConfig,
       _syncConfig,
+
+      // Preset CRUD
       savePreset,
       duplicatePreset,
       deletePreset,

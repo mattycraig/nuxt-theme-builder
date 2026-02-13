@@ -16,11 +16,8 @@ import {
   NUMERIC_SHADE_KEYS,
   getFontFallbackStack,
 } from "~/types/theme";
-import {
-  shadeToCSS,
-  ALL_HEX_MAP,
-  NEUTRAL_HEX_MAP,
-} from "~/utils/defaults";
+import { shadeToCSS } from "~/utils/defaults";
+import { ALL_HEX_MAP, NEUTRAL_HEX_MAP } from "~/utils/colorPalettes";
 import { typedEntries } from "~/utils/helpers";
 
 type TokenCategory = "text" | "bg" | "border";

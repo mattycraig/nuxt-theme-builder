@@ -2,12 +2,29 @@ import type { AiMessage, AiGenerateResponse } from "~/types/ai";
 import type { ThemeConfig } from "~/types/theme";
 import { ThemeConfigSchema } from "~/types/theme";
 
+/**
+ * Manages the AI chat conversation state and server communication.
+ *
+ * Key design decisions:
+ * - Messages are persisted across navigations via `useState` (SSR-safe
+ *   shared state). They survive route changes but not full page reloads.
+ * - Only the last 6 messages (see `MAX_CONVERSATION_WINDOW`) are sent
+ *   to the server to control token cost and keep context focused.
+ * - `regenerateLastMessage()` is destructive: it removes everything
+ *   from the last user message onward and re-sends the prompt, so the
+ *   chat history is rewritten rather than branched.
+ * - Theme validation with `ThemeConfigSchema` happens both on the
+ *   server (before response) and here on the client, as a defense-
+ *   in-depth measure.
+ */
 export function useAiChat() {
   const messages = useState<AiMessage[]>("ai-chat-messages", () => []);
   const isGenerating = ref(false);
   const error = ref<string | null>(null);
   const toast = useToast();
   const store = useThemeStore();
+
+  const MAX_CONVERSATION_WINDOW = 6;
 
   function createId(): string {
     return `${Date.now()}-${Math.random().toString(36).slice(2, 9)}`;
@@ -46,7 +63,7 @@ export function useAiChat() {
     try {
       const conversationHistory = messages.value
         .filter((m) => m.role !== "system")
-        .slice(-6)
+        .slice(-MAX_CONVERSATION_WINDOW)
         .map((m) => ({
           role: m.role as "user" | "assistant",
           content: m.content,

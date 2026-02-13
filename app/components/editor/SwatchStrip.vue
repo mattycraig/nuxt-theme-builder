@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import type { ThemeConfig } from "~/types/theme";
 import { SEMANTIC_COLOR_KEYS } from "~/types/theme";
-import { ALL_HEX_MAP, NEUTRAL_SWATCH_HEX } from "~/utils/defaults";
+import { ALL_HEX_MAP, NEUTRAL_SWATCH_HEX } from "~/utils/colorPalettes";
 
 const props = withDefaults(
   defineProps<{

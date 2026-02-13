@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import type { NeutralPalette } from "~/types/theme";
 import { NEUTRAL_PALETTES, NUMERIC_SHADE_KEYS } from "~/types/theme";
-import { NEUTRAL_SWATCH_HEX, NEUTRAL_HEX_MAP } from "~/utils/defaults";
+import { NEUTRAL_SWATCH_HEX, NEUTRAL_HEX_MAP } from "~/utils/colorPalettes";
 import { capitalize } from "~/utils/helpers";
 
 defineProps<{

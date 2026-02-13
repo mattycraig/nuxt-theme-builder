@@ -146,7 +146,14 @@ useHead({
       @update:model-value="onSearchSelect"
     />
 
-    <!-- Hidden slot keeps NuxtPage mounted so Vue Router reactivity works -->
+    <!--
+      WARNING — Hidden page slot.
+      NuxtPage is rendered here so Vue Router's route reactivity keeps
+      working (iframeSrc, breadcrumbs, etc.), but the actual visible
+      content is rendered inside the iframe. The `hidden` class +
+      `inert` + `aria-hidden` ensure it is invisible to both sighted
+      users and assistive technology. Do not remove this element.
+    -->
     <div class="hidden" inert aria-hidden="true">
       <slot />
     </div>

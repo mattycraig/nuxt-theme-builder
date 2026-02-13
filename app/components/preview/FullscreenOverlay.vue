@@ -241,7 +241,8 @@ onUnmounted(() => {
               class="w-full h-full border-0"
               @load="handleFrameLoad"
             >
-              Your browser does not support iframes.
+              Your browser does not support iframes. Please use a modern browser
+              to view the theme preview.
             </iframe>
           </div>
         </div>

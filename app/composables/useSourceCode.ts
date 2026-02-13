@@ -7,6 +7,9 @@
  * (idempotent) and are properly cleaned up by Vue on component unmount.
  */
 
+/** Route prefixes whose pages have embedded source available. */
+const SOURCE_ELIGIBLE_PREFIXES = ["/templates", "/blocks"] as const;
+
 const sourceCache = new Map<string, string>();
 const _viewMode = ref<"preview" | "code">("preview");
 const _sourceCode = ref("");
@@ -32,9 +35,8 @@ export function useSourceCode() {
 
   const routeKey = computed(() => stripLeadingSlash(route.path));
 
-  const hasSourcePage = computed(
-    () =>
-      route.path.startsWith("/templates") || route.path.startsWith("/blocks"),
+  const hasSourcePage = computed(() =>
+    SOURCE_ELIGIBLE_PREFIXES.some((prefix) => route.path.startsWith(prefix)),
   );
 
   const sourceFilePath = computed(() => `app/pages/${routeKey.value}.vue`);
