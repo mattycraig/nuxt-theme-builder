@@ -28,7 +28,7 @@ const filteredCategories = computed(() => {
         ...cat,
         items: cat.items.filter(
           (item) =>
-            item.label.toLowerCase().includes(query) ||
+            item.label?.toLowerCase().includes(query) ||
             item.description?.toLowerCase().includes(query),
         ),
       }))
@@ -93,7 +93,6 @@ function clearFilters() {
               icon="i-lucide-search"
               size="lg"
               placeholder="Search components..."
-              :ui="{ icon: { trailing: { pointer: '' } } }"
             >
               <template v-if="searchQuery" #trailing>
                 <UButton

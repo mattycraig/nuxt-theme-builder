@@ -52,9 +52,9 @@ function handleFrameLoad() {
 function handleMessage(event: MessageEvent) {
   if (event.origin !== window.location.origin) return;
   if (event.source !== fullscreenFrame.value?.contentWindow) return;
-  
+
   const { type, path } = event.data || {};
-  
+
   if (type === "preview-ready") {
     postToFrame({
       type: "theme-sync",
@@ -62,7 +62,7 @@ function handleMessage(event: MessageEvent) {
     });
     postToFrame({ type: "colormode-sync", mode: colorMode.preference });
   }
-  
+
   // Handle iframe navigation to keep parent route in sync
   if (type === "navigate-parent" && path) {
     const safePath = sanitizeNavigationPath(String(path));
