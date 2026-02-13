@@ -66,49 +66,54 @@ const templates = [
 </script>
 
 <template>
-  <div class="p-6 space-y-8 max-w-5xl mx-auto">
-    <UPageHeader
-      headline="Theme Builder"
-      title="Templates"
-      description="Full page templates that demonstrate your theme in real-world contexts. Each template is a complete, production-ready page layout."
-      :links="[
-        {
-          label: 'Back to Home',
-          icon: 'i-lucide-arrow-left',
-          to: '/',
-          variant: 'ghost',
-          color: 'neutral',
-        },
-      ]"
-    />
+  <UContainer>
+    <div class="space-y-8">
+      <UPageHeader
+        headline="Theme Builder"
+        title="Templates"
+        description="Full page templates that demonstrate your theme in real-world contexts. Each template is a complete, production-ready page layout."
+        :links="[
+          {
+            label: 'Back to Home',
+            icon: 'i-lucide-arrow-left',
+            to: '/',
+            variant: 'ghost',
+            color: 'neutral',
+          },
+        ]"
+      />
 
-    <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
-      <NuxtLink
-        v-for="template in templates"
-        :key="template.title"
-        :to="template.to"
-        class="block"
-      >
-        <UCard
-          class="h-full hover:ring-2 hover:ring-(--ui-primary)/40 transition-all cursor-pointer"
+      <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+        <NuxtLink
+          v-for="template in templates"
+          :key="template.title"
+          :to="template.to"
+          class="block"
         >
-          <div class="flex items-start gap-3">
-            <div
-              class="shrink-0 size-10 rounded-lg bg-(--ui-primary)/10 flex items-center justify-center"
-            >
-              <UIcon :name="template.icon" class="size-5 text-(--ui-primary)" />
+          <UCard
+            class="h-full hover:ring-2 hover:ring-(--ui-primary)/40 transition-all cursor-pointer"
+          >
+            <div class="flex items-start gap-3">
+              <div
+                class="shrink-0 size-10 rounded-lg bg-(--ui-primary)/10 flex items-center justify-center"
+              >
+                <UIcon
+                  :name="template.icon"
+                  class="size-5 text-(--ui-primary)"
+                />
+              </div>
+              <div>
+                <h2 class="font-semibold text-(--ui-text-highlighted) mb-1">
+                  {{ template.title }}
+                </h2>
+                <p class="text-sm text-(--ui-text-muted)">
+                  {{ template.description }}
+                </p>
+              </div>
             </div>
-            <div>
-              <h2 class="font-semibold text-(--ui-text-highlighted) mb-1">
-                {{ template.title }}
-              </h2>
-              <p class="text-sm text-(--ui-text-muted)">
-                {{ template.description }}
-              </p>
-            </div>
-          </div>
-        </UCard>
-      </NuxtLink>
+          </UCard>
+        </NuxtLink>
+      </div>
     </div>
-  </div>
+  </UContainer>
 </template>

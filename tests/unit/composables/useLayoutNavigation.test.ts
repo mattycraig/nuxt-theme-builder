@@ -64,8 +64,8 @@ describe("useLayoutNavigation", () => {
     });
 
     it("returns correct label for a nested child route", () => {
-      mockRoute.path = "/components/buttons";
-      expect(nav.currentPageLabel.value).toBe("Buttons");
+      mockRoute.path = "/components/button";
+      expect(nav.currentPageLabel.value).toBe("Button");
     });
 
     it("returns correct label for a utility page", () => {
@@ -96,12 +96,12 @@ describe("useLayoutNavigation", () => {
     });
 
     it("returns Home + section + page for a sub-page route", () => {
-      mockRoute.path = "/components/buttons";
+      mockRoute.path = "/components/button";
       expect(nav.breadcrumbItems.value).toHaveLength(3);
       expect(nav.breadcrumbItems.value[0].label).toBe("Home");
       expect(nav.breadcrumbItems.value[1].label).toBe("Components");
       expect(nav.breadcrumbItems.value[1].to).toBe("/components");
-      expect(nav.breadcrumbItems.value[2].label).toBe("Buttons");
+      expect(nav.breadcrumbItems.value[2].label).toBe("Button");
     });
 
     it("returns Home + parent for a parent page", () => {
