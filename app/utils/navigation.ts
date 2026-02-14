@@ -527,7 +527,7 @@ export const BLOCK_CATEGORIES: BlockCategory[] = [
         label: "Gallery",
         icon: "i-lucide-image",
         description:
-          "Image grids, masonry layouts, featured galleries, and portfolio cards.",
+          "Spotlight grids, masonry walls, cinematic showcases, bento portfolios, photo archives, and editorial layouts.",
         to: "/blocks/gallery",
       },
       {
