@@ -19,9 +19,7 @@ const logos = ["Vercel", "Netlify", "AWS", "Cloudflare", "GitHub"];
 </script>
 
 <template>
-  <section
-    class="relative isolate overflow-hidden bg-(--ui-bg-elevated) rounded-xl"
-  >
+  <section class="relative isolate overflow-hidden bg-(--ui-bg-elevated)">
     <!-- Top glow -->
     <div
       class="pointer-events-none absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 size-[40rem] rounded-full bg-(--ui-primary)/10 blur-[120px]"
@@ -77,9 +75,7 @@ const logos = ["Vercel", "Netlify", "AWS", "Cloudflare", "GitHub"];
       <!-- Trust logos -->
       <div class="border-t border-(--ui-border)/50 pt-10">
         <p class="text-sm text-(--ui-text-muted) mb-6">Trusted by teams at</p>
-        <div
-          class="flex flex-wrap items-center justify-center gap-x-8 gap-y-4"
-        >
+        <div class="flex flex-wrap items-center justify-center gap-x-8 gap-y-4">
           <span
             v-for="logo in logos"
             :key="logo"
@@ -99,11 +95,8 @@ const logos = ["Vercel", "Netlify", "AWS", "Cloudflare", "GitHub"];
 }
 
 .hero-grid-lines {
-  background-image: linear-gradient(
-      to right,
-      currentColor 1px,
-      transparent 1px
-    ),
+  background-image:
+    linear-gradient(to right, currentColor 1px, transparent 1px),
     linear-gradient(to bottom, currentColor 1px, transparent 1px);
   background-size: 60px 60px;
 }
