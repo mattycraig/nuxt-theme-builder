@@ -49,41 +49,101 @@ const posts = [
 </script>
 
 <template>
-  <section class="py-16 sm:py-24">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      <div class="text-center mb-12">
-        <h2 class="text-3xl sm:text-4xl font-bold text-(--ui-text-highlighted)">
+  <section class="relative isolate overflow-hidden py-16 sm:py-24">
+    <!-- Dot grid pattern background -->
+    <div
+      class="absolute inset-0 blog-cards-dotgrid opacity-[0.03]"
+      aria-hidden="true"
+    />
+
+    <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <!-- Section header -->
+      <div class="text-center mb-14 blog-cards-stagger">
+        <h2
+          class="text-3xl sm:text-4xl font-bold text-(--ui-text-highlighted) tracking-tight"
+        >
           Stories and insights
         </h2>
-        <p class="mt-2 text-lg text-(--ui-text-muted)">
+        <p class="mt-3 text-lg text-(--ui-text-muted) max-w-xl mx-auto">
           Tips, guides, and behind-the-scenes from our team.
         </p>
       </div>
+
+      <!-- Cards grid with hover lift and glow -->
       <UPageGrid>
-        <UPageCard
-          v-for="post in posts"
+        <div
+          v-for="(post, i) in posts"
           :key="post.title"
-          :title="post.title"
-          :description="post.description"
+          class="blog-cards-stagger group"
+          :style="{ animationDelay: `${120 + i * 80}ms` }"
         >
-          <template #header>
-            <img
-              :src="post.image.src"
-              :alt="post.image.alt"
-              class="w-full h-48 object-cover"
-              loading="lazy"
-            >
-          </template>
-          <template #footer>
-            <div
-              class="flex items-center justify-between text-sm text-(--ui-text-muted)"
-            >
-              <span>{{ post.authors?.[0]?.name }}</span>
-              <time>{{ post.date }}</time>
-            </div>
-          </template>
-        </UPageCard>
+          <UPageCard
+            :title="post.title"
+            :description="post.description"
+            class="h-full relative overflow-hidden transition-all duration-300 group-hover:shadow-xl group-hover:shadow-(--ui-primary)/8 group-hover:-translate-y-1 group-hover:border-(--ui-primary)/20"
+          >
+            <template #header>
+              <div class="relative overflow-hidden">
+                <img
+                  :src="post.image.src"
+                  :alt="post.image.alt"
+                  class="w-full h-48 object-cover transition-transform duration-500 group-hover:scale-105"
+                  loading="lazy"
+                >
+                <!-- Floating category badge -->
+                <div class="absolute top-3 left-3">
+                  <UBadge
+                    :label="post.badge.label"
+                    :color="post.badge.color"
+                    variant="solid"
+                    size="sm"
+                    class="shadow-md"
+                  />
+                </div>
+              </div>
+            </template>
+            <template #footer>
+              <div
+                class="flex items-center justify-between text-sm text-(--ui-text-muted)"
+              >
+                <div class="flex items-center gap-2">
+                  <UAvatar :text="post.authors[0].avatar.text" size="xs" />
+                  <span>{{ post.authors[0].name }}</span>
+                </div>
+                <time class="text-(--ui-text-muted)/70">{{ post.date }}</time>
+              </div>
+            </template>
+          </UPageCard>
+        </div>
       </UPageGrid>
     </div>
   </section>
 </template>
+
+<style scoped>
+.blog-cards-dotgrid {
+  background-image: radial-gradient(circle, currentColor 1px, transparent 1px);
+  background-size: 20px 20px;
+}
+
+.blog-cards-stagger {
+  animation: blogCardsFadeUp 0.55s ease-out both;
+}
+
+@keyframes blogCardsFadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .blog-cards-stagger {
+    animation: none;
+  }
+}
+</style>
