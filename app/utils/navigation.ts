@@ -584,7 +584,7 @@ export const BLOCK_CATEGORIES: BlockCategory[] = [
         label: "Ecommerce",
         icon: "i-lucide-shopping-cart",
         description:
-          "Product grids, detail cards, category browsing, and cart summaries.",
+          "Glow product grids, glassmorphism details, spotlight features, atmospheric categories, glass carts, and storefront showcases.",
         to: "/blocks/ecommerce",
       },
     ],

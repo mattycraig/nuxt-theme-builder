@@ -136,11 +136,12 @@ export const PROMPT_TEMPLATES: PromptTemplate[] = [
   {
     id: "dark-luxury",
     label: "Dark Luxury",
-    description: "Premium dark e-commerce with gold accents.",
+    description:
+      "Premium dark e-commerce with gold accents and atmospheric depth.",
     icon: "i-lucide-gem",
     category: "Dark Mode",
     prompt:
-      "Design a dark luxury e-commerce theme. Use a muted primary like violet or purple with amber/yellow accents for a gold-like feel. The theme should feel premium and exclusive. Choose an elegant serif or display font. Use moderate radius.",
+      "Design a dark luxury e-commerce theme. Use a muted primary like violet or purple with amber/yellow accents for a gold-like feel. The theme should feel premium and exclusive — think glassmorphism product cards, atmospheric gradient orbs, and glow-halo hover effects. Choose an elegant serif or display font. Use moderate radius for a refined, editorial feel.",
   },
   {
     id: "cyberpunk",
@@ -187,6 +188,6 @@ export const SUGGESTION_PROMPTS = [
   "Something bold and creative for a portfolio",
   "An earthy, natural brand theme",
   "Sleek dark mode for a dev tool",
-  "Warm and friendly e-commerce",
+  "Warm and friendly e-commerce with atmospheric depth",
   "Minimal and elegant with serif fonts",
 ];
