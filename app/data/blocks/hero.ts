@@ -2,13 +2,13 @@ import type { BlockShowcaseItem } from "~/types/components";
 
 import HeroCentered from "~/components/blocks/components/HeroCentered.vue";
 import HeroSplit from "~/components/blocks/components/HeroSplit.vue";
-import HeroPageHero from "~/components/blocks/components/HeroPageHero.vue";
+import HeroGlassCard from "~/components/blocks/components/HeroGlassCard.vue";
 import HeroSearch from "~/components/blocks/components/HeroSearch.vue";
 import HeroMinimal from "~/components/blocks/components/HeroMinimal.vue";
 import HeroProductLaunch from "~/components/blocks/components/HeroProductLaunch.vue";
 import heroCenteredRaw from "~/components/blocks/components/HeroCentered.vue?raw";
 import heroSplitRaw from "~/components/blocks/components/HeroSplit.vue?raw";
-import heroPageHeroRaw from "~/components/blocks/components/HeroPageHero.vue?raw";
+import heroGlassCardRaw from "~/components/blocks/components/HeroGlassCard.vue?raw";
 import heroSearchRaw from "~/components/blocks/components/HeroSearch.vue?raw";
 import heroMinimalRaw from "~/components/blocks/components/HeroMinimal.vue?raw";
 import heroProductLaunchRaw from "~/components/blocks/components/HeroProductLaunch.vue?raw";
@@ -16,7 +16,7 @@ import heroProductLaunchRaw from "~/components/blocks/components/HeroProductLaun
 export const HERO_BLOCKS: BlockShowcaseItem[] = [
   {
     id: "hero-centered",
-    title: "Hero 1",
+    title: "Hero Centered",
     description:
       "A gradient atmosphere hero with decorative primary/secondary color orbs, a gradient-to-solid split headline, staggered entrance animations, and generous spacing — dramatic and eye-catching for marketing pages.",
     prompt: `Generate a centered gradient atmosphere hero section using Nuxt UI v4 and Tailwind CSS v4. It should include:
@@ -34,7 +34,7 @@ Style: dramatic gradient atmosphere with theme-responsive color orbs and cinemat
   },
   {
     id: "hero-split",
-    title: "Hero 2",
+    title: "Hero Split",
     description:
       "A horizontal split hero using UPageHero with a realistic mock app UI card featuring window chrome, color palette swatches, status badges, and a floating export-success notification — great for product showcases.",
     prompt: `Generate a horizontal split hero using Nuxt UI v4 UPageHero with orientation="horizontal". It should include:
@@ -51,8 +51,8 @@ Style: professional product showcase with a realistic, theme-responsive mock UI 
     component: HeroSplit,
   },
   {
-    id: "hero-page-hero",
-    title: "Hero 3",
+    id: "hero-glass-card",
+    title: "Hero Glass Card",
     description:
       "A glassmorphism hero with a frosted-glass card over a dot-grid background and primary color glow — centered content with editorial typography and dual action buttons for a modern, premium feel.",
     prompt: `Generate a glassmorphism spotlight hero section using Nuxt UI v4 and Tailwind CSS v4. It should include:
@@ -66,12 +66,12 @@ Style: professional product showcase with a realistic, theme-responsive mock UI 
   - Two CTA buttons (primary with trailing arrow + outline neutral)
 - All content centered inside the glass card
 Style: modern glassmorphism with dot-grid texture, color glow, and a frosted card centerpiece.`,
-    source: heroPageHeroRaw,
-    component: HeroPageHero,
+    source: heroGlassCardRaw,
+    component: HeroGlassCard,
   },
   {
     id: "hero-search",
-    title: "Hero 4",
+    title: "Hero Search",
     description:
       "A search-focused hero with a warm gradient backdrop, decorative ring elements, an elevated search input, and interactive suggestion badges — welcoming and inviting for documentation sites and knowledge bases.",
     prompt: `Generate a warm search portal hero using Nuxt UI v4 UPageHero and Tailwind CSS v4. It should include:
@@ -88,7 +88,7 @@ Style: warm, inviting search-first hero with atmospheric gradient and interactiv
   },
   {
     id: "hero-minimal",
-    title: "Hero 5",
+    title: "Hero Minimal",
     description:
       "An ultra-minimal hero section using UPageHero with just a bold title and a single call-to-action button — maximum whitespace and visual impact.",
     prompt: `Generate a minimal hero section using Nuxt UI v4 UPageHero. It should include:
@@ -101,7 +101,7 @@ Style: ultra-minimal with maximum whitespace and a single strong focal point.`,
   },
   {
     id: "hero-product-launch",
-    title: "Hero 6",
+    title: "Hero Product Launch",
     description:
       "A product launch hero combining UPageHero with UPageLogos for social proof — headline badge, bold title, descriptive text, dual CTAs, and a trusted-by logo strip below.",
     prompt: `Generate a product launch hero using Nuxt UI v4 UPageHero and UPageLogos. It should include:

@@ -1,22 +1,22 @@
 import type { BlockShowcaseItem } from "~/types/components";
 
-import Cta1 from "~/components/blocks/components/Cta1.vue";
-import Cta2 from "~/components/blocks/components/Cta2.vue";
-import Cta3 from "~/components/blocks/components/Cta3.vue";
-import Cta4 from "~/components/blocks/components/Cta4.vue";
-import Cta5 from "~/components/blocks/components/Cta5.vue";
-import Cta6 from "~/components/blocks/components/Cta6.vue";
-import cta1Raw from "~/components/blocks/components/Cta1.vue?raw";
-import cta2Raw from "~/components/blocks/components/Cta2.vue?raw";
-import cta3Raw from "~/components/blocks/components/Cta3.vue?raw";
-import cta4Raw from "~/components/blocks/components/Cta4.vue?raw";
-import cta5Raw from "~/components/blocks/components/Cta5.vue?raw";
-import cta6Raw from "~/components/blocks/components/Cta6.vue?raw";
+import CtaSocialProof from "~/components/blocks/components/CtaSocialProof.vue";
+import CtaTestimonial from "~/components/blocks/components/CtaTestimonial.vue";
+import CtaNewsletter from "~/components/blocks/components/CtaNewsletter.vue";
+import CtaBanner from "~/components/blocks/components/CtaBanner.vue";
+import CtaPromo from "~/components/blocks/components/CtaPromo.vue";
+import CtaBenefitsList from "~/components/blocks/components/CtaBenefitsList.vue";
+import ctaSocialProofRaw from "~/components/blocks/components/CtaSocialProof.vue?raw";
+import ctaTestimonialRaw from "~/components/blocks/components/CtaTestimonial.vue?raw";
+import ctaNewsletterRaw from "~/components/blocks/components/CtaNewsletter.vue?raw";
+import ctaBannerRaw from "~/components/blocks/components/CtaBanner.vue?raw";
+import ctaPromoRaw from "~/components/blocks/components/CtaPromo.vue?raw";
+import ctaBenefitsListRaw from "~/components/blocks/components/CtaBenefitsList.vue?raw";
 
 export const CTA_BLOCKS: BlockShowcaseItem[] = [
   {
-    id: "cta-1",
-    title: "CTA 1",
+    id: "cta-social-proof",
+    title: "CTA Social Proof",
     description:
       "A social-proof-driven CTA card with a stat strip (users, uptime, rating) above dual action buttons — lets the numbers sell the conversion.",
     prompt: `Generate a social proof CTA card using Nuxt UI v4 and Tailwind CSS v4. It should include:
@@ -27,12 +27,12 @@ export const CTA_BLOCKS: BlockShowcaseItem[] = [
 - A border-b divider separating the stats from the action area
 - A heading, muted description paragraph, and two CTA buttons (primary + ghost neutral)
 Style: conversion-focused card with social proof stats driving the action.`,
-    source: cta1Raw,
-    component: Cta1,
+    source: ctaSocialProofRaw,
+    component: CtaSocialProof,
   },
   {
-    id: "cta-2",
-    title: "CTA 2",
+    id: "cta-testimonial",
+    title: "CTA Testimonial",
     description:
       "A horizontal split CTA using UPageCTA with a testimonial card — quote, star rating, and avatar on one side to build trust alongside the action.",
     prompt: `Generate a split testimonial CTA using Nuxt UI v4 UPageCTA with orientation="horizontal". It should include:
@@ -42,12 +42,12 @@ Style: conversion-focused card with social proof stats driving the action.`,
   - A blockquote with testimonial text in italic
   - A person section with an avatar placeholder (initials in a primary-tinted circle), name (font-semibold), and title/company (text-dimmed)
 Style: conversion-focused split layout pairing a CTA with social proof via a real testimonial.`,
-    source: cta2Raw,
-    component: Cta2,
+    source: ctaTestimonialRaw,
+    component: CtaTestimonial,
   },
   {
-    id: "cta-3",
-    title: "CTA 3",
+    id: "cta-newsletter",
+    title: "CTA Newsletter",
     description:
       "A newsletter signup CTA card with a subscriber count trust pill, email input, and a privacy assurance line — trust signals that drive subscriptions.",
     prompt: `Generate a newsletter CTA card using Nuxt UI v4 and Tailwind CSS v4. It should include:
@@ -58,12 +58,12 @@ Style: conversion-focused split layout pairing a CTA with social proof via a rea
 - A flex row with UInput (email, placeholder) and a UButton (Subscribe, primary)
 - A privacy trust line at the bottom with a shield-check icon and text-xs dimmed text
 Style: trust-signal-rich newsletter CTA that reassures before asking for action.`,
-    source: cta3Raw,
-    component: Cta3,
+    source: ctaNewsletterRaw,
+    component: CtaNewsletter,
   },
   {
-    id: "cta-4",
-    title: "CTA 4",
+    id: "cta-banner",
+    title: "CTA Banner",
     description:
       "A compact inline CTA row — text on the left, button on the right, inside a minimal bordered card. Fits between content sections without disrupting flow.",
     prompt: `Generate a compact inline CTA using Nuxt UI v4 and Tailwind CSS v4. It should include:
@@ -73,12 +73,12 @@ Style: trust-signal-rich newsletter CTA that reassures before asking for action.
 - Left side: bold heading text and a muted subtitle on the next line (e.g. "Free plan available — no credit card needed.")
 - Right side: a single primary UButton with trailing arrow icon
 Style: minimal, compact inline CTA that sits naturally between content blocks.`,
-    source: cta4Raw,
-    component: Cta4,
+    source: ctaBannerRaw,
+    component: CtaBanner,
   },
   {
-    id: "cta-5",
-    title: "CTA 5",
+    id: "cta-promo",
+    title: "CTA Promo",
     description:
       "A compact urgency banner using UPageCTA variant='subtle' with a solid 'Limited Time' badge and promotional text — clean and conversion-focused.",
     prompt: `Generate a compact urgency CTA using Nuxt UI v4 UPageCTA with variant="subtle". It should include:
@@ -87,12 +87,12 @@ Style: minimal, compact inline CTA that sits naturally between content blocks.`,
 - Description slot: urgency-driven supporting text
 - No custom backgrounds or decorative elements — let UPageCTA's subtle variant handle the visual treatment
 Style: clean urgency banner that leverages the UPageCTA component for a polished promotional CTA.`,
-    source: cta5Raw,
-    component: Cta5,
+    source: ctaPromoRaw,
+    component: CtaPromo,
   },
   {
-    id: "cta-6",
-    title: "CTA 6",
+    id: "cta-benefits-list",
+    title: "CTA Benefits List",
     description:
       "A feature-value CTA card with checkmark benefit bullets showing 'what you get' above a full-width action button — sell the value before asking for the click.",
     prompt: `Generate a feature value CTA card using Nuxt UI v4 and Tailwind CSS v4. It should include:
@@ -104,7 +104,7 @@ Style: clean urgency banner that leverages the UPageCTA component for a polished
 - A full-width (block) primary UButton with trailing arrow icon
 - A trust line below the button (e.g. "No credit card required") in text-xs dimmed
 Style: value-first CTA card that communicates benefits before driving action.`,
-    source: cta6Raw,
-    component: Cta6,
+    source: ctaBenefitsListRaw,
+    component: CtaBenefitsList,
   },
 ];
