@@ -107,8 +107,8 @@ const posts = [
                 class="flex items-center justify-between text-sm text-(--ui-text-muted)"
               >
                 <div class="flex items-center gap-2">
-                  <UAvatar :text="post.authors[0].avatar.text" size="xs" />
-                  <span>{{ post.authors[0].name }}</span>
+                  <UAvatar :text="post.authors[0]?.avatar?.text" size="xs" />
+                  <span>{{ post.authors[0]?.name }}</span>
                 </div>
                 <time class="text-(--ui-text-muted)/70">{{ post.date }}</time>
               </div>
