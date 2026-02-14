@@ -1,5 +1,9 @@
 import type { NavigationMenuItem } from "@nuxt/ui";
-import type { ComponentCategory } from "~/types/components";
+import type {
+  BlockCategory,
+  ComponentCategory,
+  TemplateCategory,
+} from "~/types/components";
 
 // Component Categories ────────────────────────────────────────────────────
 
@@ -423,17 +427,20 @@ export const COMPONENT_CATEGORIES: ComponentCategory[] = [
 ];
 
 /**
- * Flatten COMPONENT_CATEGORIES into a single NavigationMenuItem list
- * for backward compatibility with command palette and search.
+ * Flatten category arrays into a single NavigationMenuItem list
+ * for command palette and search compatibility.
  */
 export function flattenCategories(
   categories: ComponentCategory[],
+  allLabel = "All Components",
+  allIcon = "i-lucide-layout-grid",
+  allTo = "/components/all",
 ): NavigationMenuItem[] {
   const all: NavigationMenuItem = {
-    label: "All Components",
-    icon: "i-lucide-layout-grid",
-    description: "View all components on a single page.",
-    to: "/components/all",
+    label: allLabel,
+    icon: allIcon,
+    description: `Browse all ${allLabel.toLowerCase()}.`,
+    to: allTo,
   };
   return [all, ...categories.flatMap((cat) => cat.items)];
 }
@@ -441,117 +448,157 @@ export function flattenCategories(
 export const COMPONENT_NAV_ITEMS: NavigationMenuItem[] =
   flattenCategories(COMPONENT_CATEGORIES);
 
-// Block Navigation ────────────────────────────────────────────────────────
+// Block Categories ────────────────────────────────────────────────────────
 
-export const BLOCK_NAV_ITEMS: NavigationMenuItem[] = [
+export const BLOCK_CATEGORIES: BlockCategory[] = [
   {
-    label: "All Blocks",
-    icon: "i-lucide-blocks",
-    description: "Browse all layout blocks.",
-    to: "/blocks",
-  },
-  {
-    label: "Hero",
+    label: "Marketing UI Blocks",
     icon: "i-lucide-megaphone",
-    description: "Bold hero banner with headline and CTA.",
-    to: "/blocks/hero",
-  },
-  {
-    label: "Features",
-    icon: "i-lucide-grid-3x3",
-    description: "Responsive grid showcasing product features.",
-    to: "/blocks/features",
-  },
-  {
-    label: "CTA",
-    icon: "i-lucide-mouse-pointer-click",
-    description: "Banners to drive engagement and conversions.",
-    to: "/blocks/cta",
-  },
-  {
-    label: "Testimonials",
-    icon: "i-lucide-quote",
-    description: "Customer quotes with avatars and ratings.",
-    to: "/blocks/testimonials",
-  },
-  {
-    label: "Stats",
-    icon: "i-lucide-bar-chart-3",
-    description: "Key metrics in an eye-catching layout.",
-    to: "/blocks/stats",
-  },
-  {
-    label: "FAQ",
-    icon: "i-lucide-circle-help",
-    description: "Frequently asked questions in accordion layout.",
-    to: "/blocks/faq",
+    slug: "marketing",
+    description:
+      "Landing page and marketing blocks for product pages and campaigns.",
+    items: [
+      {
+        label: "Hero Section",
+        icon: "i-lucide-megaphone",
+        description:
+          "Bold hero banners with headline, subtitle, and call-to-action buttons.",
+        to: "/blocks/hero",
+      },
+      {
+        label: "Features Grid",
+        icon: "i-lucide-grid-3x3",
+        description:
+          "Responsive grids showcasing product features with icons and descriptions.",
+        to: "/blocks/features",
+      },
+      {
+        label: "CTA Section",
+        icon: "i-lucide-mouse-pointer-click",
+        description:
+          "Call-to-action banners to drive engagement and conversions.",
+        to: "/blocks/cta",
+      },
+      {
+        label: "Testimonials",
+        icon: "i-lucide-quote",
+        description: "Customer quotes with avatars, names, and ratings.",
+        to: "/blocks/testimonials",
+      },
+      {
+        label: "Stats Section",
+        icon: "i-lucide-bar-chart-3",
+        description: "Key metrics and statistics in an eye-catching layout.",
+        to: "/blocks/stats",
+      },
+      {
+        label: "FAQ Section",
+        icon: "i-lucide-circle-help",
+        description: "Frequently asked questions in accordion layout.",
+        to: "/blocks/faq",
+      },
+    ],
   },
 ];
 
-// Template Navigation ─────────────────────────────────────────────────────
+export const BLOCK_NAV_ITEMS: NavigationMenuItem[] = flattenCategories(
+  BLOCK_CATEGORIES,
+  "All Blocks",
+  "i-lucide-blocks",
+  "/blocks",
+);
 
-export const TEMPLATE_NAV_ITEMS: NavigationMenuItem[] = [
+// Template Categories ─────────────────────────────────────────────────────
+
+export const TEMPLATE_CATEGORIES: TemplateCategory[] = [
   {
-    label: "All Templates",
+    label: "Application Templates",
     icon: "i-lucide-app-window",
-    description: "Browse all page templates.",
-    to: "/templates",
+    slug: "application",
+    description:
+      "Full-page application layouts for dashboards, editors, and tools.",
+    items: [
+      {
+        label: "Dashboard",
+        icon: "i-lucide-layout-dashboard",
+        description: "Admin dashboard with stats, charts, and tables.",
+        to: "/templates/dashboard",
+      },
+      {
+        label: "Chat",
+        icon: "i-lucide-message-circle",
+        description: "AI chat interface with conversation history.",
+        to: "/templates/chat",
+      },
+      {
+        label: "Editor",
+        icon: "i-lucide-file-edit",
+        description: "Rich text editor with toolbar and markdown.",
+        to: "/templates/editor",
+      },
+      {
+        label: "Error Page",
+        icon: "i-lucide-alert-triangle",
+        description: "Error state pages for HTTP status codes.",
+        to: "/templates/error-page",
+      },
+    ],
   },
   {
-    label: "Dashboard",
-    icon: "i-lucide-layout-dashboard",
-    description: "Admin dashboard with stats and charts.",
-    to: "/templates/dashboard",
-  },
-  {
-    label: "Landing",
+    label: "Marketing Templates",
     icon: "i-lucide-rocket",
-    description: "Marketing page with hero and features.",
-    to: "/templates/landing",
+    slug: "marketing",
+    description:
+      "Marketing and product pages for landing, pricing, and content.",
+    items: [
+      {
+        label: "Landing Page",
+        icon: "i-lucide-rocket",
+        description: "Marketing landing page with hero and features.",
+        to: "/templates/landing",
+      },
+      {
+        label: "Pricing",
+        icon: "i-lucide-credit-card",
+        description: "Plan comparison with toggle billing.",
+        to: "/templates/pricing",
+      },
+      {
+        label: "Blog",
+        icon: "i-lucide-newspaper",
+        description: "Blog listing with featured posts and categories.",
+        to: "/templates/blog",
+      },
+      {
+        label: "Changelog",
+        icon: "i-lucide-history",
+        description: "Version history and release notes.",
+        to: "/templates/changelog",
+      },
+    ],
   },
   {
-    label: "Pricing",
-    icon: "i-lucide-credit-card",
-    description: "Plan comparison with toggle billing.",
-    to: "/templates/pricing",
-  },
-  {
-    label: "Login",
+    label: "Auth Templates",
     icon: "i-lucide-log-in",
-    description: "Authentication with login and registration.",
-    to: "/templates/login",
-  },
-  {
-    label: "Blog",
-    icon: "i-lucide-newspaper",
-    description: "Blog listing with featured posts.",
-    to: "/templates/blog",
-  },
-  {
-    label: "Changelog",
-    icon: "i-lucide-history",
-    description: "Version history and release notes.",
-    to: "/templates/changelog",
-  },
-  {
-    label: "Chat",
-    icon: "i-lucide-message-circle",
-    description: "AI chat with conversation history.",
-    to: "/templates/chat",
-  },
-  {
-    label: "Editor",
-    icon: "i-lucide-file-edit",
-    description: "Rich text editor with toolbar.",
-    to: "/templates/editor",
-  },
-  {
-    label: "Error",
-    icon: "i-lucide-alert-triangle",
-    description: "Error state pages for HTTP status codes.",
-    to: "/templates/error-page",
+    slug: "auth",
+    description: "Authentication and onboarding page layouts.",
+    items: [
+      {
+        label: "Login",
+        icon: "i-lucide-log-in",
+        description: "Authentication with login and registration forms.",
+        to: "/templates/login",
+      },
+    ],
   },
 ];
+
+export const TEMPLATE_NAV_ITEMS: NavigationMenuItem[] = flattenCategories(
+  TEMPLATE_CATEGORIES,
+  "All Templates",
+  "i-lucide-app-window",
+  "/templates",
+);
 
 // Utility Pages (footer links — included in search but not in the nav menu)
 

@@ -5,6 +5,7 @@ import {
   timeAgo,
   sanitizeNavigationPath,
   downloadFile,
+  extractTemplateSource,
 } from "~/utils/helpers";
 
 describe("typedEntries", () => {
@@ -169,5 +170,42 @@ describe("downloadFile", () => {
     downloadFile('{"key": "value"}', "data.json", "application/json");
     expect(capturedBlob!.type).toBe("application/json");
     expect(capturedBlob!.size).toBe(16);
+  });
+});
+
+describe("extractTemplateSource", () => {
+  it("extracts and un-indents template content from a Vue SFC", () => {
+    const raw = `<template>\n  <div class="wrapper">\n    <p>Hello</p>\n  </div>\n</template>\n`;
+    const result = extractTemplateSource(raw);
+    expect(result).toBe(`<div class="wrapper">\n  <p>Hello</p>\n</div>`);
+  });
+
+  it("returns trimmed raw string when no <template> block found", () => {
+    const raw = "  <div>No template tags</div>  ";
+    expect(extractTemplateSource(raw)).toBe("<div>No template tags</div>");
+  });
+
+  it("handles single-line template content", () => {
+    const raw = "<template>\n  <span>test</span>\n</template>";
+    expect(extractTemplateSource(raw)).toBe("<span>test</span>");
+  });
+
+  it("handles template with attributes", () => {
+    const raw = `<template lang="pug">\n  div Hello\n</template>`;
+    expect(extractTemplateSource(raw)).toBe("div Hello");
+  });
+
+  it("preserves relative indentation across nested lines", () => {
+    const raw = [
+      "<template>",
+      "    <ul>",
+      "        <li>A</li>",
+      "        <li>B</li>",
+      "    </ul>",
+      "</template>",
+    ].join("\n");
+    expect(extractTemplateSource(raw)).toBe(
+      "<ul>\n    <li>A</li>\n    <li>B</li>\n</ul>",
+    );
   });
 });

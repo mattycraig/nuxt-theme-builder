@@ -119,7 +119,11 @@ export default defineNuxtConfig({
     {
       path: "~/components",
       pathPrefix: true,
-      ignore: ["~/components/showcase/**"],
+      ignore: [
+        "~/components/showcase/**",
+        "~/components/blocks/content/**",
+        "~/components/blocks/components/**",
+      ],
     },
     {
       path: "~/components/showcase",

@@ -66,3 +66,27 @@ export function timeAgo(timestamp: number): string {
   if (months < 12) return `${months}mo ago`;
   return `${Math.floor(months / 12)}y ago`;
 }
+
+/**
+ * Extract the inner content of a Vue SFC `<template>` block.
+ * Strips `<template>` / `</template>` tags and un-indents by one level.
+ * Useful for deriving clean HTML source from a `?raw` import of a `.vue` file.
+ */
+export function extractTemplateSource(raw: string): string {
+  const match = raw.match(/<template[^>]*>\r?\n?([\s\S]*?)\r?\n?<\/template>/);
+  if (!match?.[1]) return raw.trim();
+
+  const lines = match[1].split("\n");
+  const minIndent = lines
+    .filter((l) => l.trim().length > 0)
+    .reduce((min, l) => {
+      const leading = l.match(/^(\s*)/);
+      const indent = leading?.[1]?.length ?? 0;
+      return Math.min(min, indent);
+    }, Infinity);
+
+  return lines
+    .map((l) => l.slice(minIndent))
+    .join("\n")
+    .trim();
+}

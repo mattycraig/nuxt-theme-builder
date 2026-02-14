@@ -34,37 +34,20 @@ const faqs = [
 </script>
 
 <template>
-  <div class="p-6 space-y-12 max-w-5xl mx-auto">
-    <UPageHeader
-      headline="Blocks"
-      title="FAQ Section"
-      description="Frequently asked questions in an accordion layout."
-      :links="[
-        {
-          label: 'All Blocks',
-          icon: 'i-lucide-arrow-left',
-          to: '/blocks',
-          variant: 'ghost',
-          color: 'neutral',
-        },
-      ]"
-    />
-
-    <!-- FAQ block -->
-    <section
-      class="rounded-xl border border-(--ui-border) bg-(--ui-bg) p-6 sm:p-10"
-    >
-      <div class="text-center mb-10">
-        <h2 class="text-2xl font-bold text-(--ui-text-highlighted) mb-2">
-          Frequently Asked Questions
-        </h2>
-        <p class="text-(--ui-text-muted) max-w-xl mx-auto">
-          Everything you need to know about the Nuxt UI Theme Builder.
-        </p>
-      </div>
-      <div class="max-w-2xl mx-auto">
-        <UAccordion :items="faqs" />
-      </div>
-    </section>
-  </div>
+  <!-- FAQ block -->
+  <section
+    class="rounded-xl border border-(--ui-border) bg-(--ui-bg) p-6 sm:p-10"
+  >
+    <div class="text-center mb-10">
+      <h2 class="text-2xl font-bold text-(--ui-text-highlighted) mb-2">
+        Frequently Asked Questions
+      </h2>
+      <p class="text-(--ui-text-muted) max-w-xl mx-auto">
+        Everything you need to know about the Nuxt UI Theme Builder.
+      </p>
+    </div>
+    <div class="max-w-2xl mx-auto">
+      <UAccordion :items="faqs" />
+    </div>
+  </section>
 </template>
