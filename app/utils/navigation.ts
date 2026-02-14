@@ -465,38 +465,6 @@ export const BLOCK_CATEGORIES: BlockCategory[] = [
           "Bold hero banners with headline, subtitle, and call-to-action buttons.",
         to: "/blocks/hero",
       },
-      {
-        label: "Features Grid",
-        icon: "i-lucide-grid-3x3",
-        description:
-          "Responsive grids showcasing product features with icons and descriptions.",
-        to: "/blocks/features",
-      },
-      {
-        label: "CTA Section",
-        icon: "i-lucide-mouse-pointer-click",
-        description:
-          "Call-to-action banners to drive engagement and conversions.",
-        to: "/blocks/cta",
-      },
-      {
-        label: "Testimonials",
-        icon: "i-lucide-quote",
-        description: "Customer quotes with avatars, names, and ratings.",
-        to: "/blocks/testimonials",
-      },
-      {
-        label: "Stats Section",
-        icon: "i-lucide-bar-chart-3",
-        description: "Key metrics and statistics in an eye-catching layout.",
-        to: "/blocks/stats",
-      },
-      {
-        label: "FAQ Section",
-        icon: "i-lucide-circle-help",
-        description: "Frequently asked questions in accordion layout.",
-        to: "/blocks/faq",
-      },
     ],
   },
 ];
