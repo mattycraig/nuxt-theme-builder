@@ -55,7 +55,7 @@ const blockContent = computed(() => {
           },
         ]"
       />
-      <div class="space-y-12">
+      <div class="space-y-12 mb-12">
         <component :is="blockContent" v-if="blockContent" />
       </div>
     </div>

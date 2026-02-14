@@ -8,6 +8,5 @@ import { COMPONENT_CATEGORIES } from "~/utils/navigation";
     title="Components"
     item-label="component"
     :categories="COMPONENT_CATEGORIES"
-    compact
   />
 </template>
