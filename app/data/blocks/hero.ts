@@ -18,15 +18,17 @@ export const HERO_BLOCKS: BlockShowcaseItem[] = [
     id: "hero-centered",
     title: "Hero 1",
     description:
-      "A centered hero section featuring a bold, visually appealing heading with a subtitle badge, descriptive text, and dual call-to-action buttons — ideal for product launches and landing pages.",
-    prompt: `Generate a centered hero section using Nuxt UI v4 and Tailwind CSS v4. It should include:
-- A subtle badge at the top (e.g. "New Release") using UBadge with color="primary" variant="subtle"
-- A bold headline (text-3xl to text-5xl, font-bold, tracking-tight) centered with max-w-2xl
-- A muted subtitle paragraph (text-lg) centered with max-w-xl
-- Two call-to-action buttons side by side: a primary UButton with a trailing arrow icon, and a secondary outline UButton with color="neutral"
-- Generous vertical padding (py-20 sm:py-28) with text-center alignment
-- Use Nuxt UI semantic color tokens (--ui-text-highlighted, --ui-text-muted, --ui-primary) for theming
-Style: clean, modern centered layout with generous whitespace and strong visual hierarchy.`,
+      "A gradient atmosphere hero with decorative primary/secondary color orbs, a gradient-to-solid split headline, staggered entrance animations, and generous spacing — dramatic and eye-catching for marketing pages.",
+    prompt: `Generate a centered gradient atmosphere hero section using Nuxt UI v4 and Tailwind CSS v4. It should include:
+- A container with relative + isolate + overflow-hidden and generous padding (py-24 sm:py-32)
+- Two decorative blurred gradient orbs (absolute-positioned rounded-full divs with bg-(--ui-primary)/15 and bg-(--ui-secondary)/10, blur-[100px] and blur-[80px]) for atmospheric depth
+- A UBadge (color="primary", variant="subtle", size="lg") at the top
+- A multi-part headline (text-4xl to text-6xl, font-extrabold, tracking-tight): first span uses CSS gradient text (bg-gradient-to-r from-[var(--ui-primary)] to-[var(--ui-secondary)], bg-clip-text, text-transparent), second span uses solid --ui-text-highlighted
+- A muted description paragraph (text-lg to text-xl) with max-w-xl and leading-relaxed
+- Two CTA buttons: primary UButton with trailing arrow icon + outline neutral UButton
+- Staggered CSS entrance animations (translateY fade-in) with animation-delay on each content element, respecting prefers-reduced-motion
+- All decorative elements use aria-hidden="true"
+Style: dramatic gradient atmosphere with theme-responsive color orbs and cinematic entrance.`,
     source: heroCenteredRaw,
     component: HeroCentered,
   },
@@ -34,14 +36,17 @@ Style: clean, modern centered layout with generous whitespace and strong visual 
     id: "hero-split",
     title: "Hero 2",
     description:
-      "A split-layout hero section with a content column on the left featuring a badge, headline, subtitle, and actions, paired with an image placeholder on the right — great for product showcases and feature highlights.",
-    prompt: `Generate a split-layout hero section using Nuxt UI v4 and Tailwind CSS v4. It should include:
-- A two-column grid layout (grid lg:grid-cols-2) with items-center alignment
-- LEFT COLUMN: A subtle badge using UBadge (e.g. "v4.0"), a bold headline (text-3xl to text-4xl), a muted subtitle paragraph, and two action buttons (primary UButton + ghost neutral UButton with trailing external-link icon)
-- RIGHT COLUMN: An image placeholder area with aspect-[4/3] ratio, rounded-lg borders, elevated background, and a centered placeholder icon with text
-- Responsive padding (p-6 sm:p-12) with gap-8 between columns
-- Use Nuxt UI semantic color tokens (--ui-text-highlighted, --ui-text-muted, --ui-bg-elevated, --ui-border) for theming
-Style: modern asymmetric layout balancing content and visual, with clear hierarchy and professional spacing.`,
+      "A horizontal split hero using UPageHero with a realistic mock app UI card featuring window chrome, color palette swatches, status badges, and a floating export-success notification — great for product showcases.",
+    prompt: `Generate a horizontal split hero using Nuxt UI v4 UPageHero with orientation="horizontal". It should include:
+- UPageHero with headline (e.g. "v4.0"), title, description, and :links array (primary + ghost neutral buttons)
+- Default slot containing a realistic mock app UI card wrapped in rounded-2xl, border, bg-elevated, shadow-2xl:
+  - A window chrome bar (3 colored dots: red, yellow, green + monospace filename text)
+  - Content rows showing a themed icon (bg-(--ui-primary)/15) + skeleton progress bars + UBadge status tags (success, warning)
+  - A color swatch strip showing 5 shades of the primary color (--ui-color-primary-600 through -200)
+- A floating success notification card (absolute positioned, -bottom-3 -left-3) with a check-circle icon and "Theme exported!" text
+- Entrance animations: card slides in from right, floating notification fades up with delay
+- prefers-reduced-motion respected via @media query
+Style: professional product showcase with a realistic, theme-responsive mock UI card.`,
     source: heroSplitRaw,
     component: HeroSplit,
   },
@@ -49,13 +54,18 @@ Style: modern asymmetric layout balancing content and visual, with clear hierarc
     id: "hero-page-hero",
     title: "Hero 3",
     description:
-      "A hero section built with the UPageHero component — the canonical Nuxt UI v4 pattern with headline, title, description, and link buttons with automatic responsive layout.",
-    prompt: `Generate a hero section using the Nuxt UI v4 UPageHero component. It should include:
-- UPageHero with headline (small text above title), title, and description props
-- A :links array of ButtonProps for CTA buttons (primary + outline neutral)
-- The component handles responsive layout, centering, and spacing automatically
-- Wrap in a <section> for semantic HTML
-Style: clean, canonical Nuxt UI hero layout using the built-in UPageHero component.`,
+      "A glassmorphism hero with a frosted-glass card over a dot-grid background and primary color glow — centered content with editorial typography and dual action buttons for a modern, premium feel.",
+    prompt: `Generate a glassmorphism spotlight hero section using Nuxt UI v4 and Tailwind CSS v4. It should include:
+- A section with relative + isolate + overflow-hidden and generous padding (py-20 sm:py-28)
+- A dot-grid pattern background (CSS radial-gradient repeating pattern at 0.04 opacity, 24px grid)
+- A centered glow spot (absolute, rounded-full, bg-(--ui-primary)/10, blur-[100px]) behind the glass card
+- A frosted glass card (max-w-2xl, rounded-3xl, border-(--ui-border)/50, bg-(--ui-bg)/60, backdrop-blur-xl, shadow-2xl) containing:
+  - An uppercase headline in text-(--ui-primary)
+  - A bold title (text-3xl to text-5xl, tracking-tight)
+  - A muted description paragraph with leading-relaxed
+  - Two CTA buttons (primary with trailing arrow + outline neutral)
+- All content centered inside the glass card
+Style: modern glassmorphism with dot-grid texture, color glow, and a frosted card centerpiece.`,
     source: heroPageHeroRaw,
     component: HeroPageHero,
   },
@@ -63,13 +73,16 @@ Style: clean, canonical Nuxt UI hero layout using the built-in UPageHero compone
     id: "hero-search",
     title: "Hero 4",
     description:
-      "A search-focused hero section using UPageHero with a prominent search input and suggestion chips — ideal for documentation sites, knowledge bases, and support portals.",
-    prompt: `Generate a search-focused hero using Nuxt UI v4 UPageHero. It should include:
+      "A search-focused hero with a warm gradient backdrop, decorative ring elements, an elevated search input, and interactive suggestion badges — welcoming and inviting for documentation sites and knowledge bases.",
+    prompt: `Generate a warm search portal hero using Nuxt UI v4 UPageHero and Tailwind CSS v4. It should include:
+- A section with relative + isolate + overflow-hidden
+- A warm gradient backdrop (bg-gradient-to-b from-[var(--ui-primary)]/5 via-transparent to-[var(--ui-secondary)]/5)
+- Decorative ring elements (absolute-positioned, rounded-full, border with primary/secondary at 10% opacity) at different corners
 - UPageHero with headline, title, and description props
-- Default slot containing a centered UInput with icon="i-lucide-search", size="xl", and proper aria-label
-- Below the input, a row of UBadge chips as popular search suggestions
-- The input and suggestions are wrapped in a max-w-xl container for visual balance
-Style: documentation-style hero with search as the primary action.`,
+- Default slot with a max-w-xl centered container holding:
+  - A UInput (icon="i-lucide-search", size="xl") with shadow-lg for elevated presence
+  - A row of suggestion UBadge chips (variant="subtle", color="neutral") with hover effects (hover:ring-1, hover:ring-(--ui-primary)/30, hover:shadow-sm, transition-all)
+Style: warm, inviting search-first hero with atmospheric gradient and interactive suggestion chips.`,
     source: heroSearchRaw,
     component: HeroSearch,
   },

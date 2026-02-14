@@ -97,7 +97,7 @@ function copyPrompt() {
       }"
     >
       <template #preview>
-        <div class="block-preview">
+        <div class="block-preview overflow-hidden">
           <slot />
         </div>
       </template>
