@@ -2,12 +2,16 @@ import { describe, it, expect } from "vitest";
 import { isAllowedSourcePath, isSafeHighlightedHtml } from "~/utils/security";
 
 describe("source API allowlist", () => {
-  it("allows blocks routes", () => {
-    expect(isAllowedSourcePath("blocks/hero")).toBe(true);
+  it("rejects blocks routes", () => {
+    expect(isAllowedSourcePath("blocks/hero")).toBe(false);
   });
 
   it("allows templates routes", () => {
     expect(isAllowedSourcePath("templates/dashboard")).toBe(true);
+  });
+
+  it("rejects templates index path", () => {
+    expect(isAllowedSourcePath("templates/")).toBe(false);
   });
 
   it("rejects component routes", () => {
@@ -35,7 +39,8 @@ describe("source API allowlist", () => {
 
 describe("highlight HTML safety checks", () => {
   it("accepts expected highlighted markup", () => {
-    const html = '<pre class="shiki"><code><span class="line">const x = 1;</span></code></pre>';
+    const html =
+      '<pre class="shiki"><code><span class="line">const x = 1;</span></code></pre>';
     expect(isSafeHighlightedHtml(html)).toBe(true);
   });
 
@@ -56,11 +61,13 @@ describe("highlight HTML safety checks", () => {
   });
 
   it("rejects iframe, object, embed, link, and meta tags", () => {
-    expect(isSafeHighlightedHtml("<iframe src=\"x\"></iframe>")).toBe(false);
-    expect(isSafeHighlightedHtml("<object data=\"x\"></object>")).toBe(false);
-    expect(isSafeHighlightedHtml("<embed src=\"x\">")).toBe(false);
-    expect(isSafeHighlightedHtml("<link rel=\"stylesheet\" href=\"x\">")).toBe(false);
-    expect(isSafeHighlightedHtml("<meta http-equiv=\"refresh\">")).toBe(false);
+    expect(isSafeHighlightedHtml('<iframe src="x"></iframe>')).toBe(false);
+    expect(isSafeHighlightedHtml('<object data="x"></object>')).toBe(false);
+    expect(isSafeHighlightedHtml('<embed src="x">')).toBe(false);
+    expect(isSafeHighlightedHtml('<link rel="stylesheet" href="x">')).toBe(
+      false,
+    );
+    expect(isSafeHighlightedHtml('<meta http-equiv="refresh">')).toBe(false);
   });
 
   it("accepts empty string", () => {

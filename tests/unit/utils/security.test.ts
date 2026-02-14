@@ -4,11 +4,11 @@ import { isAllowedSourcePath, isSafeHighlightedHtml } from "~/utils/security";
 describe("security utilities", () => {
   describe("isAllowedSourcePath", () => {
     describe("allowed paths", () => {
-      it("should allow blocks/* paths", () => {
-        expect(isAllowedSourcePath("blocks/hero")).toBe(true);
-        expect(isAllowedSourcePath("blocks/cta")).toBe(true);
-        expect(isAllowedSourcePath("blocks/features")).toBe(true);
-        expect(isAllowedSourcePath("blocks/nested/component")).toBe(true);
+      it("should reject blocks/* paths", () => {
+        expect(isAllowedSourcePath("blocks/hero")).toBe(false);
+        expect(isAllowedSourcePath("blocks/cta")).toBe(false);
+        expect(isAllowedSourcePath("blocks/features")).toBe(false);
+        expect(isAllowedSourcePath("blocks/nested/component")).toBe(false);
       });
 
       it("should allow templates/* paths", () => {
@@ -16,6 +16,10 @@ describe("security utilities", () => {
         expect(isAllowedSourcePath("templates/login")).toBe(true);
         expect(isAllowedSourcePath("templates/pricing")).toBe(true);
         expect(isAllowedSourcePath("templates/nested/page")).toBe(true);
+      });
+
+      it("should reject templates index path", () => {
+        expect(isAllowedSourcePath("templates/")).toBe(false);
       });
     });
 
@@ -68,29 +72,31 @@ describe("security utilities", () => {
       });
 
       it("should handle trailing slashes", () => {
-        expect(isAllowedSourcePath("blocks/")).toBe(true);
-        expect(isAllowedSourcePath("templates/")).toBe(true);
+        expect(isAllowedSourcePath("blocks/")).toBe(false);
+        expect(isAllowedSourcePath("templates/")).toBe(false);
       });
 
       it("should handle multiple slashes", () => {
-        expect(isAllowedSourcePath("blocks//hero")).toBe(true);
-        expect(isAllowedSourcePath("blocks/nested//component")).toBe(true);
+        expect(isAllowedSourcePath("blocks//hero")).toBe(false);
+        expect(isAllowedSourcePath("templates//dashboard")).toBe(true);
       });
     });
 
     describe("directory traversal attempts", () => {
-      it("allows paths with .. that start with allowed prefix (sanitization must happen at API layer)", () => {
+      it("allows paths with .. that start with templates/ prefix (sanitization must happen at API layer)", () => {
         // NOTE: This function only checks prefix. Directory traversal prevention
         // is handled by the API route which rejects paths containing ".."
         // See server/api/source/[...path].get.ts line 12
-        expect(isAllowedSourcePath("blocks/../components/Button")).toBe(true);
         expect(isAllowedSourcePath("templates/../../etc/passwd")).toBe(true);
       });
 
+      it("rejects blocks paths even with traversal", () => {
+        expect(isAllowedSourcePath("blocks/../components/Button")).toBe(false);
+        expect(isAllowedSourcePath("blocks/../../app.vue")).toBe(false);
+      });
+
       it("documents defense-in-depth: API layer must sanitize paths before this check", () => {
-        // TODO: Consider adding path normalization to isAllowedSourcePath for defense-in-depth
         // Current architecture: API route rejects ".." before calling this function
-        expect(isAllowedSourcePath("blocks/../../app.vue")).toBe(true);
         expect(isAllowedSourcePath("templates/../blocks/hero")).toBe(true);
       });
     });

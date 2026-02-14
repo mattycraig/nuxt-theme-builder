@@ -151,6 +151,7 @@ pnpm test:e2e:ui
 
 - `useSourceCode()` is singleton-state; maintain shared behavior across default and fullscreen views.
 - Source retrieval relies on `modules/source-code-embed.ts` + `/api/source/[...path]`.
+- Source mode is only available for `/templates/*` routes (excluding the templates index page).
 
 ### AI Generation
 

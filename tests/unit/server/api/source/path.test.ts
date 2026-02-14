@@ -260,7 +260,7 @@ describe.skip("/api/source/[...path]", () => {
     it("should use security utility for validation", async () => {
       const { isAllowedSourcePath } = await import("~/utils/security");
 
-      expect(isAllowedSourcePath("blocks/hero")).toBe(true);
+      expect(isAllowedSourcePath("blocks/hero")).toBe(false);
       expect(isAllowedSourcePath("templates/dashboard")).toBe(true);
       expect(isAllowedSourcePath("components/Button")).toBe(false);
       expect(isAllowedSourcePath("pages/index")).toBe(false);

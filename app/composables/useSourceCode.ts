@@ -8,7 +8,7 @@
  */
 
 /** Route prefixes whose pages have embedded source available. */
-const SOURCE_ELIGIBLE_PREFIXES = ["/templates", "/blocks"] as const;
+const SOURCE_ELIGIBLE_PREFIXES = ["/templates"] as const;
 
 const sourceCache = new Map<string, string>();
 const _viewMode = ref<"preview" | "code">("preview");
@@ -35,9 +35,13 @@ export function useSourceCode() {
 
   const routeKey = computed(() => stripLeadingSlash(route.path));
 
-  const hasSourcePage = computed(() =>
-    SOURCE_ELIGIBLE_PREFIXES.some((prefix) => route.path.startsWith(prefix)),
-  );
+  const hasSourcePage = computed(() => {
+    const path = route.path;
+    return (
+      SOURCE_ELIGIBLE_PREFIXES.some((prefix) => path.startsWith(prefix)) &&
+      path !== "/templates"
+    );
+  });
 
   const sourceFilePath = computed(() => `app/pages/${routeKey.value}.vue`);
 

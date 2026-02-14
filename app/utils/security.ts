@@ -3,7 +3,7 @@
  * Prevents information disclosure of non-preview page sources.
  */
 export function isAllowedSourcePath(safePath: string): boolean {
-  return safePath.startsWith("blocks/") || safePath.startsWith("templates/");
+  return safePath.startsWith("templates/") && safePath !== "templates/";
 }
 
 /**

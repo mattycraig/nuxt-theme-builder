@@ -36,10 +36,16 @@ describe("useSourceCode", () => {
       expect(hasSourcePage.value).toBe(true);
     });
 
-    it("returns true for block paths", () => {
+    it("returns false for block paths", () => {
       routeRef.path = "/blocks/hero";
       const { hasSourcePage } = useSourceCode();
-      expect(hasSourcePage.value).toBe(true);
+      expect(hasSourcePage.value).toBe(false);
+    });
+
+    it("returns false for templates index page", () => {
+      routeRef.path = "/templates";
+      const { hasSourcePage } = useSourceCode();
+      expect(hasSourcePage.value).toBe(false);
     });
 
     it("returns false for component paths", () => {

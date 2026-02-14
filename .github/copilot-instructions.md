@@ -65,7 +65,7 @@ Do not collapse these two paths into one.
 
 ### Source Viewer
 
-- Source mode only applies to `/blocks/*` and `/templates/*` routes.
+- Source mode only applies to `/templates/*` routes (excluding the templates index page).
 - If source retrieval behavior changes, keep these in sync:
   - `modules/source-code-embed.ts`
   - `server/api/source/[...path].get.ts`
