@@ -65,7 +65,7 @@ function handleHeightDragKeydown(event: KeyboardEvent) {
 <template>
   <div
     ref="previewArea"
-    class="flex-1 overflow-hidden p-4 sm:p-6 flex justify-center items-stretch"
+    class="flex-1 overflow-hidden p-4 sm:px-6 flex justify-center items-stretch"
   >
     <div
       data-preview-wrapper

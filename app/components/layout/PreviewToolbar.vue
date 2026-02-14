@@ -22,7 +22,7 @@ const exportPanel = useExportPanel();
 
 <template>
   <div
-    class="hidden md:flex items-center justify-between gap-1.5 md:px-6 md:pt-6 shrink-0 relative"
+    class="hidden md:flex items-center justify-between gap-1.5 md:px-6 md:pt-4 shrink-0 relative"
     role="toolbar"
     aria-label="Preview controls"
   >
