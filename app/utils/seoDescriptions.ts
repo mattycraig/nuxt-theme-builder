@@ -4,7 +4,7 @@
  */
 
 export const PAGE_DESCRIPTIONS: Record<string, string> = {
-  "/": "A visual design-token editor for Nuxt UI v4. Configure colors, radius, fonts, and shades — preview every component live — then export and drop into your project.",
+  "/": "The visual design-token editor for Nuxt UI v4. Configure colors, radius, fonts, and shades — preview 125+ components live — export as app.config.ts, CSS, or JSON. AI-powered theme generation included.",
   "/help":
     "Learn how to use the Nuxt UI Theme Builder — configure design tokens, preview components, and export your theme as app.config.ts, CSS, or JSON.",
   "/ai":

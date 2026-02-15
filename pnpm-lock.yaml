@@ -63,6 +63,9 @@ importers:
       '@iconify-json/lucide':
         specifier: ^1.2.90
         version: 1.2.90
+      '@iconify-json/simple-icons':
+        specifier: ^1.2.70
+        version: 1.2.70
       '@nuxt/eslint':
         specifier: ^1.15.1
         version: 1.15.1(@typescript-eslint/utils@8.55.0(eslint@9.28.0(jiti@2.6.1))(typescript@5.9.3))(@vue/compiler-sfc@3.5.28)(eslint@9.28.0(jiti@2.6.1))(magicast@0.5.2)(typescript@5.9.3)(vite@7.3.1(@types/node@25.2.3)(jiti@2.6.1)(lightningcss@1.31.1)(terser@5.46.0)(yaml@2.8.2))
@@ -753,6 +756,9 @@ packages:
 
   '@iconify-json/lucide@1.2.90':
     resolution: {integrity: sha512-dPn1pRhfBa9KR+EVpdyM1Rvw3T36hCKYxd6TxK1ifffiNt0f5yXx8ZVhqnzPH4Vkz87yLMj5xFCXomNrnzd2kQ==}
+
+  '@iconify-json/simple-icons@1.2.70':
+    resolution: {integrity: sha512-CYNRCgN6nBTjN4dNkrBCjHXNR2e4hQihdsZUs/afUNFOWLSYjfihca4EFN05rRvDk4Xoy2n8tym6IxBZmcn+Qg==}
 
   '@iconify/collections@1.0.650':
     resolution: {integrity: sha512-rGtrLIeHu4qVTfe/Bsy5TIoRmj0KmvSNrPWu8RFX7bHeq5NqAz/VNXQBPRhtCX43D/ZIozB9vLwLWr+ETHbhEg==}
@@ -7154,6 +7160,10 @@ snapshots:
   '@humanwhocodes/retry@0.4.3': {}
 
   '@iconify-json/lucide@1.2.90':
+    dependencies:
+      '@iconify/types': 2.0.0
+
+  '@iconify-json/simple-icons@1.2.70':
     dependencies:
       '@iconify/types': 2.0.0
 

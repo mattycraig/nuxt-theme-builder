@@ -9,11 +9,14 @@ const { currentPageLabel, mobileNavItems } = useLayoutNavigation();
     <template #leading>
       <UDashboardSidebarCollapse />
       <USeparator orientation="vertical" class="h-6 mx-2" />
-      <UIcon
-        name="i-lucide-palette"
-        class="size-5 text-(--ui-primary)"
-        aria-hidden="true"
-      />
+      <div
+        class="size-7 rounded-sm bg-gradient-to-br from-[var(--ui-primary)] to-[var(--ui-secondary)] flex items-center justify-center shadow-md shadow-(--ui-primary)/15 mr-1"
+      >
+        <span
+          class="iconify i-lucide:palette size-5 text-inverted"
+          aria-hidden="true"
+        />
+      </div>
     </template>
 
     <template #right>
