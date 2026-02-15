@@ -13,6 +13,8 @@ export type BlockCategory = ComponentCategory;
 
 export type TemplateCategory = ComponentCategory;
 
+export type LearnCategory = ComponentCategory;
+
 export interface BlockShowcaseItem {
   id: string;
   title: string;

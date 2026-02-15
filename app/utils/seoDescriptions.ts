@@ -81,6 +81,29 @@ export const PAGE_DESCRIPTIONS: Record<string, string> = {
     "Learn about the Nuxt UI Theme Builder — a free, open-source visual editor for Nuxt UI v4 design tokens.",
   "/contact":
     "Get in touch with the Nuxt UI Theme Builder team — report bugs, request features, or join the community.",
+  // Learn pages
+  "/learn":
+    "Guides, references, and tips for theming Nuxt UI v4 applications — colors, dark mode, Tailwind CSS v4, typography, accessibility, and design systems.",
+  "/learn/theming/customize-colors":
+    "Learn how to configure semantic color palettes, per-role shades, and neutral tones in Nuxt UI v4 to match your brand identity.",
+  "/learn/theming/dark-mode-guide":
+    "Build polished dual-mode themes with independent light and dark color configurations using Nuxt UI v4 and Tailwind CSS v4.",
+  "/learn/theming/color-palette-reference":
+    "Complete reference of all available color palettes in Nuxt UI v4 with shade values, usage guidance, and pairing recommendations.",
+  "/learn/theming/css-variables-reference":
+    "Complete reference of CSS custom properties (design tokens) used by Nuxt UI v4 for colors, radius, typography, and spacing.",
+  "/learn/theming/typography-font-pairing":
+    "How to choose, pair, and apply fonts in Nuxt UI v4 applications using Nuxt Fonts and CSS variables.",
+  "/learn/theming/export-and-share":
+    "Export your Nuxt UI v4 themes as app.config.ts, CSS variables, or JSON — and share them with your team or community.",
+  "/learn/components/styling-cheat-sheet":
+    "Quick reference for customizing individual Nuxt UI v4 components using variants, colors, sizes, and theme tokens.",
+  "/learn/tailwind/tailwind-v4-theming":
+    "Key differences in Tailwind CSS v4 theming versus v3 — CSS variables, OKLCH color space, and new configuration patterns.",
+  "/learn/best-practices/design-system-guide":
+    "How to build a consistent, scalable design system for Nuxt applications using Nuxt UI v4 design tokens and conventions.",
+  "/learn/best-practices/accessible-color-contrast":
+    "Ensure your theme colors meet WCAG 2.2 contrast requirements for text, UI components, and interactive elements.",
 };
 
 export const DEFAULT_DESCRIPTION =

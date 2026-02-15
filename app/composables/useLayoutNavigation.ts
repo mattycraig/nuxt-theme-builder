@@ -3,6 +3,7 @@ import {
   COMPONENT_NAV_ITEMS,
   BLOCK_NAV_ITEMS,
   TEMPLATE_NAV_ITEMS,
+  LEARN_NAV_ITEMS,
   UTILITY_NAV_ITEMS,
   flattenNavigationItems,
 } from "~/utils/navigation";
@@ -18,13 +19,16 @@ export function useLayoutNavigation() {
 
   const allNavItems = computed(() => [
     ...flattenNavigationItems(NAVIGATION_ITEMS),
-    ...[...COMPONENT_NAV_ITEMS, ...BLOCK_NAV_ITEMS, ...TEMPLATE_NAV_ITEMS].map(
-      (item) => ({
-        label: item.label ?? "",
-        icon: item.icon as string | undefined,
-        to: item.to ? String(item.to) : undefined,
-      }),
-    ),
+    ...[
+      ...COMPONENT_NAV_ITEMS,
+      ...BLOCK_NAV_ITEMS,
+      ...TEMPLATE_NAV_ITEMS,
+      ...LEARN_NAV_ITEMS,
+    ].map((item) => ({
+      label: item.label ?? "",
+      icon: item.icon as string | undefined,
+      to: item.to ? String(item.to) : undefined,
+    })),
     ...UTILITY_NAV_ITEMS.map((item) => ({
       label: item.label ?? "",
       icon: item.icon as string | undefined,
