@@ -53,7 +53,7 @@ function getSwatchBg(oklchValue: string): string {
 }
 
 function isLightShade(shade: string): boolean {
-  return ["50", "100", "200", "300"].includes(shade);
+  return ["50", "100", "200", "300", "400"].includes(shade);
 }
 
 function getShadeValue(
@@ -98,7 +98,7 @@ function handleKeydown(
         class="flex-1"
         aria-label="Filter palettes by name"
       />
-      <UButtonGroup>
+      <UFieldGroup>
         <UButton
           :variant="displayFormat === 'hex' ? 'solid' : 'outline'"
           color="neutral"
@@ -111,7 +111,7 @@ function handleKeydown(
           label="OKLCH"
           @click="displayFormat = 'oklch'"
         />
-      </UButtonGroup>
+      </UFieldGroup>
     </div>
 
     <div
@@ -170,8 +170,8 @@ function handleKeydown(
               "
             >
               <span
-                class="sr-only sm:not-sr-only sm:flex items-center justify-center h-full text-[10px] font-mono leading-none"
-                :class="isLightShade(shade) ? 'text-gray-700' : 'text-white'"
+                class="hidden sm:flex items-center justify-center h-full text-xs font-mono leading-none"
+                :class="isLightShade(shade) ? 'text-black' : 'text-white'"
               >
                 {{ shade }}
               </span>
@@ -229,7 +229,7 @@ function handleKeydown(
               "
             >
               <span
-                class="sr-only sm:not-sr-only sm:flex items-center justify-center h-full text-[10px] font-mono leading-none"
+                class="hidden sm:flex items-center justify-center h-full text-xs font-mono leading-none"
                 :class="isLightShade(shade) ? 'text-gray-700' : 'text-white'"
               >
                 {{ shade }}

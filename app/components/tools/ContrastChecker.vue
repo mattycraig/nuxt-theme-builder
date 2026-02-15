@@ -35,16 +35,6 @@ function swapColors() {
   bgHex.value = temp;
 }
 
-function onFgColorPick(event: Event) {
-  const target = event.target as HTMLInputElement;
-  fgHex.value = target.value;
-}
-
-function onBgColorPick(event: Event) {
-  const target = event.target as HTMLInputElement;
-  bgHex.value = target.value;
-}
-
 function sanitizeHexInput(value: string): string {
   let hex = value.trim();
   if (!hex.startsWith("#")) hex = `#${hex}`;
@@ -86,19 +76,26 @@ const previewStyle = computed(() => ({
           Foreground (text) color
         </label>
         <div class="flex gap-2 items-center">
-          <input
-            type="color"
-            :value="fgHex"
-            class="w-10 h-10 rounded cursor-pointer border border-[var(--ui-border-default)] shrink-0"
-            aria-label="Pick foreground color"
-            @input="onFgColorPick"
-          >
+          <UPopover>
+            <button
+              type="button"
+              class="w-10 h-10 rounded-lg border border-default shrink-0 cursor-pointer shadow-sm transition-shadow hover:shadow-md focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
+              :style="{ backgroundColor: fgHex }"
+              aria-label="Pick foreground color"
+            />
+            <template #content>
+              <div class="p-2">
+                <UColorPicker v-model="fgHex" size="sm" />
+              </div>
+            </template>
+          </UPopover>
           <UInput
             id="fg-hex"
             v-model="fgHex"
             placeholder="#1a1a2e"
             class="flex-1 font-mono"
             aria-label="Foreground hex color"
+            size="xl"
             @blur="onFgInputBlur"
           />
         </div>
@@ -113,19 +110,26 @@ const previewStyle = computed(() => ({
           Background color
         </label>
         <div class="flex gap-2 items-center">
-          <input
-            type="color"
-            :value="bgHex"
-            class="w-10 h-10 rounded cursor-pointer border border-[var(--ui-border-default)] shrink-0"
-            aria-label="Pick background color"
-            @input="onBgColorPick"
-          >
+          <UPopover>
+            <button
+              type="button"
+              class="w-10 h-10 rounded-lg border border-default shrink-0 cursor-pointer shadow-sm transition-shadow hover:shadow-md focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
+              :style="{ backgroundColor: bgHex }"
+              aria-label="Pick background color"
+            />
+            <template #content>
+              <div class="p-2">
+                <UColorPicker v-model="bgHex" size="sm" />
+              </div>
+            </template>
+          </UPopover>
           <UInput
             id="bg-hex"
             v-model="bgHex"
             placeholder="#ffffff"
             class="flex-1 font-mono"
             aria-label="Background hex color"
+            size="xl"
             @blur="onBgInputBlur"
           />
         </div>
@@ -144,7 +148,7 @@ const previewStyle = computed(() => ({
 
     <!-- Preview -->
     <div
-      class="rounded-lg border border-[var(--ui-border-default)] p-8 text-center"
+      class="rounded-lg border border-default p-8 text-center"
       :style="previewStyle"
     >
       <p class="text-2xl font-bold mb-2">Sample Text</p>
@@ -205,11 +209,22 @@ const previewStyle = computed(() => ({
       <p>Enter valid HEX colors to check contrast.</p>
     </div>
 
-    <UCard>
+    <UCard :ui="{ header: 'bg-elevated/50' }">
       <template #header>
-        <h3 class="text-sm font-semibold text-[var(--ui-text-highlighted)]">
-          About WCAG Contrast Requirements
-        </h3>
+        <div class="flex items-center justify-between">
+          <h3 class="text-sm font-semibold text-[var(--ui-text-highlighted)]">
+            About WCAG Contrast Requirements
+          </h3>
+          <UButton
+            label="WCAG Guidelines"
+            icon="i-lucide-external-link"
+            variant="link"
+            size="xs"
+            to="https://www.w3.org/WAI/WCAG22/Understanding/contrast-minimum.html"
+            target="_blank"
+            trailing
+          />
+        </div>
       </template>
       <div class="text-sm text-[var(--ui-text-muted)] space-y-2">
         <p>

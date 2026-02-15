@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import type { TabsItem } from "@nuxt/ui";
 import { CHROMATIC_HEX_MAP } from "~/utils/colorPalettes";
 import {
   CHROMATIC_PALETTES,
@@ -14,7 +15,9 @@ import {
 } from "~/utils/colorConversion";
 
 const toast = useToast();
-const { copy } = useClipboard();
+const themeStore = useThemeStore();
+
+const isInIframe = import.meta.client && window !== window.parent;
 
 interface GeneratedRole {
   role: SemanticColorKey;
@@ -69,7 +72,19 @@ function getSwatchHex(palette: ChromaticPalette, shade: string): string {
   return rgb ? rgbToHex(rgb) : "#888888";
 }
 
-const PREVIEW_SHADES = ["300", "400", "500", "600", "700"] as const;
+const PREVIEW_SHADES = [
+  "50",
+  "100",
+  "200",
+  "300",
+  "400",
+  "500",
+  "600",
+  "700",
+  "800",
+  "900",
+  "950",
+] as const;
 
 function generateCssVariables(): string {
   const lines = roles.value.map((r) => {
@@ -97,23 +112,72 @@ function generateAppConfig(): string {
   return `export default defineAppConfig({\n  ui: {\n    colors: {\n${assignments}\n    },\n  },\n})`;
 }
 
-function copyFormat(format: "css" | "json" | "appconfig") {
-  const generators: Record<string, () => string> = {
-    css: generateCssVariables,
-    json: generateJson,
-    appconfig: generateAppConfig,
-  };
-  const generator = generators[format];
-  if (!generator) return;
-  const output = generator();
-  copy(output);
+function applyToTheme() {
+  const colorsUpdate = Object.fromEntries(
+    roles.value.map((r) => [r.role, r.palette]),
+  );
+
+  if (isInIframe) {
+    // Build a full config clone with updated colors for the parent store
+    const config = JSON.parse(JSON.stringify(themeStore.config));
+    Object.assign(config.colors, colorsUpdate);
+    Object.assign(config.darkColors, colorsUpdate);
+    window.parent.postMessage(
+      { type: "apply-ai-theme", config },
+      window.location.origin,
+    );
+  } else {
+    for (const r of roles.value) {
+      themeStore.setSemanticColorForMode("light", r.role, r.palette);
+      themeStore.setSemanticColorForMode("dark", r.role, r.palette);
+    }
+  }
+
   toast.add({
-    title: "Copied!",
-    description: `Palette exported as ${format.toUpperCase()}`,
-    icon: "i-lucide-clipboard-check",
+    title: "Applied!",
+    description: "Palette applied to your current theme",
+    icon: "i-lucide-check-circle",
     color: "success",
   });
 }
+
+type ExportTab = "appconfig" | "css" | "json";
+
+const activeTab = ref<ExportTab>("appconfig");
+
+const exportTabs: TabsItem[] = [
+  { label: "app.config.ts", icon: "i-lucide-file-cog", value: "appconfig" },
+  { label: "CSS Variables", icon: "i-lucide-palette", value: "css" },
+  { label: "JSON", icon: "i-lucide-braces", value: "json" },
+];
+
+const TAB_META: Record<
+  ExportTab,
+  { filename: string; language: string; mimeType: string }
+> = {
+  appconfig: {
+    filename: "app.config.ts",
+    language: "ts",
+    mimeType: "text/typescript",
+  },
+  css: { filename: "palette.css", language: "css", mimeType: "text/css" },
+  json: {
+    filename: "palette.json",
+    language: "json",
+    mimeType: "application/json",
+  },
+};
+
+const exportSources: Record<ExportTab, () => string> = {
+  appconfig: generateAppConfig,
+  css: generateCssVariables,
+  json: generateJson,
+};
+
+const currentCode = computed(() => exportSources[activeTab.value]?.() ?? "");
+const currentMeta = computed(
+  () => TAB_META[activeTab.value] ?? TAB_META.appconfig,
+);
 
 // Generate initial palette
 generate();
@@ -129,25 +193,11 @@ generate();
         @click="generate"
       />
       <UButton
-        icon="i-lucide-clipboard-copy"
-        label="Copy CSS"
-        variant="outline"
-        color="neutral"
-        @click="copyFormat('css')"
-      />
-      <UButton
-        icon="i-lucide-braces"
-        label="Copy JSON"
-        variant="outline"
-        color="neutral"
-        @click="copyFormat('json')"
-      />
-      <UButton
-        icon="i-lucide-file-code"
-        label="Copy app.config"
-        variant="outline"
-        color="neutral"
-        @click="copyFormat('appconfig')"
+        icon="i-lucide-paintbrush"
+        label="Apply to Theme"
+        variant="soft"
+        color="primary"
+        @click="applyToTheme"
       />
     </div>
 
@@ -155,7 +205,7 @@ generate();
       <div
         v-for="(item, index) in roles"
         :key="item.role"
-        class="rounded-lg border border-[var(--ui-border-default)] overflow-hidden bg-[var(--ui-bg-default)]"
+        class="rounded-lg border border-default overflow-hidden bg-[var(--ui-bg-default)]"
       >
         <div class="flex items-center justify-between px-4 py-3">
           <div>
@@ -168,16 +218,20 @@ generate();
               {{ item.palette }}
             </p>
           </div>
-          <UButton
-            :icon="item.locked ? 'i-lucide-lock' : 'i-lucide-unlock'"
-            variant="ghost"
-            color="neutral"
-            size="sm"
-            :aria-label="
-              item.locked ? `Unlock ${item.role}` : `Lock ${item.role}`
-            "
-            @click="toggleLock(index)"
-          />
+          <UTooltip
+            :text="item.locked ? `Unlock ${item.role}` : `Lock ${item.role}`"
+          >
+            <UButton
+              :icon="item.locked ? 'i-lucide-lock' : 'i-lucide-unlock'"
+              variant="ghost"
+              color="neutral"
+              size="sm"
+              :aria-label="
+                item.locked ? `Unlock ${item.role}` : `Lock ${item.role}`
+              "
+              @click="toggleLock(index)"
+            />
+          </UTooltip>
         </div>
         <div
           class="flex"
@@ -195,16 +249,37 @@ generate();
       </div>
     </div>
 
-    <UCard>
-      <template #header>
-        <h3 class="text-sm font-semibold text-[var(--ui-text-highlighted)]">
-          CSS Variables Preview
+    <section aria-labelledby="palette-export-heading">
+      <div class="flex items-center gap-2 mb-3">
+        <UIcon
+          name="i-lucide-file-output"
+          class="size-4 text-(--ui-text-muted)"
+        />
+        <h3
+          id="palette-export-heading"
+          class="text-sm font-semibold text-(--ui-text-highlighted)"
+        >
+          Export Palette
         </h3>
-      </template>
-      <pre
-        class="text-xs font-mono whitespace-pre-wrap text-[var(--ui-text-default)] overflow-x-auto"
-        >{{ generateCssVariables() }}</pre
-      >
-    </UCard>
+      </div>
+
+      <UTabs
+        v-model="activeTab"
+        :items="exportTabs"
+        value-key="value"
+        variant="pill"
+        size="sm"
+        :content="false"
+        class="mb-3"
+      />
+
+      <SharedCodeBlock
+        :code="currentCode"
+        :filename="currentMeta.filename"
+        :language="currentMeta.language"
+        :download-mime-type="currentMeta.mimeType"
+        max-height="18rem"
+      />
+    </section>
   </div>
 </template>
