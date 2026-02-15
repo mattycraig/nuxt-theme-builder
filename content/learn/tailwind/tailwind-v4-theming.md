@@ -9,7 +9,7 @@ order: 6
 featured: true
 ---
 
-Tailwind CSS v4 fundamentally changed how theming works. If you're upgrading from v3 or starting fresh, understanding these changes is essential — especially for Nuxt UI projects.
+Tailwind CSS v4 fundamentally changed how theming works. If you're upgrading from v3 or starting fresh, understanding these changes is essential - especially for Nuxt UI projects.
 
 ## The Big Shift: CSS-First Configuration
 
@@ -55,9 +55,9 @@ The `@theme` directive replaces `tailwind.config.js` for most use cases. Configu
 
 Every theme value in v4 becomes a CSS custom property. This means:
 
-- **Runtime theming** — change values with JavaScript without rebuilding
-- **Media query adaptation** — use `@media (prefers-color-scheme: dark)` directly
-- **Component-scoped overrides** — override variables at any DOM level
+- **Runtime theming** - change values with JavaScript without rebuilding
+- **Media query adaptation** - use `@media (prefers-color-scheme: dark)` directly
+- **Component-scoped overrides** - override variables at any DOM level
 
 ```css
 @theme {
@@ -74,9 +74,9 @@ Every theme value in v4 becomes a CSS custom property. This means:
 
 Tailwind v4 uses OKLCH instead of HSL or hex. OKLCH provides:
 
-- **Perceptual uniformity** — equal lightness steps look equally bright
-- **Wider gamut** — access more vivid colors on modern displays
-- **Better dark mode** — adjusting lightness produces natural results
+- **Perceptual uniformity** - equal lightness steps look equally bright
+- **Wider gamut** - access more vivid colors on modern displays
+- **Better dark mode** - adjusting lightness produces natural results
 
 ```css
 /* OKLCH format: oklch(lightness chroma hue) */
@@ -156,6 +156,6 @@ The [Nuxt UI Theme Builder](/) generates Tailwind v4-compatible output. Configur
 
 ## Next Steps
 
-- [CSS Variables Reference for Nuxt UI Themes](/learn/theming/css-variables-reference) — complete variable list
-- [How to Customize Nuxt UI Theme Colors](/learn/theming/customize-colors) — configure colors the Nuxt UI way
-- [Nuxt UI Component Styling Cheat Sheet](/learn/components/styling-cheat-sheet) — style individual components
+- [CSS Variables Reference for Nuxt UI Themes](/learn/theming/css-variables-reference) - complete variable list
+- [How to Customize Nuxt UI Theme Colors](/learn/theming/customize-colors) - configure colors the Nuxt UI way
+- [Nuxt UI Component Styling Cheat Sheet](/learn/components/styling-cheat-sheet) - style individual components

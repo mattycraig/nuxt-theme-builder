@@ -9,7 +9,7 @@ order: 7
 featured: false
 ---
 
-Beautiful themes are useless if people can't read the text. Color contrast is the most common accessibility issue in web design — and one of the easiest to fix when you address it from the start.
+Beautiful themes are useless if people can't read the text. Color contrast is the most common accessibility issue in web design - and one of the easiest to fix when you address it from the start.
 
 This guide covers WCAG 2.2 contrast requirements and how to apply them to Nuxt UI themes.
 
@@ -80,11 +80,11 @@ UI component boundaries must have 3:1 contrast against adjacent colors:
 
 The Theme Builder previews your theme across 125+ real components. When evaluating contrast:
 
-1. **Check body text** — paragraphs, labels, and descriptions should be clearly legible
-2. **Check muted text** — timestamps, help text, and secondary content
-3. **Check buttons** — text on solid buttons, border visibility on outline buttons
-4. **Check inputs** — placeholder text, border visibility, focus rings
-5. **Check both modes** — light and dark mode independently
+1. **Check body text** - paragraphs, labels, and descriptions should be clearly legible
+2. **Check muted text** - timestamps, help text, and secondary content
+3. **Check buttons** - text on solid buttons, border visibility on outline buttons
+4. **Check inputs** - placeholder text, border visibility, focus rings
+5. **Check both modes** - light and dark mode independently
 
 ### With Browser DevTools
 
@@ -96,9 +96,9 @@ Chrome DevTools shows contrast ratios in the color picker:
 
 ### With Dedicated Tools
 
-- **Accessibility Insights** — browser extension for automated contrast checks
-- **axe DevTools** — comprehensive accessibility testing
-- **Contrast Checker** — online tools like WebAIM's Contrast Checker
+- **Accessibility Insights** - browser extension for automated contrast checks
+- **axe DevTools** - comprehensive accessibility testing
+- **Contrast Checker** - online tools like WebAIM's Contrast Checker
 
 ## Safe Shade Combinations
 
@@ -135,6 +135,6 @@ WCAG also requires that color is **not the only means** of conveying information
 
 ## Next Steps
 
-- [Dark Mode Theming with Nuxt UI](/learn/theming/dark-mode-guide) — design accessible dark themes
-- [Building a Design System with Nuxt UI](/learn/best-practices/design-system-guide) — encode contrast rules into your system
-- [Nuxt UI Color Palette Reference](/learn/theming/color-palette-reference) — choose palettes with contrast in mind
+- [Dark Mode Theming with Nuxt UI](/learn/theming/dark-mode-guide) - design accessible dark themes
+- [Building a Design System with Nuxt UI](/learn/best-practices/design-system-guide) - encode contrast rules into your system
+- [Nuxt UI Color Palette Reference](/learn/theming/color-palette-reference) - choose palettes with contrast in mind

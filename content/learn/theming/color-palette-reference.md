@@ -60,15 +60,15 @@ This reference covers all available palettes and how to choose them for your the
 
 ### Neutral Tones
 
-Neutrals are special — they define your text, borders, backgrounds, and surface hierarchy:
+Neutrals are special - they define your text, borders, backgrounds, and surface hierarchy:
 
 | Palette   | Temperature | Character                           |
 | --------- | ----------- | ----------------------------------- |
-| `slate`   | Cool        | Blue undertone — technical, modern  |
-| `gray`    | Balanced    | Slight warmth — versatile           |
-| `zinc`    | Neutral     | No color cast — clean, minimal      |
-| `neutral` | True gray   | Mathematically neutral — stark      |
-| `stone`   | Warm        | Brown undertone — friendly, organic |
+| `slate`   | Cool        | Blue undertone - technical, modern  |
+| `gray`    | Balanced    | Slight warmth - versatile           |
+| `zinc`    | Neutral     | No color cast - clean, minimal      |
+| `neutral` | True gray   | Mathematically neutral - stark      |
+| `stone`   | Warm        | Brown undertone - friendly, organic |
 
 ## Shade Scale
 
@@ -76,17 +76,17 @@ Each palette provides these shades:
 
 | Shade | Light Mode Usage      | Dark Mode Usage      |
 | ----- | --------------------- | -------------------- |
-| `50`  | Tinted backgrounds    | —                    |
-| `100` | Hover backgrounds     | —                    |
-| `200` | Borders, dividers     | —                    |
-| `300` | Disabled text         | —                    |
+| `50`  | Tinted backgrounds    | -                    |
+| `100` | Hover backgrounds     | -                    |
+| `200` | Borders, dividers     | -                    |
+| `300` | Disabled text         | -                    |
 | `400` | Placeholder text      | Primary text accents |
 | `500` | Icons, secondary text | Primary shade        |
 | `600` | **Primary shade**     | Hover states         |
 | `700` | Hover states          | Borders              |
-| `800` | —                     | Surface backgrounds  |
-| `900` | —                     | Elevated surfaces    |
-| `950` | —                     | Base backgrounds     |
+| `800` | -                     | Surface backgrounds  |
+| `900` | -                     | Elevated surfaces    |
+| `950` | -                     | Base backgrounds     |
 
 ## Choosing Palettes for Semantic Roles
 
@@ -134,5 +134,5 @@ The [Nuxt UI Theme Builder](/) lets you preview every palette applied to real co
 
 ## Next Steps
 
-- [How to Customize Nuxt UI Theme Colors](/learn/theming/customize-colors) — apply these palettes to your project
-- [CSS Variables Reference for Nuxt UI Themes](/learn/theming/css-variables-reference) — override individual shade values
+- [How to Customize Nuxt UI Theme Colors](/learn/theming/customize-colors) - apply these palettes to your project
+- [CSS Variables Reference for Nuxt UI Themes](/learn/theming/css-variables-reference) - override individual shade values

@@ -9,7 +9,7 @@ order: 8
 featured: false
 ---
 
-A quick-reference guide for styling Nuxt UI v4 components. Every component follows the same patterns — learn them once, apply them everywhere.
+A quick-reference guide for styling Nuxt UI v4 components. Every component follows the same patterns - learn them once, apply them everywhere.
 
 ## Universal Props
 
@@ -165,6 +165,6 @@ The [Nuxt UI Theme Builder](/) renders every component variant with your active 
 
 ## Next Steps
 
-- [How to Customize Nuxt UI Theme Colors](/learn/theming/customize-colors) — define your color palette
-- [Building a Design System with Nuxt UI](/learn/best-practices/design-system-guide) — establish consistent patterns
-- [Tailwind CSS v4 Theming: What Changed](/learn/tailwind/tailwind-v4-theming) — understand the styling engine
+- [How to Customize Nuxt UI Theme Colors](/learn/theming/customize-colors) - define your color palette
+- [Building a Design System with Nuxt UI](/learn/best-practices/design-system-guide) - establish consistent patterns
+- [Tailwind CSS v4 Theming: What Changed](/learn/tailwind/tailwind-v4-theming) - understand the styling engine

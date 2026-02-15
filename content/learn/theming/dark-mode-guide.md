@@ -9,7 +9,7 @@ order: 2
 featured: true
 ---
 
-Dark mode is not just an inverted light theme. Great dark mode design requires intentional color choices — reduced contrast for comfort, adjusted saturation for vibrancy, and carefully tuned neutral tones so surfaces feel layered without being harsh.
+Dark mode is not just an inverted light theme. Great dark mode design requires intentional color choices - reduced contrast for comfort, adjusted saturation for vibrancy, and carefully tuned neutral tones so surfaces feel layered without being harsh.
 
 Nuxt UI v4 supports independent light and dark mode theming out of the box.
 
@@ -19,9 +19,9 @@ Nuxt UI uses `@nuxtjs/color-mode` under the hood. It adds a class (`dark` or `li
 
 The color mode can be:
 
-- **System** — follows the user's OS preference
-- **Light** — forced light
-- **Dark** — forced dark
+- **System** - follows the user's OS preference
+- **Light** - forced light
+- **Dark** - forced dark
 
 Toggle it programmatically:
 
@@ -37,7 +37,7 @@ The real power comes from setting **different color palettes per mode**. A commo
 - **Light mode**: Deep, saturated primaries (e.g., `indigo-600`) on light backgrounds
 - **Dark mode**: Brighter, lighter primaries (e.g., `indigo-400`) on dark surfaces
 
-In the Theme Builder, each color role has separate light and dark mode selectors. This means your light theme can use `blue` as primary while your dark theme uses `sky` — they're completely independent.
+In the Theme Builder, each color role has separate light and dark mode selectors. This means your light theme can use `blue` as primary while your dark theme uses `sky` - they're completely independent.
 
 ## Design Principles for Dark Mode
 
@@ -72,20 +72,20 @@ The neutral palette defines your text, borders, and surface colors. Choosing the
 
 | Neutral   | Dark Mode Character                   |
 | --------- | ------------------------------------- |
-| `slate`   | Cool, blue-tinted — technical, modern |
-| `zinc`    | Pure neutral — versatile, clean       |
-| `gray`    | Slightly warm — balanced              |
-| `stone`   | Warm — friendly, organic              |
-| `neutral` | True gray — minimal, stark            |
+| `slate`   | Cool, blue-tinted - technical, modern |
+| `zinc`    | Pure neutral - versatile, clean       |
+| `gray`    | Slightly warm - balanced              |
+| `stone`   | Warm - friendly, organic              |
+| `neutral` | True gray - minimal, stark            |
 
 ## Testing Dark Mode Themes
 
 Always test your theme in both modes. Things to verify:
 
-1. **Text contrast** — body text meets 4.5:1 ratio against its background
-2. **Component states** — hover, focus, active, disabled all look correct
-3. **Color roles** — success/warning/error remain distinguishable
-4. **Images and icons** — decorative elements work against dark surfaces
+1. **Text contrast** - body text meets 4.5:1 ratio against its background
+2. **Component states** - hover, focus, active, disabled all look correct
+3. **Color roles** - success/warning/error remain distinguishable
+4. **Images and icons** - decorative elements work against dark surfaces
 
 The Theme Builder lets you toggle between modes instantly and preview every component in your current theme.
 
@@ -107,6 +107,6 @@ export default defineAppConfig({
 
 ## Next Steps
 
-- [How to Customize Nuxt UI Theme Colors](/learn/theming/customize-colors) — full color configuration guide
-- [Accessible Color Contrast in Web Themes](/learn/best-practices/accessible-color-contrast) — ensure your dark mode meets WCAG standards
-- [CSS Variables Reference for Nuxt UI Themes](/learn/theming/css-variables-reference) — override individual shades per mode
+- [How to Customize Nuxt UI Theme Colors](/learn/theming/customize-colors) - full color configuration guide
+- [Accessible Color Contrast in Web Themes](/learn/best-practices/accessible-color-contrast) - ensure your dark mode meets WCAG standards
+- [CSS Variables Reference for Nuxt UI Themes](/learn/theming/css-variables-reference) - override individual shades per mode

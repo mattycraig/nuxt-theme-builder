@@ -9,7 +9,7 @@ order: 9
 featured: false
 ---
 
-Typography sets the tone of your application before a single word is read. The right font pairing communicates professionalism, friendliness, or creativity — the wrong one creates visual noise.
+Typography sets the tone of your application before a single word is read. The right font pairing communicates professionalism, friendliness, or creativity - the wrong one creates visual noise.
 
 Nuxt UI v4 uses CSS variables for font families, making it straightforward to apply custom typography to your entire application.
 
@@ -26,7 +26,7 @@ Nuxt UI references these CSS variables for typography:
 
 Every Nuxt UI component that renders text uses `--font-sans`. Code blocks and monospace elements use `--font-mono`.
 
-Override these variables to change the typeface globally — no need to modify individual components.
+Override these variables to change the typeface globally - no need to modify individual components.
 
 ## Choosing a Font Strategy
 
@@ -167,6 +167,6 @@ The [Nuxt UI Theme Builder](/) includes a font selector with 30+ pre-loaded Goog
 
 ## Next Steps
 
-- [Building a Design System with Nuxt UI](/learn/best-practices/design-system-guide) — encode typography rules into your system
-- [How to Customize Nuxt UI Theme Colors](/learn/theming/customize-colors) — pair fonts with the right colors
-- [CSS Variables Reference for Nuxt UI Themes](/learn/theming/css-variables-reference) — font-related CSS variables
+- [Building a Design System with Nuxt UI](/learn/best-practices/design-system-guide) - encode typography rules into your system
+- [How to Customize Nuxt UI Theme Colors](/learn/theming/customize-colors) - pair fonts with the right colors
+- [CSS Variables Reference for Nuxt UI Themes](/learn/theming/css-variables-reference) - font-related CSS variables

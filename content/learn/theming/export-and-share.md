@@ -1,6 +1,6 @@
 ---
 title: How to Export and Share Nuxt UI Themes
-description: Export your Nuxt UI v4 themes as app.config.ts, CSS variables, or JSON — and share them with your team or the community.
+description: Export your Nuxt UI v4 themes as app.config.ts, CSS variables, or JSON - and share them with your team or the community.
 category: theming
 format: guide
 date: "2026-02-14"
@@ -149,10 +149,10 @@ The Theme Builder generates output compatible with:
 
 ## Try It Now
 
-Head to the [Theme Builder](/) to create, preview, and export your theme. The full workflow — from palette selection to production-ready export — takes just a few minutes.
+Head to the [Theme Builder](/) to create, preview, and export your theme. The full workflow - from palette selection to production-ready export - takes just a few minutes.
 
 ## Next Steps
 
-- [How to Customize Nuxt UI Theme Colors](/learn/theming/customize-colors) — start with color configuration
-- [Building a Design System with Nuxt UI](/learn/best-practices/design-system-guide) — use exports as your system foundation
-- [CSS Variables Reference for Nuxt UI Themes](/learn/theming/css-variables-reference) — understand what's being exported
+- [How to Customize Nuxt UI Theme Colors](/learn/theming/customize-colors) - start with color configuration
+- [Building a Design System with Nuxt UI](/learn/best-practices/design-system-guide) - use exports as your system foundation
+- [CSS Variables Reference for Nuxt UI Themes](/learn/theming/css-variables-reference) - understand what's being exported

@@ -9,7 +9,7 @@ order: 5
 featured: true
 ---
 
-A design system is more than a component library — it's a shared language of design decisions. Nuxt UI v4 provides the building blocks. The Theme Builder helps you define and preview those decisions visually.
+A design system is more than a component library - it's a shared language of design decisions. Nuxt UI v4 provides the building blocks. The Theme Builder helps you define and preview those decisions visually.
 
 This guide covers how to establish a coherent design system using Nuxt UI's token architecture.
 
@@ -17,10 +17,10 @@ This guide covers how to establish a coherent design system using Nuxt UI's toke
 
 A design system consists of:
 
-1. **Design tokens** — Color palettes, spacing, radius, typography
-2. **Component library** — Pre-built, themed UI components
-3. **Conventions** — Rules for how tokens and components are combined
-4. **Documentation** — Living references for developers and designers
+1. **Design tokens** - Color palettes, spacing, radius, typography
+2. **Component library** - Pre-built, themed UI components
+3. **Conventions** - Rules for how tokens and components are combined
+4. **Documentation** - Living references for developers and designers
 
 Nuxt UI handles #1 and #2. Your job is #3 and #4.
 
@@ -118,16 +118,16 @@ A design system only works if it's documented and accessible:
 1. **Use the Theme Builder** to visualize and iterate on token choices
 2. **Export your theme** configuration as the source of truth
 3. **Create a living style guide** by linking to your Theme Builder preview
-4. **Write conventions** as markdown — button rules, spacing guidelines, color usage
+4. **Write conventions** as markdown - button rules, spacing guidelines, color usage
 
 ## Step 4: Maintain Consistency
 
 As your app grows:
 
-- **Audit regularly** — check new pages against your token foundation
-- **Use theme presets** — save named presets in the Theme Builder for different brands or modes
-- **Enforce in code review** — catch deviations from established patterns
-- **Update the system** — add new tokens/conventions as needs evolve
+- **Audit regularly** - check new pages against your token foundation
+- **Use theme presets** - save named presets in the Theme Builder for different brands or modes
+- **Enforce in code review** - catch deviations from established patterns
+- **Update the system** - add new tokens/conventions as needs evolve
 
 ## Common Pitfalls
 
@@ -144,6 +144,6 @@ Use the [Nuxt UI Theme Builder](/) to define your token foundation visually, pre
 
 ## Next Steps
 
-- [How to Customize Nuxt UI Theme Colors](/learn/theming/customize-colors) — configure your color foundation
-- [Typography & Font Pairing for Nuxt Apps](/learn/theming/typography-font-pairing) — choose and apply fonts
-- [Accessible Color Contrast in Web Themes](/learn/best-practices/accessible-color-contrast) — ensure your system meets WCAG
+- [How to Customize Nuxt UI Theme Colors](/learn/theming/customize-colors) - configure your color foundation
+- [Typography & Font Pairing for Nuxt Apps](/learn/theming/typography-font-pairing) - choose and apply fonts
+- [Accessible Color Contrast in Web Themes](/learn/best-practices/accessible-color-contrast) - ensure your system meets WCAG

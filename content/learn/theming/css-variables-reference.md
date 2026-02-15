@@ -9,7 +9,7 @@ order: 4
 featured: false
 ---
 
-Nuxt UI v4 exposes its design system through CSS custom properties (variables). These tokens control colors, border radius, typography, and more — and you can override any of them for fine-grained theming.
+Nuxt UI v4 exposes its design system through CSS custom properties (variables). These tokens control colors, border radius, typography, and more - and you can override any of them for fine-grained theming.
 
 ## Color Variables
 
@@ -127,10 +127,10 @@ All Nuxt UI variables follow a consistent pattern:
 
 Examples:
 
-- `--ui-color-primary-500` — primary color, shade 500
-- `--ui-color-neutral-100` — neutral color, shade 100
-- `--ui-radius` — base border radius
-- `--ui-bg` — background color token
+- `--ui-color-primary-500` - primary color, shade 500
+- `--ui-color-neutral-100` - neutral color, shade 100
+- `--ui-radius` - base border radius
+- `--ui-bg` - background color token
 
 ## Export Variables from the Theme Builder
 
@@ -138,6 +138,6 @@ The [Nuxt UI Theme Builder](/) can export your entire theme as CSS variables. Us
 
 ## Next Steps
 
-- [How to Customize Nuxt UI Theme Colors](/learn/theming/customize-colors) — configure color roles
-- [Nuxt UI Color Palette Reference](/learn/theming/color-palette-reference) — browse available palettes
-- [Tailwind CSS v4 Theming: What Changed](/learn/tailwind/tailwind-v4-theming) — understand the new variable-based system
+- [How to Customize Nuxt UI Theme Colors](/learn/theming/customize-colors) - configure color roles
+- [Nuxt UI Color Palette Reference](/learn/theming/color-palette-reference) - browse available palettes
+- [Tailwind CSS v4 Theming: What Changed](/learn/tailwind/tailwind-v4-theming) - understand the new variable-based system
