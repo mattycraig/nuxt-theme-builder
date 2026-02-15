@@ -64,6 +64,15 @@ export function useLayoutNavigation() {
           icon: parentNav.icon as string | undefined,
           to: parentPath,
         });
+      } else {
+        const fallback = allNavItems.value.find((i) => i.to === parentPath);
+        if (fallback) {
+          items.push({
+            label: fallback.label,
+            icon: fallback.icon,
+            to: parentPath,
+          });
+        }
       }
     }
 

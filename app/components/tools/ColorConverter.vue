@@ -13,8 +13,7 @@ import {
   type ColorFormat,
 } from "~/utils/colorConversion";
 
-const toast = useToast();
-const { copy } = useClipboard();
+const { copyColor } = useColorCopy();
 
 const colorInput = ref("#3b82f6");
 
@@ -58,25 +57,10 @@ const formats = computed<FormatEntry[]>(() => [
   },
 ]);
 
-function copyValue(label: string, value: string) {
-  copy(value);
-  toast.add({
-    title: "Copied!",
-    description: `${label}: ${value}`,
-    icon: "i-lucide-clipboard-check",
-    color: "success",
-  });
-}
+const resolvedHex = computed(() => hex.value ?? null);
+const pickerHex = usePickerHex(colorInput, resolvedHex, "#cccccc");
 
-function onColorPick(event: Event) {
-  const target = event.target as HTMLInputElement;
-  colorInput.value = target.value;
-}
-
-const previewBg = computed(() => {
-  if (!rgb.value) return "#cccccc";
-  return rgbToHex(rgb.value);
-});
+const previewBg = computed(() => resolvedHex.value ?? "#cccccc");
 
 const FORMAT_LABELS: Record<ColorFormat, string> = {
   hex: "HEX",
@@ -90,22 +74,29 @@ const FORMAT_LABELS: Record<ColorFormat, string> = {
   <div class="space-y-6 mb-12">
     <div class="flex flex-col sm:flex-row gap-4 items-start">
       <div class="flex gap-2 items-center flex-1 w-full">
-        <input
-          type="color"
-          :value="previewBg"
-          class="w-10 h-10 rounded cursor-pointer border border-[var(--ui-border-default)] shrink-0"
-          aria-label="Pick a color visually"
-          @input="onColorPick"
-        >
+        <UPopover>
+          <button
+            type="button"
+            class="w-10 h-10 rounded-lg border border-default shrink-0 cursor-pointer shadow-sm transition-shadow hover:shadow-md focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
+            :style="{ backgroundColor: previewBg }"
+            aria-label="Pick a color visually"
+          />
+          <template #content>
+            <div class="p-2">
+              <UColorPicker v-model="pickerHex" size="sm" />
+            </div>
+          </template>
+        </UPopover>
         <UInput
           v-model="colorInput"
           placeholder="#3b82f6 or rgb(59, 130, 246) or hsl(217, 91%, 60%)"
           class="flex-1 font-mono"
+          size="xl"
           aria-label="Enter a color in any format (HEX, RGB, HSL, or OKLCH)"
         />
       </div>
-      <div v-if="detectedFormat" class="shrink-0">
-        <UBadge variant="subtle" color="info">
+      <div v-if="detectedFormat" class="shrink-0 self-stretch">
+        <UBadge variant="subtle" color="neutral" class="h-full" size="lg">
           Detected: {{ FORMAT_LABELS[detectedFormat] }}
         </UBadge>
       </div>
@@ -113,7 +104,7 @@ const FORMAT_LABELS: Record<ColorFormat, string> = {
 
     <!-- Color preview -->
     <div
-      class="h-24 rounded-lg border border-[var(--ui-border-default)] transition-colors"
+      class="h-24 rounded-lg border border-default transition-colors"
       :style="{ backgroundColor: previewBg }"
       role="img"
       :aria-label="`Color preview: ${hex ?? 'invalid color'}`"
@@ -124,15 +115,13 @@ const FORMAT_LABELS: Record<ColorFormat, string> = {
       <div
         v-for="entry in formats"
         :key="entry.format"
-        class="flex items-center justify-between gap-2 rounded-lg border border-[var(--ui-border-default)] px-4 py-3 bg-[var(--ui-bg-default)]"
+        class="flex items-center justify-between gap-2 rounded-lg border border-default px-4 py-3"
       >
         <div class="min-w-0">
-          <p class="text-xs text-[var(--ui-text-muted)]">
+          <p class="text-sm font-bold">
             {{ entry.label }}
           </p>
-          <p
-            class="text-sm font-mono text-[var(--ui-text-highlighted)] truncate"
-          >
+          <p class="text-sm font-mono text-muted truncate">
             {{ entry.value ?? "—" }}
           </p>
         </div>
@@ -143,27 +132,26 @@ const FORMAT_LABELS: Record<ColorFormat, string> = {
           color="neutral"
           size="xs"
           :aria-label="`Copy ${entry.label} value`"
-          @click="copyValue(entry.label, entry.value)"
+          @click="copyColor(entry.label, entry.value)"
         />
       </div>
     </div>
 
-    <div v-else class="text-center py-8 text-[var(--ui-text-muted)]">
-      <UIcon name="i-lucide-palette" class="text-3xl mb-2" />
-      <p>Enter a valid color to see conversions.</p>
-      <p class="text-xs mt-1">
-        Supports HEX (#3b82f6), RGB (rgb(59, 130, 246)), HSL (hsl(217, 91%,
-        60%)), OKLCH (oklch(0.623 0.214 259.815))
-      </p>
-    </div>
+    <UEmpty
+      v-else
+      icon="i-lucide-palette"
+      title="No color detected"
+      description="Enter a valid color to see conversions. Supports HEX (#3b82f6), RGB (rgb(59, 130, 246)), HSL (hsl(217, 91%, 60%)), OKLCH (oklch(0.623 0.214 259.815))."
+      variant="outline"
+    />
 
-    <UCard>
+    <UCard :ui="{ header: 'bg-elevated/50' }">
       <template #header>
-        <h3 class="text-sm font-semibold text-[var(--ui-text-highlighted)]">
+        <h3 class="text-sm font-semibold text-highlighted">
           Color Format Reference
         </h3>
       </template>
-      <div class="text-sm text-[var(--ui-text-muted)] space-y-2">
+      <div class="text-sm space-y-2">
         <p>
           <strong>HEX:</strong> Standard web color notation —
           <code class="font-mono">#rrggbb</code> or shorthand

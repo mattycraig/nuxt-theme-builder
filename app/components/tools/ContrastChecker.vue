@@ -3,6 +3,7 @@ import {
   hexToRgb,
   getContrastRatio,
   rgbToHex,
+  sanitizeHexInput,
   type RGB,
 } from "~/utils/colorConversion";
 
@@ -35,12 +36,6 @@ function swapColors() {
   bgHex.value = temp;
 }
 
-function sanitizeHexInput(value: string): string {
-  let hex = value.trim();
-  if (!hex.startsWith("#")) hex = `#${hex}`;
-  return hex;
-}
-
 function onFgInputBlur() {
   fgHex.value = sanitizeHexInput(fgHex.value);
 }
@@ -56,6 +51,19 @@ function getRatingColor(pass: boolean): "success" | "error" {
 function getRatingLabel(pass: boolean): string {
   return pass ? "Pass" : "Fail";
 }
+
+function getCardClasses(pass: boolean): string {
+  return pass ? "ring-success bg-success/5" : "ring-error bg-error/5";
+}
+
+const fgResolvedHex = computed(() =>
+  fgRgb.value ? rgbToHex(fgRgb.value) : null,
+);
+const bgResolvedHex = computed(() =>
+  bgRgb.value ? rgbToHex(bgRgb.value) : null,
+);
+const fgPickerHex = usePickerHex(fgHex, fgResolvedHex, "#1a1a2e");
+const bgPickerHex = usePickerHex(bgHex, bgResolvedHex, "#ffffff");
 
 // Ensure the preview text color is the contrast result in real-time
 const previewStyle = computed(() => ({
@@ -85,7 +93,7 @@ const previewStyle = computed(() => ({
             />
             <template #content>
               <div class="p-2">
-                <UColorPicker v-model="fgHex" size="sm" />
+                <UColorPicker v-model="fgPickerHex" size="sm" />
               </div>
             </template>
           </UPopover>
@@ -119,7 +127,7 @@ const previewStyle = computed(() => ({
             />
             <template #content>
               <div class="p-2">
-                <UColorPicker v-model="bgHex" size="sm" />
+                <UColorPicker v-model="bgPickerHex" size="sm" />
               </div>
             </template>
           </UPopover>
@@ -159,44 +167,44 @@ const previewStyle = computed(() => ({
     <!-- Results -->
     <div v-if="results" class="space-y-4" aria-live="polite" aria-atomic="true">
       <div class="text-center">
-        <p class="text-sm text-[var(--ui-text-muted)]">Contrast Ratio</p>
+        <p class="text-sm">Contrast Ratio</p>
         <p class="text-4xl font-bold text-[var(--ui-text-highlighted)]">
           {{ results.ratio }}:1
         </p>
       </div>
 
       <div class="grid grid-cols-2 gap-3 sm:grid-cols-4">
-        <UCard>
+        <UCard :class="getCardClasses(results.aaNormal)">
           <div class="text-center space-y-1">
-            <p class="text-xs text-[var(--ui-text-muted)]">AA Normal</p>
-            <p class="text-xs text-[var(--ui-text-dimmed)]">≥ 4.5:1</p>
+            <p class="text-xs font-bold">AA Normal</p>
+            <p class="text-xs text-muted">≥ 4.5:1</p>
             <UBadge :color="getRatingColor(results.aaNormal)" variant="subtle">
               {{ getRatingLabel(results.aaNormal) }}
             </UBadge>
           </div>
         </UCard>
-        <UCard>
+        <UCard :class="getCardClasses(results.aaLarge)">
           <div class="text-center space-y-1">
-            <p class="text-xs text-[var(--ui-text-muted)]">AA Large</p>
-            <p class="text-xs text-[var(--ui-text-dimmed)]">≥ 3:1</p>
+            <p class="text-xs font-bold">AA Large</p>
+            <p class="text-xs text-muted">≥ 3:1</p>
             <UBadge :color="getRatingColor(results.aaLarge)" variant="subtle">
               {{ getRatingLabel(results.aaLarge) }}
             </UBadge>
           </div>
         </UCard>
-        <UCard>
+        <UCard :class="getCardClasses(results.aaaNormal)">
           <div class="text-center space-y-1">
-            <p class="text-xs text-[var(--ui-text-muted)]">AAA Normal</p>
-            <p class="text-xs text-[var(--ui-text-dimmed)]">≥ 7:1</p>
+            <p class="text-xs font-bold">AAA Normal</p>
+            <p class="text-xs text-muted">≥ 7:1</p>
             <UBadge :color="getRatingColor(results.aaaNormal)" variant="subtle">
               {{ getRatingLabel(results.aaaNormal) }}
             </UBadge>
           </div>
         </UCard>
-        <UCard>
+        <UCard :class="getCardClasses(results.aaaLarge)">
           <div class="text-center space-y-1">
-            <p class="text-xs text-[var(--ui-text-muted)]">AAA Large</p>
-            <p class="text-xs text-[var(--ui-text-dimmed)]">≥ 4.5:1</p>
+            <p class="text-xs font-bold">AAA Large</p>
+            <p class="text-xs text-muted">≥ 4.5:1</p>
             <UBadge :color="getRatingColor(results.aaaLarge)" variant="subtle">
               {{ getRatingLabel(results.aaaLarge) }}
             </UBadge>
@@ -205,9 +213,13 @@ const previewStyle = computed(() => ({
       </div>
     </div>
 
-    <div v-else class="text-center py-8 text-[var(--ui-text-muted)]">
-      <p>Enter valid HEX colors to check contrast.</p>
-    </div>
+    <UEmpty
+      v-else
+      icon="i-lucide-palette"
+      title="No contrast results"
+      description="Enter valid HEX colors above to check contrast."
+      variant="outline"
+    />
 
     <UCard :ui="{ header: 'bg-elevated/50' }">
       <template #header>
@@ -226,7 +238,7 @@ const previewStyle = computed(() => ({
           />
         </div>
       </template>
-      <div class="text-sm text-[var(--ui-text-muted)] space-y-2">
+      <div class="text-sm space-y-2">
         <p>
           <strong>AA Normal text:</strong> Requires a contrast ratio of at least
           4.5:1 for text smaller than 18pt (or 14pt bold).

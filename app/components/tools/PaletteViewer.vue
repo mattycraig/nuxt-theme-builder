@@ -6,8 +6,7 @@ import {
 } from "~/utils/colorPalettes";
 import { parseOklchString, rgbToHex } from "~/utils/colorConversion";
 
-const toast = useToast();
-const { copy } = useClipboard();
+const { copyColor } = useColorCopy();
 
 const searchQuery = ref("");
 const displayFormat = ref<"hex" | "oklch">("hex");
@@ -66,13 +65,7 @@ function getShadeValue(
 
 function handleCopy(paletteName: string, shade: string, value: string) {
   const displayValue = getDisplayValue(value);
-  copy(displayValue);
-  toast.add({
-    title: "Copied!",
-    description: `${paletteName}-${shade}: ${displayValue}`,
-    icon: "i-lucide-clipboard-check",
-    color: "success",
-  });
+  copyColor(`${paletteName}-${shade}`, displayValue);
 }
 
 function handleKeydown(
