@@ -59,7 +59,7 @@ watch(
       trailing-icon="i-lucide-chevron-down"
     >
       <span
-        class="text-xs font-semibold uppercase tracking-wide flex items-center gap-2"
+        class="text-xs truncate font-semibold uppercase tracking-wide flex items-center gap-2"
       >
         <slot name="heading">
           {{ label }}

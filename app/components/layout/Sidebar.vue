@@ -3,9 +3,7 @@ import { UTILITY_NAV_ITEMS } from "~/utils/navigation";
 
 const exportPanel = useExportPanel();
 
-const footerLinks = UTILITY_NAV_ITEMS.filter((item) =>
-  ["/about", "/privacy", "/contact"].includes(String(item.to)),
-);
+const footerLinks = UTILITY_NAV_ITEMS;
 </script>
 
 <template>
@@ -13,9 +11,9 @@ const footerLinks = UTILITY_NAV_ITEMS.filter((item) =>
     resizable
     collapsible
     :collapsed-size="0"
-    :min-size="300"
+    :min-size="320"
     :max-size="600"
-    :default-size="300"
+    :default-size="320"
     :ui="{
       root: 'min-w-0 overflow-hidden data-[collapsed=true]:invisible',
       header: 'border-b border-default sm:px-4',

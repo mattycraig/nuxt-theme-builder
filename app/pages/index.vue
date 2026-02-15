@@ -261,8 +261,8 @@ const techStack: TechItem[] = [
           class="hero-stagger [animation-delay:300ms] flex flex-wrap items-center justify-center gap-4"
         >
           <UButton
-            label="Start Building"
-            to="/templates"
+            label="Explore"
+            to="/components"
             icon="i-lucide-layout-grid"
             size="xl"
             color="primary"
@@ -892,7 +892,7 @@ const techStack: TechItem[] = [
         <UButton
           label="Star on GitHub"
           icon="i-lucide-github"
-          to="https://github.com"
+          to="https://github.com/mattycraig/nuxt-theme-builder"
           target="_blank"
           size="lg"
           variant="outline"
@@ -956,8 +956,8 @@ const techStack: TechItem[] = [
           class="hero-stagger [animation-delay:300ms] flex flex-wrap items-center justify-center gap-4"
         >
           <UButton
-            label="Start Building"
-            to="/templates"
+            label="Explore"
+            to="/components"
             icon="i-lucide-arrow-right"
             trailing
             size="xl"

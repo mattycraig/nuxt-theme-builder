@@ -101,8 +101,14 @@ describe("ThemeConfigSchema", () => {
 
 describe("ThemeConfigSchema — backward compatibility transform", () => {
   it("fills in dark-mode fields from light when omitted", () => {
-    const { darkColors, darkColorShades, darkNeutral, darkRadius, darkFont, ...rest } =
-      cloneTheme(DEFAULT_THEME);
+    const {
+      darkColors,
+      darkColorShades,
+      darkNeutral,
+      darkRadius,
+      darkFont,
+      ...rest
+    } = cloneTheme(DEFAULT_THEME);
     const result = ThemeConfigSchema.safeParse(rest);
     expect(result.success).toBe(true);
     if (result.success) {

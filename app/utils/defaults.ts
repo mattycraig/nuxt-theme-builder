@@ -87,10 +87,17 @@ export const DEFAULT_THEME: ThemeConfig = {
     warning: "amber",
     error: "rose",
   },
-  colorShades: { ...DEFAULT_COLOR_SHADES },
-  neutral: "slate",
+  colorShades: {
+    primary: "600",
+    secondary: "600",
+    success: "600",
+    info: "600",
+    warning: "600",
+    error: "600",
+  },
+  neutral: "zinc",
   radius: 0.375,
-  font: "Inter",
+  font: "Geist",
   lightOverrides: { ...DEFAULT_LIGHT_OVERRIDES },
   darkOverrides: { ...DEFAULT_DARK_OVERRIDES },
 
@@ -100,13 +107,13 @@ export const DEFAULT_THEME: ThemeConfig = {
     secondary: "sky",
     success: "emerald",
     info: "blue",
-    warning: "amber",
+    warning: "orange",
     error: "rose",
   },
   darkColorShades: { ...DEFAULT_COLOR_SHADES },
-  darkNeutral: "slate",
+  darkNeutral: "zinc",
   darkRadius: 0.375,
-  darkFont: "Inter",
+  darkFont: "Geist",
 };
 
 // Utility Functions ───────────────────────────────────────────────────────

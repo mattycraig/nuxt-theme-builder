@@ -1,0 +1,122 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
+  <defs>
+    <!-- Rich dark background with warm center glow -->
+    <radialGradient id="bg" cx="50%" cy="42%" r="75%">
+      <stop offset="0%" stop-color="#1a1744"/>
+      <stop offset="60%" stop-color="#100e2a"/>
+      <stop offset="100%" stop-color="#080620"/>
+    </radialGradient>
+
+    <!-- Brand gradient (indigo → sky) -->
+    <linearGradient id="brand" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#6366f1"/>
+      <stop offset="100%" stop-color="#0ea5e9"/>
+    </linearGradient>
+
+    <!-- Horizontal gradient for headline text -->
+    <linearGradient id="text-grad" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#818cf8"/>
+      <stop offset="100%" stop-color="#38bdf8"/>
+    </linearGradient>
+
+    <!-- Accent line with fading edges -->
+    <linearGradient id="accent-fade" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#6366f1" stop-opacity="0"/>
+      <stop offset="15%" stop-color="#6366f1" stop-opacity="0.6"/>
+      <stop offset="50%" stop-color="#818cf8"/>
+      <stop offset="85%" stop-color="#0ea5e9" stop-opacity="0.6"/>
+      <stop offset="100%" stop-color="#0ea5e9" stop-opacity="0"/>
+    </linearGradient>
+
+    <!-- Dot-grid texture (from hero glassmorphism style) -->
+    <pattern id="dot-grid" x="0" y="0" width="24" height="24" patternUnits="userSpaceOnUse">
+      <circle cx="12" cy="12" r="0.8" fill="white" opacity="0.12"/>
+    </pattern>
+
+    <!-- Large atmospheric blur for orbs -->
+    <filter id="orb-blur" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="80"/>
+    </filter>
+
+    <!-- Focused glow behind logo -->
+    <filter id="logo-glow" x="-100%" y="-100%" width="300%" height="300%">
+      <feGaussianBlur stdDeviation="25"/>
+    </filter>
+
+    <!-- Soft glow for palette circles -->
+    <filter id="circle-glow" x="-150%" y="-150%" width="400%" height="400%">
+      <feGaussianBlur stdDeviation="10"/>
+    </filter>
+  </defs>
+
+  <!-- Deep dark canvas -->
+  <rect width="1200" height="630" fill="url(#bg)"/>
+
+  <!-- Dot-grid texture overlay -->
+  <rect width="1200" height="630" fill="url(#dot-grid)" opacity="0.3"/>
+
+  <!-- Atmospheric gradient orbs (hero-inspired) -->
+  <circle cx="320" cy="80" r="380" fill="#6366f1" opacity="0.12" filter="url(#orb-blur)"/>
+  <circle cx="920" cy="560" r="300" fill="#0ea5e9" opacity="0.09" filter="url(#orb-blur)"/>
+  <circle cx="600" cy="300" r="180" fill="#818cf8" opacity="0.04" filter="url(#orb-blur)"/>
+
+  <!-- Scattered accent particles -->
+  <circle cx="170" cy="190" r="2.5" fill="#818cf8" opacity="0.35"/>
+  <circle cx="1030" cy="140" r="3" fill="#38bdf8" opacity="0.25"/>
+  <circle cx="240" cy="460" r="2" fill="#a5b4fc" opacity="0.3"/>
+  <circle cx="960" cy="410" r="2.5" fill="#7dd3fc" opacity="0.25"/>
+  <circle cx="130" cy="540" r="1.8" fill="#818cf8" opacity="0.2"/>
+  <circle cx="1070" cy="500" r="3" fill="#38bdf8" opacity="0.2"/>
+  <circle cx="500" cy="100" r="2" fill="#c7d2fe" opacity="0.2"/>
+  <circle cx="750" cy="560" r="2.5" fill="#7dd3fc" opacity="0.15"/>
+
+  <!-- Logo glow halo -->
+  <circle cx="600" cy="148" r="60" fill="#6366f1" opacity="0.2" filter="url(#logo-glow)"/>
+
+  <!-- Logo: gradient rounded square + palette icon -->
+  <g transform="translate(552, 100)">
+    <rect width="96" height="96" rx="20" fill="url(#brand)"/>
+    <g transform="translate(18, 18) scale(2.5)" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <circle cx="13.5" cy="6.5" r="0.5" fill="white"/>
+      <circle cx="17.5" cy="10.5" r="0.5" fill="white"/>
+      <circle cx="8.5" cy="7.5" r="0.5" fill="white"/>
+      <circle cx="6.5" cy="12" r="0.5" fill="white"/>
+      <path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10c.926 0 1.648-.746 1.648-1.688 0-.437-.18-.835-.437-1.125-.29-.289-.438-.652-.438-1.125a1.64 1.64 0 0 1 1.668-1.668h1.996c3.051 0 5.563-2.503 5.563-5.563C22 6.81 17.5 2 12 2Z"/>
+    </g>
+  </g>
+
+  <!-- Title: "Nuxt UI" (white) + "Theme Builder" (gradient) -->
+  <text x="600" y="255" text-anchor="middle" font-family="Inter, system-ui, -apple-system, sans-serif" font-size="60" font-weight="800" fill="white" letter-spacing="-0.03em">Nuxt UI</text>
+  <text x="600" y="322" text-anchor="middle" font-family="Inter, system-ui, -apple-system, sans-serif" font-size="60" font-weight="800" fill="url(#text-grad)" letter-spacing="-0.03em">Theme Builder</text>
+
+  <!-- Gradient accent line with fade -->
+  <rect x="350" y="348" width="500" height="2" rx="1" fill="url(#accent-fade)"/>
+
+  <!-- Semantic color palette in glass container -->
+  <g transform="translate(600, 400)">
+    <!-- Frosted glass pill -->
+    <rect x="-165" y="-26" width="330" height="52" rx="26" fill="white" fill-opacity="0.04" stroke="white" stroke-opacity="0.08" stroke-width="1"/>
+
+    <!-- Palette circle glows -->
+    <circle cx="-110" cy="0" r="14" fill="#6366f1" filter="url(#circle-glow)" opacity="0.4"/>
+    <circle cx="-66" cy="0" r="14" fill="#0ea5e9" filter="url(#circle-glow)" opacity="0.4"/>
+    <circle cx="-22" cy="0" r="14" fill="#10b981" filter="url(#circle-glow)" opacity="0.4"/>
+    <circle cx="22" cy="0" r="14" fill="#3b82f6" filter="url(#circle-glow)" opacity="0.4"/>
+    <circle cx="66" cy="0" r="14" fill="#f59e0b" filter="url(#circle-glow)" opacity="0.4"/>
+    <circle cx="110" cy="0" r="14" fill="#f43f5e" filter="url(#circle-glow)" opacity="0.4"/>
+
+    <!-- Palette circles (6 semantic roles) -->
+    <circle cx="-110" cy="0" r="14" fill="#6366f1"/>
+    <circle cx="-66" cy="0" r="14" fill="#0ea5e9"/>
+    <circle cx="-22" cy="0" r="14" fill="#10b981"/>
+    <circle cx="22" cy="0" r="14" fill="#3b82f6"/>
+    <circle cx="66" cy="0" r="14" fill="#f59e0b"/>
+    <circle cx="110" cy="0" r="14" fill="#f43f5e"/>
+  </g>
+
+  <!-- Tagline -->
+  <text x="600" y="472" text-anchor="middle" font-family="Inter, system-ui, -apple-system, sans-serif" font-size="21" font-weight="400" fill="#94a3b8" letter-spacing="-0.01em">Build, preview, and export beautiful themes visually.</text>
+
+  <!-- URL -->
+  <text x="600" y="590" text-anchor="middle" font-family="Inter, system-ui, -apple-system, sans-serif" font-size="15" font-weight="400" fill="#475569">nuxt-ui-themes.com</text>
+</svg>

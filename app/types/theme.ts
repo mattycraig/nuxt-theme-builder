@@ -189,6 +189,7 @@ export const PRESET_CATEGORIES = [
   "Nature",
   "Cool",
   "Bold",
+  "Brands",
 ] as const;
 
 export type PresetCategory = (typeof PRESET_CATEGORIES)[number];

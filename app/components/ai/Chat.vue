@@ -272,6 +272,9 @@ function handlePromptSelect(prompt: string) {
                 title="API key required"
                 description="Enter your chosen model's API key in the settings panel to get started."
                 class="text-left"
+                :ui="{
+                  title: 'font-semibold',
+                }"
               />
               <UButton
                 icon="i-lucide-settings"

@@ -285,11 +285,11 @@ function preset(
 // ═════════════════════════════════════════════════════════════════════════
 
 export const BUILT_IN_PRESETS: ThemePreset[] = [
-  // ── 1. Default (indigo) ───────────────────────────────────────────────
+  // ── 1. Default (indigo) ──────────────────────────────────────────────
   {
     name: "Default",
     description:
-      "Balanced indigo palette with standard contrast. A versatile starting point for any project.",
+      "Balanced indigo palette with standard contrast on zinc neutral. A versatile classic.",
     category: "Essentials",
     builtIn: true,
     config: DEFAULT_THEME,
@@ -314,7 +314,7 @@ export const BUILT_IN_PRESETS: ThemePreset[] = [
       },
       colorShades: SHADES_DEFAULT,
       neutral: "slate",
-      radius: 0.375,
+      radius: 0.25,
       font: "Public Sans",
       lightOverrides: LIGHT_STANDARD,
       darkOverrides: DARK_STANDARD,
@@ -335,7 +335,7 @@ export const BUILT_IN_PRESETS: ThemePreset[] = [
     config: preset({
       colors: {
         primary: "zinc",
-        secondary: "violet",
+        secondary: "zinc",
         success: "emerald",
         info: "sky",
         warning: "amber",
@@ -537,7 +537,8 @@ export const BUILT_IN_PRESETS: ThemePreset[] = [
   // ── 8. Emerald (emerald) ──────────────────────────────────────────────
   {
     name: "Emerald",
-    description: "Rich emerald gemstone palette. Sophisticated and luxurious.",
+    description:
+      "Rich emerald gemstone palette with Plus Jakarta Sans. Sophisticated and luxurious.",
     category: "Nature",
     builtIn: true,
     config: preset({
@@ -828,6 +829,328 @@ export const BUILT_IN_PRESETS: ThemePreset[] = [
       },
       darkColorShades: SHADES_BRIGHT,
       darkNeutral: "zinc",
+    }),
+  },
+
+  // ═══════════════════════════════════════════════════════════════════════
+  // Brand-Inspired Presets
+  // ═══════════════════════════════════════════════════════════════════════
+
+  // ── Spotify ───────────────────────────────────────────────────────────
+  {
+    name: "Spotify",
+    description:
+      "Inspired by Spotify's iconic green-on-black aesthetic. High contrast with deep dark backgrounds.",
+    category: "Brands",
+    builtIn: true,
+    config: preset({
+      colors: {
+        primary: "green",
+        secondary: "emerald",
+        success: "green",
+        info: "sky",
+        warning: "amber",
+        error: "red",
+      },
+      colorShades: {
+        primary: "500",
+        secondary: "500",
+        success: "500",
+        info: "500",
+        warning: "500",
+        error: "500",
+      },
+      neutral: "neutral",
+      radius: 0.5,
+      font: "DM Sans",
+      lightOverrides: LIGHT_HIGH_CONTRAST,
+      darkOverrides: DARK_HIGH_CONTRAST,
+      darkColorShades: {
+        primary: "400",
+        secondary: "400",
+        success: "400",
+        info: "400",
+        warning: "400",
+        error: "400",
+      },
+    }),
+  },
+
+  // ── YouTube ───────────────────────────────────────────────────────────
+  {
+    name: "YouTube",
+    description:
+      "Inspired by YouTube's bold red branding with clean, content-focused design.",
+    category: "Brands",
+    builtIn: true,
+    config: preset({
+      colors: {
+        primary: "red",
+        secondary: "sky",
+        success: "emerald",
+        info: "blue",
+        warning: "amber",
+        error: "rose",
+      },
+      colorShades: {
+        primary: "600",
+        secondary: "500",
+        success: "500",
+        info: "500",
+        warning: "500",
+        error: "500",
+      },
+      neutral: "neutral",
+      radius: 0.5,
+      font: "Roboto",
+      lightOverrides: LIGHT_STANDARD,
+      darkOverrides: DARK_HIGH_CONTRAST,
+      darkColorShades: {
+        primary: "500",
+        secondary: "400",
+        success: "400",
+        info: "400",
+        warning: "400",
+        error: "400",
+      },
+    }),
+  },
+
+  // ── Slack ─────────────────────────────────────────────────────────────
+  {
+    name: "Slack",
+    description:
+      "Inspired by Slack's friendly purple palette with warm, collaborative energy.",
+    category: "Brands",
+    builtIn: true,
+    config: preset({
+      colors: {
+        primary: "purple",
+        secondary: "teal",
+        success: "green",
+        info: "sky",
+        warning: "yellow",
+        error: "red",
+      },
+      colorShades: {
+        primary: "600",
+        secondary: "500",
+        success: "600",
+        info: "500",
+        warning: "500",
+        error: "500",
+      },
+      neutral: "slate",
+      radius: 0.375,
+      font: "Lato",
+      lightOverrides: LIGHT_STANDARD,
+      darkOverrides: DARK_STANDARD,
+      darkColorShades: SHADES_BRIGHT,
+    }),
+  },
+
+  // ── Discord ───────────────────────────────────────────────────────────
+  {
+    name: "Discord",
+    description:
+      "Inspired by Discord's signature blurple with deep dark mode backgrounds.",
+    category: "Brands",
+    builtIn: true,
+    config: preset({
+      colors: {
+        primary: "indigo",
+        secondary: "violet",
+        success: "green",
+        info: "sky",
+        warning: "amber",
+        error: "red",
+      },
+      colorShades: {
+        primary: "500",
+        secondary: "500",
+        success: "500",
+        info: "500",
+        warning: "500",
+        error: "500",
+      },
+      neutral: "gray",
+      radius: 0.375,
+      font: "Open Sans",
+      lightOverrides: LIGHT_STANDARD,
+      darkOverrides: DARK_DEEP,
+      darkColorShades: SHADES_BRIGHT,
+    }),
+  },
+
+  // ── GitHub ────────────────────────────────────────────────────────────
+  {
+    name: "GitHub",
+    description:
+      "Inspired by GitHub's developer-focused design. Clean, minimal, and functional.",
+    category: "Brands",
+    builtIn: true,
+    config: preset({
+      colors: {
+        primary: "blue",
+        secondary: "green",
+        success: "green",
+        info: "blue",
+        warning: "yellow",
+        error: "red",
+      },
+      colorShades: {
+        primary: "600",
+        secondary: "600",
+        success: "600",
+        info: "500",
+        warning: "500",
+        error: "600",
+      },
+      neutral: "gray",
+      radius: 0.375,
+      font: "Inter",
+      lightOverrides: LIGHT_STANDARD,
+      darkOverrides: DARK_HIGH_CONTRAST,
+      darkColorShades: SHADES_BRIGHT,
+    }),
+  },
+
+  // ── Stripe ────────────────────────────────────────────────────────────
+  {
+    name: "Stripe",
+    description:
+      "Inspired by Stripe's polished violet-indigo palette. Premium and trustworthy.",
+    category: "Brands",
+    builtIn: true,
+    config: preset({
+      colors: {
+        primary: "violet",
+        secondary: "indigo",
+        success: "emerald",
+        info: "sky",
+        warning: "amber",
+        error: "red",
+      },
+      colorShades: {
+        primary: "600",
+        secondary: "500",
+        success: "500",
+        info: "500",
+        warning: "500",
+        error: "500",
+      },
+      neutral: "slate",
+      radius: 0.375,
+      font: "Inter",
+      lightOverrides: LIGHT_SOFT,
+      darkOverrides: DARK_DEEP,
+      darkColorShades: SHADES_BRIGHT,
+    }),
+  },
+
+  // ── Twitch ────────────────────────────────────────────────────────────
+  {
+    name: "Twitch",
+    description:
+      "Inspired by Twitch's vibrant purple with high-energy dark mode gaming aesthetic.",
+    category: "Brands",
+    builtIn: true,
+    config: preset({
+      colors: {
+        primary: "violet",
+        secondary: "purple",
+        success: "emerald",
+        info: "sky",
+        warning: "amber",
+        error: "red",
+      },
+      colorShades: {
+        primary: "500",
+        secondary: "500",
+        success: "500",
+        info: "500",
+        warning: "500",
+        error: "500",
+      },
+      neutral: "zinc",
+      radius: 0.375,
+      font: "Inter",
+      lightOverrides: LIGHT_STANDARD,
+      darkOverrides: DARK_HIGH_CONTRAST,
+      darkColorShades: SHADES_BRIGHT,
+    }),
+  },
+
+  // ── Netflix ───────────────────────────────────────────────────────────
+  {
+    name: "Netflix",
+    description:
+      "Inspired by Netflix's dramatic red-on-black design. Bold and cinematic.",
+    category: "Brands",
+    builtIn: true,
+    config: preset({
+      colors: {
+        primary: "red",
+        secondary: "rose",
+        success: "emerald",
+        info: "sky",
+        warning: "amber",
+        error: "red",
+      },
+      colorShades: {
+        primary: "600",
+        secondary: "500",
+        success: "500",
+        info: "500",
+        warning: "500",
+        error: "500",
+      },
+      neutral: "neutral",
+      radius: 0.25,
+      font: "Inter",
+      lightOverrides: LIGHT_HIGH_CONTRAST,
+      darkOverrides: DARK_HIGH_CONTRAST,
+      darkColorShades: {
+        primary: "500",
+        secondary: "400",
+        success: "400",
+        info: "400",
+        warning: "400",
+        error: "400",
+      },
+    }),
+  },
+
+  // ── Linear ────────────────────────────────────────────────────────────
+  {
+    name: "Linear",
+    description:
+      "Inspired by Linear's sleek product design. Violet accents on minimal dark surfaces.",
+    category: "Brands",
+    builtIn: true,
+    config: preset({
+      colors: {
+        primary: "violet",
+        secondary: "blue",
+        success: "emerald",
+        info: "sky",
+        warning: "amber",
+        error: "red",
+      },
+      colorShades: {
+        primary: "500",
+        secondary: "500",
+        success: "500",
+        info: "500",
+        warning: "500",
+        error: "500",
+      },
+      neutral: "slate",
+      radius: 0.375,
+      font: "Inter",
+      lightOverrides: LIGHT_SHADCN,
+      darkOverrides: DARK_SHADCN,
+      darkColorShades: SHADES_BRIGHT,
     }),
   },
 ];

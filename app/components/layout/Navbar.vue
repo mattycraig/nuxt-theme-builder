@@ -36,10 +36,20 @@ const { currentPageLabel, mobileNavItems } = useLayoutNavigation();
         />
       </UDropdownMenu>
 
-      <UTooltip text="Help & Documentation">
+      <!-- <UTooltip text="Help & Documentation">
         <UButton
           icon="i-lucide-circle-help"
           aria-label="Help & Documentation"
+          variant="ghost"
+          color="neutral"
+          to="/help"
+        />
+      </UTooltip> -->
+
+      <UTooltip text="Tools">
+        <UButton
+          icon="i-lucide-wrench"
+          aria-label="Tools"
           variant="ghost"
           color="neutral"
           to="/help"
