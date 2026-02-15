@@ -9,8 +9,6 @@ order: 5
 featured: true
 ---
 
-# Building a Design System with Nuxt UI
-
 A design system is more than a component library — it's a shared language of design decisions. Nuxt UI v4 provides the building blocks. The Theme Builder helps you define and preview those decisions visually.
 
 This guide covers how to establish a coherent design system using Nuxt UI's token architecture.

@@ -9,8 +9,6 @@ order: 10
 featured: false
 ---
 
-# How to Export and Share Nuxt UI Themes
-
 Once you've created a theme in the Nuxt UI Theme Builder, you need to get it into your project. The builder supports three export formats, each suited to different workflows.
 
 ## Export Formats

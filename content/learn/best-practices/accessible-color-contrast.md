@@ -9,8 +9,6 @@ order: 7
 featured: false
 ---
 
-# Accessible Color Contrast in Web Themes
-
 Beautiful themes are useless if people can't read the text. Color contrast is the most common accessibility issue in web design — and one of the easiest to fix when you address it from the start.
 
 This guide covers WCAG 2.2 contrast requirements and how to apply them to Nuxt UI themes.

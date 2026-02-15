@@ -38,7 +38,7 @@ const formatLabels: Record<string, string> = {
 <template>
   <UPage>
     <UContainer>
-      <article class="max-w-4xl mx-auto py-6">
+      <article class="py-8">
         <!-- Header -->
         <header class="mb-8">
           <div class="flex items-center gap-2 mb-3 flex-wrap">
@@ -47,13 +47,13 @@ const formatLabels: Record<string, string> = {
               :label="formatLabels[article.format] ?? article.format"
               variant="subtle"
               color="primary"
-              size="xs"
+              size="sm"
             />
             <UBadge
               :label="categoryLabels[article.category] ?? article.category"
               variant="soft"
               color="neutral"
-              size="xs"
+              size="sm"
             />
             <UBadge
               v-for="tag in article.tags"
@@ -61,7 +61,7 @@ const formatLabels: Record<string, string> = {
               :label="tag"
               variant="outline"
               color="neutral"
-              size="xs"
+              size="sm"
             />
           </div>
 
@@ -89,9 +89,27 @@ const formatLabels: Record<string, string> = {
 
         <USeparator class="mb-8" />
 
-        <!-- Content -->
-        <div class="prose prose-sm dark:prose-invert max-w-none">
-          <ContentRenderer :value="article" />
+        <!-- Content + TOC -->
+        <div class="flex gap-8">
+          <div
+            class="prose prose-sm dark:prose-invert max-w-none min-w-0 flex-1"
+          >
+            <ContentRenderer :value="article" />
+          </div>
+
+          <aside
+            v-if="article.body?.toc?.links?.length"
+            class="hidden xl:block w-56 shrink-0"
+          >
+            <div class="sticky top-20">
+              <UContentToc
+                :links="article.body.toc.links"
+                title="On this page"
+                highlight
+                color="primary"
+              />
+            </div>
+          </aside>
         </div>
 
         <USeparator class="my-8" />

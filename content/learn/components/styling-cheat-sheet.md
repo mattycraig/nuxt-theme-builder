@@ -9,8 +9,6 @@ order: 8
 featured: false
 ---
 
-# Nuxt UI Component Styling Cheat Sheet
-
 A quick-reference guide for styling Nuxt UI v4 components. Every component follows the same patterns — learn them once, apply them everywhere.
 
 ## Universal Props

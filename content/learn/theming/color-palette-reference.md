@@ -9,8 +9,6 @@ order: 3
 featured: false
 ---
 
-# Nuxt UI Color Palette Reference
-
 Nuxt UI v4 builds on Tailwind CSS v4's color system. Every palette includes 11 shades (50–950) designed to work together across light and dark modes.
 
 This reference covers all available palettes and how to choose them for your theme.

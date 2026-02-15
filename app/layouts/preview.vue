@@ -26,7 +26,11 @@ const navigatingFromParent = ref(false);
 // Preserve ?preview query on every in-iframe navigation so the preview layout stays active
 router.beforeEach((to) => {
   if (!("preview" in to.query)) {
-    return { path: to.path, query: { ...to.query, preview: "" } };
+    return {
+      path: to.path,
+      query: { ...to.query, preview: "" },
+      hash: to.hash,
+    };
   }
 });
 

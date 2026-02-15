@@ -9,8 +9,6 @@ order: 6
 featured: true
 ---
 
-# Tailwind CSS v4 Theming: What Changed
-
 Tailwind CSS v4 fundamentally changed how theming works. If you're upgrading from v3 or starting fresh, understanding these changes is essential — especially for Nuxt UI projects.
 
 ## The Big Shift: CSS-First Configuration

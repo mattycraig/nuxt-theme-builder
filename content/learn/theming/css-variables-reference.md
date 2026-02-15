@@ -9,8 +9,6 @@ order: 4
 featured: false
 ---
 
-# CSS Variables Reference for Nuxt UI Themes
-
 Nuxt UI v4 exposes its design system through CSS custom properties (variables). These tokens control colors, border radius, typography, and more — and you can override any of them for fine-grained theming.
 
 ## Color Variables

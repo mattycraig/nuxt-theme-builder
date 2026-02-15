@@ -47,14 +47,14 @@ const formatIcons: Record<string, string> = {
             :icon="formatIcons[format]"
             variant="subtle"
             color="primary"
-            size="xs"
+            size="sm"
           />
           <UBadge
             v-if="category"
             :label="categoryLabels[category] ?? category"
             variant="soft"
             color="neutral"
-            size="xs"
+            size="sm"
           />
           <UBadge
             v-if="featured"
@@ -62,7 +62,7 @@ const formatIcons: Record<string, string> = {
             icon="i-lucide-star"
             variant="soft"
             color="warning"
-            size="xs"
+            size="sm"
           />
         </div>
 

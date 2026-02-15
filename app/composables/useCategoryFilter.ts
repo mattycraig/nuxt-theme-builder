@@ -1,20 +1,28 @@
+import type { MaybeRefOrGetter } from "vue";
 import type { ComponentCategory } from "~/types/components";
 
 /**
- * Shared search/filter logic used by the component, block, and template
- * index pages. Accepts any array of categories that follow the common
- * ComponentCategory shape and returns reactive filter state + helpers.
+ * Shared search/filter logic used by the component, block, template, and
+ * learn index pages. Accepts a plain array or reactive source of categories
+ * that follow the common ComponentCategory shape, and returns reactive
+ * filter state + helpers.
  */
-export function useCategoryFilter(categories: ComponentCategory[]) {
+export function useCategoryFilter(
+  categoriesSource: MaybeRefOrGetter<ComponentCategory[]>,
+) {
   const searchQuery = ref("");
   const selectedCategory = ref<string | null>(null);
 
-  const totalCount = categories.reduce((sum, cat) => sum + cat.items.length, 0);
+  const resolvedCategories = computed(() => toValue(categoriesSource));
+
+  const totalCount = computed(() =>
+    resolvedCategories.value.reduce((sum, cat) => sum + cat.items.length, 0),
+  );
 
   const filteredCategories = computed(() => {
     const query = searchQuery.value.toLowerCase().trim();
 
-    let result: ComponentCategory[] = categories;
+    let result: ComponentCategory[] = resolvedCategories.value;
 
     if (selectedCategory.value) {
       result = result.filter((cat) => cat.slug === selectedCategory.value);

@@ -9,8 +9,6 @@ order: 1
 featured: true
 ---
 
-# How to Customize Nuxt UI Theme Colors
-
 Nuxt UI v4 uses a semantic color system built on top of Tailwind CSS v4. Instead of hard-coding hex values throughout your app, you define **color roles** — primary, secondary, success, warning, error — and Nuxt UI maps them across every component automatically.
 
 This guide walks through the complete color customization workflow.

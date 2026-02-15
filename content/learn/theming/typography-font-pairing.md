@@ -9,8 +9,6 @@ order: 9
 featured: false
 ---
 
-# Typography & Font Pairing for Nuxt Apps
-
 Typography sets the tone of your application before a single word is read. The right font pairing communicates professionalism, friendliness, or creativity — the wrong one creates visual noise.
 
 Nuxt UI v4 uses CSS variables for font families, making it straightforward to apply custom typography to your entire application.

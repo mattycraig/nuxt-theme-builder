@@ -9,8 +9,6 @@ order: 2
 featured: true
 ---
 
-# Dark Mode Theming with Nuxt UI
-
 Dark mode is not just an inverted light theme. Great dark mode design requires intentional color choices — reduced contrast for comfort, adjusted saturation for vibrancy, and carefully tuned neutral tones so surfaces feel layered without being harsh.
 
 Nuxt UI v4 supports independent light and dark mode theming out of the box.

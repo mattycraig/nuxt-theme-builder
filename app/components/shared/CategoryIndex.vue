@@ -17,9 +17,21 @@ const props = withDefaults(
     searchId?: string;
     /** Use compact card style (smaller icons/text, extra grid column). Good for large catalogs. */
     compact?: boolean;
+    /** Total item count before any external (parent-side) filtering. When provided, used for the "X of Y" display. */
+    unfilteredTotal?: number;
   }>(),
-  { backTo: "/", compact: false, searchId: undefined },
+  {
+    backTo: "/",
+    compact: false,
+    searchId: undefined,
+    unfilteredTotal: undefined,
+  },
 );
+
+const emit = defineEmits<{
+  /** Emitted when "Clear filters" is clicked, so parent can reset external filters. */
+  "clear-filters": [];
+}>();
 
 const {
   searchQuery,
@@ -30,12 +42,25 @@ const {
   hasResults,
   toggleCategory,
   clearFilters,
-} = useCategoryFilter(props.categories);
+} = useCategoryFilter(() => props.categories);
 
 const pluralLabel = computed(() => props.itemLabel + "s");
 const resolvedSearchId = computed(
   () => props.searchId ?? `${props.itemLabel}-search`,
 );
+
+const displayTotal = computed(() => props.unfilteredTotal ?? totalCount.value);
+const isFiltered = computed(
+  () =>
+    !!searchQuery.value ||
+    !!selectedCategory.value ||
+    filteredTotalCount.value < displayTotal.value,
+);
+
+function handleClearFilters() {
+  clearFilters();
+  emit("clear-filters");
+}
 </script>
 
 <template>
@@ -95,17 +120,14 @@ const resolvedSearchId = computed(
           </div>
 
           <!-- Results & Clear Actions -->
-          <div
-            v-if="searchQuery || selectedCategory"
-            class="flex items-center gap-3"
-          >
+          <div v-if="isFiltered" class="flex items-center gap-3">
             <span
               id="filter-results-count"
               class="text-sm text-(--ui-text-muted)"
               role="status"
               aria-live="polite"
             >
-              {{ filteredTotalCount }} of {{ totalCount }} {{ pluralLabel }}
+              {{ filteredTotalCount }} of {{ displayTotal }} {{ pluralLabel }}
             </span>
             <UButton
               label="Clear filters"
@@ -113,8 +135,8 @@ const resolvedSearchId = computed(
               color="neutral"
               variant="ghost"
               size="sm"
-              :aria-label="`Clear all filters. Currently showing ${filteredTotalCount} of ${totalCount} ${pluralLabel}.`"
-              @click="clearFilters"
+              :aria-label="`Clear all filters. Currently showing ${filteredTotalCount} of ${displayTotal} ${pluralLabel}.`"
+              @click="handleClearFilters"
             />
           </div>
         </div>
@@ -130,8 +152,14 @@ const resolvedSearchId = computed(
           <div
             role="group"
             aria-labelledby="category-filter-label"
-            class="flex flex-wrap gap-2"
+            class="flex flex-wrap items-center gap-2"
           >
+            <slot name="filters" />
+            <USeparator
+              v-if="$slots.filters"
+              orientation="vertical"
+              class="h-5"
+            />
             <UButton
               v-for="cat in categories"
               :key="cat.slug"
@@ -160,7 +188,7 @@ const resolvedSearchId = computed(
             label="Clear all filters"
             color="neutral"
             variant="subtle"
-            @click="clearFilters"
+            @click="handleClearFilters"
           />
         </template>
       </UEmpty>
