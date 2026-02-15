@@ -104,6 +104,17 @@ export const PAGE_DESCRIPTIONS: Record<string, string> = {
     "How to build a consistent, scalable design system for Nuxt applications using Nuxt UI v4 design tokens and conventions.",
   "/learn/best-practices/accessible-color-contrast":
     "Ensure your theme colors meet WCAG 2.2 contrast requirements for text, UI components, and interactive elements.",
+  // Tool pages
+  "/tools":
+    "Color and design utilities for Nuxt UI v4 theme development — palette viewer, generator, contrast checker, and color converter.",
+  "/tools/palette-viewer":
+    "Browse every Tailwind CSS / Nuxt UI color palette and shade — click to copy HEX or OKLCH values for your theme.",
+  "/tools/palette-generator":
+    "Generate random semantic color palettes for Nuxt UI v4 themes and export them as CSS variables or JSON.",
+  "/tools/contrast-checker":
+    "Check WCAG AA and AAA color-contrast ratios between any two colors — ensure your Nuxt UI theme meets accessibility standards.",
+  "/tools/color-converter":
+    "Convert colors between HEX, RGB, HSL, and OKLCH formats — a quick reference tool for Nuxt UI v4 theme development.",
 };
 
 export const DEFAULT_DESCRIPTION =

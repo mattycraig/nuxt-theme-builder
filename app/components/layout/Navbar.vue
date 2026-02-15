@@ -9,14 +9,7 @@ const { currentPageLabel, mobileNavItems } = useLayoutNavigation();
     <template #leading>
       <UDashboardSidebarCollapse />
       <USeparator orientation="vertical" class="h-6 mx-2" />
-      <div
-        class="size-7 rounded-sm bg-gradient-to-br from-[var(--ui-primary)] to-[var(--ui-secondary)] flex items-center justify-center shadow-md shadow-(--ui-primary)/15 mr-1"
-      >
-        <span
-          class="iconify i-lucide:palette size-5 text-inverted"
-          aria-hidden="true"
-        />
-      </div>
+      <SharedAppLogo size="md" class="mr-1" />
     </template>
 
     <template #right>
@@ -24,6 +17,10 @@ const { currentPageLabel, mobileNavItems } = useLayoutNavigation();
       <UNavigationMenu
         :items="NAVIGATION_ITEMS"
         class="hidden lg:flex flex-1 min-w-max"
+        :ui="{
+          link: 'text-sm',
+          linkLeadingIcon: 'size-4',
+        }"
       />
 
       <!-- Mobile: compact dropdown -->
@@ -36,13 +33,15 @@ const { currentPageLabel, mobileNavItems } = useLayoutNavigation();
         />
       </UDropdownMenu>
 
-      <!-- <UTooltip text="Help & Documentation">
+      <USeparator orientation="vertical" class="h-6 mx-2 hidden sm:block" />
+
+      <!-- <UTooltip text="Learn">
         <UButton
-          icon="i-lucide-circle-help"
-          aria-label="Help & Documentation"
+          icon="i-lucide-book-open"
+          aria-label="Learn"
           variant="ghost"
           color="neutral"
-          to="/help"
+          to="/learn"
         />
       </UTooltip> -->
 
@@ -52,7 +51,7 @@ const { currentPageLabel, mobileNavItems } = useLayoutNavigation();
           aria-label="Tools"
           variant="ghost"
           color="neutral"
-          to="/help"
+          to="/tools"
         />
       </UTooltip>
 

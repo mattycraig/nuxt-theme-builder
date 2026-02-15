@@ -4,6 +4,7 @@ import {
   BLOCK_NAV_ITEMS,
   TEMPLATE_NAV_ITEMS,
   LEARN_NAV_ITEMS,
+  TOOL_NAV_ITEMS,
   UTILITY_NAV_ITEMS,
   flattenNavigationItems,
 } from "~/utils/navigation";
@@ -24,6 +25,7 @@ export function useLayoutNavigation() {
       ...BLOCK_NAV_ITEMS,
       ...TEMPLATE_NAV_ITEMS,
       ...LEARN_NAV_ITEMS,
+      ...TOOL_NAV_ITEMS,
     ].map((item) => ({
       label: item.label ?? "",
       icon: item.icon as string | undefined,

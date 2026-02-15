@@ -15,6 +15,8 @@ export type TemplateCategory = ComponentCategory;
 
 export type LearnCategory = ComponentCategory;
 
+export type ToolCategory = ComponentCategory;
+
 export interface BlockShowcaseItem {
   id: string;
   title: string;
