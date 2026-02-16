@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { SpeedInsights } from "@vercel/speed-insights/vue";
 import { useThemeApply } from "~/composables/useThemeApply";
 import { usePreviewIframe } from "~/composables/usePreviewIframe";
 import { usePreviewResize } from "~/composables/usePreviewResize";
@@ -12,7 +11,6 @@ import {
 
 useThemeApply();
 useKeyboardShortcuts();
-useCookieConsent();
 
 const route = useRoute();
 
@@ -169,6 +167,5 @@ useHead({
     <SharedSaveThemeModal />
     <EditorExportSlideover />
 
-    <SpeedInsights />
   </UDashboardGroup>
 </template>

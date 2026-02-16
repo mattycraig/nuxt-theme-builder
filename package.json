@@ -1,6 +1,6 @@
 {
   "name": "nuxt-theme-builder",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "private": true,
   "type": "module",
   "scripts": {
@@ -36,20 +36,22 @@
     "@ai-sdk/openai": "^3.0.29",
     "@internationalized/date": "^3.11.0",
     "@nuxt/content": "^3.11.2",
-    "@nuxt/image": "^2.0.0",
     "@nuxt/scripts": "^0.13.2",
     "@nuxt/ui": "^4.4.0",
     "@nuxtjs/mdc": "^0.20.1",
     "@nuxtjs/sitemap": "^7.6.0",
     "@pinia/nuxt": "^0.11.3",
+    "@sentry/nuxt": "^10.39.0",
     "@tiptap/extension-emoji": "^3.19.0",
     "@vercel/analytics": "^1.6.1",
     "@vueuse/nuxt": "^14.2.1",
     "ai": "^6.0.86",
     "better-sqlite3": "^12.6.2",
     "dompurify": "^3.3.1",
+    "import-in-the-middle": "^3.0.0",
     "nuxt": "^4.3.1",
     "nuxt-og-image": "^5.1.13",
+    "nuxt-schema-org": "^5.0.10",
     "nuxt-security": "^2.5.1",
     "pinia-plugin-persistedstate": "^4.7.1",
     "tailwindcss": "^4.1.18",
@@ -67,6 +69,7 @@
     "@vercel/speed-insights": "^1.3.1",
     "@vitest/coverage-v8": "^4.0.18",
     "@vue/test-utils": "^2.4.6",
+    "changelogen": "^0.6.2",
     "dotenv": "^17.3.1",
     "eslint": "9.28.0",
     "happy-dom": "^20.6.1",
@@ -78,8 +81,12 @@
     "shiki": "^3.22.0",
     "typescript": "^5.9.3",
     "typescript-eslint": "^8.55.0",
-    "changelogen": "^0.6.2",
     "vitest": "^4.0.18",
     "vue-tsc": "^3.2.4"
+  },
+  "pnpm": {
+    "overrides": {
+      "@vercel/nft": "^0.27.4"
+    }
   }
 }

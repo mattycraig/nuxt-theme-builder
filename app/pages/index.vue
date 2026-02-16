@@ -1,8 +1,38 @@
 <script setup lang="ts">
 import { MSG } from "~/utils/iframeProtocol";
 import { isInIframe } from "~/utils/helpers";
+import { PAGE_DESCRIPTIONS } from "~/utils/seoDescriptions";
 
 definePageMeta({ layout: "preview" });
+
+const SITE_URL = "https://www.nuxt-ui-themes.com";
+
+useSeoMeta({
+  title: "Nuxt UI Theme Builder — Visual Design-Token Editor",
+  description: PAGE_DESCRIPTIONS["/"],
+  ogTitle: "Nuxt UI Theme Builder — Visual Design-Token Editor",
+  ogDescription: PAGE_DESCRIPTIONS["/"],
+  ogType: "website",
+  ogImage: `${SITE_URL}/og-image.png`,
+  twitterCard: "summary_large_image",
+  twitterTitle: "Nuxt UI Theme Builder — Visual Design-Token Editor",
+  twitterDescription: PAGE_DESCRIPTIONS["/"],
+  twitterImage: `${SITE_URL}/og-image.png`,
+});
+
+useHead({
+  link: [
+    { rel: "canonical", href: SITE_URL },
+  ],
+});
+
+useSchemaOrg([
+  defineWebSite({ name: "Nuxt UI Theme Builder" }),
+  defineWebPage({
+    name: "Nuxt UI Theme Builder — Visual Design-Token Editor",
+    description: PAGE_DESCRIPTIONS["/"],
+  }),
+]);
 
 const store = useThemeStore();
 const inIframe = isInIframe();

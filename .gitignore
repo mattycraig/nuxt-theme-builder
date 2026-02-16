@@ -44,3 +44,6 @@ blob-report/
 # Accidental CLI artifacts
 --port/
 
+
+# Sentry Config File
+.env.sentry-build-plugin
