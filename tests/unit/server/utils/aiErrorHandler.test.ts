@@ -89,16 +89,17 @@ describe("server/utils/aiErrorHandler", () => {
       expect(result.statusMessage).toContain("Failed to generate theme");
     });
 
-    it("includes error hint when message is short", () => {
+    it("does not leak internal error details in message", () => {
       const err = { status: 500, message: "Something broke" };
       const result = classifyAiError(err);
-      expect(result.statusMessage).toContain("(Something broke)");
+      expect(result.statusMessage).not.toContain("Something broke");
+      expect(result.statusMessage).toBe("Failed to generate theme. Please try again.");
     });
 
-    it("omits hint when message is too long", () => {
+    it("returns generic message regardless of error content", () => {
       const err = { status: 500, message: "x".repeat(201) };
       const result = classifyAiError(err);
-      expect(result.statusMessage).not.toContain("(x");
+      expect(result.statusMessage).toBe("Failed to generate theme. Please try again.");
     });
 
     it("omits hint for empty message", () => {

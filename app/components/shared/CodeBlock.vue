@@ -1,5 +1,11 @@
 <script setup lang="ts">
+import DOMPurify from "isomorphic-dompurify";
 import { downloadFile } from "~/utils/helpers";
+
+const DOMPURIFY_CONFIG = {
+  ALLOWED_TAGS: ["pre", "code", "span", "div"],
+  ALLOWED_ATTR: ["class", "style"],
+};
 
 const props = withDefaults(
   defineProps<{
@@ -52,7 +58,10 @@ watch(
         method: "POST",
         body: { code, lang: props.language },
       });
-      highlightedHtml.value = result.html;
+      highlightedHtml.value = DOMPurify.sanitize(
+        result.html,
+        DOMPURIFY_CONFIG,
+      );
     } catch {
       // Fallback: render as plain preformatted text
       const escaped = code

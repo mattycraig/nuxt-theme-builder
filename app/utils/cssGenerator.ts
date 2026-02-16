@@ -27,6 +27,21 @@ function sanitizeCSSValue(value: string): string {
   return value.replace(/[;<>{}()\\/"'`]/g, "");
 }
 
+const CSS_INJECTION_PATTERNS = [
+  /url\s*\(/i,
+  /@import/i,
+  /expression\s*\(/i,
+  /<\s*\//i,
+  /<\s*script/i,
+  /javascript\s*:/i,
+  /\\75\\72\\6c/i,
+] as const;
+
+/** Reject generated CSS containing patterns that could be abused for injection */
+export function isCleanCSS(css: string): boolean {
+  return !CSS_INJECTION_PATTERNS.some((p) => p.test(css));
+}
+
 const CSS_PREFIX_MAP: Record<TokenCategory, string> = {
   text: "--ui-text",
   bg: "--ui-bg",

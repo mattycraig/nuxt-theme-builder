@@ -7,6 +7,7 @@ import {
   generateDarkPaletteOverrideLines,
   generateDarkNeutralOverrideLines,
   getOverriddenTokenKeys,
+  isCleanCSS,
 } from "~/utils/cssGenerator";
 import {
   DEFAULT_LIGHT_OVERRIDES,
@@ -416,5 +417,39 @@ describe("generateThemeCSS — light-to-dark bleed-through prevention", () => {
       DEFAULT_DARK_OVERRIDES,
     );
     expect(darkCSS).toBe("");
+  });
+});
+
+describe("isCleanCSS", () => {
+  it("accepts normal CSS variable declarations", () => {
+    expect(isCleanCSS(":root { --ui-radius: 0.375rem; --font-sans: 'Inter'; }")).toBe(true);
+  });
+
+  it("accepts dark mode blocks", () => {
+    expect(isCleanCSS(".dark { --ui-radius: 0.5rem; }")).toBe(true);
+  });
+
+  it("rejects url() patterns", () => {
+    expect(isCleanCSS("background: url(https://evil.com/track.gif);")).toBe(false);
+  });
+
+  it("rejects @import patterns", () => {
+    expect(isCleanCSS("@import 'https://evil.com/style.css';")).toBe(false);
+  });
+
+  it("rejects expression() patterns", () => {
+    expect(isCleanCSS("width: expression(document.body.clientWidth);")).toBe(false);
+  });
+
+  it("rejects script tags in CSS", () => {
+    expect(isCleanCSS("/* </style><script>alert(1)</script> */")).toBe(false);
+  });
+
+  it("rejects javascript: URIs in CSS", () => {
+    expect(isCleanCSS("background: javascript:alert(1);")).toBe(false);
+  });
+
+  it("rejects closing tags that could break style context", () => {
+    expect(isCleanCSS("</style>")).toBe(false);
   });
 });

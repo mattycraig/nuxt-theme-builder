@@ -145,11 +145,9 @@ export function classifyAiError(err: unknown): ClassifiedError {
     };
   }
 
-  // Include a sanitized hint of the actual error for debugging
-  const hint =
-    message.length > 0 && message.length < 200 ? ` (${message})` : "";
+  // Generic failure message without leaking internal error details
   return {
     statusCode: status >= 400 && status < 600 ? status : 500,
-    statusMessage: `Failed to generate theme. Please try again.${hint}`,
+    statusMessage: "Failed to generate theme. Please try again.",
   };
 }

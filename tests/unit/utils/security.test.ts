@@ -83,21 +83,18 @@ describe("security utilities", () => {
     });
 
     describe("directory traversal attempts", () => {
-      it("allows paths with .. that start with templates/ prefix (sanitization must happen at API layer)", () => {
-        // NOTE: This function only checks prefix. Directory traversal prevention
-        // is handled by the API route which rejects paths containing ".."
-        // See server/api/source/[...path].get.ts line 12
-        expect(isAllowedSourcePath("templates/../../etc/passwd")).toBe(true);
+      it("rejects paths containing .. directory traversal", () => {
+        expect(isAllowedSourcePath("templates/../../etc/passwd")).toBe(false);
+        expect(isAllowedSourcePath("templates/../blocks/hero")).toBe(false);
+      });
+
+      it("rejects paths with null bytes", () => {
+        expect(isAllowedSourcePath("templates/dashboard\0.vue")).toBe(false);
       });
 
       it("rejects blocks paths even with traversal", () => {
         expect(isAllowedSourcePath("blocks/../components/Button")).toBe(false);
         expect(isAllowedSourcePath("blocks/../../app.vue")).toBe(false);
-      });
-
-      it("documents defense-in-depth: API layer must sanitize paths before this check", () => {
-        // Current architecture: API route rejects ".." before calling this function
-        expect(isAllowedSourcePath("templates/../blocks/hero")).toBe(true);
       });
     });
   });
@@ -191,6 +188,43 @@ describe("security utilities", () => {
           '<meta http-equiv="refresh" content="0;url=evil">';
         expect(isSafeHighlightedHtml(dangerousHtml)).toBe(false);
       });
+
+      it("should reject <svg> tags", () => {
+        expect(isSafeHighlightedHtml('<svg onload="alert(1)">')).toBe(false);
+      });
+
+      it("should reject <img> tags", () => {
+        expect(isSafeHighlightedHtml('<img src="x">')).toBe(false);
+      });
+
+      it("should reject <form> tags", () => {
+        expect(isSafeHighlightedHtml('<form action="evil">')).toBe(false);
+      });
+
+      it("should reject <base> tags", () => {
+        expect(isSafeHighlightedHtml('<base href="evil">')).toBe(false);
+      });
+
+      it("should reject <style> tags", () => {
+        expect(isSafeHighlightedHtml("<style>body{display:none}</style>")).toBe(false);
+      });
+
+      it("should reject <input>, <button>, <textarea>, <select> tags", () => {
+        expect(isSafeHighlightedHtml('<input type="text">')).toBe(false);
+        expect(isSafeHighlightedHtml("<button>Click</button>")).toBe(false);
+        expect(isSafeHighlightedHtml("<textarea></textarea>")).toBe(false);
+        expect(isSafeHighlightedHtml("<select></select>")).toBe(false);
+      });
+
+      it("should reject <video>, <audio>, <source> tags", () => {
+        expect(isSafeHighlightedHtml('<video src="x">')).toBe(false);
+        expect(isSafeHighlightedHtml('<audio src="x">')).toBe(false);
+        expect(isSafeHighlightedHtml('<source src="x">')).toBe(false);
+      });
+
+      it("should reject <math> tags", () => {
+        expect(isSafeHighlightedHtml("<math><mi>x</mi></math>")).toBe(false);
+      });
     });
 
     describe("dangerous HTML - inline event handlers", () => {
@@ -240,10 +274,17 @@ describe("security utilities", () => {
         );
       });
 
-      it("does not detect URL-encoded javascript: URIs (known limitation)", () => {
-        // TODO: Enhance isSafeHighlightedHtml to decode URLs before checking
-        // Current implementation only checks raw string patterns
-        expect(isSafeHighlightedHtml("javascript%3Aalert(1)")).toBe(true);
+      it("should detect URL-encoded javascript: URIs", () => {
+        expect(isSafeHighlightedHtml("javascript%3Aalert(1)")).toBe(false);
+      });
+
+      it("should detect entity-encoded javascript: URIs", () => {
+        expect(isSafeHighlightedHtml("javascript&#58;alert(1)")).toBe(false);
+        expect(isSafeHighlightedHtml("javascript&#x3a;alert(1)")).toBe(false);
+      });
+
+      it("should reject data: URIs", () => {
+        expect(isSafeHighlightedHtml('src="data:text/html,<script>alert(1)</script>"')).toBe(false);
       });
     });
 

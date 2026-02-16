@@ -3,7 +3,7 @@ import {
   DEFAULT_LIGHT_OVERRIDES,
   DEFAULT_DARK_OVERRIDES,
 } from "~/utils/defaults";
-import { generateThemeCSS } from "~/utils/cssGenerator";
+import { generateThemeCSS, isCleanCSS } from "~/utils/cssGenerator";
 
 export function useThemeApply() {
   const store = useThemeStore();
@@ -43,7 +43,12 @@ export function useThemeApply() {
       DEFAULT_LIGHT_OVERRIDES,
       DEFAULT_DARK_OVERRIDES,
     );
-    return [rootCSS, darkCSS].filter(Boolean).join("\n");
+    const combined = [rootCSS, darkCSS].filter(Boolean).join("\n");
+    if (!isCleanCSS(combined)) {
+      console.warn("[useThemeApply] CSS injection pattern detected, skipping injection");
+      return "";
+    }
+    return combined;
   });
 
   useHead({

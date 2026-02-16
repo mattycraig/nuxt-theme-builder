@@ -101,9 +101,14 @@ const requestSchema = z.object({
 const rateLimitMap: RateLimitStore = new Map();
 
 export default defineEventHandler(async (event) => {
+  // Prefer platform-specific headers that are harder to spoof,
+  // then fall back to proxy headers
   const ip =
-    getRequestHeader(event, "x-forwarded-for")?.split(",")[0]?.trim() ||
+    getRequestHeader(event, "cf-connecting-ip") ||
+    getRequestHeader(event, "fly-client-ip") ||
+    getRequestHeader(event, "true-client-ip") ||
     getRequestHeader(event, "x-real-ip") ||
+    getRequestHeader(event, "x-forwarded-for")?.split(",")[0]?.trim() ||
     "unknown";
 
   if (!checkRateLimit(rateLimitMap, ip)) {
