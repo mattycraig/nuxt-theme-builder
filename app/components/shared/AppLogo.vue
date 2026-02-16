@@ -20,12 +20,12 @@ const sizeClasses: Record<LogoSize, { container: string; icon: string }> = {
 
 const containerClass = computed(
   () =>
-    `group ${sizeClasses[props.size].container} bg-gradient-to-br from-[var(--ui-primary)] to-[var(--ui-secondary)] flex items-center justify-center shadow-(--ui-primary)/15 transition-all duration-300 ease-out hover:scale-110 hover:shadow-lg hover:shadow-(--ui-primary)/30 hover:rotate-3 active:scale-95 hover:from-[var(--ui-secondary)] hover:to-[var(--ui-primary)]`,
+    `group ${sizeClasses[props.size].container} bg-gradient-to-br from-[var(--ui-primary)] to-[var(--ui-secondary)] flex items-center justify-center shadow-(--ui-primary)/15 transition-all duration-300 ease-out hover:scale-110 hover:shadow-lg hover:shadow-(--ui-primary)/30 hover:rotate-3 active:scale-95 hover:from-[var(--ui-secondary)] hover:to-[var(--ui-primary)] shrink-0`,
 );
 
 const iconClass = computed(
   () =>
-    `iconify i-lucide:palette ${sizeClasses[props.size].icon} text-inverted transition-transform duration-300 ease-out group-hover:rotate-12 group-hover:scale-110`,
+    `iconify i-lucide:palette ${sizeClasses[props.size].icon} text-inverted transition-transform duration-300 ease-out group-hover:rotate-12 group-hover:scale-110 shrink-0`,
 );
 </script>
 

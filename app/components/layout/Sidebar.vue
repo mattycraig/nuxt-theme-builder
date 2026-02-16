@@ -16,11 +16,15 @@ const footerLinks = UTILITY_NAV_ITEMS;
     :default-size="320"
     :ui="{
       root: 'min-w-0 overflow-hidden data-[collapsed=true]:invisible',
-      header: 'border-b border-default sm:px-4',
+      header: 'border-b border-default sm:px-4 lg:hidden',
       body: 'p-0 sm:p-0',
       footer: 'border-t border-default py-4 flex-col',
     }"
   >
+    <template #header>
+      <SharedAppLogo size="md" class="ml-auto" />
+    </template>
+
     <template #default>
       <EditorPanel />
     </template>
