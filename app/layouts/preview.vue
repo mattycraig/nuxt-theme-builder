@@ -3,6 +3,7 @@ import { useThemeApply } from "~/composables/useThemeApply";
 import { useThemeStore } from "~/stores/theme";
 import { sanitizeNavigationPath } from "~/utils/helpers";
 import { MSG } from "~/utils/iframeProtocol";
+import type { IframeToParentMessage, IframeMessage } from "~/utils/iframeProtocol";
 
 useThemeApply();
 
@@ -35,43 +36,40 @@ router.beforeEach((to) => {
 });
 
 // After navigation completes, notify parent of user-initiated link clicks
+function postToParent(data: IframeToParentMessage) {
+  window.parent?.postMessage(data, window.location.origin);
+}
+
 router.afterEach((to) => {
   if (navigatingFromParent.value) {
     navigatingFromParent.value = false;
     return;
   }
-  window.parent?.postMessage(
-    { type: MSG.NAVIGATE_PARENT, path: to.path },
-    window.location.origin,
-  );
+  postToParent({ type: MSG.NAVIGATE_PARENT, path: to.path });
 });
 
 // Listen for theme & color-mode sync messages from parent frame
 function handleMessage(event: MessageEvent) {
   if (event.origin !== window.location.origin) return;
+  const msg = event.data as IframeMessage | undefined;
+  if (!msg?.type) return;
 
-  if (event.data?.type === MSG.THEME_SYNC) {
-    store._syncConfig(event.data.config);
+  if (msg.type === MSG.THEME_SYNC) {
+    store._syncConfig(msg.config);
   }
-  if (event.data?.type === MSG.COLORMODE_SYNC) {
-    colorMode.preference = event.data.mode;
+  if (msg.type === MSG.COLORMODE_SYNC) {
+    colorMode.preference = msg.mode;
   }
-  if (event.data?.type === MSG.REQUEST_READY) {
-    window.parent?.postMessage(
-      { type: MSG.PREVIEW_READY },
-      window.location.origin,
-    );
+  if (msg.type === MSG.REQUEST_READY) {
+    postToParent({ type: MSG.PREVIEW_READY });
   }
-  if (event.data?.type === MSG.NAVIGATE) {
-    const safePath = sanitizeNavigationPath(String(event.data.path));
+  if (msg.type === MSG.NAVIGATE) {
+    const safePath = sanitizeNavigationPath(String(msg.path));
     if (safePath) {
       navigatingFromParent.value = true;
       router.push(safePath).then(() => {
         navigatingFromParent.value = false;
-        window.parent?.postMessage(
-          { type: MSG.NAVIGATE_DONE },
-          window.location.origin,
-        );
+        postToParent({ type: MSG.NAVIGATE_DONE });
       });
     }
   }
@@ -83,19 +81,13 @@ function handleKeydown(e: KeyboardEvent) {
   if (!mod || e.key !== "z") return;
 
   e.preventDefault();
-  window.parent?.postMessage(
-    { type: MSG.KEYBOARD_SHORTCUT, key: "z", shift: e.shiftKey },
-    window.location.origin,
-  );
+  postToParent({ type: MSG.KEYBOARD_SHORTCUT, key: "z", shift: e.shiftKey });
 }
 
 onMounted(() => {
   window.addEventListener("message", handleMessage);
   document.addEventListener("keydown", handleKeydown);
-  window.parent?.postMessage(
-    { type: MSG.PREVIEW_READY },
-    window.location.origin,
-  );
+  postToParent({ type: MSG.PREVIEW_READY });
 });
 
 onUnmounted(() => {

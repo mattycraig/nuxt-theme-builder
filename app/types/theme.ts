@@ -1,3 +1,10 @@
+/**
+ * App-layer theme types, schemas, and derived unions.
+ *
+ * Import convention:
+ *   - From app/ layer only: import { ... } from '~/types/theme'
+ *   - NOT available in server/ layer — use shared/constants/theme for cross-layer values.
+ */
 import { z } from "zod";
 import {
   CHROMATIC_PALETTES,

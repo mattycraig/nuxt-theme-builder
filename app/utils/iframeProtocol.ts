@@ -23,6 +23,8 @@
  *     APPLY_AI_THEME   — AI page requests theme application via parent store
  */
 
+import type { ThemeConfig } from "~/types/theme";
+
 export const MSG = {
   // Parent → Iframe
   THEME_SYNC: "theme-sync",
@@ -41,3 +43,86 @@ export const MSG = {
 } as const;
 
 export type MessageType = (typeof MSG)[keyof typeof MSG];
+
+// ── Typed message payloads (discriminated union) ────────────────────
+
+/** Parent → Iframe: push full theme state */
+export interface ThemeSyncMessage {
+  type: typeof MSG.THEME_SYNC;
+  config: ThemeConfig;
+}
+
+/** Parent → Iframe: push color-mode preference */
+export interface ColorModeSyncMessage {
+  type: typeof MSG.COLORMODE_SYNC;
+  mode: string;
+}
+
+/** Parent → Iframe: navigate to a route */
+export interface NavigateMessage {
+  type: typeof MSG.NAVIGATE;
+  path: string;
+}
+
+/** Parent → Iframe: ask iframe to re-emit PREVIEW_READY */
+export interface RequestReadyMessage {
+  type: typeof MSG.REQUEST_READY;
+}
+
+/** Iframe → Parent: iframe has mounted and is ready */
+export interface PreviewReadyMessage {
+  type: typeof MSG.PREVIEW_READY;
+}
+
+/** Iframe → Parent: parent-initiated navigation completed */
+export interface NavigateDoneMessage {
+  type: typeof MSG.NAVIGATE_DONE;
+}
+
+/** Iframe → Parent: user clicked a link inside the iframe */
+export interface NavigateParentMessage {
+  type: typeof MSG.NAVIGATE_PARENT;
+  path: string;
+}
+
+/** Iframe → Parent: forward keyboard shortcut to parent */
+export interface KeyboardShortcutMessage {
+  type: typeof MSG.KEYBOARD_SHORTCUT;
+  key: string;
+  shift: boolean;
+}
+
+/** AI → Parent: apply generated theme to parent store */
+export interface ApplyAiThemeMessage {
+  type: typeof MSG.APPLY_AI_THEME;
+  config: ThemeConfig;
+  save?: boolean;
+  export?: boolean;
+}
+
+/** All valid iframe protocol messages */
+export type IframeMessage =
+  | ThemeSyncMessage
+  | ColorModeSyncMessage
+  | NavigateMessage
+  | RequestReadyMessage
+  | PreviewReadyMessage
+  | NavigateDoneMessage
+  | NavigateParentMessage
+  | KeyboardShortcutMessage
+  | ApplyAiThemeMessage;
+
+/** Messages sent from parent to iframe */
+export type ParentToIframeMessage =
+  | ThemeSyncMessage
+  | ColorModeSyncMessage
+  | NavigateMessage
+  | RequestReadyMessage;
+
+/** Messages sent from iframe to parent */
+export type IframeToParentMessage =
+  | PreviewReadyMessage
+  | NavigateDoneMessage
+  | NavigateParentMessage
+  | KeyboardShortcutMessage
+  | ApplyAiThemeMessage;

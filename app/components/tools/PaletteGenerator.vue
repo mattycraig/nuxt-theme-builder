@@ -13,6 +13,8 @@ import {
   formatOklch,
   rgbToOklch,
 } from "~/utils/colorConversion";
+import { MSG } from "~/utils/iframeProtocol";
+import type { ApplyAiThemeMessage } from "~/utils/iframeProtocol";
 import { isInIframe } from "~/utils/helpers";
 
 const toast = useToast();
@@ -123,10 +125,8 @@ function applyToTheme() {
     const config = JSON.parse(JSON.stringify(themeStore.config));
     Object.assign(config.colors, colorsUpdate);
     Object.assign(config.darkColors, colorsUpdate);
-    window.parent.postMessage(
-      { type: "apply-ai-theme", config },
-      window.location.origin,
-    );
+    const message: ApplyAiThemeMessage = { type: MSG.APPLY_AI_THEME, config };
+    window.parent.postMessage(message, window.location.origin);
   } else {
     for (const r of roles.value) {
       themeStore.setSemanticColorForMode("light", r.role, r.palette);

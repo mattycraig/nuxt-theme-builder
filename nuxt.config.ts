@@ -8,10 +8,10 @@ export default defineNuxtConfig({
     "@nuxt/eslint",
     "@nuxtjs/mdc",
     "@nuxtjs/sitemap",
+    "nuxt-og-image",
     "@pinia/nuxt",
     "pinia-plugin-persistedstate/nuxt",
     "@vueuse/nuxt",
-    "nuxt-og-image",
     "nuxt-security",
   ],
 

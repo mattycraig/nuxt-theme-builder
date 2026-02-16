@@ -3,12 +3,13 @@ import { sanitizeNavigationPath, showThemeAppliedToast } from "~/utils/helpers";
 import { ThemeConfigSchema } from "~/types/theme";
 import type { ThemeConfig } from "~/types/theme";
 import { MSG } from "~/utils/iframeProtocol";
+import type { ParentToIframeMessage } from "~/utils/iframeProtocol";
 
 /** Callback interface for the message handler, enabling direct unit testing. */
 export interface IframeMessageActions {
   setIframeLoading: (v: boolean) => void;
   setIframeReady: (v: boolean) => void;
-  syncThemeToIframe: (config: unknown) => void;
+  syncThemeToIframe: (config: ThemeConfig) => void;
   syncColorModeToIframe: (mode: string) => void;
   navigateIframe: (path: string) => void;
   navigateTo: (path: string) => void;
@@ -26,7 +27,7 @@ export interface IframeMessageContext {
   iframeSrc: string;
   iframeInitialSrc: string;
   colorModePreference: string;
-  storeConfig: unknown;
+  storeConfig: ThemeConfig;
   origin: string;
 }
 
@@ -123,14 +124,14 @@ export function usePreviewIframe() {
 
   // Outbound Messages ───────────────────────────────────────────────
 
-  function postToIframe(data: Record<string, unknown>) {
+  function postToIframe(data: ParentToIframeMessage) {
     previewFrame.value?.contentWindow?.postMessage(
       data,
       window.location.origin,
     );
   }
 
-  function syncThemeToIframe(config: unknown) {
+  function syncThemeToIframe(config: ThemeConfig) {
     postToIframe({
       type: MSG.THEME_SYNC,
       config: structuredClone(toRaw(config)),

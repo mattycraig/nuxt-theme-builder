@@ -5,6 +5,10 @@
  * the need to duplicate palette arrays, shade values, font options, and
  * radius options between the client-side types and the server API route.
  *
+ * Import convention:
+ *   - From app/ layer:    import { ... } from '~~/shared/constants/theme'
+ *   - From server/ layer: import { ... } from '~~/shared/constants/theme'
+ *
  * @module shared/constants/theme
  */
 

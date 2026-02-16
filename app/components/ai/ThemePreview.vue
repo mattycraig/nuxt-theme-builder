@@ -3,6 +3,8 @@ import type { ThemeConfig, SemanticColorKey } from "~/types/theme";
 import { SEMANTIC_COLOR_KEYS } from "~/types/theme";
 import { ALL_HEX_MAP, NEUTRAL_SWATCH_HEX } from "~/utils/colorPalettes";
 import { isInIframe } from "~/utils/helpers";
+import { MSG } from "~/utils/iframeProtocol";
+import type { ApplyAiThemeMessage } from "~/utils/iframeProtocol";
 
 const props = defineProps<{
   themeConfig: ThemeConfig;
@@ -13,14 +15,14 @@ const { openSaveAs } = useSaveThemeModal();
 
 const inIframe = isInIframe();
 
-function postToParent(data: Record<string, unknown>) {
+function postToParent(data: ApplyAiThemeMessage) {
   window.parent.postMessage(data, window.location.origin);
 }
 
 function handleApply() {
   if (inIframe) {
     postToParent({
-      type: "apply-ai-theme",
+      type: MSG.APPLY_AI_THEME,
       config: JSON.parse(JSON.stringify(props.themeConfig)),
     });
   } else {
@@ -31,7 +33,7 @@ function handleApply() {
 function handleApplyAndSave() {
   if (inIframe) {
     postToParent({
-      type: "apply-ai-theme",
+      type: MSG.APPLY_AI_THEME,
       config: JSON.parse(JSON.stringify(props.themeConfig)),
       save: true,
     });
@@ -44,7 +46,7 @@ function handleApplyAndSave() {
 function handleExport() {
   if (inIframe) {
     postToParent({
-      type: "apply-ai-theme",
+      type: MSG.APPLY_AI_THEME,
       config: JSON.parse(JSON.stringify(props.themeConfig)),
       export: true,
     });
