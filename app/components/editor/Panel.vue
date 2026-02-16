@@ -118,7 +118,7 @@ onUnmounted(() => {
   <div
     data-testid="theme-editor"
     :data-hydrated="hydrated || undefined"
-    class="flex flex-col"
+    class="flex flex-col min-h-full"
   >
     <EditorToolbar :json-mode="jsonMode" @toggle-json-mode="toggleJsonMode" />
 

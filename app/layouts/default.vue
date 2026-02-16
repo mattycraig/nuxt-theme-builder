@@ -153,9 +153,16 @@ useHead({
       content is rendered inside the iframe. The `hidden` class +
       `inert` + `aria-hidden` ensure it is invisible to both sighted
       users and assistive technology. Do not remove this element.
+
+      SharedHiddenRouteWrapper intercepts nuxtApp.hook() to block
+      dashboard:sidebar:toggle/collapse hook registrations from child
+      UDashboardSidebar instances — preventing the wrong sidebar from
+      opening at mobile widths.
     -->
     <div class="hidden" inert aria-hidden="true">
-      <slot />
+      <SharedHiddenRouteWrapper>
+        <slot />
+      </SharedHiddenRouteWrapper>
     </div>
 
     <!-- Singleton modals rendered at layout level -->

@@ -21,6 +21,9 @@
  *
  *   Iframe → Parent (AI):
  *     APPLY_AI_THEME   — AI page requests theme application via parent store
+ *
+ *   Iframe → Parent (Homepage):
+ *     RANDOMIZE_THEME  — Homepage requests random theme generation via parent store
  */
 
 import type { ThemeConfig } from "~/types/theme";
@@ -40,6 +43,9 @@ export const MSG = {
 
   // AI → Parent
   APPLY_AI_THEME: "apply-ai-theme",
+
+  // Homepage → Parent
+  RANDOMIZE_THEME: "randomize-theme",
 } as const;
 
 export type MessageType = (typeof MSG)[keyof typeof MSG];
@@ -100,6 +106,11 @@ export interface ApplyAiThemeMessage {
   export?: boolean;
 }
 
+/** Iframe → Parent: randomize theme in parent store */
+export interface RandomizeThemeMessage {
+  type: typeof MSG.RANDOMIZE_THEME;
+}
+
 /** All valid iframe protocol messages */
 export type IframeMessage =
   | ThemeSyncMessage
@@ -110,7 +121,8 @@ export type IframeMessage =
   | NavigateDoneMessage
   | NavigateParentMessage
   | KeyboardShortcutMessage
-  | ApplyAiThemeMessage;
+  | ApplyAiThemeMessage
+  | RandomizeThemeMessage;
 
 /** Messages sent from parent to iframe */
 export type ParentToIframeMessage =
@@ -125,4 +137,5 @@ export type IframeToParentMessage =
   | NavigateDoneMessage
   | NavigateParentMessage
   | KeyboardShortcutMessage
-  | ApplyAiThemeMessage;
+  | ApplyAiThemeMessage
+  | RandomizeThemeMessage;

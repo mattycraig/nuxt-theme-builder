@@ -19,6 +19,7 @@ export interface IframeMessageActions {
   exportOpen: () => void;
   undo: () => void;
   redo: () => void;
+  randomizeTheme: () => void;
   setNavigatingFromIframe: (v: boolean) => void;
 }
 
@@ -91,6 +92,10 @@ export function createIframeMessageHandler(
         }
         break;
       }
+
+      case MSG.RANDOMIZE_THEME:
+        actions.randomizeTheme();
+        break;
     }
   };
 }
@@ -189,6 +194,7 @@ export function usePreviewIframe() {
       exportOpen: () => { exportPanel.open(); },
       undo: () => { store.undo(); },
       redo: () => { store.redo(); },
+      randomizeTheme: () => { store.randomizeTheme(); },
       setNavigatingFromIframe: (v) => { navigatingFromIframe.value = v; },
     },
     () => ({

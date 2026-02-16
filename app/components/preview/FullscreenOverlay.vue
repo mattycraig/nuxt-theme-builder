@@ -177,17 +177,13 @@ onUnmounted(() => {
           aria-label="Fullscreen preview controls"
         >
           <div class="flex items-center gap-2 min-w-0">
-            <UIcon
-              name="i-lucide-maximize"
-              class="size-4 text-(--ui-text-muted) shrink-0"
-              aria-hidden="true"
-            />
+            <SharedAppLogo size="sm" />
             <span
               class="text-sm font-medium text-(--ui-text-highlighted) truncate"
             >
               Fullscreen Preview
             </span>
-            <UBadge variant="subtle" size="xs" color="neutral" class="shrink-0">
+            <UBadge variant="subtle" size="sm" color="neutral" class="shrink-0">
               {{ currentPageLabel }}
             </UBadge>
           </div>
@@ -198,20 +194,26 @@ onUnmounted(() => {
             v-model:active-height="fullscreenPreviewHeight"
             v-model:custom-height="fullscreenCustomHeight"
             id-prefix="fs"
+            class="hidden sm:flex"
           />
 
           <div class="flex items-center gap-2">
             <UColorModeSwitch />
 
             <USeparator
-              v-if="hasSourcePage"
               orientation="vertical"
-              class="h-6 mx-2"
+              class="h-6 mx-1"
             />
 
             <PreviewViewModeToggle
               v-if="hasSourcePage"
               v-model="fullscreenViewMode"
+            />
+
+            <USeparator
+              v-if="hasSourcePage"
+              orientation="vertical"
+              class="h-6 mx-1"
             />
 
             <UTooltip text="Exit fullscreen (Esc)">

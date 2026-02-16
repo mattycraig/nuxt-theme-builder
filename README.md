@@ -1,4 +1,8 @@
-# Nuxt UI Theme Builder
+<p align="center">
+  <img src="public/android-chrome-512x512.png" alt="Nuxt UI Theme Builder" width="120" />
+</p>
+
+<h1 align="center">Nuxt UI Theme Builder</h1>
 
 [![CI](https://github.com/mattycraig/nuxt-theme-builder/actions/workflows/ci.yml/badge.svg)](https://github.com/mattycraig/nuxt-theme-builder/actions/workflows/ci.yml)
 [![E2E Full Nightly](https://github.com/mattycraig/nuxt-theme-builder/actions/workflows/e2e-nightly.yml/badge.svg)](https://github.com/mattycraig/nuxt-theme-builder/actions/workflows/e2e-nightly.yml)

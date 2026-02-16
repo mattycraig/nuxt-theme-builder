@@ -47,7 +47,7 @@
     "@vueuse/nuxt": "^14.2.1",
     "ai": "^6.0.86",
     "better-sqlite3": "^12.6.2",
-    "isomorphic-dompurify": "3.0.0-rc.2",
+    "dompurify": "^3.3.1",
     "nuxt": "^4.3.1",
     "nuxt-og-image": "^5.1.13",
     "nuxt-security": "^2.5.1",

@@ -28,6 +28,7 @@ function makeActions(): IframeMessageActions {
     exportOpen: vi.fn(),
     undo: vi.fn(),
     redo: vi.fn(),
+    randomizeTheme: vi.fn(),
     setNavigatingFromIframe: vi.fn(),
   };
 }
@@ -273,6 +274,15 @@ describe("usePreviewIframe — message handler logic", () => {
         createMessageEvent(ORIGIN, null),
       );
       expect(actions.setIframeLoading).not.toHaveBeenCalled();
+    });
+  });
+
+  describe("randomize-theme", () => {
+    it("calls randomizeTheme action", () => {
+      handleMessage(
+        createMessageEvent(ORIGIN, { type: "randomize-theme" }),
+      );
+      expect(actions.randomizeTheme).toHaveBeenCalled();
     });
   });
 });

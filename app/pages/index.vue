@@ -1,5 +1,19 @@
 <script setup lang="ts">
+import { MSG } from "~/utils/iframeProtocol";
+import { isInIframe } from "~/utils/helpers";
+
 definePageMeta({ layout: "preview" });
+
+const store = useThemeStore();
+const inIframe = isInIframe();
+
+function handleRandomTheme() {
+  if (inIframe) {
+    window.parent.postMessage({ type: MSG.RANDOMIZE_THEME }, window.location.origin);
+  } else {
+    store.randomizeTheme();
+  }
+}
 
 const aiCapabilities = [
   {
@@ -223,7 +237,11 @@ const techStack: TechItem[] = [
       />
 
       <div class="relative max-w-4xl mx-auto text-center">
-        <div class="mb-8 inline-flex relative hero-stagger">
+        <div class="mb-6 hero-stagger">
+          <SharedAppLogo size="lg" :linked="false" class="mx-auto" />
+        </div>
+
+        <div class="mb-8 inline-flex relative hero-stagger [animation-delay:50ms]">
           <span
             class="absolute inset-0 -m-1 rounded-full bg-(--ui-primary)/20 blur-md home-glow-pulse"
             aria-hidden="true"
@@ -275,7 +293,24 @@ const techStack: TechItem[] = [
             variant="outline"
             color="neutral"
           />
+          <UButton
+            label="Random Theme"
+            icon="i-lucide-dices"
+            size="xl"
+            variant="ghost"
+            color="neutral"
+            @click="handleRandomTheme()"
+          />
         </div>
+
+        <p
+          class="hero-stagger [animation-delay:400ms] text-sm text-(--ui-text-muted) mt-6"
+        >
+          Or use the
+          <UIcon name="i-lucide-sliders-horizontal" class="size-4 inline-block align-middle mx-1" aria-hidden="true" />
+          <strong>theme editor sidebar</strong>
+          to customize every detail.
+        </p>
       </div>
     </section>
 

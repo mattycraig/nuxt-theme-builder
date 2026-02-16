@@ -459,3 +459,4 @@ function createChat(prompt: string) {
     </UDashboardPanel>
   </UDashboardGroup>
 </template>
+

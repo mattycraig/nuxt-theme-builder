@@ -30,12 +30,13 @@ withDefaults(
       :active-preset="activeWidth"
       :custom-value="customWidth"
       group-label="Change preview width"
+      class="hidden xl:flex"
       @select="activeWidth = $event as typeof activeWidth"
     />
 
     <USeparator
       orientation="vertical"
-      class="h-6"
+      class="h-6 hidden xl:flex"
       :ui="{ border: 'dark:border-accented' }"
     />
 
