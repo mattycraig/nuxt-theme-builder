@@ -1,0 +1,53 @@
+{
+  "$schema": "https://changelogen.js.org/schema/config.json",
+  "types": {
+    "feat": {
+      "title": "🚀 Features",
+      "semver": "minor"
+    },
+    "fix": {
+      "title": "🩹 Fixes",
+      "semver": "patch"
+    },
+    "perf": {
+      "title": "⚡ Performance",
+      "semver": "patch"
+    },
+    "refactor": {
+      "title": "💅 Refactors",
+      "semver": "patch"
+    },
+    "docs": {
+      "title": "📖 Documentation",
+      "semver": "patch"
+    },
+    "build": {
+      "title": "📦 Build",
+      "semver": "patch"
+    },
+    "types": {
+      "title": "🏷️ Types",
+      "semver": "patch"
+    },
+    "chore": {
+      "title": "🏡 Chore"
+    },
+    "test": {
+      "title": "✅ Tests"
+    },
+    "style": {
+      "title": "🎨 Styles"
+    },
+    "ci": {
+      "title": "🤖 CI"
+    }
+  },
+  "output": "CHANGELOG.md",
+  "excludeAuthors": [
+    "dependabot[bot]",
+    "github-actions[bot]"
+  ],
+  "github": "mattycraig/nuxt-theme-builder",
+  "from": "",
+  "to": "HEAD"
+}

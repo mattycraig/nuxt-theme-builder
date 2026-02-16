@@ -1,5 +1,6 @@
 {
   "name": "nuxt-theme-builder",
+  "version": "0.1.0",
   "private": true,
   "type": "module",
   "scripts": {
@@ -25,7 +26,9 @@
     "test:e2e:headed": "playwright test --headed",
     "test:e2e:ui": "playwright test --ui",
     "changelog": "changelogen --output CHANGELOG.md",
-    "release": "changelogen --release"
+    "release": "changelogen --release",
+    "workflow:quick": "pnpm lint:fix && pnpm format && pnpm typecheck",
+    "workflow:full": "pnpm lint:fix && pnpm format && pnpm typecheck && pnpm test"
   },
   "dependencies": {
     "@ai-sdk/anthropic": "^3.0.44",

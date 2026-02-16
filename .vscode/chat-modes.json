@@ -1,0 +1,28 @@
+{
+  "dev-workflow": {
+    "label": "Dev Workflow",
+    "description": "Run the complete development workflow: lint, format, typecheck, test, and git",
+    "instructions": [".github/instructions/dev-workflow-agent.instructions.md"],
+    "tools": [
+      "run_in_terminal",
+      "read_file",
+      "replace_string_in_file",
+      "get_errors"
+    ],
+    "systemPrompt": "You are a development workflow automation agent. Execute lint, format, typecheck, and test commands in sequence. Automatically fix issues where possible. Report results clearly with ✓ for success and ✗ for failure. When all checks pass, stage changes and prompt for commit message."
+  },
+  "quick-check": {
+    "label": "Quick Check",
+    "description": "Fast validation: lint + typecheck only (skip tests)",
+    "instructions": [".github/instructions/dev-workflow-agent.instructions.md"],
+    "tools": ["run_in_terminal", "get_errors"],
+    "systemPrompt": "Run a quick validation: pnpm lint:fix, pnpm format, pnpm typecheck. Skip tests. Report results concisely."
+  },
+  "commit-ready": {
+    "label": "Commit Ready",
+    "description": "Full workflow with commit preparation",
+    "instructions": [".github/instructions/dev-workflow-agent.instructions.md"],
+    "tools": ["run_in_terminal", "read_file", "get_errors"],
+    "systemPrompt": "Run full workflow and prepare for commit. After all checks pass, show git diff summary and suggest an appropriate conventional commit message based on the changes."
+  }
+}

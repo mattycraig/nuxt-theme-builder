@@ -60,18 +60,38 @@ ESLint and Prettier run automatically on staged files via Husky + lint-staged.
 
 ### Available Scripts
 
-| Command                | Description                 |
-| ---------------------- | --------------------------- |
-| `pnpm dev`             | Start development server    |
-| `pnpm build`           | Production build            |
-| `pnpm lint`            | Run ESLint                  |
-| `pnpm lint:fix`        | Auto-fix lint issues        |
-| `pnpm typecheck`       | TypeScript type checking    |
-| `pnpm test`            | Run unit tests (Vitest)     |
-| `pnpm test:watch`      | Unit tests in watch mode    |
-| `pnpm test:coverage`   | Unit tests with coverage    |
-| `pnpm test:e2e`        | Run E2E tests (Playwright)  |
-| `pnpm test:e2e:headed` | E2E tests in headed browser |
+| Command                | Description                            |
+| ---------------------- | -------------------------------------- |
+| `pnpm dev`             | Start development server               |
+| `pnpm build`           | Production build                       |
+| `pnpm lint`            | Run ESLint                             |
+| `pnpm lint:fix`        | Auto-fix lint issues                   |
+| `pnpm typecheck`       | TypeScript type checking               |
+| `pnpm test`            | Run unit tests (Vitest)                |
+| `pnpm test:watch`      | Unit tests in watch mode               |
+| `pnpm test:coverage`   | Unit tests with coverage               |
+| `pnpm test:e2e`        | Run E2E tests (Playwright)             |
+| `pnpm test:e2e:headed` | E2E tests in headed browser            |
+| `pnpm workflow:quick`  | Quick: lint + format + typecheck       |
+| `pnpm workflow:full`   | Full: lint + format + typecheck + test |
+
+### Automated Workflow
+
+For a streamlined development experience, use the workflow scripts:
+
+**Windows (PowerShell):**
+
+```powershell
+./scripts/dev-workflow.ps1 -AutoCommit -Message "feat: add feature"
+```
+
+**Linux/macOS/CI (Bash):**
+
+```bash
+./scripts/dev-workflow.sh --auto-commit --message "feat: add feature"
+```
+
+These scripts run lint → format → typecheck → test → stage → commit in sequence, auto-fixing issues where possible. See `scripts/` for available flags.
 
 ## Testing
 
@@ -108,11 +128,15 @@ pnpm test:e2e:ui      # Playwright UI mode
 
 ### Common Tasks
 
-**Add a preview route:** See the "Add preview route" section in [AGENTS.md](./AGENTS.md).
+**Add a preview route:** See the "Add a New Preview Route" section in [AGENTS.md](./AGENTS.md).
 
-**Add a theme field:** See the "Add a theme field" section in [AGENTS.md](./AGENTS.md).
+**Add a theme field:** See the "Add a New Theme Property" section in [AGENTS.md](./AGENTS.md).
 
-**Add an AI model/provider:** See the "Add AI model/provider option" section in [AGENTS.md](./AGENTS.md).
+**Add an AI model/provider:** See the "Add a New AI Provider Model" section in [AGENTS.md](./AGENTS.md).
+
+**Add a design tool:** See the "Add a New Design Tool" section in [AGENTS.md](./AGENTS.md).
+
+**Add a learn article:** See the "Add a Learn Article" section in [AGENTS.md](./AGENTS.md).
 
 ## Pull Requests
 

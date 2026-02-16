@@ -18,12 +18,15 @@ Design and preview semantic palettes, neutral scales, radius, fonts, and light/d
 - Source code viewer for block/template pages
 - AI theme generation (BYOK) with OpenAI, Anthropic, and Google models
 - Export panel for app config, CSS, and JSON formats
+- Interactive design tools (color converter, contrast checker, palette generator/viewer)
+- Learning hub with Nuxt Content-powered articles and guides
 - Optional production launch gate (`/coming-soon`)
 
 ## Tech Stack
 
 - Nuxt 4 + Vue 3 + TypeScript
 - Nuxt UI v4 + Tailwind CSS v4
+- Nuxt Content v3 (learn articles collection)
 - Pinia + `pinia-plugin-persistedstate`
 - VueUse composables
 - AI SDK + provider adapters (`openai`, `anthropic`, `google`)
@@ -37,12 +40,15 @@ Design and preview semantic palettes, neutral scales, radius, fonts, and light/d
 app/
 	app.vue
 	layouts/               # default, preview, ai, coming-soon
-	pages/                 # home, ai, components/*, blocks/*, templates/*, utility pages
-	components/            # editor, preview, layout, ai
+	pages/                 # home, ai, components/*, blocks/*, templates/*, tools/*, learn/*, utility pages
+	components/            # editor, preview, layout, ai, tools, learn
 	composables/           # theme apply/export, iframe sync, source mode, AI state, shortcuts
 	stores/theme.ts        # central ThemeConfig state + history + presets
 	types/                 # theme and AI contracts
-	utils/                 # defaults, presets, css generation, navigation, seo
+	utils/                 # defaults, presets, css generation, seo
+		navigation/        # modular route definitions
+content/
+	learn/                 # Nuxt Content articles (theming, components, tailwind, best-practices)
 server/api/
 	ai/generate.post.ts
 	auth/launch.post.ts
@@ -114,7 +120,82 @@ pnpm test:e2e:ci
 pnpm test:e2e:full
 pnpm test:e2e:headed
 pnpm test:e2e:ui
+
+# Workflow automation
+pnpm workflow           # Full interactive workflow (PowerShell)
+pnpm workflow:commit    # Workflow with commit prompt
+pnpm workflow:quick     # Quick: lint + format + typecheck
+pnpm workflow:full      # Full: lint + format + typecheck + test
+
+# Release
+pnpm changelog          # Generate changelog
+pnpm release            # Bump version + changelog
 ```
+
+## Development Workflow
+
+Automated workflow for validating and committing changes:
+
+### Quick Commands
+
+```bash
+# Quick validation (no tests)
+pnpm workflow:quick
+
+# Full validation (with tests)
+pnpm workflow:full
+
+# Interactive workflow with commit
+pnpm workflow:commit
+```
+
+### PowerShell Script (Windows)
+
+```powershell
+# Interactive workflow
+.\scripts\dev-workflow.ps1
+
+# With commit message and push
+.\scripts\dev-workflow.ps1 -CommitMessage "feat: add feature" -Push
+
+# Skip tests for quick iteration
+.\scripts\dev-workflow.ps1 -SkipTests
+
+# Include E2E tests
+.\scripts\dev-workflow.ps1 -RunE2E
+
+# Dry run to preview
+.\scripts\dev-workflow.ps1 -DryRun
+```
+
+### Bash Script (Linux/macOS/CI)
+
+```bash
+# Interactive workflow
+./scripts/dev-workflow.sh
+
+# With commit message and push
+./scripts/dev-workflow.sh --message "feat: add feature" --push
+
+# Skip tests for quick iteration
+./scripts/dev-workflow.sh --skip-tests
+
+# Include E2E tests
+./scripts/dev-workflow.sh --run-e2e
+
+# Dry run to preview
+./scripts/dev-workflow.sh --dry-run
+```
+
+### Copilot Chat Modes
+
+In VS Code with Copilot, use these custom chat modes:
+
+- **Dev Workflow**: Full lint → format → typecheck → test → stage
+- **Quick Check**: Fast lint + typecheck only
+- **Commit Ready**: Full workflow with commit message suggestion
+
+Or use the prompt file: `.github/prompts/dev-workflow.prompt.md`
 
 ## Testing
 
@@ -140,7 +221,13 @@ GitHub Actions workflows:
 - `ci.yml` (push/PR to `master`): lint, typecheck, unit coverage, e2e, build
 - `e2e-nightly.yml` (schedule + manual): full Playwright regression suite
 - `security.yml` (PR to `master`): dependency review with high-severity fail threshold
+- `codeql.yml` (schedule + manual): code security scanning
 - `lighthouse.yml` (Preview deployments): Lighthouse audit + PR comment
+- `visual-regression.yml` (PR): screenshot comparison testing
+- `release.yml` (manual): automated version release
+- `labeler.yml` (PR): auto-labels PRs by file paths
+- `stale.yml` (schedule): manages stale issues/PRs
+- `welcome.yml` (issues/PRs): greets new contributors
 
 Deployment:
 
@@ -150,8 +237,10 @@ Deployment:
 ## Contributing
 
 - Use `pnpm` (enforced by `packageManager`).
-- Keep navigation additions synced in `app/utils/navigation.ts`.
+- Keep navigation additions synced in `app/utils/navigation/` modules.
 - For theme model changes, update types → defaults → store → apply/export composables → tests.
+- For new design tools, add component → page → navigation registration → SEO description.
+- For new learn articles, add markdown file to `content/learn/<category>/` with required frontmatter.
 - Ensure `pnpm lint`, `pnpm typecheck`, `pnpm test`, and `pnpm test:e2e:ci` pass before merging.
 
 ## License

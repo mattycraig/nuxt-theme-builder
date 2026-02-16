@@ -9,6 +9,8 @@ Current product surface includes:
 - Multi-route preview site (`/components`, `/blocks`, `/templates`, utility pages)
 - Theme editing workspace with iframe preview + source-code mode
 - AI-assisted theme generation (`/ai`) with user-provided API keys
+- Interactive design tools (`/tools`): color converter, contrast checker, palette generator/viewer
+- Learning hub (`/learn`) with Nuxt Content-powered guides and articles
 - Optional launch gate (`/coming-soon`) controlled by runtime config
 
 ## Core Architecture
@@ -60,8 +62,9 @@ Do not collapse these two paths into one.
 
 ### Navigation & Discoverability
 
-- Update `app/utils/navigation.ts` when adding/changing preview routes.
+- Update `app/utils/navigation/` modules when adding/changing preview routes.
 - Keep command palette results in sync through `useLayoutNavigation` and `useCommandPalette`.
+- New tools should be registered in `app/utils/navigation/tools.ts`.
 
 ### Source Viewer
 
@@ -118,7 +121,7 @@ AI API keys are entered by users in the app UI; they are not loaded from server 
 ### Add preview route
 
 1. Create page under `app/pages/components|blocks|templates`
-2. Register in `app/utils/navigation.ts`
+2. Register in `app/utils/navigation/`
 3. Verify preview iframe navigation sync and command palette listing
 4. Verify source mode behavior when route belongs to blocks/templates
 
@@ -127,3 +130,16 @@ AI API keys are entered by users in the app UI; they are not loaded from server 
 1. Update `app/types/ai.ts`
 2. Ensure server provider factory supports the value
 3. Verify AI settings panel and generate flow tests
+
+### Add design tool
+
+1. Create component in `app/components/tools/`
+2. Create page in `app/pages/tools/`
+3. Register in `app/utils/navigation/tools.ts`
+4. Add SEO description in `app/utils/seoDescriptions.ts`
+
+### Add learn article
+
+1. Create markdown file in `content/learn/<category>/`
+2. Include required frontmatter: `title`, `description`, `category`, `date`, `order`
+3. Articles are auto-discovered by Nuxt Content collection
