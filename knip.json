@@ -15,7 +15,6 @@
     "server/**/*.ts",
     "modules/**/*.ts",
     "shared/**/*.ts",
-    "nuxt.config.ts",
     "content.config.ts"
   ],
   "project": [
@@ -35,9 +34,11 @@
     "@iconify-json/lucide",
     "@iconify-json/simple-icons",
     "sharp",
-    "vue-tsc"
+    "vue-tsc",
+    "vue",
+    "h3",
+    "vitest-environment-nuxt"
   ],
-  "ignoreBinaries": ["nuxi"],
   "paths": {
     "#source-code-map": ["server/types/source-code-map.d.ts"]
   },
