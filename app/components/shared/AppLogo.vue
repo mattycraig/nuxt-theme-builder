@@ -20,12 +20,12 @@ const sizeClasses: Record<LogoSize, { container: string; icon: string }> = {
 
 const containerClass = computed(
   () =>
-    `group ${sizeClasses[props.size].container} bg-gradient-to-br from-[var(--ui-primary)] to-[var(--ui-secondary)] flex items-center justify-center shadow-(--ui-primary)/15 transition-all duration-300 ease-out hover:scale-110 hover:shadow-lg hover:shadow-(--ui-primary)/30 hover:rotate-3 active:scale-95 hover:from-[var(--ui-secondary)] hover:to-[var(--ui-primary)] shrink-0`,
+    `logo-container group ${sizeClasses[props.size].container} bg-gradient-to-br from-[var(--ui-primary)] to-[var(--ui-secondary)] flex items-center justify-center shadow-(--ui-primary)/15 transition-all duration-300 ease-out hover:scale-110 hover:shadow-lg hover:shadow-(--ui-primary)/30 hover:rotate-3 active:scale-95 shrink-0 relative overflow-hidden`,
 );
 
 const iconClass = computed(
   () =>
-    `iconify i-lucide:palette ${sizeClasses[props.size].icon} text-inverted transition-transform duration-300 ease-out group-hover:rotate-12 group-hover:scale-110 shrink-0`,
+    `${sizeClasses[props.size].icon} text-inverted transition-transform duration-300 ease-out group-hover:rotate-12 group-hover:scale-110 shrink-0 relative z-10`,
 );
 </script>
 
@@ -36,9 +36,44 @@ const iconClass = computed(
     aria-label="Go to homepage"
     :class="containerClass"
   >
-    <span :class="iconClass" aria-hidden="true" />
+    <span class="logo-shine absolute inset-0 z-0" aria-hidden="true" />
+    <UIcon name="i-lucide-palette" :class="iconClass" aria-hidden="true" />
   </NuxtLink>
   <div v-else :class="containerClass">
-    <span :class="iconClass" aria-hidden="true" />
+    <span class="logo-shine absolute inset-0 z-0" aria-hidden="true" />
+    <UIcon name="i-lucide-palette" :class="iconClass" aria-hidden="true" />
   </div>
 </template>
+
+<style scoped>
+/* Gradient sweep shine on hover */
+.logo-shine {
+  background: linear-gradient(
+    120deg,
+    transparent 30%,
+    rgba(255, 255, 255, 0.25) 50%,
+    transparent 70%
+  );
+  transform: translateX(-100%);
+  transition: none;
+}
+
+.logo-container:hover .logo-shine {
+  animation: logoSweep 0.6s ease-out forwards;
+}
+
+@keyframes logoSweep {
+  from {
+    transform: translateX(-100%);
+  }
+  to {
+    transform: translateX(100%);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .logo-container:hover .logo-shine {
+    animation: none;
+  }
+}
+</style>

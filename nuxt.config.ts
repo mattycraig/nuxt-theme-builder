@@ -101,12 +101,12 @@ export default defineNuxtConfig({
         { name: "theme-color", content: "#6366f1" },
         { name: "msapplication-TileColor", content: "#1e1b4b" },
         {
-          name: "og:image",
+          property: "og:image",
           content: "https://www.nuxt-ui-themes.com/og-image.png",
         },
-        { name: "og:image:width", content: "1200" },
-        { name: "og:image:height", content: "630" },
-        { name: "og:image:type", content: "image/png" },
+        { property: "og:image:width", content: "1200" },
+        { property: "og:image:height", content: "630" },
+        { property: "og:image:type", content: "image/png" },
         {
           name: "twitter:image",
           content: "https://www.nuxt-ui-themes.com/og-image.png",

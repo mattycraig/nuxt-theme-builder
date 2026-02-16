@@ -3,7 +3,9 @@ import {
   NAVIGATION_ITEMS,
   COMPONENT_NAV_ITEMS,
   BLOCK_NAV_ITEMS,
+  BLOCK_CATEGORIES,
   TEMPLATE_NAV_ITEMS,
+  TEMPLATE_CATEGORIES,
   LEARN_NAV_ITEMS,
   TOOL_NAV_ITEMS,
   UTILITY_NAV_ITEMS,
@@ -295,6 +297,28 @@ describe("cross-cutting navigation integrity", () => {
         expect(String(item.icon), `${item.label} icon: ${item.icon}`).toMatch(
           /^i-lucide-/,
         );
+      }
+    }
+  });
+
+  it("all block items have a 'new' badge", () => {
+    for (const cat of BLOCK_CATEGORIES) {
+      for (const item of cat.items) {
+        expect(
+          item.badge,
+          `Block item "${item.label}" should have badge: "new"`,
+        ).toBe("new");
+      }
+    }
+  });
+
+  it("all template items have a 'new' badge", () => {
+    for (const cat of TEMPLATE_CATEGORIES) {
+      for (const item of cat.items) {
+        expect(
+          item.badge,
+          `Template item "${item.label}" should have badge: "new"`,
+        ).toBe("new");
       }
     }
   });

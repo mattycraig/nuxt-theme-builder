@@ -319,17 +319,12 @@ const searchGroups = [
   },
 ];
 
-// Only render the full dashboard shell inside the iframe preview.
-// In the default layout the page is mounted in a hidden <slot /> — rendering
-// a nested UDashboardGroup/UDashboardSidebar there causes its mobile
-// slideover to portal out and conflict with the editor sidebar toggle.
-const route = useRoute();
-const isPreview = computed(() => "preview" in route.query);
+
 </script>
 
 <template>
-  <div v-if="!isPreview" />
-  <UDashboardGroup v-else>
+
+  <UDashboardGroup>
     <!-- ================================================================= -->
     <!-- Sidebar — collapsible & resizable, responsive mobile slideover    -->
     <!-- ================================================================= -->
@@ -772,3 +767,4 @@ const isPreview = computed(() => "preview" in route.query);
     </UDashboardPanel>
   </UDashboardGroup>
 </template>
+

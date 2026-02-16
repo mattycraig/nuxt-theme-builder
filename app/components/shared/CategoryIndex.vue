@@ -1,5 +1,10 @@
 <script setup lang="ts">
-import type { ComponentCategory } from "~/types/components";
+import type { ComponentCategory, NavigationBadge } from "~/types/components";
+
+const badgeConfig: Record<NavigationBadge, { label: string; color: string }> = {
+  new: { label: "New", color: "primary" },
+  updated: { label: "Updated", color: "info" },
+};
 
 const props = withDefaults(
   defineProps<{
@@ -255,9 +260,17 @@ function handleClearFilters() {
                             ? 'text-sm font-semibold'
                             : 'font-semibold mb-1'
                         "
-                        class="text-(--ui-text-highlighted) truncate"
+                        class="text-(--ui-text-highlighted) truncate flex items-center gap-1.5"
                       >
                         {{ item.label }}
+                        <UBadge
+                          v-if="item.badge && badgeConfig[item.badge]"
+                          :label="badgeConfig[item.badge].label"
+                          :color="badgeConfig[item.badge].color as any"
+                          variant="subtle"
+                          size="sm"
+                          class="shrink-0"
+                        />
                       </h3>
                       <p
                         :class="compact ? 'text-xs' : 'text-sm'"

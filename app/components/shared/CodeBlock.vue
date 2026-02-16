@@ -1,6 +1,10 @@
 <script setup lang="ts">
-import DOMPurify from "isomorphic-dompurify";
 import { downloadFile } from "~/utils/helpers";
+
+// Client-only: avoids pulling jsdom into the server bundle (ESM/CJS compat issue on Vercel)
+const DOMPurify = import.meta.client
+  ? (await import("dompurify")).default
+  : null;
 
 const DOMPURIFY_CONFIG = {
   ALLOWED_TAGS: ["pre", "code", "span", "div"],
@@ -58,10 +62,9 @@ watch(
         method: "POST",
         body: { code, lang: props.language },
       });
-      highlightedHtml.value = DOMPurify.sanitize(
-        result.html,
-        DOMPURIFY_CONFIG,
-      );
+      highlightedHtml.value = DOMPurify
+        ? DOMPurify.sanitize(result.html, DOMPURIFY_CONFIG)
+        : result.html;
     } catch {
       // Fallback: render as plain preformatted text
       const escaped = code

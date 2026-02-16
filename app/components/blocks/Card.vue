@@ -56,7 +56,7 @@ function copyPrompt() {
           {{ title }}
           <UBadge
             label="New!"
-            color="success"
+            color="primary"
             variant="subtle"
             size="sm"
             class="uppercase"

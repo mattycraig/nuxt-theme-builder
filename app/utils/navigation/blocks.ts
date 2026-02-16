@@ -18,6 +18,7 @@ export const BLOCK_CATEGORIES: BlockCategory[] = [
         description:
           "Bold hero banners with headline, subtitle, and call-to-action buttons.",
         to: "/blocks/hero",
+        badge: "new" as const,
       },
       {
         label: "CTA",
@@ -25,6 +26,7 @@ export const BLOCK_CATEGORIES: BlockCategory[] = [
         description:
           "Call-to-action sections with buttons, newsletter signups, and banners.",
         to: "/blocks/cta",
+        badge: "new" as const,
       },
       {
         label: "Feature",
@@ -32,6 +34,7 @@ export const BLOCK_CATEGORIES: BlockCategory[] = [
         description:
           "Feature grids, bento layouts, and alternating sections to showcase capabilities.",
         to: "/blocks/feature",
+        badge: "new" as const,
       },
       {
         label: "Pricing",
@@ -39,6 +42,7 @@ export const BLOCK_CATEGORIES: BlockCategory[] = [
         description:
           "Pricing plans, comparison tables, and single-product pricing cards.",
         to: "/blocks/pricing",
+        badge: "new" as const,
       },
       {
         label: "Testimonial",
@@ -46,6 +50,7 @@ export const BLOCK_CATEGORIES: BlockCategory[] = [
         description:
           "Customer quotes, review cards, logo walls, and testimonial grids.",
         to: "/blocks/testimonial",
+        badge: "new" as const,
       },
       {
         label: "Statistic",
@@ -53,6 +58,7 @@ export const BLOCK_CATEGORIES: BlockCategory[] = [
         description:
           "Metric counters, stat cards, and KPI sections for social proof.",
         to: "/blocks/statistic",
+        badge: "new" as const,
       },
     ],
   },
@@ -69,6 +75,7 @@ export const BLOCK_CATEGORIES: BlockCategory[] = [
         description:
           "Blog post grids, featured articles, and magazine-style layouts.",
         to: "/blocks/blog",
+        badge: "new" as const,
       },
       {
         label: "Content",
@@ -76,6 +83,7 @@ export const BLOCK_CATEGORIES: BlockCategory[] = [
         description:
           "Centered prose, split layouts, multi-column content, and aside sections.",
         to: "/blocks/content",
+        badge: "new" as const,
       },
       {
         label: "Gallery",
@@ -83,6 +91,7 @@ export const BLOCK_CATEGORIES: BlockCategory[] = [
         description:
           "Spotlight grids, masonry walls, cinematic showcases, bento portfolios, photo archives, and editorial layouts.",
         to: "/blocks/gallery",
+        badge: "new" as const,
       },
       {
         label: "Step",
@@ -90,6 +99,7 @@ export const BLOCK_CATEGORIES: BlockCategory[] = [
         description:
           "Numbered step sections, vertical timelines, and how-it-works flows.",
         to: "/blocks/step",
+        badge: "new" as const,
       },
     ],
   },
@@ -105,6 +115,7 @@ export const BLOCK_CATEGORIES: BlockCategory[] = [
         description:
           "Site headers with logo, navigation links, and action buttons.",
         to: "/blocks/header",
+        badge: "new" as const,
       },
       {
         label: "Footer",
@@ -112,6 +123,7 @@ export const BLOCK_CATEGORIES: BlockCategory[] = [
         description:
           "Site footers with link columns, social icons, and legal rows.",
         to: "/blocks/footer",
+        badge: "new" as const,
       },
     ],
   },
@@ -127,12 +139,14 @@ export const BLOCK_CATEGORIES: BlockCategory[] = [
         icon: "i-lucide-mail",
         description: "Contact forms, split info layouts, and channel cards.",
         to: "/blocks/contact",
+        badge: "new" as const,
       },
       {
         label: "Team",
         icon: "i-lucide-users",
         description: "Team member grids, profile cards, and featured bios.",
         to: "/blocks/team",
+        badge: "new" as const,
       },
       {
         label: "Ecommerce",
@@ -140,6 +154,7 @@ export const BLOCK_CATEGORIES: BlockCategory[] = [
         description:
           "Glow product grids, glassmorphism details, spotlight features, atmospheric categories, glass carts, and storefront showcases.",
         to: "/blocks/ecommerce",
+        badge: "new" as const,
       },
     ],
   },

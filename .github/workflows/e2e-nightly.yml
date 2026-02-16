@@ -51,6 +51,7 @@ jobs:
         run: pnpm build
         env:
           NODE_OPTIONS: --max-old-space-size=8192
+          NITRO_PRESET: node-server
 
       - name: Run full E2E suite
         run: pnpm test:e2e:full
