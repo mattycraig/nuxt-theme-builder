@@ -197,7 +197,6 @@ pnpm test:e2e:ui
 - Security workflow (`.github/workflows/security.yml`) runs dependency review
 - CodeQL workflow (`.github/workflows/codeql.yml`) runs code security scanning
 - Lighthouse workflow (`.github/workflows/lighthouse.yml`) audits Preview deployments
-- Visual regression workflow (`.github/workflows/visual-regression.yml`) captures screenshot comparisons
 - Release workflow (`.github/workflows/release.yml`) automates version releases
 - Labeler workflow (`.github/workflows/labeler.yml`) auto-labels PRs by file paths
 - Stale workflow (`.github/workflows/stale.yml`) manages stale issues/PRs

@@ -227,7 +227,6 @@ GitHub Actions workflows:
 - `security.yml` (PR to `master`): dependency review with high-severity fail threshold
 - `codeql.yml` (schedule + manual): code security scanning
 - `lighthouse.yml` (Preview deployments): Lighthouse audit + PR comment
-- `visual-regression.yml` (PR): screenshot comparison testing
 - `release.yml` (manual): automated version release
 - `labeler.yml` (PR): auto-labels PRs by file paths
 - `stale.yml` (schedule): manages stale issues/PRs
