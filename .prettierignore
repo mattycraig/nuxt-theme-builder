@@ -8,6 +8,12 @@
 *.tsx
 *.jsx
 
+# Ignore all other files
+.agents/
+.github/agents
+.github/instructions
+.github/prompts
+
 # Build outputs
 .output/
 .nuxt/
