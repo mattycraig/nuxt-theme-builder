@@ -1,0 +1,50 @@
+{
+  "$schema": "https://unpkg.com/knip@5/schema.json",
+  "entry": [
+    "app/app.vue",
+    "app/app.config.ts",
+    "app/pages/**/*.vue",
+    "app/layouts/**/*.vue",
+    "app/middleware/**/*.ts",
+    "app/components/**/*.vue",
+    "app/composables/**/*.ts",
+    "app/stores/**/*.ts",
+    "app/utils/**/*.ts",
+    "app/types/**/*.ts",
+    "app/data/**/*.ts",
+    "server/**/*.ts",
+    "modules/**/*.ts",
+    "shared/**/*.ts",
+    "nuxt.config.ts",
+    "content.config.ts"
+  ],
+  "project": [
+    "app/**/*.{ts,vue}",
+    "server/**/*.ts",
+    "modules/**/*.ts",
+    "shared/**/*.ts"
+  ],
+  "ignore": [
+    ".nuxt/**",
+    ".output/**",
+    "coverage/**",
+    "playwright-report/**",
+    ".agents/**"
+  ],
+  "ignoreDependencies": [
+    "@iconify-json/lucide",
+    "@iconify-json/simple-icons",
+    "sharp",
+    "vue-tsc"
+  ],
+  "ignoreBinaries": ["nuxi"],
+  "paths": {
+    "#source-code-map": ["server/types/source-code-map.d.ts"]
+  },
+  "vitest": {
+    "entry": ["tests/unit/**/*.test.ts"]
+  },
+  "playwright": {
+    "entry": ["tests/e2e/**/*.spec.ts"]
+  }
+}

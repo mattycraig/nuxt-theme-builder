@@ -1,0 +1,43 @@
+{
+  "$schema": "https://renovatebot.com/docs/renovate-schema.json",
+  "extends": [
+    "config:recommended",
+    ":semanticCommits",
+    ":automergeMinor",
+    "schedule:weekly",
+    "group:allNonMajor"
+  ],
+  "labels": ["dependencies"],
+  "packageRules": [
+    {
+      "matchUpdateTypes": ["major"],
+      "automerge": false
+    },
+    {
+      "matchDepTypes": ["devDependencies"],
+      "matchUpdateTypes": ["minor", "patch"],
+      "automerge": true
+    },
+    {
+      "groupName": "nuxt ecosystem",
+      "matchPackagePatterns": ["^@nuxt/", "^nuxt", "^@nuxtjs/"]
+    },
+    {
+      "groupName": "ai sdk",
+      "matchPackagePatterns": ["^@ai-sdk/", "^ai$"]
+    },
+    {
+      "groupName": "testing",
+      "matchPackagePatterns": [
+        "vitest",
+        "playwright",
+        "@vue/test-utils",
+        "@nuxt/test-utils"
+      ]
+    }
+  ],
+  "vulnerabilityAlerts": {
+    "enabled": true,
+    "labels": ["security"]
+  }
+}

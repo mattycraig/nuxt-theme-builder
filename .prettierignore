@@ -1,0 +1,24 @@
+# Prettier only handles non-code files (JSON, MD, YAML, CSS).
+# JS/TS/Vue formatting is handled by ESLint @stylistic.
+*.ts
+*.js
+*.mjs
+*.cjs
+*.vue
+*.tsx
+*.jsx
+
+# Build outputs
+.output/
+.nuxt/
+.nitro/
+dist/
+node_modules/
+coverage/
+playwright-report/
+
+# Lock files
+pnpm-lock.yaml
+
+# Auto-generated
+.agents/

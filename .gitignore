@@ -38,6 +38,9 @@ blob-report/
 # Playwright MCP (browser automation logs/screenshots)
 .playwright-mcp/
 
+# Knip cache
+.knip/
+
 # Accidental CLI artifacts
 --port/
 

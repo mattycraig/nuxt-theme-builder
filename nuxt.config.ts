@@ -2,6 +2,8 @@
 export default defineNuxtConfig({
   modules: [
     "@nuxt/content",
+    "@nuxt/image",
+    "@nuxt/scripts",
     "@nuxt/ui",
     "@nuxt/eslint",
     "@nuxtjs/mdc",
@@ -9,6 +11,7 @@ export default defineNuxtConfig({
     "@pinia/nuxt",
     "pinia-plugin-persistedstate/nuxt",
     "@vueuse/nuxt",
+    "nuxt-og-image",
     "nuxt-security",
   ],
 
@@ -37,6 +40,23 @@ export default defineNuxtConfig({
   sitemap: {
     // No dynamic sources in this project — all routes are file-based
     zeroRuntime: true,
+  },
+
+  image: {
+    quality: 80,
+    format: ["avif", "webp"],
+  },
+
+  scripts: {
+    defaultScriptOptions: {
+      trigger: "onNuxtReady",
+    },
+  },
+
+  ogImage: {
+    defaults: {
+      cacheMaxAgeSeconds: 60 * 60 * 24 * 7,
+    },
   },
 
   app: {
@@ -86,7 +106,7 @@ export default defineNuxtConfig({
     },
   },
 
-  devtools: { enabled: false },
+  devtools: { enabled: process.env.NODE_ENV === "development" },
   compatibilityDate: "2024-04-03",
 
   experimental: {
