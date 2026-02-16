@@ -13,7 +13,6 @@ export default defineNuxtConfig({
     "pinia-plugin-persistedstate/nuxt",
     "@vueuse/nuxt",
     "nuxt-security",
-    "@sentry/nuxt/module",
   ],
 
   mdc: {
@@ -373,15 +372,5 @@ export default defineNuxtConfig({
     },
     // Optimize serverless function bundling
     preset: "vercel",
-  },
-
-  sentry: {
-    org: "matthew-craig",
-    project: "javascript-nuxt",
-    autoInjectServerSentry: "top-level-import",
-  },
-
-  sourcemap: {
-    client: "hidden",
   },
 });
