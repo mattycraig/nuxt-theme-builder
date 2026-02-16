@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ThemeConfigSchema } from "~/types/theme";
 import type { ThemeConfig } from "~/types/theme";
+import { showThemeAppliedToast } from "~/utils/helpers";
 
 const store = useThemeStore();
 
@@ -57,11 +58,7 @@ function applyChanges() {
   store.loadConfig(result.data as ThemeConfig);
   isDirty.value = false;
   parseError.value = "";
-  toast.add({
-    title: "Theme applied",
-    icon: "i-lucide-check",
-    color: "success",
-  });
+  showThemeAppliedToast(toast);
 }
 
 function resetEditorText() {

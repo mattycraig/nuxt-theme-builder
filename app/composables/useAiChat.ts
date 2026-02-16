@@ -1,6 +1,9 @@
 import type { AiMessage, AiGenerateResponse } from "~/types/ai";
 import type { ThemeConfig } from "~/types/theme";
 import { ThemeConfigSchema } from "~/types/theme";
+import { showThemeAppliedToast } from "~/utils/helpers";
+
+const MAX_CONVERSATION_WINDOW = 6;
 
 /**
  * Manages the AI chat conversation state and server communication.
@@ -24,8 +27,7 @@ export function useAiChat() {
   const toast = useToast();
   const store = useThemeStore();
 
-  const MAX_CONVERSATION_WINDOW = 6;
-
+  /** Generate a lightweight unique ID for chat messages. */
   function createId(): string {
     return `${Date.now()}-${Math.random().toString(36).slice(2, 9)}`;
   }
@@ -135,12 +137,7 @@ export function useAiChat() {
     }
 
     store.loadConfig(validated.data as ThemeConfig);
-    toast.add({
-      title: "Theme applied",
-      description: "You can undo with Ctrl+Z or continue refining.",
-      color: "success",
-      icon: "i-lucide-check-circle",
-    });
+    showThemeAppliedToast(toast);
   }
 
   function regenerateLastMessage() {

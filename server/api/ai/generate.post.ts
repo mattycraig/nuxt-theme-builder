@@ -8,6 +8,19 @@ import {
 import { createOpenAI } from "@ai-sdk/openai";
 import { createAnthropic } from "@ai-sdk/anthropic";
 import { createGoogleGenerativeAI } from "@ai-sdk/google";
+import {
+  ALL_PALETTES,
+  NEUTRAL_PALETTES,
+  SHADE_VALUES,
+  FONT_OPTIONS,
+  DEFAULT_COLOR_SHADES,
+  RADIUS_MIN,
+  RADIUS_MAX,
+} from "~~/shared/constants/theme";
+import {
+  AI_FALLBACK_LIGHT_OVERRIDES,
+  AI_FALLBACK_DARK_OVERRIDES,
+} from "~~/shared/constants/aiDefaults";
 
 // ─── Limits ────────────────────────────────────────────────────────────
 
@@ -16,90 +29,7 @@ const MAX_PROMPT_CHARS = 20_000;
 const MAX_RETRIES = 2;
 const MAX_CONVERSATION_MESSAGES = 6;
 
-// ─── Palette / shade / font constants ──────────────────────────────────
-// Canonical definitions live in app/types/theme.ts. They are duplicated
-// here because Nuxt server routes cannot import from the app/ directory
-// at runtime. Keep both copies in sync when adding palettes or fonts.
-
-const ALL_PALETTES = [
-  "red",
-  "orange",
-  "amber",
-  "yellow",
-  "lime",
-  "green",
-  "emerald",
-  "teal",
-  "cyan",
-  "sky",
-  "blue",
-  "indigo",
-  "violet",
-  "purple",
-  "fuchsia",
-  "pink",
-  "rose",
-  "slate",
-  "gray",
-  "zinc",
-  "neutral",
-  "stone",
-] as const;
-
-const NEUTRAL_PALETTES = ["slate", "gray", "zinc", "neutral", "stone"] as const;
-
-const SHADE_VALUES = [
-  "white",
-  "black",
-  "50",
-  "100",
-  "200",
-  "300",
-  "400",
-  "500",
-  "600",
-  "700",
-  "800",
-  "900",
-  "950",
-] as const;
-
-const FONT_OPTIONS = [
-  "Public Sans",
-  "DM Sans",
-  "Figtree",
-  "Geist",
-  "Inter",
-  "Lato",
-  "Montserrat",
-  "Nunito",
-  "Open Sans",
-  "Outfit",
-  "Plus Jakarta Sans",
-  "Poppins",
-  "Raleway",
-  "Roboto",
-  "Source Sans 3",
-  "Space Grotesk",
-  "Work Sans",
-  "Lora",
-  "Merriweather",
-  "Playfair Display",
-  "Source Serif 4",
-  "Libre Baskerville",
-  "DM Serif Display",
-  "Crimson Text",
-  "JetBrains Mono",
-  "Fira Code",
-  "Source Code Pro",
-  "IBM Plex Mono",
-  "Space Mono",
-  "Sora",
-  "Archivo",
-  "Lexend",
-  "Urbanist",
-  "Bricolage Grotesque",
-] as const;
+// ─── Zod schemas (built from shared constants) ────────────────────────
 
 const anyPaletteSchema = z.enum(ALL_PALETTES);
 const neutralPaletteSchema = z.enum(NEUTRAL_PALETTES);
@@ -141,11 +71,11 @@ const tokenOverridesSchema = z.object({
 const aiThemeSchema = z.object({
   colors: semanticColorsSchema,
   neutral: neutralPaletteSchema,
-  radius: z.number().min(0).max(2),
+  radius: z.number().min(RADIUS_MIN).max(RADIUS_MAX),
   font: z.enum(FONT_OPTIONS),
   darkColors: semanticColorsSchema,
   darkNeutral: neutralPaletteSchema,
-  darkRadius: z.number().min(0).max(2),
+  darkRadius: z.number().min(RADIUS_MIN).max(RADIUS_MAX),
   darkFont: z.enum(FONT_OPTIONS),
   lightOverrides: tokenOverridesSchema.nullable(),
   darkOverrides: tokenOverridesSchema.nullable(),
@@ -153,50 +83,9 @@ const aiThemeSchema = z.object({
 });
 
 /**
- * Server-side fallback token overrides applied when the AI omits them.
- *
- * These intentionally differ from the client-side DEFAULT_LIGHT_OVERRIDES
- * in app/utils/defaults.ts (e.g., bg.elevated="white" here vs "100" there)
- * to produce the best result for AI-generated themes specifically.
+ * Server-side fallback overrides use values from shared/constants/aiDefaults.ts.
+ * These intentionally differ from client defaults for optimal AI output.
  */
-const FALLBACK_LIGHT_OVERRIDES: z.infer<typeof tokenOverridesSchema> = {
-  text: {
-    dimmed: "400",
-    muted: "500",
-    toned: "600",
-    default: "700",
-    highlighted: "900",
-    inverted: "white",
-  },
-  bg: {
-    default: "white",
-    muted: "50",
-    elevated: "white",
-    accented: "100",
-    inverted: "900",
-  },
-  border: { default: "200", muted: "200", accented: "300", inverted: "800" },
-};
-
-/** Server-side fallback — see FALLBACK_LIGHT_OVERRIDES note above. */
-const FALLBACK_DARK_OVERRIDES: z.infer<typeof tokenOverridesSchema> = {
-  text: {
-    dimmed: "500",
-    muted: "400",
-    toned: "300",
-    default: "200",
-    highlighted: "white",
-    inverted: "900",
-  },
-  bg: {
-    default: "900",
-    muted: "800",
-    elevated: "800",
-    accented: "700",
-    inverted: "white",
-  },
-  border: { default: "800", muted: "700", accented: "700", inverted: "200" },
-};
 
 const requestSchema = z.object({
   prompt: z.string().min(1).max(2000),
@@ -338,20 +227,10 @@ export default defineEventHandler(async (event) => {
       ...lightFields
     } = result.object;
 
-    // Matches DEFAULT_COLOR_SHADES in app/types/theme.ts
-    const DEFAULT_COLOR_SHADES = {
-      primary: "500" as const,
-      secondary: "500" as const,
-      success: "500" as const,
-      info: "500" as const,
-      warning: "500" as const,
-      error: "500" as const,
-    };
-
     const themeConfig = {
       ...lightFields,
-      lightOverrides: lightOverrides ?? FALLBACK_LIGHT_OVERRIDES,
-      darkOverrides: darkOverrides ?? FALLBACK_DARK_OVERRIDES,
+      lightOverrides: lightOverrides ?? AI_FALLBACK_LIGHT_OVERRIDES,
+      darkOverrides: darkOverrides ?? AI_FALLBACK_DARK_OVERRIDES,
       colorShades: { ...DEFAULT_COLOR_SHADES },
       darkColors: darkColors ?? lightFields.colors,
       darkColorShades: { ...DEFAULT_COLOR_SHADES },

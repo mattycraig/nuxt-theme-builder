@@ -72,12 +72,22 @@ export function useSaveThemeModal() {
     _saveModalName.value = "";
   }
 
+  /** Quick-save if an active preset has unsaved changes, otherwise open Save-As dialog. */
+  function smartSave() {
+    if (store.activePresetName && store.hasUnsavedChanges) {
+      quickSave();
+    } else {
+      openSaveAs();
+    }
+  }
+
   return {
     isOpen,
     themeName,
     isOverwrite,
     openSaveAs,
     quickSave,
+    smartSave,
     confirm,
     cancel,
   };

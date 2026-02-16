@@ -13,11 +13,12 @@ import {
   formatOklch,
   rgbToOklch,
 } from "~/utils/colorConversion";
+import { isInIframe } from "~/utils/helpers";
 
 const toast = useToast();
 const themeStore = useThemeStore();
 
-const isInIframe = import.meta.client && window !== window.parent;
+const inIframe = isInIframe();
 
 interface GeneratedRole {
   role: SemanticColorKey;
@@ -117,7 +118,7 @@ function applyToTheme() {
     roles.value.map((r) => [r.role, r.palette]),
   );
 
-  if (isInIframe) {
+  if (inIframe) {
     // Build a full config clone with updated colors for the parent store
     const config = JSON.parse(JSON.stringify(themeStore.config));
     Object.assign(config.colors, colorsUpdate);
@@ -185,6 +186,7 @@ generate();
 
 <template>
   <div class="space-y-6 mb-12">
+    <!-- Action buttons -->
     <div class="flex flex-wrap gap-3">
       <UButton
         icon="i-lucide-shuffle"
@@ -201,6 +203,7 @@ generate();
       />
     </div>
 
+    <!-- Role palette cards grid -->
     <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
       <div
         v-for="(item, index) in roles"
@@ -249,6 +252,7 @@ generate();
       </div>
     </div>
 
+    <!-- Export palette section -->
     <section aria-labelledby="palette-export-heading">
       <div class="flex items-center gap-2 mb-3">
         <UIcon

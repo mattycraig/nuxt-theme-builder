@@ -9,7 +9,7 @@
  */
 export function useKeyboardShortcuts() {
   const store = useThemeStore();
-  const { quickSave, openSaveAs } = useSaveThemeModal();
+  const { smartSave, openSaveAs } = useSaveThemeModal();
 
   function handleKeydown(e: KeyboardEvent) {
     const mod = e.ctrlKey || e.metaKey;
@@ -25,11 +25,7 @@ export function useKeyboardShortcuts() {
       store.redo();
     } else if (key === "s" && !e.shiftKey) {
       e.preventDefault();
-      if (store.activePresetName && store.hasUnsavedChanges) {
-        quickSave();
-      } else {
-        openSaveAs();
-      }
+      smartSave();
     } else if (key === "s" && e.shiftKey) {
       e.preventDefault();
       openSaveAs();

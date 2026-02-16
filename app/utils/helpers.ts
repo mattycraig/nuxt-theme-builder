@@ -68,25 +68,24 @@ export function timeAgo(timestamp: number): string {
 }
 
 /**
- * Extract the inner content of a Vue SFC `<template>` block.
- * Strips `<template>` / `</template>` tags and un-indents by one level.
- * Useful for deriving clean HTML source from a `?raw` import of a `.vue` file.
+ * Check whether the current window is embedded inside an iframe.
+ * Returns false during SSR (no `window` available).
  */
-export function extractTemplateSource(raw: string): string {
-  const match = raw.match(/<template[^>]*>\r?\n?([\s\S]*?)\r?\n?<\/template>/);
-  if (!match?.[1]) return raw.trim();
+export function isInIframe(): boolean {
+  return import.meta.client && window !== window.parent;
+}
 
-  const lines = match[1].split("\n");
-  const minIndent = lines
-    .filter((l) => l.trim().length > 0)
-    .reduce((min, l) => {
-      const leading = l.match(/^(\s*)/);
-      const indent = leading?.[1]?.length ?? 0;
-      return Math.min(min, indent);
-    }, Infinity);
-
-  return lines
-    .map((l) => l.slice(minIndent))
-    .join("\n")
-    .trim();
+/**
+ * Show a standardized "Theme applied" success toast.
+ * Centralizes the toast content so every call site stays consistent.
+ */
+export function showThemeAppliedToast(
+  toast: ReturnType<typeof useToast>,
+): void {
+  toast.add({
+    title: "Theme applied",
+    description: "You can undo with Ctrl+Z or continue refining.",
+    color: "success",
+    icon: "i-lucide-check-circle",
+  });
 }

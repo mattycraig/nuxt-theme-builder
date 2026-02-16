@@ -33,10 +33,12 @@ mockNuxtImport("useThemeStore", () => {
 
 const mockQuickSave = vi.fn();
 const mockOpenSaveAs = vi.fn();
+const mockSmartSave = vi.fn();
 mockNuxtImport("useSaveThemeModal", () => {
   return () => ({
     quickSave: mockQuickSave,
     openSaveAs: mockOpenSaveAs,
+    smartSave: mockSmartSave,
   });
 });
 
@@ -220,20 +222,20 @@ describe("useCommandPalette", () => {
         expect(action.suffix).toBe('Save "My Theme"');
       });
 
-      it("calls quickSave when active preset has unsaved changes", () => {
+      it("calls smartSave when active preset has unsaved changes", () => {
         mockStore.activePresetName = "My Theme";
         mockStore.hasUnsavedChanges = true;
         const action = getAction("Save Theme");
         action.onSelect();
-        expect(mockQuickSave).toHaveBeenCalled();
+        expect(mockSmartSave).toHaveBeenCalled();
       });
 
-      it("calls openSaveAs when no active preset", () => {
+      it("calls smartSave when no active preset", () => {
         mockStore.activePresetName = null;
         mockStore.hasUnsavedChanges = false;
         const action = getAction("Save Theme");
         action.onSelect();
-        expect(mockOpenSaveAs).toHaveBeenCalled();
+        expect(mockSmartSave).toHaveBeenCalled();
       });
 
       it("Save As always calls openSaveAs", () => {

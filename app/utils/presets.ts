@@ -1,3 +1,10 @@
+/**
+ * Built-in theme presets.
+ *
+ * Each preset is a complete ThemeConfig snapshot that users can apply
+ * as a starting point. Presets define semantic color assignments, shades,
+ * neutral palette, radius, font, and per-mode token overrides.
+ */
 import type {
   ThemePreset,
   ThemeConfig,

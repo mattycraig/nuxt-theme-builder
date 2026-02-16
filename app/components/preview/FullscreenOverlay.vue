@@ -1,4 +1,9 @@
 <script setup lang="ts">
+import { MSG } from "~/utils/iframeProtocol";
+import { sanitizeNavigationPath } from "~/utils/helpers";
+
+// ─── State ─────────────────────────────────────────────────────────
+
 const store = useThemeStore();
 const colorMode = useColorMode();
 const route = useRoute();
@@ -34,10 +39,11 @@ watch(fullscreenViewMode, (mode) => {
   if (mode === "code") setViewMode("code");
 });
 
-// Iframe communication ──────────────────────────────────────────────
+// ─── Iframe Communication ──────────────────────────────────────────
 
 const fullscreenFrame = ref<HTMLIFrameElement>();
 
+/** Send a postMessage to the fullscreen iframe preview. */
 function postToFrame(data: Record<string, unknown>) {
   fullscreenFrame.value?.contentWindow?.postMessage(
     data,
@@ -45,26 +51,27 @@ function postToFrame(data: Record<string, unknown>) {
   );
 }
 
+/** Request iframe readiness on load (fallback for race condition). */
 function handleFrameLoad() {
-  postToFrame({ type: "request-ready" });
+  postToFrame({ type: MSG.REQUEST_READY });
 }
 
+/** Process inbound messages from the fullscreen iframe. */
 function handleMessage(event: MessageEvent) {
   if (event.origin !== window.location.origin) return;
   if (event.source !== fullscreenFrame.value?.contentWindow) return;
 
   const { type, path } = event.data || {};
 
-  if (type === "preview-ready") {
+  if (type === MSG.PREVIEW_READY) {
     postToFrame({
-      type: "theme-sync",
+      type: MSG.THEME_SYNC,
       config: structuredClone(toRaw(store.config)),
     });
-    postToFrame({ type: "colormode-sync", mode: colorMode.preference });
+    postToFrame({ type: MSG.COLORMODE_SYNC, mode: colorMode.preference });
   }
 
-  // Handle iframe navigation to keep parent route in sync
-  if (type === "navigate-parent" && path) {
+  if (type === MSG.NAVIGATE_PARENT && path) {
     const safePath = sanitizeNavigationPath(String(path));
     if (safePath && safePath !== route.path) {
       navigateTo(safePath);
@@ -77,7 +84,7 @@ watch(
   () => store.config,
   (cfg) => {
     postToFrame({
-      type: "theme-sync",
+      type: MSG.THEME_SYNC,
       config: structuredClone(toRaw(cfg)),
     });
   },
@@ -87,15 +94,18 @@ watch(
 watch(
   () => colorMode.preference,
   (pref) => {
-    postToFrame({ type: "colormode-sync", mode: pref });
+    postToFrame({ type: MSG.COLORMODE_SYNC, mode: pref });
   },
 );
+
+// ─── Keyboard ──────────────────────────────────────────────────────
 
 onKeyStroke("Escape", () => {
   if (isFullscreen.value) isFullscreen.value = false;
 });
 
-// Focus management: trap focus inside dialog and restore on close
+// ─── Focus Management ──────────────────────────────────────────────
+// Trap focus inside dialog and restore previous focus on close.
 const dialogRef = ref<HTMLElement>();
 const triggerElement = ref<HTMLElement | null>(null);
 

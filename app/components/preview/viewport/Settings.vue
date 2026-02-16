@@ -1,5 +1,10 @@
 <script setup lang="ts">
-import { PRESET_WIDTHS, PRESET_HEIGHTS } from "~/composables/usePreviewResize";
+import {
+  PRESET_WIDTHS,
+  PRESET_HEIGHTS,
+  getPresetWidth,
+  getPresetHeight,
+} from "~/composables/usePreviewResize";
 
 const activeWidth = defineModel<"mobile" | "tablet" | "desktop">(
   "activeWidth",
@@ -29,13 +34,14 @@ const heightInputId = computed(() => `${props.idPrefix}-custom-height`);
 
 const currentWidthLabel = computed(() => {
   if (customWidth.value !== null) return `${customWidth.value}px`;
-  return PRESET_WIDTHS.find((o) => o.value === activeWidth.value)!.width;
+  return getPresetWidth(activeWidth.value);
 });
 
 const currentHeightLabel = computed(() => {
   if (customHeight.value !== null) return `${customHeight.value}px`;
-  const preset = PRESET_HEIGHTS.find((o) => o.value === activeHeight.value)!;
-  return preset.value === "auto" ? "auto" : preset.height;
+  return activeHeight.value === "auto"
+    ? "auto"
+    : getPresetHeight(activeHeight.value);
 });
 
 const dimensionLabel = computed(

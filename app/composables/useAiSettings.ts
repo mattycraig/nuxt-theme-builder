@@ -1,12 +1,22 @@
 import type { AiSettings, AiProvider } from "~/types/ai";
 import { DEFAULT_AI_SETTINGS, AI_MODELS } from "~/types/ai";
 
-const STORAGE_KEY = "ai-settings";
+const AI_SETTINGS_STORAGE_KEY = "ai-settings";
 
+/**
+ * Reactive AI settings with dual-persistence strategy.
+ *
+ * API keys can optionally be persisted to localStorage (`persistKey` flag).
+ * When not persisted, they live in session-only `useState` and disappear on
+ * full page reload. Provider and model selections are always persisted.
+ */
 export function useAiSettings() {
-  const persistedSettings = useLocalStorage<AiSettings>(STORAGE_KEY, {
-    ...DEFAULT_AI_SETTINGS,
-  });
+  const persistedSettings = useLocalStorage<AiSettings>(
+    AI_SETTINGS_STORAGE_KEY,
+    {
+      ...DEFAULT_AI_SETTINGS,
+    },
+  );
 
   const sessionKey = useState<string>("ai-session-key", () => "");
 

@@ -1,4 +1,7 @@
-import { PRESET_WIDTHS, PRESET_HEIGHTS } from "~/composables/usePreviewResize";
+import {
+  getPresetWidth,
+  getPresetHeight,
+} from "~/composables/usePreviewResize";
 
 /**
  * Shared fullscreen preview state.
@@ -30,16 +33,13 @@ export function usePreviewFullscreen() {
   const fullscreenCurrentWidth = computed(() => {
     if (_fullscreenCustomWidth.value !== null)
       return `${_fullscreenCustomWidth.value}px`;
-    return PRESET_WIDTHS.find((o) => o.value === _fullscreenPreviewWidth.value)!
-      .width;
+    return getPresetWidth(_fullscreenPreviewWidth.value);
   });
 
   const fullscreenCurrentHeight = computed(() => {
     if (_fullscreenCustomHeight.value !== null)
       return `${_fullscreenCustomHeight.value}px`;
-    return PRESET_HEIGHTS.find(
-      (o) => o.value === _fullscreenPreviewHeight.value,
-    )!.height;
+    return getPresetHeight(_fullscreenPreviewHeight.value);
   });
 
   function toggle() {

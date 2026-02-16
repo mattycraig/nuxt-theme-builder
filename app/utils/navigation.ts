@@ -1,3 +1,10 @@
+/**
+ * Route and sidebar navigation metadata.
+ *
+ * Central registry of all preview routes — component categories, blocks,
+ * templates, tools, and learn sections. Used by the sidebar, command palette,
+ * and iframe navigation sync.
+ */
 import type { NavigationMenuItem } from "@nuxt/ui";
 import type {
   BlockCategory,

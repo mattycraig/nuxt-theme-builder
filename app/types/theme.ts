@@ -1,44 +1,40 @@
 import { z } from "zod";
+import {
+  CHROMATIC_PALETTES,
+  NEUTRAL_PALETTES,
+  ALL_PALETTES,
+  SHADE_VALUES,
+  FONT_ENTRIES,
+  FONT_OPTIONS,
+  SEMANTIC_COLOR_KEYS,
+  DEFAULT_COLOR_SHADES,
+  RADIUS_MIN,
+  RADIUS_MAX,
+} from "~~/shared/constants/theme";
+import type { FontCategory, FontEntry } from "~~/shared/constants/theme";
+
+// Re-export shared constants so existing app/ imports continue to work
+export {
+  CHROMATIC_PALETTES,
+  NEUTRAL_PALETTES,
+  ALL_PALETTES,
+  SHADE_VALUES,
+  FONT_ENTRIES,
+  FONT_OPTIONS,
+  SEMANTIC_COLOR_KEYS,
+  DEFAULT_COLOR_SHADES,
+  RADIUS_MIN,
+  RADIUS_MAX,
+};
+export type { FontCategory, FontEntry };
 
 // Color Palette Constants ─────────────────────────────────────────────────
 // Tailwind CSS color palette names available for semantic color assignment.
 
-export const CHROMATIC_PALETTES = [
-  "red",
-  "orange",
-  "amber",
-  "yellow",
-  "lime",
-  "green",
-  "emerald",
-  "teal",
-  "cyan",
-  "sky",
-  "blue",
-  "indigo",
-  "violet",
-  "purple",
-  "fuchsia",
-  "pink",
-  "rose",
-] as const;
-
 export type ChromaticPalette = (typeof CHROMATIC_PALETTES)[number];
-
-export const NEUTRAL_PALETTES = [
-  "slate",
-  "gray",
-  "zinc",
-  "neutral",
-  "stone",
-] as const;
 
 export type NeutralPalette = (typeof NEUTRAL_PALETTES)[number];
 
-export const ALL_PALETTES = [
-  ...CHROMATIC_PALETTES,
-  ...NEUTRAL_PALETTES,
-] as const;
 export type AnyPalette = ChromaticPalette | NeutralPalette;
 
 // Color Category Groupings ────────────────────────────────────────────────
@@ -67,36 +63,13 @@ export const PALETTE_CATEGORIES: Record<
 
 // Semantic Color Keys ─────────────────────────────────────────────────────
 // The named color roles that Nuxt UI uses across components.
-
-export const SEMANTIC_COLOR_KEYS = [
-  "primary",
-  "secondary",
-  "success",
-  "info",
-  "warning",
-  "error",
-] as const;
+// (re-exported from shared/ above)
 
 export type SemanticColorKey = (typeof SEMANTIC_COLOR_KEYS)[number];
 
 // Shade Values ────────────────────────────────────────────────────────────
 // Neutral shade scale used for text, background, and border token overrides.
-
-export const SHADE_VALUES = [
-  "white",
-  "black",
-  "50",
-  "100",
-  "200",
-  "300",
-  "400",
-  "500",
-  "600",
-  "700",
-  "800",
-  "900",
-  "950",
-] as const;
+// (re-exported from shared/ above)
 
 export type NeutralShade = (typeof SHADE_VALUES)[number];
 
@@ -206,65 +179,8 @@ export interface ThemePreset {
 
 // Font Options ────────────────────────────────────────────────────────────
 // Must match fonts registered in nuxt.config.ts `fonts.families`.
-
-export type FontCategory = "sans-serif" | "serif" | "monospace" | "display";
-
-export interface FontEntry {
-  name: string;
-  category: FontCategory;
-}
-
-const FONT_ENTRIES: FontEntry[] = [
-  // Sans-serif
-  { name: "Public Sans", category: "sans-serif" },
-  { name: "DM Sans", category: "sans-serif" },
-  { name: "Figtree", category: "sans-serif" },
-  { name: "Geist", category: "sans-serif" },
-  { name: "Inter", category: "sans-serif" },
-  { name: "Lato", category: "sans-serif" },
-  { name: "Montserrat", category: "sans-serif" },
-  { name: "Nunito", category: "sans-serif" },
-  { name: "Open Sans", category: "sans-serif" },
-  { name: "Outfit", category: "sans-serif" },
-  { name: "Plus Jakarta Sans", category: "sans-serif" },
-  { name: "Poppins", category: "sans-serif" },
-  { name: "Raleway", category: "sans-serif" },
-  { name: "Roboto", category: "sans-serif" },
-  { name: "Source Sans 3", category: "sans-serif" },
-  { name: "Space Grotesk", category: "sans-serif" },
-  { name: "Work Sans", category: "sans-serif" },
-  // Serif
-  { name: "Lora", category: "serif" },
-  { name: "Merriweather", category: "serif" },
-  { name: "Playfair Display", category: "serif" },
-  { name: "Source Serif 4", category: "serif" },
-  { name: "Libre Baskerville", category: "serif" },
-  { name: "DM Serif Display", category: "serif" },
-  { name: "Crimson Text", category: "serif" },
-  // Monospace
-  { name: "JetBrains Mono", category: "monospace" },
-  { name: "Fira Code", category: "monospace" },
-  { name: "Source Code Pro", category: "monospace" },
-  { name: "IBM Plex Mono", category: "monospace" },
-  { name: "Space Mono", category: "monospace" },
-  // Display
-  { name: "Sora", category: "display" },
-  { name: "Archivo", category: "display" },
-  { name: "Lexend", category: "display" },
-  { name: "Urbanist", category: "display" },
-  { name: "Bricolage Grotesque", category: "display" },
-] as const;
-
-export { FONT_ENTRIES };
-
-/**
- * Cast required so Zod's `z.enum()` receives a readonly tuple
- * `[string, ...string[]]` (at least one element). `FONT_ENTRIES.map()`
- * returns `string[]`, which doesn't satisfy the tuple constraint.
- */
-export const FONT_OPTIONS = FONT_ENTRIES.map(
-  (f) => f.name,
-) as unknown as readonly string[] & readonly [string, ...string[]];
+// Constants (FONT_ENTRIES, FONT_OPTIONS) and types (FontCategory, FontEntry)
+// are re-exported from shared/ above.
 
 const FONT_CATEGORY_MAP = new Map<string, FontCategory>(
   FONT_ENTRIES.map((f) => [f.name, f.category]),
@@ -289,16 +205,8 @@ export function getFontFallbackStack(fontName: string): string {
 // Zod Validation Schemas ──────────────────────────────────────────────────
 // Used by the store to validate persisted state and imported configs.
 
-export const DEFAULT_COLOR_SHADES: SemanticShades = {
-  primary: "500",
-  secondary: "500",
-  success: "500",
-  info: "500",
-  warning: "500",
-  error: "500",
-};
+// DEFAULT_COLOR_SHADES re-exported from shared/ above.
 
-const _chromaticPaletteSchema = z.enum(CHROMATIC_PALETTES);
 const neutralPaletteSchema = z.enum(NEUTRAL_PALETTES);
 const anyPaletteSchema = z.enum(ALL_PALETTES);
 const neutralShadeSchema = z.enum(SHADE_VALUES);
@@ -345,7 +253,7 @@ const rawThemeSchema = z.object({
   colors: semanticColorsSchema,
   colorShades: semanticShadesSchema,
   neutral: neutralPaletteSchema,
-  radius: z.number().finite().min(0).max(2),
+  radius: z.number().finite().min(RADIUS_MIN).max(RADIUS_MAX),
   font: z.enum(FONT_OPTIONS),
   lightOverrides: tokenOverridesSchema,
   darkOverrides: tokenOverridesSchema,
@@ -354,7 +262,7 @@ const rawThemeSchema = z.object({
   darkColors: semanticColorsSchema.optional(),
   darkColorShades: semanticShadesSchema.optional(),
   darkNeutral: neutralPaletteSchema.optional(),
-  darkRadius: z.number().finite().min(0).max(2).optional(),
+  darkRadius: z.number().finite().min(RADIUS_MIN).max(RADIUS_MAX).optional(),
   darkFont: z.enum(FONT_OPTIONS).optional(),
 });
 

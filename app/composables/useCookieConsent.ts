@@ -1,10 +1,17 @@
-const STORAGE_KEY = "cookie-consent";
+const COOKIE_CONSENT_STORAGE_KEY = "cookie-consent";
 
+/**
+ * Show a one-time cookie/storage consent notice as a persistent toast.
+ *
+ * On first mount, if the user has not yet accepted, a toast is displayed
+ * with "Accept" and "Privacy Policy" actions. Acceptance is persisted
+ * to localStorage so the notice is not shown again.
+ */
 export function useCookieConsent() {
   if (import.meta.server) return;
 
   onMounted(() => {
-    if (localStorage.getItem(STORAGE_KEY)) return;
+    if (localStorage.getItem(COOKIE_CONSENT_STORAGE_KEY)) return;
 
     const toast = useToast();
 
@@ -22,7 +29,7 @@ export function useCookieConsent() {
           color: "primary",
           variant: "solid",
           onClick: () => {
-            localStorage.setItem(STORAGE_KEY, "accepted");
+            localStorage.setItem(COOKIE_CONSENT_STORAGE_KEY, "accepted");
           },
         },
         {

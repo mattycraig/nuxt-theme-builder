@@ -8,7 +8,7 @@
 export function useCommandPalette() {
   const colorMode = useColorMode();
   const store = useThemeStore();
-  const { quickSave, openSaveAs } = useSaveThemeModal();
+  const { smartSave, openSaveAs } = useSaveThemeModal();
   const { allNavItems } = useLayoutNavigation();
 
   const searchGroups = computed(() => [
@@ -70,11 +70,7 @@ export function useCommandPalette() {
             : "Save as new theme",
         kbds: ["meta", "S"],
         onSelect() {
-          if (store.activePresetName && store.hasUnsavedChanges) {
-            quickSave();
-          } else {
-            openSaveAs();
-          }
+          smartSave();
         },
       },
       {

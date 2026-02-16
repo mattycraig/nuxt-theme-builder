@@ -2,6 +2,7 @@
 import type { ThemeConfig, SemanticColorKey } from "~/types/theme";
 import { SEMANTIC_COLOR_KEYS } from "~/types/theme";
 import { ALL_HEX_MAP, NEUTRAL_SWATCH_HEX } from "~/utils/colorPalettes";
+import { isInIframe } from "~/utils/helpers";
 
 const props = defineProps<{
   themeConfig: ThemeConfig;
@@ -10,14 +11,14 @@ const props = defineProps<{
 const { applyTheme: localApplyTheme } = useAiChat();
 const { openSaveAs } = useSaveThemeModal();
 
-const isInIframe = import.meta.client && window !== window.parent;
+const inIframe = isInIframe();
 
 function postToParent(data: Record<string, unknown>) {
   window.parent.postMessage(data, window.location.origin);
 }
 
 function handleApply() {
-  if (isInIframe) {
+  if (inIframe) {
     postToParent({
       type: "apply-ai-theme",
       config: JSON.parse(JSON.stringify(props.themeConfig)),
@@ -28,7 +29,7 @@ function handleApply() {
 }
 
 function handleApplyAndSave() {
-  if (isInIframe) {
+  if (inIframe) {
     postToParent({
       type: "apply-ai-theme",
       config: JSON.parse(JSON.stringify(props.themeConfig)),
@@ -41,7 +42,7 @@ function handleApplyAndSave() {
 }
 
 function handleExport() {
-  if (isInIframe) {
+  if (inIframe) {
     postToParent({
       type: "apply-ai-theme",
       config: JSON.parse(JSON.stringify(props.themeConfig)),

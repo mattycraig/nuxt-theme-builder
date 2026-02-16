@@ -1,5 +1,5 @@
 import { useThemeStore } from "~/stores/theme";
-import { sanitizeNavigationPath } from "~/utils/helpers";
+import { sanitizeNavigationPath, showThemeAppliedToast } from "~/utils/helpers";
 import { ThemeConfigSchema } from "~/types/theme";
 import type { ThemeConfig } from "~/types/theme";
 import { MSG } from "~/utils/iframeProtocol";
@@ -116,12 +116,7 @@ export function usePreviewIframe() {
         const validated = ThemeConfigSchema.safeParse(event.data.config);
         if (validated.success) {
           store.loadConfig(validated.data as ThemeConfig);
-          toast.add({
-            title: "Theme applied",
-            description: "You can undo with Ctrl+Z or continue refining.",
-            color: "success",
-            icon: "i-lucide-check-circle",
-          });
+          showThemeAppliedToast(toast);
           if (event.data.save) {
             openSaveAs();
           }

@@ -47,6 +47,19 @@ export const PRESET_HEIGHTS = [
   },
 ] as const;
 
+export type PresetWidthKey = (typeof PRESET_WIDTHS)[number]["value"];
+export type PresetHeightKey = (typeof PRESET_HEIGHTS)[number]["value"];
+
+/** Look up the CSS width string for a named width preset. */
+export function getPresetWidth(key: PresetWidthKey): string {
+  return PRESET_WIDTHS.find((o) => o.value === key)!.width;
+}
+
+/** Look up the CSS height string for a named height preset. */
+export function getPresetHeight(key: PresetHeightKey): string {
+  return PRESET_HEIGHTS.find((o) => o.value === key)!.height;
+}
+
 const MIN_RESIZE_WIDTH = 320;
 const MIN_RESIZE_HEIGHT = 200;
 
@@ -63,12 +76,12 @@ export function usePreviewResize() {
 
   const currentPreviewWidth = computed(() => {
     if (customWidth.value !== null) return `${customWidth.value}px`;
-    return PRESET_WIDTHS.find((o) => o.value === previewWidth.value)!.width;
+    return getPresetWidth(previewWidth.value);
   });
 
   const currentPreviewHeight = computed(() => {
     if (customHeight.value !== null) return `${customHeight.value}px`;
-    return PRESET_HEIGHTS.find((o) => o.value === previewHeight.value)!.height;
+    return getPresetHeight(previewHeight.value);
   });
 
   // Selecting a preset clears any custom dimension
@@ -134,7 +147,10 @@ export function usePreviewResize() {
   function onCustomHeightInput(val: string | number) {
     const num = Number(val);
     if (!isNaN(num) && num >= MIN_RESIZE_HEIGHT) {
-      customHeight.value = Math.min(num, previewArea.value?.clientHeight ?? 1080);
+      customHeight.value = Math.min(
+        num,
+        previewArea.value?.clientHeight ?? 1080,
+      );
     } else if (val === "" || val == null) {
       customHeight.value = null;
     }
@@ -147,9 +163,7 @@ export function usePreviewResize() {
     const wrapper = area.querySelector(
       "[data-preview-wrapper]",
     ) as HTMLElement | null;
-    const currentW = wrapper
-      ? wrapper.getBoundingClientRect().width
-      : maxW;
+    const currentW = wrapper ? wrapper.getBoundingClientRect().width : maxW;
     customWidth.value = Math.round(
       Math.max(MIN_RESIZE_WIDTH, Math.min(currentW + delta, maxW)),
     );
@@ -200,9 +214,7 @@ export function usePreviewResize() {
     const wrapper = area.querySelector(
       "[data-preview-wrapper]",
     ) as HTMLElement | null;
-    const currentH = wrapper
-      ? wrapper.getBoundingClientRect().height
-      : maxH;
+    const currentH = wrapper ? wrapper.getBoundingClientRect().height : maxH;
     customHeight.value = Math.round(
       Math.max(MIN_RESIZE_HEIGHT, Math.min(currentH + delta, maxH)),
     );
