@@ -1,0 +1,34 @@
+# CODEOWNERS
+
+# These owners will be requested for review when someone opens a pull request.
+
+# Order matters - later patterns override earlier ones.
+
+# Default owner for everything
+
+- @mattycraig
+
+# Core theme system
+
+app/stores/theme.ts @mattycraig
+app/types/theme.ts @mattycraig
+app/composables/useThemeApply.ts @mattycraig
+app/composables/useThemeExport.ts @mattycraig
+
+# AI features
+
+app/pages/ai.vue @mattycraig
+app/types/ai.ts @mattycraig
+server/api/ai/ @mattycraig
+
+# CI/CD and infrastructure
+
+.github/ @mattycraig
+nuxt.config.ts @mattycraig
+playwright.config.ts @mattycraig
+vitest.config.ts @mattycraig
+
+# Documentation
+
+\*.md @mattycraig
+content/ @mattycraig

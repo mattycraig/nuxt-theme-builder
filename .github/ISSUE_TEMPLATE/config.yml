@@ -1,0 +1,11 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Documentation
+    url: https://www.nuxt-ui-themes.com/help
+    about: Check the help documentation before opening an issue
+  - name: Nuxt UI Docs
+    url: https://ui.nuxt.com
+    about: For Nuxt UI framework questions, visit the official docs
+  - name: Discussions
+    url: https://github.com/mattycraig/nuxt-theme-builder/discussions
+    about: Ask questions and share ideas in Discussions

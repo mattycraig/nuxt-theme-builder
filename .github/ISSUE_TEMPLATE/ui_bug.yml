@@ -1,0 +1,84 @@
+name: UI/Visual Bug
+description: Report a visual or responsive issue
+title: "[UI]: "
+labels: ["bug", "ui"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Found a visual glitch, layout issue, or responsive problem? Let us know!
+
+  - type: textarea
+    id: description
+    attributes:
+      label: Description
+      description: Describe the visual issue you're seeing.
+    validations:
+      required: true
+
+  - type: dropdown
+    id: area
+    attributes:
+      label: Affected Area
+      options:
+        - Theme Editor
+        - Preview Panel
+        - Color Picker
+        - Component Preview
+        - Block Preview
+        - Template Preview
+        - Export Panel
+        - Navigation
+        - Mobile Layout
+        - Other
+    validations:
+      required: true
+
+  - type: dropdown
+    id: viewport
+    attributes:
+      label: Viewport Size
+      description: At what screen size does the issue occur?
+      options:
+        - Desktop (1280px+)
+        - Tablet (768px - 1279px)
+        - Mobile (< 768px)
+        - All sizes
+    validations:
+      required: true
+
+  - type: dropdown
+    id: browser
+    attributes:
+      label: Browser
+      options:
+        - Chrome
+        - Firefox
+        - Safari
+        - Edge
+        - Other
+    validations:
+      required: true
+
+  - type: textarea
+    id: screenshots
+    attributes:
+      label: Screenshots
+      description: Please add screenshots showing the issue. Drag and drop images here.
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected Appearance
+      description: What should it look like? Reference another site or describe the expected layout.
+
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: Steps to Reproduce
+      placeholder: |
+        1. Go to '...'
+        2. Resize window to '...'
+        3. See issue

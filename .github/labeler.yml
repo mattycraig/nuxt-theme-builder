@@ -1,0 +1,80 @@
+# Label configuration for actions/labeler
+# Labels are applied to PRs based on file paths changed
+
+documentation:
+  - changed-files:
+      - any-glob-to-any-file:
+          - "*.md"
+          - "content/**"
+          - "app/data/**"
+
+theme-core:
+  - changed-files:
+      - any-glob-to-any-file:
+          - "app/stores/theme.ts"
+          - "app/types/theme.ts"
+          - "app/composables/useThemeApply.ts"
+          - "app/composables/useThemeExport.ts"
+          - "app/utils/cssGenerator.ts"
+          - "app/utils/defaults.ts"
+          - "app/utils/presets.ts"
+
+ai:
+  - changed-files:
+      - any-glob-to-any-file:
+          - "app/pages/ai.vue"
+          - "app/layouts/ai.vue"
+          - "app/types/ai.ts"
+          - "app/composables/useAi*.ts"
+          - "app/components/ai/**"
+          - "server/api/ai/**"
+          - "app/utils/aiPrompts.ts"
+
+components:
+  - changed-files:
+      - any-glob-to-any-file:
+          - "app/components/**"
+
+editor:
+  - changed-files:
+      - any-glob-to-any-file:
+          - "app/components/editor/**"
+
+preview:
+  - changed-files:
+      - any-glob-to-any-file:
+          - "app/components/preview/**"
+          - "app/composables/usePreview*.ts"
+          - "app/utils/iframeProtocol.ts"
+
+tests:
+  - changed-files:
+      - any-glob-to-any-file:
+          - "tests/**"
+          - "vitest.config.ts"
+          - "playwright.config.ts"
+
+ci:
+  - changed-files:
+      - any-glob-to-any-file:
+          - ".github/workflows/**"
+          - ".github/actions/**"
+
+dependencies:
+  - changed-files:
+      - any-glob-to-any-file:
+          - "package.json"
+          - "pnpm-lock.yaml"
+
+config:
+  - changed-files:
+      - any-glob-to-any-file:
+          - "nuxt.config.ts"
+          - "tsconfig.json"
+          - "eslint.config.mjs"
+          - "tailwind.config.*"
+
+server:
+  - changed-files:
+      - any-glob-to-any-file:
+          - "server/**"

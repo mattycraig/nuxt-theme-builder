@@ -1,0 +1,27 @@
+title: ""
+labels: ["show-and-tell"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Show off your themes, projects built with Nuxt UI Theme Builder, or creative uses!
+
+  - type: textarea
+    id: showcase
+    attributes:
+      label: What did you build?
+      description: Share your theme, project, or creative use case.
+    validations:
+      required: true
+
+  - type: textarea
+    id: screenshots
+    attributes:
+      label: Screenshots / Links
+      description: Add images or links to your work.
+
+  - type: textarea
+    id: details
+    attributes:
+      label: How did you build it?
+      description: Any tips or techniques you'd like to share?

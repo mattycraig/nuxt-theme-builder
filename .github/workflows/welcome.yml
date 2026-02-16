@@ -1,0 +1,54 @@
+name: Welcome
+
+on:
+  issues:
+    types: [opened]
+  pull_request_target:
+    types: [opened]
+  discussion:
+    types: [created]
+
+permissions:
+  issues: write
+  pull-requests: write
+  discussions: write
+
+jobs:
+  welcome-issue:
+    name: Welcome New Issue Author
+    runs-on: ubuntu-latest
+    if: github.event_name == 'issues'
+    steps:
+      - uses: actions/first-interaction@v1
+        with:
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
+          issue-message: |
+            👋 Welcome to Nuxt UI Theme Builder!
+
+            Thank you for opening your first issue. We appreciate you taking the time to report this.
+
+            **What happens next:**
+            - A maintainer will review your issue soon
+            - Please watch for follow-up questions
+            - Check out our [Contributing Guide](https://github.com/mattycraig/nuxt-theme-builder/blob/master/CONTRIBUTING.md)
+
+  welcome-pr:
+    name: Welcome New PR Author
+    runs-on: ubuntu-latest
+    if: github.event_name == 'pull_request_target'
+    steps:
+      - uses: actions/first-interaction@v1
+        with:
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
+          pr-message: |
+            👋 Welcome to Nuxt UI Theme Builder!
+
+            Thank you for your first pull request! We're excited to review your contribution.
+
+            **Checklist reminder:**
+            - [ ] Tests pass locally (`pnpm test`)
+            - [ ] Linting passes (`pnpm lint`)
+            - [ ] TypeScript compiles (`pnpm typecheck`)
+            - [ ] PR description explains the change
+
+            A maintainer will review your PR soon. Thanks for contributing! 🎉
