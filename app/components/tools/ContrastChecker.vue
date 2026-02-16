@@ -224,9 +224,9 @@ const previewStyle = computed(() => ({
     <UCard :ui="{ header: 'bg-elevated/50' }">
       <template #header>
         <div class="flex items-center justify-between">
-          <h3 class="text-sm font-semibold text-[var(--ui-text-highlighted)]">
+          <h2 class="text-sm font-semibold text-[var(--ui-text-highlighted)]">
             About WCAG Contrast Requirements
-          </h3>
+          </h2>
           <UButton
             label="WCAG Guidelines"
             icon="i-lucide-external-link"

@@ -2,11 +2,25 @@
 import * as z from "zod";
 import type { FormSubmitEvent, AuthFormField } from "@nuxt/ui";
 
+import { OG_IMAGE_URL } from "~/utils/seoDescriptions";
+
 definePageMeta({ layout: "preview" });
+
+const title = "Login — Nuxt UI Theme Builder";
+const description =
+  "Authentication page template with sign-in and sign-up forms, social login providers, and form validation — built with Nuxt UI v4 components.";
+
 useSeoMeta({
-  title: "Login — Nuxt UI Theme Builder",
-  description:
-    "Authentication page template with sign-in and sign-up forms, social login providers, and form validation — built with Nuxt UI v4 components.",
+  title,
+  description,
+  ogTitle: title,
+  ogDescription: description,
+  ogType: "website",
+  ogImage: OG_IMAGE_URL,
+  twitterCard: "summary_large_image",
+  twitterTitle: title,
+  twitterDescription: description,
+  twitterImage: OG_IMAGE_URL,
 });
 
 const toast = useToast();

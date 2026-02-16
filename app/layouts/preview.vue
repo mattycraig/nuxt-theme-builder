@@ -5,6 +5,8 @@ import { sanitizeNavigationPath } from "~/utils/helpers";
 import { MSG } from "~/utils/iframeProtocol";
 import type { IframeToParentMessage, IframeMessage } from "~/utils/iframeProtocol";
 
+import { SITE_URL } from "~/utils/seoDescriptions";
+
 useThemeApply();
 
 const store = useThemeStore();
@@ -16,7 +18,7 @@ useHead({
   link: [
     {
       rel: "canonical",
-      href: computed(() => `https://www.nuxt-ui-themes.com${route.path}`),
+      href: computed(() => `${SITE_URL}${route.path}`),
     },
   ],
 });

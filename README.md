@@ -12,7 +12,7 @@ Visual builder for [Nuxt UI v4](https://ui.nuxt.com) themes.
 
 Design and preview semantic palettes, neutral scales, radius, fonts, and light/dark mode token overrides — then export as `app.config.ts`, CSS variables, or JSON.
 
-**Live:** [www.nuxt-ui-themes.com](https://www.nuxt-ui-themes.com)
+**Live:** [nuxt-ui-themes.com](https://nuxt-ui-themes.com)
 
 ## Highlights
 

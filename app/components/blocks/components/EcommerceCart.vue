@@ -71,6 +71,8 @@ const total = subtotal + tax;
                 :alt="item.name"
                 class="size-16 object-cover"
                 loading="lazy"
+                width="100"
+                height="100"
               >
             </div>
             <div class="flex-1 min-w-0">

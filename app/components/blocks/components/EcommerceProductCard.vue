@@ -33,6 +33,8 @@ const features = [
               alt="Pro Design System"
               class="w-full aspect-square object-cover"
               loading="lazy"
+              width="600"
+              height="600"
             >
             <!-- Floating badge -->
             <div

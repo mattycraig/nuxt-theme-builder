@@ -21,7 +21,7 @@ describe("EditorPresetSelector", () => {
   it("renders the preset select with aria-label", async () => {
     const wrapper = await mountSelector();
     const html = wrapper.html();
-    expect(html).toContain("Theme preset");
+    expect(html).toContain("Select a preset");
   });
 
   it("renders random theme button", async () => {

@@ -109,6 +109,8 @@ const images = [
             :alt="img.alt"
             class="w-full h-48 sm:h-56 object-cover transition-transform duration-700 group-hover:scale-110"
             loading="lazy"
+            width="600"
+            height="400"
           >
           <!-- Hover overlay -->
           <div

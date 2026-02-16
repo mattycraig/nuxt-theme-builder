@@ -7,6 +7,8 @@ import { useSourceCode } from "~/composables/useSourceCode";
 import {
   PAGE_DESCRIPTIONS,
   DEFAULT_DESCRIPTION,
+  SITE_URL,
+  OG_IMAGE_URL,
 } from "~/utils/seoDescriptions";
 
 useThemeApply();
@@ -53,9 +55,23 @@ const { currentPageLabel } = useLayoutNavigation();
 const { searchGroups, onSearchSelect } = useCommandPalette();
 
 // SEO ───────────────────────────────────────────────────────────────────
-const seoTitle = computed(
-  () => `${currentPageLabel.value} — Nuxt UI Theme Builder`,
-);
+const SECTION_SUFFIXES: Record<string, string> = {
+  "/components": " Component",
+  "/blocks": " Block",
+  "/templates": " Template",
+};
+
+const seoTitle = computed(() => {
+  const label = currentPageLabel.value;
+  const section = Object.keys(SECTION_SUFFIXES).find(
+    (prefix) =>
+      route.path.startsWith(prefix + "/") && route.path !== prefix,
+  );
+  const qualifiedLabel = section
+    ? `${label}${SECTION_SUFFIXES[section]}`
+    : label;
+  return `${qualifiedLabel} — Nuxt UI Theme Builder`;
+});
 
 const seoDescription = computed(
   () => PAGE_DESCRIPTIONS[route.path] ?? DEFAULT_DESCRIPTION,
@@ -67,19 +83,28 @@ useSeoMeta({
   ogTitle: seoTitle,
   ogDescription: seoDescription,
   ogType: "website",
-  ogImage: "https://www.nuxt-ui-themes.com/og-image.png",
+  ogImage: OG_IMAGE_URL,
   twitterCard: "summary_large_image",
-  twitterImage: "https://www.nuxt-ui-themes.com/og-image.png",
+  twitterTitle: seoTitle,
+  twitterDescription: seoDescription,
+  twitterImage: OG_IMAGE_URL,
 });
 
 useHead({
   link: [
     {
       rel: "canonical",
-      href: computed(() => `https://www.nuxt-ui-themes.com${route.path}`),
+      href: computed(() => `${SITE_URL}${route.path}`),
     },
   ],
 });
+
+useSchemaOrg([
+  defineWebPage({
+    name: seoTitle,
+    description: seoDescription,
+  }),
+]);
 </script>
 
 <template>
@@ -157,7 +182,7 @@ useHead({
       UDashboardSidebar instances — preventing the wrong sidebar from
       opening at mobile widths.
     -->
-    <div class="hidden" inert aria-hidden="true">
+    <div class="hidden" inert>
       <SharedHiddenRouteWrapper>
         <slot />
       </SharedHiddenRouteWrapper>

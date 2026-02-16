@@ -71,6 +71,8 @@ const thumbnails = [
           :alt="featured.alt"
           class="w-full h-64 sm:h-[28rem] object-cover transition-transform duration-700 group-hover:scale-105"
           loading="lazy"
+          width="1200"
+          height="800"
         >
         <!-- Cinematic gradient overlay -->
         <div
@@ -144,6 +146,8 @@ const thumbnails = [
             :alt="thumb.alt"
             class="w-full h-32 sm:h-36 object-cover transition-transform duration-500 group-hover:scale-110"
             loading="lazy"
+            width="400"
+            height="300"
           >
           <div
             class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-400 flex items-end p-3"

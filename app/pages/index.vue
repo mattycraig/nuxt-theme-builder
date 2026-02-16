@@ -1,23 +1,23 @@
 <script setup lang="ts">
 import { MSG } from "~/utils/iframeProtocol";
 import { isInIframe } from "~/utils/helpers";
-import { PAGE_DESCRIPTIONS } from "~/utils/seoDescriptions";
+import { PAGE_DESCRIPTIONS, SITE_URL, OG_IMAGE_URL } from "~/utils/seoDescriptions";
 
 definePageMeta({ layout: "preview" });
 
-const SITE_URL = "https://www.nuxt-ui-themes.com";
+const title = "Nuxt UI Theme Builder — Visual Design-Token Editor";
 
 useSeoMeta({
-  title: "Nuxt UI Theme Builder — Visual Design-Token Editor",
+  title,
   description: PAGE_DESCRIPTIONS["/"],
-  ogTitle: "Nuxt UI Theme Builder — Visual Design-Token Editor",
+  ogTitle: title,
   ogDescription: PAGE_DESCRIPTIONS["/"],
   ogType: "website",
-  ogImage: `${SITE_URL}/og-image.png`,
+  ogImage: OG_IMAGE_URL,
   twitterCard: "summary_large_image",
-  twitterTitle: "Nuxt UI Theme Builder — Visual Design-Token Editor",
+  twitterTitle: title,
   twitterDescription: PAGE_DESCRIPTIONS["/"],
-  twitterImage: `${SITE_URL}/og-image.png`,
+  twitterImage: OG_IMAGE_URL,
 });
 
 useHead({

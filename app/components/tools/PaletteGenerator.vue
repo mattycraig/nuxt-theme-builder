@@ -259,12 +259,12 @@ generate();
           name="i-lucide-file-output"
           class="size-4 text-(--ui-text-muted)"
         />
-        <h3
+        <h2
           id="palette-export-heading"
           class="text-sm font-semibold text-(--ui-text-highlighted)"
         >
           Export Palette
-        </h3>
+        </h2>
       </div>
 
       <UTabs

@@ -1,0 +1,8 @@
+# Security Policy for Nuxt UI Theme Builder
+# https://securitytxt.org/
+
+Contact: https://github.com/mattycraig/nuxt-theme-builder/security/advisories/new
+Preferred-Languages: en
+Canonical: https://nuxt-ui-themes.com/.well-known/security.txt
+Policy: https://github.com/mattycraig/nuxt-theme-builder/blob/master/SECURITY.md
+Expires: 2026-06-30T23:59:59.000Z

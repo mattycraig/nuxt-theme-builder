@@ -147,9 +147,9 @@ const FORMAT_LABELS: Record<ColorFormat, string> = {
 
     <UCard :ui="{ header: 'bg-elevated/50' }">
       <template #header>
-        <h3 class="text-sm font-semibold text-highlighted">
+        <h2 class="text-sm font-semibold text-highlighted">
           Color Format Reference
-        </h3>
+        </h2>
       </template>
       <div class="text-sm space-y-2">
         <p>
