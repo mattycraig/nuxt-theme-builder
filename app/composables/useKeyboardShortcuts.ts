@@ -7,11 +7,17 @@
  * - Ctrl/Cmd + S → Quick-save active theme (or open Save As)
  * - Ctrl/Cmd + Shift + S → Save As
  */
-export function useKeyboardShortcuts() {
-  const store = useThemeStore();
-  const { smartSave, openSaveAs } = useSaveThemeModal();
-
-  function handleKeydown(e: KeyboardEvent) {
+/**
+ * Creates the keydown handler bound to the given action callbacks.
+ * Exported for direct unit testing without lifecycle hooks.
+ */
+export function createKeydownHandler(actions: {
+  undo: () => void;
+  redo: () => void;
+  smartSave: () => void;
+  openSaveAs: () => void;
+}) {
+  return (e: KeyboardEvent) => {
     const mod = e.ctrlKey || e.metaKey;
     if (!mod) return;
 
@@ -19,18 +25,30 @@ export function useKeyboardShortcuts() {
 
     if (key === "z" && !e.shiftKey) {
       e.preventDefault();
-      store.undo();
+      actions.undo();
     } else if (key === "z" && e.shiftKey) {
       e.preventDefault();
-      store.redo();
+      actions.redo();
     } else if (key === "s" && !e.shiftKey) {
       e.preventDefault();
-      smartSave();
+      actions.smartSave();
     } else if (key === "s" && e.shiftKey) {
       e.preventDefault();
-      openSaveAs();
+      actions.openSaveAs();
     }
-  }
+  };
+}
+
+export function useKeyboardShortcuts() {
+  const store = useThemeStore();
+  const { smartSave, openSaveAs } = useSaveThemeModal();
+
+  const handleKeydown = createKeydownHandler({
+    undo: () => store.undo(),
+    redo: () => store.redo(),
+    smartSave,
+    openSaveAs,
+  });
 
   onMounted(() => {
     document.addEventListener("keydown", handleKeydown);

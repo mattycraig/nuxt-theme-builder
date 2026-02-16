@@ -64,8 +64,12 @@ describe("generateThemeCSS", () => {
   });
 
   it("returns empty darkCSS when dark overrides match defaults", () => {
+    const config = cloneTheme(DEFAULT_THEME);
+    config.darkColors = { ...config.colors };
+    config.darkColorShades = { ...config.colorShades };
+    config.darkNeutral = config.neutral;
     const { darkCSS } = generateThemeCSS(
-      DEFAULT_THEME,
+      config,
       DEFAULT_LIGHT_OVERRIDES,
       DEFAULT_DARK_OVERRIDES,
     );
@@ -122,8 +126,12 @@ describe("generateExportCSS", () => {
   });
 
   it("omits .dark block when dark matches defaults", () => {
+    const config = cloneTheme(DEFAULT_THEME);
+    config.darkColors = { ...config.colors };
+    config.darkColorShades = { ...config.colorShades };
+    config.darkNeutral = config.neutral;
     const output = generateExportCSS(
-      DEFAULT_THEME,
+      config,
       DEFAULT_LIGHT_OVERRIDES,
       DEFAULT_DARK_OVERRIDES,
     );
@@ -285,7 +293,7 @@ describe("generateThemeCSS — dark mode integration", () => {
 
   it("includes dark neutral overrides when neutral differs", () => {
     const config = cloneTheme(DEFAULT_THEME);
-    config.darkNeutral = "zinc";
+    config.darkNeutral = "stone";
     const { darkCSS } = generateThemeCSS(
       config,
       DEFAULT_LIGHT_OVERRIDES,
@@ -398,8 +406,12 @@ describe("generateThemeCSS — light-to-dark bleed-through prevention", () => {
 
   it("does not force-emit when light overrides match light defaults", () => {
     // Both light and dark match their respective defaults → no dark CSS
+    const config = cloneTheme(DEFAULT_THEME);
+    config.darkColors = { ...config.colors };
+    config.darkColorShades = { ...config.colorShades };
+    config.darkNeutral = config.neutral;
     const { darkCSS } = generateThemeCSS(
-      DEFAULT_THEME,
+      config,
       DEFAULT_LIGHT_OVERRIDES,
       DEFAULT_DARK_OVERRIDES,
     );

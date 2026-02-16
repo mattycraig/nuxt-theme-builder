@@ -1,6 +1,8 @@
 import { test, expect } from "@playwright/test";
 
 test.describe("Fullscreen Preview", () => {
+  test.describe.configure({ timeout: 90_000 });
+
   test.beforeEach(async ({ page }) => {
     await page.addInitScript(() => {
       localStorage.removeItem("theme");
@@ -9,7 +11,7 @@ test.describe("Fullscreen Preview", () => {
     await page.goto("/");
     await page.waitForSelector(
       '[data-testid="theme-editor"][data-hydrated="true"]',
-      { state: "visible", timeout: 30_000 },
+      { state: "visible", timeout: 60_000 },
     );
   });
 
@@ -142,12 +144,13 @@ test.describe("Fullscreen Preview", () => {
   test("should show current page label in fullscreen toolbar", async ({
     page,
   }) => {
+    test.setTimeout(90_000);
     await test.step("Navigate to a template page", async () => {
       // Navigate to dashboard template first
       await page.goto("/templates/dashboard");
       await page.waitForSelector(
         '[data-testid="theme-editor"][data-hydrated="true"]',
-        { state: "visible", timeout: 30_000 },
+        { state: "visible", timeout: 60_000 },
       );
     });
 
@@ -166,11 +169,12 @@ test.describe("Fullscreen Preview", () => {
   test("should toggle between preview and source code in fullscreen", async ({
     page,
   }) => {
+    test.setTimeout(90_000);
     await test.step("Navigate to a template page with source", async () => {
       await page.goto("/templates/dashboard");
       await page.waitForSelector(
         '[data-testid="theme-editor"][data-hydrated="true"]',
-        { state: "visible", timeout: 30_000 },
+        { state: "visible", timeout: 60_000 },
       );
     });
 

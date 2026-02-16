@@ -1,85 +1,77 @@
 import { describe, it, expect, beforeEach, vi } from "vitest";
+import {
+  COOKIE_CONSENT_STORAGE_KEY,
+  shouldShowConsentToast,
+  buildConsentToastConfig,
+} from "~/composables/useCookieConsent";
 
 /**
- * useCookieConsent runs its logic inside onMounted, which doesn't fire in a
- * unit-test context without a mounted component. We extract and test the
- * decision logic directly — lifecycle wiring is verified in e2e.
+ * Tests for the decision and configuration logic exported from useCookieConsent.
+ * Uses real exports — no duplicated logic.
  */
 
-const STORAGE_KEY = "cookie-consent";
-
 describe("useCookieConsent — decision logic", () => {
-  let toastAddSpy: ReturnType<typeof vi.fn>;
-
   beforeEach(() => {
-    localStorage.removeItem(STORAGE_KEY);
-    toastAddSpy = vi.fn();
+    localStorage.removeItem(COOKIE_CONSENT_STORAGE_KEY);
   });
 
-  function runConsentLogic() {
-    if (localStorage.getItem(STORAGE_KEY)) return false;
-
-    toastAddSpy({
-      title: "Cookie & Storage Notice",
-      duration: 0,
-      close: false,
+  describe("shouldShowConsentToast", () => {
+    it("returns true when no prior acceptance", () => {
+      expect(shouldShowConsentToast()).toBe(true);
     });
 
-    return true;
-  }
-
-  it("shows consent toast when no prior acceptance", () => {
-    const shown = runConsentLogic();
-    expect(shown).toBe(true);
-    expect(toastAddSpy).toHaveBeenCalledOnce();
-  });
-
-  it("skips toast when consent already accepted", () => {
-    localStorage.setItem(STORAGE_KEY, "accepted");
-    const shown = runConsentLogic();
-    expect(shown).toBe(false);
-    expect(toastAddSpy).not.toHaveBeenCalled();
-  });
-
-  it("skips toast for any truthy storage value", () => {
-    localStorage.setItem(STORAGE_KEY, "dismissed");
-    const shown = runConsentLogic();
-    expect(shown).toBe(false);
-    expect(toastAddSpy).not.toHaveBeenCalled();
-  });
-
-  describe("accept action", () => {
-    it("persists acceptance to localStorage", () => {
-      localStorage.setItem(STORAGE_KEY, "accepted");
-      expect(localStorage.getItem(STORAGE_KEY)).toBe("accepted");
+    it("returns false when consent already accepted", () => {
+      localStorage.setItem(COOKIE_CONSENT_STORAGE_KEY, "accepted");
+      expect(shouldShowConsentToast()).toBe(false);
     });
 
-    it("prevents toast from showing on subsequent visits", () => {
-      // First visit — should show
-      expect(runConsentLogic()).toBe(true);
-
-      // Simulate accept
-      localStorage.setItem(STORAGE_KEY, "accepted");
-
-      // Second visit — should not show
-      toastAddSpy.mockClear();
-      expect(runConsentLogic()).toBe(false);
-      expect(toastAddSpy).not.toHaveBeenCalled();
+    it("returns false for any truthy storage value", () => {
+      localStorage.setItem(COOKIE_CONSENT_STORAGE_KEY, "dismissed");
+      expect(shouldShowConsentToast()).toBe(false);
     });
   });
 
-  describe("toast configuration", () => {
+  describe("buildConsentToastConfig", () => {
     it("configures toast as persistent (duration: 0, close: false)", () => {
-      runConsentLogic();
-      const call = toastAddSpy.mock.calls[0][0];
-      expect(call.duration).toBe(0);
-      expect(call.close).toBe(false);
+      const config = buildConsentToastConfig(vi.fn(), vi.fn());
+      expect(config.duration).toBe(0);
+      expect(config.close).toBe(false);
     });
 
     it("includes descriptive title", () => {
-      runConsentLogic();
-      const call = toastAddSpy.mock.calls[0][0];
-      expect(call.title).toBe("Cookie & Storage Notice");
+      const config = buildConsentToastConfig(vi.fn(), vi.fn());
+      expect(config.title).toBe("Cookie & Storage Notice");
+    });
+
+    it("includes Accept and Privacy Policy actions", () => {
+      const config = buildConsentToastConfig(vi.fn(), vi.fn());
+      expect(config.actions).toHaveLength(2);
+      expect(config.actions[0].label).toBe("Accept");
+      expect(config.actions[1].label).toBe("Privacy Policy");
+    });
+
+    it("calls onAccept handler when Accept action is clicked", () => {
+      const onAccept = vi.fn();
+      const config = buildConsentToastConfig(onAccept, vi.fn());
+      config.actions[0].onClick();
+      expect(onAccept).toHaveBeenCalledOnce();
+    });
+
+    it("calls onPrivacy handler when Privacy Policy action is clicked", () => {
+      const onPrivacy = vi.fn();
+      const config = buildConsentToastConfig(vi.fn(), onPrivacy);
+      config.actions[1].onClick();
+      expect(onPrivacy).toHaveBeenCalledOnce();
+    });
+  });
+
+  describe("accept action (integration)", () => {
+    it("prevents toast from showing on subsequent visits", () => {
+      expect(shouldShowConsentToast()).toBe(true);
+
+      localStorage.setItem(COOKIE_CONSENT_STORAGE_KEY, "accepted");
+
+      expect(shouldShowConsentToast()).toBe(false);
     });
   });
 });

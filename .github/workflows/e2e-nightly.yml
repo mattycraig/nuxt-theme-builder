@@ -50,7 +50,7 @@ jobs:
       - name: Build app for E2E preview
         run: pnpm build
         env:
-          NODE_OPTIONS: --max-old-space-size=4096
+          NODE_OPTIONS: --max-old-space-size=8192
 
       - name: Run full E2E suite
         run: pnpm test:e2e:full

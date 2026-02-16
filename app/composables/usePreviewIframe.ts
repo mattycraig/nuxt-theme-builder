@@ -4,6 +4,96 @@ import { ThemeConfigSchema } from "~/types/theme";
 import type { ThemeConfig } from "~/types/theme";
 import { MSG } from "~/utils/iframeProtocol";
 
+/** Callback interface for the message handler, enabling direct unit testing. */
+export interface IframeMessageActions {
+  setIframeLoading: (v: boolean) => void;
+  setIframeReady: (v: boolean) => void;
+  syncThemeToIframe: (config: unknown) => void;
+  syncColorModeToIframe: (mode: string) => void;
+  navigateIframe: (path: string) => void;
+  navigateTo: (path: string) => void;
+  loadConfig: (config: ThemeConfig) => void;
+  showToast: () => void;
+  openSaveAs: () => void;
+  exportOpen: () => void;
+  undo: () => void;
+  redo: () => void;
+  setNavigatingFromIframe: (v: boolean) => void;
+}
+
+export interface IframeMessageContext {
+  routePath: string;
+  iframeSrc: string;
+  iframeInitialSrc: string;
+  colorModePreference: string;
+  storeConfig: unknown;
+  origin: string;
+}
+
+/**
+ * Creates the iframe message handler. Exported for direct unit testing.
+ */
+export function createIframeMessageHandler(
+  actions: IframeMessageActions,
+  getContext: () => IframeMessageContext,
+) {
+  return (event: MessageEvent) => {
+    const ctx = getContext();
+    if (event.origin !== ctx.origin) return;
+
+    switch (event.data?.type) {
+      case MSG.NAVIGATE_DONE:
+        actions.setIframeLoading(false);
+        break;
+
+      case MSG.NAVIGATE_PARENT: {
+        const path = sanitizeNavigationPath(String(event.data.path));
+        if (path && path !== ctx.routePath) {
+          actions.setNavigatingFromIframe(true);
+          actions.navigateTo(path);
+        }
+        break;
+      }
+
+      case MSG.PREVIEW_READY:
+        actions.setIframeReady(true);
+        actions.setIframeLoading(false);
+        actions.syncThemeToIframe(ctx.storeConfig);
+        actions.syncColorModeToIframe(ctx.colorModePreference);
+        if (ctx.iframeSrc !== ctx.iframeInitialSrc) {
+          actions.navigateIframe(ctx.iframeSrc);
+        }
+        break;
+
+      case MSG.APPLY_AI_THEME: {
+        const validated = ThemeConfigSchema.safeParse(event.data.config);
+        if (validated.success) {
+          actions.loadConfig(validated.data as ThemeConfig);
+          actions.showToast();
+          if (event.data.save) {
+            actions.openSaveAs();
+          }
+          if (event.data.export) {
+            actions.exportOpen();
+          }
+        }
+        break;
+      }
+
+      case MSG.KEYBOARD_SHORTCUT: {
+        if (event.data.key === "z") {
+          if (event.data.shift) {
+            actions.redo();
+          } else {
+            actions.undo();
+          }
+        }
+        break;
+      }
+    }
+  };
+}
+
 /**
  * Manages the iframe-based preview panel communication.
  *
@@ -84,61 +174,31 @@ export function usePreviewIframe() {
 
   // Inbound Message Handler ─────────────────────────────────────────
 
-  function handleIframeMessage(event: MessageEvent) {
-    if (event.origin !== window.location.origin) return;
-
-    switch (event.data?.type) {
-      case MSG.NAVIGATE_DONE:
-        iframeLoading.value = false;
-        break;
-
-      case MSG.NAVIGATE_PARENT: {
-        const path = sanitizeNavigationPath(String(event.data.path));
-        if (path && path !== route.path) {
-          navigatingFromIframe.value = true;
-          navigateTo(path);
-        }
-        break;
-      }
-
-      case MSG.PREVIEW_READY:
-        iframeReady.value = true;
-        iframeLoading.value = false;
-        syncThemeToIframe(store.config);
-        syncColorModeToIframe(colorMode.preference);
-        // Navigate iframe to current route if it differs from the initial src
-        if (iframeSrc.value !== iframeInitialSrc.value) {
-          navigateIframe(iframeSrc.value);
-        }
-        break;
-
-      case MSG.APPLY_AI_THEME: {
-        const validated = ThemeConfigSchema.safeParse(event.data.config);
-        if (validated.success) {
-          store.loadConfig(validated.data as ThemeConfig);
-          showThemeAppliedToast(toast);
-          if (event.data.save) {
-            openSaveAs();
-          }
-          if (event.data.export) {
-            exportPanel.open();
-          }
-        }
-        break;
-      }
-
-      case MSG.KEYBOARD_SHORTCUT: {
-        if (event.data.key === "z") {
-          if (event.data.shift) {
-            store.redo();
-          } else {
-            store.undo();
-          }
-        }
-        break;
-      }
-    }
-  }
+  const handleIframeMessage = createIframeMessageHandler(
+    {
+      setIframeLoading: (v) => { iframeLoading.value = v; },
+      setIframeReady: (v) => { iframeReady.value = v; },
+      syncThemeToIframe,
+      syncColorModeToIframe,
+      navigateIframe,
+      navigateTo: (path) => { navigatingFromIframe.value = true; navigateTo(path); },
+      loadConfig: (config) => { store.loadConfig(config); },
+      showToast: () => { showThemeAppliedToast(toast); },
+      openSaveAs: () => { openSaveAs(); },
+      exportOpen: () => { exportPanel.open(); },
+      undo: () => { store.undo(); },
+      redo: () => { store.redo(); },
+      setNavigatingFromIframe: (v) => { navigatingFromIframe.value = v; },
+    },
+    () => ({
+      routePath: route.path,
+      iframeSrc: iframeSrc.value,
+      iframeInitialSrc: iframeInitialSrc.value,
+      colorModePreference: colorMode.preference,
+      storeConfig: store.config,
+      origin: window.location.origin,
+    }),
+  );
 
   // Lifecycle ───────────────────────────────────────────────────────
 

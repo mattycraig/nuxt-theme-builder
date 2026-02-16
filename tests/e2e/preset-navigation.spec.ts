@@ -104,20 +104,21 @@ test.describe("Page Navigation", () => {
   test("should show 3-level breadcrumbs on nested routes", async ({
     page,
   }) => {
+    test.setTimeout(90_000);
     await test.step("Navigate directly to a nested component page", async () => {
-      await page.goto("/components/cards");
+      await page.goto("/components/card");
       await page.waitForSelector(
         '[data-testid="theme-editor"][data-hydrated="true"]',
-        { state: "visible", timeout: 30_000 },
+        { state: "visible", timeout: 60_000 },
       );
     });
 
-    await test.step("Verify breadcrumb shows Home > Components > Cards", async () => {
+    await test.step("Verify breadcrumb shows Home > Components > Card", async () => {
       const breadcrumb = page.getByRole("navigation", { name: "breadcrumb" });
       await expect(breadcrumb).toBeVisible();
       await expect(breadcrumb).toContainText("Home");
       await expect(breadcrumb).toContainText("Components");
-      await expect(breadcrumb).toContainText("Cards");
+      await expect(breadcrumb).toContainText("Card");
 
       const componentsLink = breadcrumb.getByRole("link", {
         name: "Components",

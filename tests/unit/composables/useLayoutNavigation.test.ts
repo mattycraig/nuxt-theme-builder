@@ -53,9 +53,9 @@ describe("useLayoutNavigation", () => {
   });
 
   describe("currentPageLabel", () => {
-    it('returns "Home" for the root route', () => {
+    it('returns "Preview" for the root route (not in NAVIGATION_ITEMS)', () => {
       mockRoute.path = "/";
-      expect(nav.currentPageLabel.value).toBe("Home");
+      expect(nav.currentPageLabel.value).toBe("Preview");
     });
 
     it("returns correct label for a known route", () => {
@@ -128,6 +128,31 @@ describe("useLayoutNavigation", () => {
       expect(nav.breadcrumbItems.value[1].to).toBe("/blocks");
       expect(nav.breadcrumbItems.value[2].to).toBe("/blocks/hero");
     });
+
+    it("uses fallback lookup for parent not in NAVIGATION_ITEMS[0]", () => {
+      // /tools is NOT in NAVIGATION_ITEMS[0] but IS in allNavItems via TOOL_NAV_ITEMS
+      mockRoute.path = "/tools/palette-viewer";
+      const crumbs = nav.breadcrumbItems.value;
+      expect(crumbs[0].label).toBe("Home");
+      expect(crumbs[1].label).toBe("All Tools");
+      expect(crumbs[1].to).toBe("/tools");
+    });
+
+    it("only returns Home for completely unknown nested route", () => {
+      mockRoute.path = "/nonexistent/deep-page";
+      const crumbs = nav.breadcrumbItems.value;
+      // Home always present; no parent or match found
+      expect(crumbs[0].label).toBe("Home");
+      expect(crumbs).toHaveLength(1);
+    });
+
+    it("returns Home + match for single unknown segment", () => {
+      mockRoute.path = "/unknown";
+      const crumbs = nav.breadcrumbItems.value;
+      expect(crumbs[0].label).toBe("Home");
+      // Single segment → no parent lookup; no match → just Home
+      expect(crumbs).toHaveLength(1);
+    });
   });
 
   describe("mobileNavItems", () => {
@@ -139,8 +164,9 @@ describe("useLayoutNavigation", () => {
     it("includes top-level items from first nav group", () => {
       const items = nav.mobileNavItems.value[0];
       const labels = items.map((i: { label: string }) => i.label);
-      expect(labels).toContain("Home");
+      expect(labels).toContain("AI Generate");
       expect(labels).toContain("Templates");
+      expect(labels).toContain("Components");
     });
 
     it("items have label, icon, and to properties", () => {
