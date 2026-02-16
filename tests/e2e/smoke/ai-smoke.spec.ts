@@ -137,7 +137,7 @@ test.describe("Smoke - AI Theme Generation", () => {
     await expect(input).toBeVisible();
 
     await input.fill("Create a clean B2B dashboard theme");
-    await page.getByRole("button", { name: "Send message" }).click();
+    await input.press("Enter");
 
     await expect(page.getByText(/professional blue theme/i)).toBeVisible({
       timeout: 15_000,
