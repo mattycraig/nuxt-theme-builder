@@ -2,13 +2,13 @@
 export default defineNuxtConfig({
   modules: [
     "@nuxt/content",
-    "@nuxt/image",
     "@nuxt/scripts",
     "@nuxt/ui",
     "@nuxt/eslint",
     "@nuxtjs/mdc",
     "@nuxtjs/sitemap",
     "nuxt-og-image",
+    "nuxt-schema-org",
     "@pinia/nuxt",
     "pinia-plugin-persistedstate/nuxt",
     "@vueuse/nuxt",
@@ -42,18 +42,12 @@ export default defineNuxtConfig({
     zeroRuntime: true,
   },
 
-  image: {
-    quality: 80,
-    format: ["avif", "webp"],
-    // Whitelist external image domains used in preview pages
-    domains: ["picsum.photos", "i.pravatar.cc"],
-    screens: {
-      xs: 320,
-      sm: 640,
-      md: 768,
-      lg: 1024,
-      xl: 1280,
-      xxl: 1536,
+  schemaOrg: {
+    identity: {
+      type: "Organization",
+      name: "Nuxt UI Theme Builder",
+      url: "https://www.nuxt-ui-themes.com",
+      logo: "https://www.nuxt-ui-themes.com/android-chrome-512x512.png",
     },
   },
 
