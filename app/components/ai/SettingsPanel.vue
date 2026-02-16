@@ -67,6 +67,7 @@ const keyPlaceholders: Record<string, string> = {
         :items="providerItems"
         value-key="value"
         class="w-full mt-2"
+        aria-label="Provider"
         @update:model-value="provider = $event"
       />
     </UFormField>
@@ -100,6 +101,7 @@ const keyPlaceholders: Record<string, string> = {
           :placeholder="keyPlaceholders[provider] || 'Enter API key'"
           class="flex-1"
           autocomplete="off"
+          aria-label="API Key"
           @update:model-value="apiKey = $event as string"
         />
         <UTooltip :text="showKey ? 'Hide key' : 'Show key'">
@@ -150,6 +152,7 @@ const keyPlaceholders: Record<string, string> = {
         :items="modelItems"
         value-key="value"
         class="w-full mt-1"
+        aria-label="Model"
         @update:model-value="model = $event"
       />
     </UFormField>

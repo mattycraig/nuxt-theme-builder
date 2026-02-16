@@ -76,7 +76,7 @@ function copyPrompt() {
             :label="copied ? 'Copied!' : 'Copy Prompt'"
             :color="copied ? 'success' : 'primary'"
             :variant="copied ? 'solid' : 'soft'"
-            :aria-label="`Copy AI generation prompt for ${title}`"
+            :aria-label="copied ? `Copied! AI generation prompt for ${title}` : `Copy Prompt for ${title}`"
             size="sm"
             @click="copyPrompt"
           />

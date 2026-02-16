@@ -204,7 +204,7 @@ function getDropdownItems(preset: ThemePreset) {
           variant="outline"
           color="neutral"
           size="xs"
-          aria-label="Generate random theme"
+          aria-label="I'm feeling lucky! Generate random theme"
           @click="store.randomizeTheme()"
         />
       </div>

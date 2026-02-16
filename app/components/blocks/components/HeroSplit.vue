@@ -22,11 +22,15 @@ const links = [
   <section class="relative overflow-hidden">
     <UPageHero
       headline="v4.0"
-      title="Design tokens, your way"
       description="Visually configure every color, radius, and font — then export a single config file for your project."
       :links="links"
       orientation="horizontal"
     >
+      <template #title>
+        <h2 class="text-5xl sm:text-7xl font-bold tracking-tight text-(--ui-text-highlighted)">
+          Design tokens, your way
+        </h2>
+      </template>
       <!-- Mock app screenshot card -->
       <div class="relative hero-slide-in">
         <div

@@ -167,7 +167,7 @@ function handleClearFilters() {
               :icon="cat.icon"
               :variant="selectedCategory === cat.slug ? 'solid' : 'soft'"
               :aria-pressed="selectedCategory === cat.slug"
-              :aria-label="`Filter by ${cat.label}. ${cat.items.length} ${pluralLabel}. ${selectedCategory === cat.slug ? 'Currently selected' : 'Not selected'}.`"
+              :aria-label="`${cat.label} (${cat.items.length}). Filter by ${cat.label}. ${selectedCategory === cat.slug ? 'Currently selected' : 'Not selected'}.`"
               color="neutral"
               size="sm"
               @click="toggleCategory(cat.slug)"
@@ -227,7 +227,7 @@ function handleClearFilters() {
               <NuxtLink
                 :to="String(item.to)"
                 class="block h-full"
-                :aria-label="`View ${item.label} ${itemLabel}. ${item.description || ''}`"
+                :aria-label="`${item.label}. ${item.description || ''}`"
               >
                 <UCard
                   class="h-full hover:ring-2 hover:ring-(--ui-primary)/40 transition-all cursor-pointer"

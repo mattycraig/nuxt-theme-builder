@@ -408,6 +408,7 @@ function handlePromptSelect(prompt: string) {
                   : 'Enter your API key in settings to start...'
               "
               :disabled="!isReady || isGenerating"
+              aria-label="Theme generation prompt"
               :ui="{ base: 'px-1.5' }"
               @submit="onSubmit"
             >

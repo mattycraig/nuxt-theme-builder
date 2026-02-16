@@ -39,7 +39,7 @@ describe("EditorSavedThemes", () => {
   it("renders 'I'm feeling lucky!' random button in empty state", async () => {
     const wrapper = await mountSavedThemes();
     const luckyButton = wrapper.find(
-      'button[aria-label="Generate random theme"]',
+      `button[aria-label="I'm feeling lucky! Generate random theme"]`,
     );
     expect(luckyButton.exists()).toBe(true);
   });

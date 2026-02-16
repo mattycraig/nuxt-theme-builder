@@ -414,6 +414,7 @@ function createChat(prompt: string) {
               v-model="inputText"
               variant="subtle"
               placeholder="Ask anything about Nuxt UI theming..."
+              aria-label="Chat message input"
               :ui="{ base: 'px-1.5' }"
               @submit="onSubmit"
             >

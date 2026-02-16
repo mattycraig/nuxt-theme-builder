@@ -107,7 +107,7 @@ export default defineNuxtConfig({
   },
 
   devtools: { enabled: process.env.NODE_ENV === "development" },
-  compatibilityDate: "2024-04-03",
+  compatibilityDate: "2025-01-01",
 
   experimental: {
     // Caches build artifacts between restarts — dramatically speeds up subsequent cold starts

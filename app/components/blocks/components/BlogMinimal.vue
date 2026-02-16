@@ -52,6 +52,7 @@ const posts = [
           <div
             v-for="(post, i) in posts"
             :key="post.title"
+            role="listitem"
             class="blog-minimal-stagger group relative pl-8 py-6 transition-colors duration-200"
             :style="{ animationDelay: `${100 + i * 120}ms` }"
           >

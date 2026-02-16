@@ -103,6 +103,7 @@ const sidebar = [
               <div
                 v-for="(post, i) in sidebar"
                 :key="post.title"
+                role="listitem"
                 class="blog-mag-stagger group py-4"
                 :style="{ animationDelay: `${300 + i * 80}ms` }"
               >

@@ -9,55 +9,176 @@ export const PAGE_DESCRIPTIONS: Record<string, string> = {
     "Learn how to use the Nuxt UI Theme Builder — configure design tokens, preview components, and export your theme as app.config.ts, CSS, or JSON.",
   "/ai":
     "Generate custom Nuxt UI themes with AI — describe your design vision and get a complete theme configuration you can apply instantly.",
-  // Component pages
+
+  // ── Component index ────────────────────────────────────────────────────
   "/components":
     "Browse individual Nuxt UI v4 components — buttons, badges, alerts, cards, inputs, tables, and more — all styled with your current theme settings.",
-  "/components/all":
-    "A live showcase of every Nuxt UI v4 component rendered with your current theme — buttons, inputs, tables, cards, and more on a single page.",
-  "/components/accordion":
-    "Preview Nuxt UI accordion components styled with your theme — expandable content panels for FAQs, nested menus, and collapsible sections.",
-  "/components/alerts":
+
+  // Element components
+  "/components/alert":
     "Preview Nuxt UI alert components styled with your theme — informational, warning, error, and success notifications with icons and actions.",
-  "/components/avatars":
-    "Preview Nuxt UI avatar components styled with your theme — user profile images, initials, status indicators, and avatar groups.",
-  "/components/badges":
+  "/components/avatar":
+    "Preview Nuxt UI avatar components styled with your theme — user profile images, initials, and status indicators in multiple sizes.",
+  "/components/avatar-group":
+    "Preview Nuxt UI avatar-group components styled with your theme — stacked avatar groups with overflow indicator.",
+  "/components/badge":
     "Preview Nuxt UI badge components styled with your theme — status labels, counters, and tag indicators in multiple variants and colors.",
-  "/components/buttons":
-    "Preview Nuxt UI button components styled with your theme — solid, outline, ghost, and link variants across all semantic colors and sizes.",
+  "/components/banner":
+    "Preview Nuxt UI banner components styled with your theme — full-width notification banners for announcements and alerts.",
+  "/components/button":
+    "Preview Nuxt UI button components styled with your theme — solid, outline, soft, and ghost variants across all semantic colors and sizes.",
   "/components/calendar":
     "Preview Nuxt UI calendar components styled with your theme — date pickers and calendar widgets for scheduling and date selection.",
-  "/components/cards":
+  "/components/card":
     "Preview Nuxt UI card components styled with your theme — content containers with headers, footers, images, and action areas.",
-  "/components/dropdown":
-    "Preview Nuxt UI dropdown components styled with your theme — context menus, action lists, and nested menu options.",
-  "/components/inputs":
-    "Preview Nuxt UI input components styled with your theme — text fields, selects, checkboxes, toggles, textareas, and form controls.",
-  "/components/misc":
-    "Preview miscellaneous Nuxt UI components styled with your theme — tooltips, separators, skeletons, and other utility elements.",
-  "/components/navigation":
-    "Preview Nuxt UI navigation components styled with your theme — breadcrumbs, pagination, command palette, and tab navigation.",
+  "/components/chip":
+    "Preview Nuxt UI chip components styled with your theme — small indicator dots overlaid on avatars or icons for status display.",
+  "/components/collapsible":
+    "Preview Nuxt UI collapsible components styled with your theme — toggle content visibility with smooth expand and collapse animations.",
+  "/components/field-group":
+    "Preview Nuxt UI field-group components styled with your theme — group related form fields with shared styling and layout.",
+  "/components/icon":
+    "Preview Nuxt UI icon components styled with your theme — Iconify icon rendering with dynamic name resolution and sizing.",
+  "/components/kbd":
+    "Preview Nuxt UI kbd components styled with your theme — keyboard shortcut indicators for key bindings and hotkeys.",
   "/components/progress":
-    "Preview Nuxt UI progress components styled with your theme — progress bars, loading indicators, and step-based progress trackers.",
+    "Preview Nuxt UI progress components styled with your theme — progress bars and loading indicators with semantic coloring.",
+  "/components/separator":
+    "Preview Nuxt UI separator components styled with your theme — visual dividers between content sections in horizontal and vertical orientations.",
+  "/components/skeleton":
+    "Preview Nuxt UI skeleton components styled with your theme — placeholder loading animations for content areas and cards.",
+
+  // Form components
+  "/components/checkbox":
+    "Preview Nuxt UI checkbox components styled with your theme — single checkbox toggle with label and validation states.",
+  "/components/checkbox-group":
+    "Preview Nuxt UI checkbox-group components styled with your theme — multiple checkbox options in a grouped layout.",
+  "/components/color-picker":
+    "Preview Nuxt UI color-picker components styled with your theme — color selection with swatches and custom hex input.",
+  "/components/file-upload":
+    "Preview Nuxt UI file-upload components styled with your theme — drag-and-drop or click-to-upload file input areas.",
+  "/components/form":
+    "Preview Nuxt UI form components styled with your theme — form wrapper with validation, submission handling, and error display.",
+  "/components/form-field":
+    "Preview Nuxt UI form-field components styled with your theme — labeled field wrapper with validation, help text, and error messages.",
+  "/components/input":
+    "Preview Nuxt UI input components styled with your theme — text fields with icons, placeholder text, and validation states.",
+  "/components/input-date":
+    "Preview Nuxt UI input-date components styled with your theme — date input with integrated calendar picker.",
+  "/components/input-menu":
+    "Preview Nuxt UI input-menu components styled with your theme — input with dropdown menu for suggestions or autocomplete.",
+  "/components/input-number":
+    "Preview Nuxt UI input-number components styled with your theme — numeric input with increment and decrement controls.",
+  "/components/input-tags":
+    "Preview Nuxt UI input-tags components styled with your theme — tag input for entering multiple values as tokens.",
+  "/components/input-time":
+    "Preview Nuxt UI input-time components styled with your theme — time input with hour and minute selection controls.",
+  "/components/pin-input":
+    "Preview Nuxt UI pin-input components styled with your theme — segmented input for PIN codes and verification.",
+  "/components/radio-group":
+    "Preview Nuxt UI radio-group components styled with your theme — single-select radio options in a grouped layout.",
+  "/components/select":
+    "Preview Nuxt UI select components styled with your theme — dropdown select with single selection and option rendering.",
+  "/components/select-menu":
+    "Preview Nuxt UI select-menu components styled with your theme — searchable select with multiple selection support.",
+  "/components/slider":
+    "Preview Nuxt UI slider components styled with your theme — range slider for numeric value selection with min and max bounds.",
+  "/components/switch":
+    "Preview Nuxt UI switch components styled with your theme — toggle switch for boolean settings and preferences.",
+  "/components/textarea":
+    "Preview Nuxt UI textarea components styled with your theme — multi-line text input with auto-resize support.",
+
+  // Data components
+  "/components/accordion":
+    "Preview Nuxt UI accordion components styled with your theme — expandable content panels for FAQs, nested menus, and collapsible sections.",
+  "/components/carousel":
+    "Preview Nuxt UI carousel components styled with your theme — horizontal content carousel with navigation controls and slide transitions.",
+  "/components/empty":
+    "Preview Nuxt UI empty components styled with your theme — empty state placeholder with icon, message, and action button.",
+  "/components/marquee":
+    "Preview Nuxt UI marquee components styled with your theme — auto-scrolling horizontal content ticker for logos and announcements.",
+  "/components/scroll-area":
+    "Preview Nuxt UI scroll-area components styled with your theme — custom scrollbar container with overflow management.",
   "/components/table":
     "Preview Nuxt UI table components styled with your theme — sortable data tables with pagination, selection, and custom cell rendering.",
+  "/components/timeline":
+    "Preview Nuxt UI timeline components styled with your theme — chronological event display with icons and metadata.",
+  "/components/tree":
+    "Preview Nuxt UI tree components styled with your theme — hierarchical tree view with expand and collapse for file browsers.",
+  "/components/user":
+    "Preview Nuxt UI user components styled with your theme — user identity display with avatar, name, and description.",
+
+  // Navigation components
+  "/components/breadcrumb":
+    "Preview Nuxt UI breadcrumb components styled with your theme — hierarchical path breadcrumbs with separator customization.",
+  "/components/command-palette":
+    "Preview Nuxt UI command-palette components styled with your theme — searchable command palette with keyboard navigation.",
+  "/components/footer-columns":
+    "Preview Nuxt UI footer-columns components styled with your theme — multi-column footer layout with grouped links.",
+  "/components/link":
+    "Preview Nuxt UI link components styled with your theme — enhanced link with active state and icon support.",
+  "/components/navigation-menu":
+    "Preview Nuxt UI navigation-menu components styled with your theme — navigation menu with icon links and active state indicators.",
+  "/components/pagination":
+    "Preview Nuxt UI pagination components styled with your theme — page navigation controls for paginated data sets.",
+  "/components/stepper":
+    "Preview Nuxt UI stepper components styled with your theme — multi-step progress indicator for wizards and flows.",
   "/components/tabs":
     "Preview Nuxt UI tab components styled with your theme — horizontal and vertical tab layouts for organizing content sections.",
-  // Block pages
+
+  // Overlay components
+  "/components/context-menu":
+    "Preview Nuxt UI context-menu components styled with your theme — right-click context menus with grouped actions.",
+  "/components/drawer":
+    "Preview Nuxt UI drawer components styled with your theme — bottom sheet drawer for mobile-friendly overlays.",
+  "/components/dropdown-menu":
+    "Preview Nuxt UI dropdown-menu components styled with your theme — dropdown menus with grouped actions, icons, and keyboard shortcuts.",
+  "/components/modal":
+    "Preview Nuxt UI modal components styled with your theme — dialog overlays for confirmations, forms, and content.",
+  "/components/popover":
+    "Preview Nuxt UI popover components styled with your theme — floating content panels triggered by click or hover.",
+  "/components/slideover":
+    "Preview Nuxt UI slideover components styled with your theme — slide-in panel overlays from the screen edge.",
+  "/components/toast":
+    "Preview Nuxt UI toast components styled with your theme — notification toasts for transient feedback messages.",
+  "/components/tooltip":
+    "Preview Nuxt UI tooltip components styled with your theme — contextual hover hints for UI clarification.",
+
+  // ── Block pages ────────────────────────────────────────────────────────
   "/blocks":
-    "Explore pre-built layout blocks — hero sections, feature grids, CTAs, testimonials, stats, and FAQs — styled with your current Nuxt UI theme.",
+    "Explore pre-built layout blocks — hero sections, feature grids, CTAs, testimonials, stats, and more — styled with your current Nuxt UI theme.",
   "/blocks/hero":
     "Preview hero section blocks styled with your theme — bold headlines, calls to action, and background imagery for landing-page headers.",
-  "/blocks/features":
-    "Preview feature grid blocks styled with your theme — icon-based feature highlights for showcasing product capabilities.",
   "/blocks/cta":
     "Preview call-to-action blocks styled with your theme — conversion-focused sections with buttons and persuasive copy.",
-  "/blocks/testimonials":
-    "Preview testimonial blocks styled with your theme — customer quotes, ratings, and social proof sections.",
-  "/blocks/stats":
-    "Preview statistics blocks styled with your theme — metric counters, KPI dashboards, and data-highlight sections.",
-  "/blocks/faq":
-    "Preview FAQ blocks styled with your theme — accordion-based question and answer sections for common inquiries.",
-  // Template pages
+  "/blocks/feature":
+    "Preview feature grid blocks styled with your theme — icon-based feature highlights and bento layouts for showcasing capabilities.",
+  "/blocks/pricing":
+    "Preview pricing blocks styled with your theme — pricing plans, comparison tables, and single-product pricing cards.",
+  "/blocks/testimonial":
+    "Preview testimonial blocks styled with your theme — customer quotes, review cards, logo walls, and social proof sections.",
+  "/blocks/statistic":
+    "Preview statistics blocks styled with your theme — metric counters, stat cards, and KPI sections for social proof.",
+  "/blocks/blog":
+    "Preview blog blocks styled with your theme — blog post grids, featured articles, and magazine-style layouts.",
+  "/blocks/content":
+    "Preview content blocks styled with your theme — centered prose, split layouts, multi-column content, and aside sections.",
+  "/blocks/gallery":
+    "Preview gallery blocks styled with your theme — spotlight grids, masonry walls, cinematic showcases, and portfolio layouts.",
+  "/blocks/step":
+    "Preview step blocks styled with your theme — numbered step sections, vertical timelines, and how-it-works flows.",
+  "/blocks/header":
+    "Preview header blocks styled with your theme — site headers with logo, navigation links, and action buttons.",
+  "/blocks/footer":
+    "Preview footer blocks styled with your theme — site footers with link columns, social icons, and legal rows.",
+  "/blocks/contact":
+    "Preview contact blocks styled with your theme — contact forms, split info layouts, and channel cards.",
+  "/blocks/team":
+    "Preview team blocks styled with your theme — team member grids, profile cards, and featured bios.",
+  "/blocks/ecommerce":
+    "Preview e-commerce blocks styled with your theme — product grids, storefront showcases, and category layouts.",
+
+  // ── Template pages ─────────────────────────────────────────────────────
   "/templates":
     "See your theme applied to full page templates — dashboards, blogs, pricing pages, login screens, and more — all built with Nuxt UI v4 components.",
   "/templates/dashboard":
@@ -74,14 +195,20 @@ export const PAGE_DESCRIPTIONS: Record<string, string> = {
     "Preview a rich text editor template styled with your theme — toolbar, content area, and formatting controls.",
   "/templates/error-page":
     "Preview an error page template styled with your theme — 404 and 500 error states with illustrations and navigation links.",
-  // Utility pages
+  "/templates/login":
+    "Preview an authentication template styled with your theme — login and registration forms with social sign-in options.",
+  "/templates/changelog":
+    "Preview a changelog template styled with your theme — version history, release notes, and update timeline.",
+
+  // ── Utility pages ──────────────────────────────────────────────────────
   "/privacy":
     "Privacy policy for the Nuxt UI Theme Builder — learn what data is stored locally and how your preferences are handled.",
   "/about":
     "Build Nuxt UI themes visually — pick colors, preview 125+ components live, and export production-ready code. Free and open source.",
   "/contact":
     "Get in touch with the Nuxt UI Theme Builder team — report bugs, request features, or join the community.",
-  // Learn pages
+
+  // ── Learn pages ────────────────────────────────────────────────────────
   "/learn":
     "Guides, references, and tips for theming Nuxt UI v4 applications — colors, dark mode, Tailwind CSS v4, typography, accessibility, and design systems.",
   "/learn/theming/customize-colors":
@@ -104,7 +231,8 @@ export const PAGE_DESCRIPTIONS: Record<string, string> = {
     "How to build a consistent, scalable design system for Nuxt applications using Nuxt UI v4 design tokens and conventions.",
   "/learn/best-practices/accessible-color-contrast":
     "Ensure your theme colors meet WCAG 2.2 contrast requirements for text, UI components, and interactive elements.",
-  // Tool pages
+
+  // ── Tool pages ─────────────────────────────────────────────────────────
   "/tools":
     "Color and design utilities for Nuxt UI v4 theme development — palette viewer, generator, contrast checker, and color converter.",
   "/tools/palette-viewer":

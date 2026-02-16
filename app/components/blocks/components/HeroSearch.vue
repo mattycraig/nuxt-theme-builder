@@ -27,9 +27,13 @@ const suggestions = [
 
     <UPageHero
       headline="Documentation"
-      title="What can we help you find?"
       description="Search our docs, guides, and API references to build faster."
     >
+      <template #title>
+        <h2 class="text-5xl sm:text-7xl font-bold tracking-tight text-(--ui-text-highlighted)">
+          What can we help you find?
+        </h2>
+      </template>
       <div class="w-full max-w-xl mx-auto space-y-5">
         <UInput
           icon="i-lucide-search"
