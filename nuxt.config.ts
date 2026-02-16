@@ -371,6 +371,10 @@ export default defineNuxtConfig({
         // Enable on-demand ISR revalidation via bypass token
         bypassToken: process.env.VERCEL_BYPASS_TOKEN,
       },
+      functions: {
+        // AI generation needs extended duration for LLM round-trips
+        maxDuration: 60,
+      },
     },
     // Optimize serverless function bundling
     preset: "vercel",

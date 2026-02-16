@@ -3,14 +3,6 @@
   "framework": "nuxtjs",
   "buildCommand": "pnpm build",
   "installCommand": "pnpm install",
-  "functions": {
-    "api/ai/generate.post": {
-      "maxDuration": 60
-    },
-    "api/highlight.post": {
-      "maxDuration": 10
-    }
-  },
   "crons": [],
   "headers": [
     {
