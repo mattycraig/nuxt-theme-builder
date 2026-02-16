@@ -45,6 +45,16 @@ export default defineNuxtConfig({
   image: {
     quality: 80,
     format: ["avif", "webp"],
+    // Whitelist external image domains used in preview pages
+    domains: ["picsum.photos", "i.pravatar.cc"],
+    screens: {
+      xs: 320,
+      sm: 640,
+      md: 768,
+      lg: 1024,
+      xl: 1280,
+      xxl: 1536,
+    },
   },
 
   scripts: {
@@ -303,6 +313,24 @@ export default defineNuxtConfig({
   },
 
   routeRules: {
+    // ISR: Homepage and static info pages - revalidate daily
+    "/": { isr: 86400 },
+    "/about": { isr: 86400 },
+    "/help": { isr: 86400 },
+    "/privacy": { isr: 86400 },
+    "/contact": { isr: 86400 },
+
+    // ISR: Component/block/template preview pages - revalidate hourly
+    "/components/**": { isr: 3600 },
+    "/blocks/**": { isr: 3600 },
+    "/templates/**": { isr: 3600 },
+    "/learn/**": { isr: 3600 },
+    "/tools/**": { isr: 3600 },
+
+    // Dynamic routes - no caching (AI generation, auth)
+    "/ai": { isr: false },
+    "/api/**": { isr: false },
+
     // XSS validator disabled because this endpoint accepts raw source code
     // strings (e.g. Vue SFC, TypeScript) that inherently contain HTML-like
     // syntax which triggers false positives. The returned HTML is generated
@@ -314,6 +342,7 @@ export default defineNuxtConfig({
       },
     },
     "/coming-soon": {
+      isr: false,
       headers: {
         "X-Robots-Tag": "noindex, nofollow",
       },
@@ -333,5 +362,17 @@ export default defineNuxtConfig({
         "pinia-plugin-persistedstate",
       ],
     },
+  },
+
+  nitro: {
+    // Vercel-specific configuration
+    vercel: {
+      config: {
+        // Enable on-demand ISR revalidation via bypass token
+        bypassToken: process.env.VERCEL_BYPASS_TOKEN,
+      },
+    },
+    // Optimize serverless function bundling
+    preset: "vercel",
   },
 });
