@@ -1,5 +1,5 @@
 import { defineNuxtModule } from "nuxt/kit";
-import { readFileSync, readdirSync, statSync } from "node:fs";
+import { readFile, readdir, stat } from "node:fs/promises";
 import { join, relative } from "node:path";
 
 /**
@@ -11,24 +11,27 @@ export default defineNuxtModule({
   meta: {
     name: "source-code-embed",
   },
-  setup(_options, nuxt) {
+  async setup(_options, nuxt) {
     const pagesDir = join(nuxt.options.rootDir, "app/pages");
     const sourceMap: Record<string, string> = {};
 
-    function walkDir(dir: string) {
-      for (const entry of readdirSync(dir)) {
-        const fullPath = join(dir, entry);
-        const stat = statSync(fullPath);
-        if (stat.isDirectory()) {
-          walkDir(fullPath);
-        } else if (entry.endsWith(".vue")) {
-          const key = relative(pagesDir, fullPath).replace(/\\/g, "/");
-          sourceMap[key] = readFileSync(fullPath, "utf-8");
-        }
-      }
+    async function walkDir(dir: string) {
+      const entries = await readdir(dir);
+      await Promise.all(
+        entries.map(async (entry) => {
+          const fullPath = join(dir, entry);
+          const info = await stat(fullPath);
+          if (info.isDirectory()) {
+            await walkDir(fullPath);
+          } else if (entry.endsWith(".vue")) {
+            const key = relative(pagesDir, fullPath).replace(/\\/g, "/");
+            sourceMap[key] = await readFile(fullPath, "utf-8");
+          }
+        }),
+      );
     }
 
-    walkDir(pagesDir);
+    await walkDir(pagesDir);
 
     nuxt.options.nitro.virtual = nuxt.options.nitro.virtual || {};
     nuxt.options.nitro.virtual["#source-code-map"] =

@@ -89,48 +89,122 @@ export default defineNuxtConfig({
   devtools: { enabled: false },
   compatibilityDate: "2024-04-03",
 
+  experimental: {
+    // Caches build artifacts between restarts — dramatically speeds up subsequent cold starts
+    buildCache: true,
+  },
+
   css: ["~/assets/css/main.css"],
 
   fonts: {
     families: [
-      // Sans-serif
-      { name: "Public Sans", provider: "google", global: true },
-      { name: "DM Sans", provider: "google", global: true },
-      { name: "Figtree", provider: "google", global: true },
+      // Default font — preloaded globally for instant availability
       { name: "Geist", provider: "google", global: true },
-      { name: "Inter", provider: "google", global: true },
-      { name: "Lato", provider: "google", global: true },
-      { name: "Montserrat", provider: "google", global: true },
-      { name: "Nunito", provider: "google", global: true },
-      { name: "Open Sans", provider: "google", global: true },
-      { name: "Outfit", provider: "google", global: true },
-      { name: "Plus Jakarta Sans", provider: "google", global: true },
-      { name: "Poppins", provider: "google", global: true },
-      { name: "Raleway", provider: "google", global: true },
-      { name: "Roboto", provider: "google", global: true },
-      { name: "Source Sans 3", provider: "google", global: true },
-      { name: "Space Grotesk", provider: "google", global: true },
-      { name: "Work Sans", provider: "google", global: true },
+      // All other theme-selectable fonts: registered but NOT preloaded.
+      // @nuxt/fonts resolves metadata on demand instead of at startup,
+      // avoiding 35×4-weight resolution that stalls cold start.
+      // Sans-serif
+      { name: "Public Sans", provider: "google", global: true, preload: false },
+      { name: "DM Sans", provider: "google", global: true, preload: false },
+      { name: "Figtree", provider: "google", global: true, preload: false },
+      { name: "Inter", provider: "google", global: true, preload: false },
+      { name: "Lato", provider: "google", global: true, preload: false },
+      { name: "Montserrat", provider: "google", global: true, preload: false },
+      { name: "Nunito", provider: "google", global: true, preload: false },
+      { name: "Open Sans", provider: "google", global: true, preload: false },
+      { name: "Outfit", provider: "google", global: true, preload: false },
+      {
+        name: "Plus Jakarta Sans",
+        provider: "google",
+        global: true,
+        preload: false,
+      },
+      { name: "Poppins", provider: "google", global: true, preload: false },
+      { name: "Raleway", provider: "google", global: true, preload: false },
+      { name: "Roboto", provider: "google", global: true, preload: false },
+      {
+        name: "Source Sans 3",
+        provider: "google",
+        global: true,
+        preload: false,
+      },
+      {
+        name: "Space Grotesk",
+        provider: "google",
+        global: true,
+        preload: false,
+      },
+      { name: "Work Sans", provider: "google", global: true, preload: false },
       // Serif
-      { name: "Lora", provider: "google", global: true },
-      { name: "Merriweather", provider: "google", global: true },
-      { name: "Playfair Display", provider: "google", global: true },
-      { name: "Source Serif 4", provider: "google", global: true },
-      { name: "Libre Baskerville", provider: "google", global: true },
-      { name: "DM Serif Display", provider: "google", global: true },
-      { name: "Crimson Text", provider: "google", global: true },
+      { name: "Lora", provider: "google", global: true, preload: false },
+      {
+        name: "Merriweather",
+        provider: "google",
+        global: true,
+        preload: false,
+      },
+      {
+        name: "Playfair Display",
+        provider: "google",
+        global: true,
+        preload: false,
+      },
+      {
+        name: "Source Serif 4",
+        provider: "google",
+        global: true,
+        preload: false,
+      },
+      {
+        name: "Libre Baskerville",
+        provider: "google",
+        global: true,
+        preload: false,
+      },
+      {
+        name: "DM Serif Display",
+        provider: "google",
+        global: true,
+        preload: false,
+      },
+      {
+        name: "Crimson Text",
+        provider: "google",
+        global: true,
+        preload: false,
+      },
       // Monospace
-      { name: "JetBrains Mono", provider: "google", global: true },
-      { name: "Fira Code", provider: "google", global: true },
-      { name: "Source Code Pro", provider: "google", global: true },
-      { name: "IBM Plex Mono", provider: "google", global: true },
-      { name: "Space Mono", provider: "google", global: true },
+      {
+        name: "JetBrains Mono",
+        provider: "google",
+        global: true,
+        preload: false,
+      },
+      { name: "Fira Code", provider: "google", global: true, preload: false },
+      {
+        name: "Source Code Pro",
+        provider: "google",
+        global: true,
+        preload: false,
+      },
+      {
+        name: "IBM Plex Mono",
+        provider: "google",
+        global: true,
+        preload: false,
+      },
+      { name: "Space Mono", provider: "google", global: true, preload: false },
       // Display
-      { name: "Sora", provider: "google", global: true },
-      { name: "Archivo", provider: "google", global: true },
-      { name: "Lexend", provider: "google", global: true },
-      { name: "Urbanist", provider: "google", global: true },
-      { name: "Bricolage Grotesque", provider: "google", global: true },
+      { name: "Sora", provider: "google", global: true, preload: false },
+      { name: "Archivo", provider: "google", global: true, preload: false },
+      { name: "Lexend", provider: "google", global: true, preload: false },
+      { name: "Urbanist", provider: "google", global: true, preload: false },
+      {
+        name: "Bricolage Grotesque",
+        provider: "google",
+        global: true,
+        preload: false,
+      },
     ],
     defaults: {
       weights: [400, 500, 600, 700],
@@ -167,28 +241,27 @@ export default defineNuxtConfig({
   ],
 
   security: {
+    // Disable all security overhead in dev to avoid 431 header-too-large errors
+    enabled: process.env.NODE_ENV !== "development",
     rateLimiter: process.env.NODE_ENV === "development" ? false : undefined,
     headers: {
-      contentSecurityPolicy:
-        process.env.NODE_ENV === "development"
-          ? false
-          : {
-              "default-src": ["'self'"],
-              "script-src": [
-                "'self'",
-                "'nonce-{{nonce}}'",
-                "'strict-dynamic'",
-                "'wasm-unsafe-eval'",
-              ],
-              "style-src": ["'self'", "'unsafe-inline'"],
-              "img-src": ["'self'", "data:", "https:"],
-              "font-src": ["'self'", "https://fonts.gstatic.com"],
-              "connect-src": ["'self'", "https:"],
-              "frame-ancestors": ["'self'"],
-              "base-uri": ["'none'"],
-              "object-src": ["'none'"],
-              "script-src-attr": ["'none'"],
-            },
+      contentSecurityPolicy: {
+        "default-src": ["'self'"],
+        "script-src": [
+          "'self'",
+          "'nonce-{{nonce}}'",
+          "'strict-dynamic'",
+          "'wasm-unsafe-eval'",
+        ],
+        "style-src": ["'self'", "'unsafe-inline'"],
+        "img-src": ["'self'", "data:", "https:"],
+        "font-src": ["'self'", "https://fonts.gstatic.com"],
+        "connect-src": ["'self'", "https:"],
+        "frame-ancestors": ["'self'"],
+        "base-uri": ["'none'"],
+        "object-src": ["'none'"],
+        "script-src-attr": ["'none'"],
+      },
       referrerPolicy: "strict-origin-when-cross-origin",
       strictTransportSecurity: {
         maxAge: 31536000,
@@ -230,10 +303,14 @@ export default defineNuxtConfig({
   vite: {
     optimizeDeps: {
       include: [
+        // Pre-bundle CJS deps to avoid repeated transforms during dev
         "@nuxt/ui > prosemirror-state",
         "@nuxt/ui > prosemirror-transform",
         "@nuxt/ui > prosemirror-model",
         "@nuxt/ui > prosemirror-view",
+        "zod",
+        "pinia",
+        "pinia-plugin-persistedstate",
       ],
     },
   },
