@@ -1,6 +1,6 @@
 ## Getting Started
 
-Design your perfect [Nuxt UI v4](https://ui.nuxt.com){target="_blank"} theme in minutes — no guesswork, no trial-and-error deploys. Pick colors, tweak tokens, see the results live, and walk away with production-ready code.
+Design your perfect [Nuxt UI v4](https://ui.nuxt.com){target="\_blank"} theme in minutes — no guesswork, no trial-and-error deploys. Pick colors, tweak tokens, see the results live, and walk away with production-ready code.
 
 Here's the workflow:
 
@@ -33,12 +33,12 @@ Click any section header to expand or collapse it. The **expand/collapse all** b
 
 All shortcuts use `Ctrl` on Windows/Linux and `⌘` on macOS.
 
-| Action | Shortcut |
-| --- | --- |
-| Undo | `Ctrl` + `Z` |
-| Redo | `Ctrl` + `Shift` + `Z` |
-| Quick-save (or Save As if unnamed) | `Ctrl` + `S` |
-| Save As new theme | `Ctrl` + `Shift` + `S` |
+| Action                             | Shortcut               |
+| ---------------------------------- | ---------------------- |
+| Undo                               | `Ctrl` + `Z`           |
+| Redo                               | `Ctrl` + `Shift` + `Z` |
+| Quick-save (or Save As if unnamed) | `Ctrl` + `S`           |
+| Save As new theme                  | `Ctrl` + `Shift` + `S` |
 
 Every token change is tracked. Undo goes back up to 50 steps. History resets when you load a preset or saved theme.
 
@@ -56,16 +56,16 @@ Produces a ready-to-paste Nuxt config block that maps your color choices to Nuxt
 export default defineAppConfig({
   ui: {
     colors: {
-      primary: 'blue',
-      secondary: 'violet',
-      success: 'green',
-      info: 'sky',
-      warning: 'amber',
-      error: 'red',
-      neutral: 'slate',
+      primary: "blue",
+      secondary: "violet",
+      success: "green",
+      info: "sky",
+      warning: "amber",
+      error: "red",
+      neutral: "slate",
     },
   },
-})
+});
 ```
 
 **To use it:** drop this into your project's `app.config.ts`. Nuxt UI reads these values at runtime and injects the CSS variables for you.
@@ -160,6 +160,43 @@ Nuxt UI assigns specific neutral shades to semantic tokens like `--ui-text-muted
 The **Text Colors**, **Background Colors**, and **Border Colors** sections let you override which shade maps to each token — independently for light and dark modes. You get precise control over contrast and readability without touching the underlying color palette.
 
 For example, if your light mode muted text looks too faint, bump it from shade 400 to 500. The CSS export only includes overrides that differ from Nuxt UI's defaults, keeping your output clean.
+
+---
+
+## AI Theme Generation
+
+Don't know where to start? Describe your design vision in plain language and let AI generate a complete theme.
+
+1. **Open the AI page** — navigate to [AI Theme Generator](/ai).
+2. **Choose a provider** — select OpenAI, Anthropic, or Google and enter your API key. Keys are stored locally in your browser, never sent to our servers.
+3. **Describe your theme** — type something like "warm SaaS dashboard" or "neon cyberpunk" and hit generate.
+4. **Review and refine** — the generated theme loads into the editor. Every token is editable, so you keep full control.
+
+AI generation is BYOK (bring your own key). Prompts go directly from your browser to the provider — we never proxy or store them.
+
+---
+
+## Learn and Guides
+
+The [Learn](/learn) section contains in-depth guides for Nuxt UI theming:
+
+- **Theming** — customize colors, configure dark mode, understand the CSS variable system, explore the full color palette reference, and pair fonts.
+- **Tailwind CSS** — learn how Tailwind CSS v4 integrates with Nuxt UI's design-token approach.
+- **Components** — best practices for styling and composing Nuxt UI components.
+- **Best practices** — design-system fundamentals, accessibility, and maintenance tips.
+
+These guides complement the hands-on editor — read them for deeper understanding, use the editor to apply what you learn.
+
+---
+
+## Color Tools
+
+The [Tools](/tools) section includes standalone utilities for color work:
+
+- [**Color Converter**](/tools/color-converter) — convert between HEX, RGB, HSL, and other formats.
+- [**Contrast Checker**](/tools/contrast-checker) — verify text/background contrast ratios against WCAG AA and AAA thresholds.
+- [**Palette Generator**](/tools/palette-generator) — generate harmonious color palettes from a base color.
+- [**Palette Viewer**](/tools/palette-viewer) — browse and compare the full set of Tailwind color palettes.
 
 ---
 

@@ -1,12 +1,12 @@
 ## Overview
 
-Nuxt UI Theme Builder is a fully client-side application for visually configuring Nuxt UI design tokens. We are committed to protecting your privacy and being transparent about how the application works.
+Nuxt UI Theme Builder is a client-side application for visually configuring Nuxt UI design tokens. Your theme data stays in your browser — we do not collect personal information, require account creation, or transmit your design configurations to any server. The only external calls the app makes are AI theme-generation prompts, which go directly to the provider you choose (see below).
 
 ---
 
 ## What Data We Collect
 
-This application does **not** collect personal data, require account creation, or transmit your theme configurations to any server. All theme data stays in your browser.
+Here is exactly what the app stores on your device and why.
 
 ### Local Storage
 
@@ -20,6 +20,10 @@ We use your browser's localStorage to persist:
 ### Cookies
 
 A single cookie (`nuxt-color-mode`) is set automatically by the Nuxt Color Mode module to remember your light/dark mode preference. This is a first-party, functional cookie — it is not used for tracking or advertising.
+
+### Cookie Consent
+
+When you first visit the site, a consent banner asks whether you accept non-essential cookies. Your choice is saved in localStorage so the banner is not shown again. If you decline, only the strictly necessary `nuxt-color-mode` cookie is set. You can change your preference at any time by clearing localStorage for this site.
 
 ---
 

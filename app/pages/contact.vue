@@ -5,7 +5,8 @@ const contactMethods = [
   {
     icon: "i-lucide-message-circle",
     title: "GitHub Issues",
-    description: "Report bugs or request features through our issue tracker.",
+    description:
+      "Found a bug or have a feature request? Open an issue and we'll take a look.",
     href: "https://github.com/mattycraig/nuxt-theme-builder/issues",
     label: "Open an Issue",
   },
@@ -17,13 +18,6 @@ const contactMethods = [
     href: "https://github.com/mattycraig/nuxt-theme-builder/discussions",
     label: "Join the Discussion",
   },
-  {
-    icon: "i-lucide-mail",
-    title: "Email",
-    description: "For private inquiries or partnership opportunities.",
-    href: "mailto:hello@example.com",
-    label: "hello@example.com",
-  },
 ];
 </script>
 
@@ -33,7 +27,7 @@ const contactMethods = [
       <UPageHeader
         headline="Contact"
         title="Get in Touch"
-        description="Have a question, found a bug, or want to contribute? Here's how to reach us."
+        description="Have a question, found a bug, or want to contribute? We're most active on GitHub."
         :links="[
           {
             label: 'Back to Home',
@@ -46,7 +40,7 @@ const contactMethods = [
       />
 
       <UPageBody>
-        <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+        <div class="grid gap-6 sm:grid-cols-2">
           <UCard
             v-for="method in contactMethods"
             :key="method.title"

@@ -1,8 +1,16 @@
-## What Is It?
+## Why We Built This
 
-Nuxt UI Theme Builder is a single-page application that lets you visually configure Nuxt UI v4 design tokens — semantic colors, neutral palette, border radius, font family, and per-mode shade overrides — then export the result as `app.config.ts`, CSS variables, or JSON.
+Theming Nuxt UI should feel like picking colors, not editing config files. Too often, setting up a design-token system means copy-pasting snippets, toggling dark mode to catch mismatches, and rebuilding just to preview a single shade change.
 
-Every change you make is instantly previewed across a library of real Nuxt UI components, layout blocks, and full-page templates so you can see exactly how your theme looks before shipping it.
+We wanted a tool where you could see your entire design system render across real components — instantly, in both color modes — and walk away with production-ready code you can paste straight into your project.
+
+---
+
+## Your Theme, Configured Visually
+
+Nuxt UI Theme Builder is a free, open-source application that lets you visually configure Nuxt UI v4 design tokens — semantic colors, neutral palette, border radius, font family, and per-mode shade overrides — then export the result as `app.config.ts`, CSS variables, or JSON.
+
+Every change is instantly previewed across 125+ real Nuxt UI components, layout blocks, and full-page templates so you can see exactly how your theme looks before shipping it.
 
 ---
 
@@ -13,9 +21,10 @@ Every change you make is instantly previewed across a library of real Nuxt UI co
 - **Built-in presets** — start from curated themes and customize from there.
 - **Undo / Redo** — full history support so you can experiment freely.
 - **Save & manage themes** — persist multiple themes locally and switch between them.
-- **AI theme generation** — describe your design vision in plain language and generate a complete theme.
+- **AI theme generation** — describe your design vision in plain language and let AI generate a complete starting point.
 - **Dark & light mode** — separate shade overrides for each color mode.
-- **Fully client-side** — no backend, no account required, no data leaves your browser.
+- **No account required** — theme data stays in your browser. The only external calls are AI prompts, which go directly to the provider you choose (bring your own API key).
+- **Learn & tooling** — browse [theming guides](/learn) and use built-in [color tools](/tools) to support your design workflow.
 
 ---
 
@@ -31,7 +40,7 @@ Every change you make is instantly previewed across a library of real Nuxt UI co
 
 ## Open Source
 
-This project is open source and available on GitHub. Contributions, bug reports, and feature requests are welcome. If you find the tool useful, consider giving it a star.
+This project is open source under the [MIT License](https://github.com/mattycraig/nuxt-theme-builder/blob/master/LICENSE){target="\_blank"}. Contributions of any kind — code, docs, design, ideas — are welcome. If the tool saves you time, consider [giving it a star on GitHub](https://github.com/mattycraig/nuxt-theme-builder){target="\_blank"}.
 
 ---
 

@@ -7,8 +7,8 @@ import aboutMd from "~/data/about.md?raw";
     <UContainer>
       <UPageHeader
         headline="About"
-        title="Nuxt UI Theme Builder"
-        description="A free, open-source visual editor for Nuxt UI v4 design tokens."
+        title="Build Nuxt UI Themes — Visually"
+        description="Pick colors, preview 125+ components live, and export production-ready code. No guesswork, no trial-and-error deploys."
         :links="[
           {
             label: 'Back to Home',

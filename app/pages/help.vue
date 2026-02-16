@@ -40,6 +40,21 @@ const tocLinks = [
     icon: "i-lucide-sliders-vertical",
   },
   {
+    label: "AI Theme Generation",
+    to: "#ai-theme-generation",
+    icon: "i-lucide-sparkles",
+  },
+  {
+    label: "Learn & Guides",
+    to: "#learn-and-guides",
+    icon: "i-lucide-book-open",
+  },
+  {
+    label: "Color Tools",
+    to: "#color-tools",
+    icon: "i-lucide-pipette",
+  },
+  {
     label: "FAQ",
     to: "#frequently-asked-questions",
     icon: "i-lucide-circle-help",

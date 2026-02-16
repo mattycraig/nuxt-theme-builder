@@ -8,7 +8,7 @@ import privacyMd from "~/data/privacy.md?raw";
       <UPageHeader
         headline="Legal"
         title="Privacy Policy"
-        description="Last updated: February 11, 2026"
+        description="Last updated: February 15, 2026"
         :links="[
           {
             label: 'Back to Home',

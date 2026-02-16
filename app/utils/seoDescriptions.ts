@@ -78,7 +78,7 @@ export const PAGE_DESCRIPTIONS: Record<string, string> = {
   "/privacy":
     "Privacy policy for the Nuxt UI Theme Builder — learn what data is stored locally and how your preferences are handled.",
   "/about":
-    "Learn about the Nuxt UI Theme Builder — a free, open-source visual editor for Nuxt UI v4 design tokens.",
+    "Build Nuxt UI themes visually — pick colors, preview 125+ components live, and export production-ready code. Free and open source.",
   "/contact":
     "Get in touch with the Nuxt UI Theme Builder team — report bugs, request features, or join the community.",
   // Learn pages
