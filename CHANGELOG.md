@@ -5,6 +5,21 @@ All notable changes to this project will be documented in this file.
 This changelog is automatically generated using [changelogen](https://github.com/unjs/changelogen).
 Run `pnpm changelog` to preview or `pnpm release` to bump version locally.
 
+## v1.0.2
+
+[compare changes](https://github.com/mattycraig/nuxt-theme-builder/compare/v1.0.1...v1.0.2)
+
+### 🩹 Fixes
+
+- **sitemap:** Add dynamic routes for blocks, components, and learn articles ([bc086a0](https://github.com/mattycraig/nuxt-theme-builder/commit/bc086a0))
+- **content:** Prerender learn pages to avoid better-sqlite3 in Vercel Lambda ([e3b04cc](https://github.com/mattycraig/nuxt-theme-builder/commit/e3b04cc))
+- **server:** Resolve Shiki WASM and payload.json errors on Vercel ([05383b5](https://github.com/mattycraig/nuxt-theme-builder/commit/05383b5))
+- **blocks:** Correct code block language from html to vue ([4ed2d62](https://github.com/mattycraig/nuxt-theme-builder/commit/4ed2d62))
+
+### ❤️ Contributors
+
+- Matthew Craig <themattycraig@gmail.com>
+
 ## v1.0.1
 
 [compare changes](https://github.com/mattycraig/nuxt-theme-builder/compare/v1.0.0...v1.0.1)
