@@ -1,8 +1,11 @@
-import { createHighlighter, type Highlighter } from "shiki";
+import { createHighlighterCore, type HighlighterCore } from "shiki/core";
+import { createJavaScriptRegexEngine } from "shiki/engine/javascript";
+import { bundledThemes } from "shiki/themes";
+import { bundledLanguages } from "shiki/langs";
 import { z } from "zod";
 import { isSafeHighlightedHtml } from "~/utils/security";
 
-let highlighterPromise: Promise<Highlighter> | null = null;
+let highlighterPromise: Promise<HighlighterCore> | null = null;
 
 const SUPPORTED_LANGS = [
   "vue",
@@ -29,20 +32,25 @@ const highlightRequestSchema = z.object({
   lang: z.string().max(32).optional(),
 });
 
-function getHighlighter(): Promise<Highlighter> {
+// JS RegExp engine avoids WASM dependency that fails in Vercel serverless
+function getHighlighter(): Promise<HighlighterCore> {
   if (!highlighterPromise) {
-    highlighterPromise = createHighlighter({
-      themes: ["github-light", "github-dark"],
-      langs: [
-        "vue",
-        "typescript",
-        "css",
-        "json",
-        "bash",
-        "html",
-        "javascript",
-        "yaml",
+    highlighterPromise = createHighlighterCore({
+      themes: [
+        bundledThemes["github-light"],
+        bundledThemes["github-dark"],
       ],
+      langs: [
+        bundledLanguages["vue"],
+        bundledLanguages["typescript"],
+        bundledLanguages["css"],
+        bundledLanguages["json"],
+        bundledLanguages["bash"],
+        bundledLanguages["html"],
+        bundledLanguages["javascript"],
+        bundledLanguages["yaml"],
+      ],
+      engine: createJavaScriptRegexEngine(),
     });
   }
   return highlighterPromise!;

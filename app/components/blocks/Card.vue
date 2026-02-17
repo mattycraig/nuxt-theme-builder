@@ -106,7 +106,7 @@ function copyPrompt() {
         <SharedCodeBlock
           :code="source"
           :filename="`${id}.vue`"
-          language="html"
+          language="vue"
           hide-download
           max-height="400px"
           class="border-0 rounded-none"
