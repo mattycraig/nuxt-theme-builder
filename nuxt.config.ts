@@ -38,8 +38,7 @@ export default defineNuxtConfig({
   },
 
   sitemap: {
-    // No dynamic sources in this project — all routes are file-based
-    zeroRuntime: true,
+    sources: ["/api/__sitemap__/urls"],
   },
 
   schemaOrg: {
