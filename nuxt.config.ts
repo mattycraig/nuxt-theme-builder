@@ -337,6 +337,12 @@ export default defineNuxtConfig({
         xssValidator: false,
       },
     },
+    // MDC's built-in highlight API also receives raw code in query params
+    "/api/_mdc/highlight": {
+      security: {
+        xssValidator: false,
+      },
+    },
     "/coming-soon": {
       isr: false,
       headers: {
@@ -361,6 +367,11 @@ export default defineNuxtConfig({
   },
 
   nitro: {
+    // Force-bundle shiki into serverless output so subpath imports
+    // (shiki/core, shiki/engine/javascript, etc.) resolve on Vercel
+    externals: {
+      inline: ["shiki"],
+    },
     // Prerender learn pages so Nuxt Content SQLite queries happen at build
     // time rather than in Vercel Lambda (where better-sqlite3 fails to load)
     prerender: {
