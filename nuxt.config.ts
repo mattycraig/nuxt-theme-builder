@@ -1,3 +1,5 @@
+import { LEARN_ROUTES } from "./shared/constants/routes";
+
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
   modules: [
@@ -317,7 +319,8 @@ export default defineNuxtConfig({
     "/components/**": { isr: 3600 },
     "/blocks/**": { isr: 3600 },
     "/templates/**": { isr: 3600 },
-    "/learn/**": { isr: 3600 },
+    "/learn": { prerender: true },
+    "/learn/**": { prerender: true },
     "/tools/**": { isr: 3600 },
 
     // Dynamic routes - no caching (AI generation, auth)
@@ -358,6 +361,11 @@ export default defineNuxtConfig({
   },
 
   nitro: {
+    // Prerender learn pages so Nuxt Content SQLite queries happen at build
+    // time rather than in Vercel Lambda (where better-sqlite3 fails to load)
+    prerender: {
+      routes: ["/learn", ...LEARN_ROUTES],
+    },
     // Vercel-specific configuration
     vercel: {
       config: {
