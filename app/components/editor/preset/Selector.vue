@@ -154,7 +154,7 @@ function onPresetSelect(name: string) {
         value-key="value"
         class="w-full"
         placeholder="Select a preset..."
-        aria-label="Select a preset. Theme preset selector"
+        aria-label="Select a preset"
         :ui="{
           label: 'text-muted uppercase text-xs',
         }"

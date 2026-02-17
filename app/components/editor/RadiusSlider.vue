@@ -28,7 +28,7 @@ function onUpdate(val: number | undefined) {
       }}</span>
     </div>
     <USlider
-      :model-value="modelValue"
+      :model-value="modelValue ?? 0.5"
       :min="0"
       :max="1"
       :step="0.125"

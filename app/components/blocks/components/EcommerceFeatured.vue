@@ -94,6 +94,8 @@
               alt="Enterprise Theme Kit"
               class="w-full h-auto object-cover"
               loading="lazy"
+              width="800"
+              height="600"
             >
           </div>
 

@@ -114,6 +114,8 @@ function selectImage(index: number) {
                 : 'h-40 sm:h-52 group-hover:scale-110',
             ]"
             loading="lazy"
+            width="800"
+            height="600"
           >
           <!-- Always-visible title bar -->
           <div

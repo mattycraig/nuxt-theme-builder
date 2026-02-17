@@ -106,6 +106,8 @@ const images = [
               img.height,
             ]"
             loading="lazy"
+            width="600"
+            height="400"
           >
           <!-- Glassmorphism overlay on hover -->
           <div

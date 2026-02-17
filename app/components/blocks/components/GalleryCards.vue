@@ -85,6 +85,8 @@ const items = [
             :alt="item.alt"
             class="w-full h-full min-h-40 object-cover rounded-lg"
             loading="lazy"
+            width="600"
+            height="400"
           >
           <template #footer>
             <div class="flex items-center justify-between">

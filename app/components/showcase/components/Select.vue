@@ -42,6 +42,7 @@ const roles = [
           :color="color"
           :items="['Option 1', 'Option 2']"
           :placeholder="color"
+          :aria-label="`Select option — ${color} color variant`"
         />
       </div>
     </ShowcaseSpecimen>

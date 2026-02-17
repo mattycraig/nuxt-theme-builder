@@ -89,6 +89,8 @@ const posts = [
                   :alt="post.image.alt"
                   class="w-full h-48 object-cover transition-transform duration-500 group-hover:scale-105"
                   loading="lazy"
+                  width="400"
+                  height="300"
                 >
                 <!-- Floating category badge -->
                 <div class="absolute top-3 left-3">

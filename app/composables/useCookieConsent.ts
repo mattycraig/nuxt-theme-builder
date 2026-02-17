@@ -51,7 +51,11 @@ export function buildConsentToastConfig(
 export function useCookieConsent() {
   if (import.meta.server) return;
 
+  const route = useRoute();
+
   onMounted(() => {
+    // The host app already shows the consent banner — skip inside the preview iframe
+    if ("preview" in route.query) return;
     if (!shouldShowConsentToast()) return;
 
     const toast = useToast();

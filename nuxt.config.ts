@@ -33,7 +33,7 @@ export default defineNuxtConfig({
   },
 
   site: {
-    url: "https://www.nuxt-ui-themes.com",
+    url: "https://nuxt-ui-themes.com",
     name: "Nuxt UI Theme Builder",
   },
 
@@ -46,8 +46,8 @@ export default defineNuxtConfig({
     identity: {
       type: "Organization",
       name: "Nuxt UI Theme Builder",
-      url: "https://www.nuxt-ui-themes.com",
-      logo: "https://www.nuxt-ui-themes.com/android-chrome-512x512.png",
+      url: "https://nuxt-ui-themes.com",
+      logo: "https://nuxt-ui-themes.com/android-chrome-512x512.png",
     },
   },
 
@@ -96,14 +96,14 @@ export default defineNuxtConfig({
         { name: "msapplication-TileColor", content: "#1e1b4b" },
         {
           property: "og:image",
-          content: "https://www.nuxt-ui-themes.com/og-image.png",
+          content: "https://nuxt-ui-themes.com/og-image.png",
         },
         { property: "og:image:width", content: "1200" },
         { property: "og:image:height", content: "630" },
         { property: "og:image:type", content: "image/png" },
         {
           name: "twitter:image",
-          content: "https://www.nuxt-ui-themes.com/og-image.png",
+          content: "https://nuxt-ui-themes.com/og-image.png",
         },
         { name: "twitter:card", content: "summary_large_image" },
       ],

@@ -95,6 +95,8 @@ const categories = [
                 :alt="cat.name"
                 class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
                 loading="lazy"
+                width="400"
+                height="300"
               >
               <div
                 class="absolute inset-0 bg-gradient-to-t from-[var(--ui-bg)]/70 to-transparent"

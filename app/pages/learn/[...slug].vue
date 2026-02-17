@@ -1,5 +1,6 @@
 <script setup lang="ts">
-import { PAGE_DESCRIPTIONS } from "~/utils/seoDescriptions";
+import { PAGE_DESCRIPTIONS, SITE_URL, OG_IMAGE_URL  } from "~/utils/seoDescriptions";
+
 
 const route = useRoute();
 
@@ -14,10 +15,33 @@ const seoDescription =
   article.description ??
   "";
 
+const seoTitle = `${article.title} — Nuxt UI Theme Builder`;
+
 useSeoMeta({
-  title: `${article.title} — Nuxt UI Theme Builder`,
+  title: seoTitle,
   description: seoDescription,
+  ogTitle: seoTitle,
+  ogDescription: seoDescription,
+  ogType: "article",
+  ogImage: OG_IMAGE_URL,
+  twitterCard: "summary_large_image",
+  twitterTitle: seoTitle,
+  twitterDescription: seoDescription,
+  twitterImage: OG_IMAGE_URL,
+  articlePublishedTime: article.date,
 });
+
+useSchemaOrg([
+  defineArticle({
+    headline: article.title,
+    description: seoDescription,
+    datePublished: article.date,
+    author: {
+      name: "Nuxt UI Theme Builder",
+      url: SITE_URL,
+    },
+  }),
+]);
 
 const [prev, next] = await queryCollectionItemSurroundings("learn", route.path);
 

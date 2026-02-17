@@ -3,8 +3,11 @@
  * Used by the default layout to set meta tags dynamically.
  */
 
+export const SITE_URL = "https://nuxt-ui-themes.com";
+export const OG_IMAGE_URL = `${SITE_URL}/og-image.png`;
+
 export const PAGE_DESCRIPTIONS: Record<string, string> = {
-  "/": "The visual design-token editor for Nuxt UI v4. Configure colors, radius, fonts, and shades — preview 125+ components live — export as app.config.ts, CSS, or JSON. AI-powered theme generation included.",
+  "/": "The visual design-token editor for Nuxt UI v4. Configure colors, radius, fonts, and shades — preview 125+ components live — then export as app.config.ts, CSS, or JSON.",
   "/help":
     "Learn how to use the Nuxt UI Theme Builder — configure design tokens, preview components, and export your theme as app.config.ts, CSS, or JSON.",
   "/ai":
@@ -64,7 +67,7 @@ export const PAGE_DESCRIPTIONS: Record<string, string> = {
   "/components/input":
     "Preview Nuxt UI input components styled with your theme — text fields with icons, placeholder text, and validation states.",
   "/components/input-date":
-    "Preview Nuxt UI input-date components styled with your theme — date input with integrated calendar picker.",
+    "Preview Nuxt UI input-date components styled with your theme — date input with integrated calendar picker and keyboard navigation support.",
   "/components/input-menu":
     "Preview Nuxt UI input-menu components styled with your theme — input with dropdown menu for suggestions or autocomplete.",
   "/components/input-number":
@@ -74,7 +77,7 @@ export const PAGE_DESCRIPTIONS: Record<string, string> = {
   "/components/input-time":
     "Preview Nuxt UI input-time components styled with your theme — time input with hour and minute selection controls.",
   "/components/pin-input":
-    "Preview Nuxt UI pin-input components styled with your theme — segmented input for PIN codes and verification.",
+    "Preview Nuxt UI pin-input components styled with your theme — segmented single-character input for PIN codes, OTPs, and verification flows.",
   "/components/radio-group":
     "Preview Nuxt UI radio-group components styled with your theme — single-select radio options in a grouped layout.",
   "/components/select":
@@ -84,9 +87,9 @@ export const PAGE_DESCRIPTIONS: Record<string, string> = {
   "/components/slider":
     "Preview Nuxt UI slider components styled with your theme — range slider for numeric value selection with min and max bounds.",
   "/components/switch":
-    "Preview Nuxt UI switch components styled with your theme — toggle switch for boolean settings and preferences.",
+    "Preview Nuxt UI switch components styled with your theme — toggle switch for boolean settings and preferences with label and disabled states.",
   "/components/textarea":
-    "Preview Nuxt UI textarea components styled with your theme — multi-line text input with auto-resize support.",
+    "Preview Nuxt UI textarea components styled with your theme — multi-line text input with auto-resize, character counting, and validation states.",
 
   // Data components
   "/components/accordion":
@@ -116,7 +119,7 @@ export const PAGE_DESCRIPTIONS: Record<string, string> = {
   "/components/footer-columns":
     "Preview Nuxt UI footer-columns components styled with your theme — multi-column footer layout with grouped links.",
   "/components/link":
-    "Preview Nuxt UI link components styled with your theme — enhanced link with active state and icon support.",
+    "Preview Nuxt UI link components styled with your theme — enhanced anchor element with active state, icon support, and external link handling.",
   "/components/navigation-menu":
     "Preview Nuxt UI navigation-menu components styled with your theme — navigation menu with icon links and active state indicators.",
   "/components/pagination":
@@ -130,7 +133,7 @@ export const PAGE_DESCRIPTIONS: Record<string, string> = {
   "/components/context-menu":
     "Preview Nuxt UI context-menu components styled with your theme — right-click context menus with grouped actions.",
   "/components/drawer":
-    "Preview Nuxt UI drawer components styled with your theme — bottom sheet drawer for mobile-friendly overlays.",
+    "Preview Nuxt UI drawer components styled with your theme — bottom sheet drawer with swipe-to-dismiss gesture for mobile-friendly overlay panels.",
   "/components/dropdown-menu":
     "Preview Nuxt UI dropdown-menu components styled with your theme — dropdown menus with grouped actions, icons, and keyboard shortcuts.",
   "/components/modal":
@@ -138,11 +141,11 @@ export const PAGE_DESCRIPTIONS: Record<string, string> = {
   "/components/popover":
     "Preview Nuxt UI popover components styled with your theme — floating content panels triggered by click or hover.",
   "/components/slideover":
-    "Preview Nuxt UI slideover components styled with your theme — slide-in panel overlays from the screen edge.",
+    "Preview Nuxt UI slideover components styled with your theme — slide-in panel overlays from the screen edge for detail views and settings.",
   "/components/toast":
-    "Preview Nuxt UI toast components styled with your theme — notification toasts for transient feedback messages.",
+    "Preview Nuxt UI toast components styled with your theme — notification toasts for transient feedback messages with auto-dismiss and actions.",
   "/components/tooltip":
-    "Preview Nuxt UI tooltip components styled with your theme — contextual hover hints for UI clarification.",
+    "Preview Nuxt UI tooltip components styled with your theme — contextual hover hints with configurable placement and delay for UI clarification.",
 
   // ── Block pages ────────────────────────────────────────────────────────
   "/blocks":
@@ -160,7 +163,7 @@ export const PAGE_DESCRIPTIONS: Record<string, string> = {
   "/blocks/statistic":
     "Preview statistics blocks styled with your theme — metric counters, stat cards, and KPI sections for social proof.",
   "/blocks/blog":
-    "Preview blog blocks styled with your theme — blog post grids, featured articles, and magazine-style layouts.",
+    "Preview blog blocks styled with your theme — blog post grids, featured articles, magazine-style layouts, and reading-time indicators.",
   "/blocks/content":
     "Preview content blocks styled with your theme — centered prose, split layouts, multi-column content, and aside sections.",
   "/blocks/gallery":
@@ -168,13 +171,13 @@ export const PAGE_DESCRIPTIONS: Record<string, string> = {
   "/blocks/step":
     "Preview step blocks styled with your theme — numbered step sections, vertical timelines, and how-it-works flows.",
   "/blocks/header":
-    "Preview header blocks styled with your theme — site headers with logo, navigation links, and action buttons.",
+    "Preview header blocks styled with your theme — site headers with logo, navigation links, action buttons, and responsive mobile menus.",
   "/blocks/footer":
-    "Preview footer blocks styled with your theme — site footers with link columns, social icons, and legal rows.",
+    "Preview footer blocks styled with your theme — site footers with link columns, social icons, newsletter signup, and legal information rows.",
   "/blocks/contact":
-    "Preview contact blocks styled with your theme — contact forms, split info layouts, and channel cards.",
+    "Preview contact blocks styled with your theme — contact forms, split info layouts, channel cards, and embedded map sections for support pages.",
   "/blocks/team":
-    "Preview team blocks styled with your theme — team member grids, profile cards, and featured bios.",
+    "Preview team blocks styled with your theme — team member grids, profile cards, featured bios, and role-based layouts for about pages.",
   "/blocks/ecommerce":
     "Preview e-commerce blocks styled with your theme — product grids, storefront showcases, and category layouts.",
 
@@ -192,13 +195,13 @@ export const PAGE_DESCRIPTIONS: Record<string, string> = {
   "/templates/chat":
     "Preview a chat application template styled with your theme — message bubbles, conversation list, and real-time messaging UI.",
   "/templates/editor":
-    "Preview a rich text editor template styled with your theme — toolbar, content area, and formatting controls.",
+    "Preview a rich text editor template styled with your theme — toolbar, content area, markdown support, and formatting controls.",
   "/templates/error-page":
     "Preview an error page template styled with your theme — 404 and 500 error states with illustrations and navigation links.",
   "/templates/login":
     "Preview an authentication template styled with your theme — login and registration forms with social sign-in options.",
   "/templates/changelog":
-    "Preview a changelog template styled with your theme — version history, release notes, and update timeline.",
+    "Preview a changelog template styled with your theme — version history, release notes, update timeline, and semantic versioning display.",
 
   // ── Utility pages ──────────────────────────────────────────────────────
   "/privacy":
@@ -206,7 +209,7 @@ export const PAGE_DESCRIPTIONS: Record<string, string> = {
   "/about":
     "Build Nuxt UI themes visually — pick colors, preview 125+ components live, and export production-ready code. Free and open source.",
   "/contact":
-    "Get in touch with the Nuxt UI Theme Builder team — report bugs, request features, or join the community.",
+    "Get in touch with the Nuxt UI Theme Builder team — report bugs, request features, suggest improvements, or join the community on GitHub.",
 
   // ── Learn pages ────────────────────────────────────────────────────────
   "/learn":
@@ -220,7 +223,7 @@ export const PAGE_DESCRIPTIONS: Record<string, string> = {
   "/learn/theming/css-variables-reference":
     "Complete reference of CSS custom properties (design tokens) used by Nuxt UI v4 for colors, radius, typography, and spacing.",
   "/learn/theming/typography-font-pairing":
-    "How to choose, pair, and apply fonts in Nuxt UI v4 applications using Nuxt Fonts and CSS variables.",
+    "How to choose, pair, and apply fonts in Nuxt UI v4 applications using Nuxt Fonts, CSS variables, and web font optimization strategies.",
   "/learn/theming/export-and-share":
     "Export your Nuxt UI v4 themes as app.config.ts, CSS variables, or JSON — and share them with your team or community.",
   "/learn/components/styling-cheat-sheet":
@@ -238,7 +241,7 @@ export const PAGE_DESCRIPTIONS: Record<string, string> = {
   "/tools/palette-viewer":
     "Browse every Tailwind CSS / Nuxt UI color palette and shade — click to copy HEX or OKLCH values for your theme.",
   "/tools/palette-generator":
-    "Generate random semantic color palettes for Nuxt UI v4 themes and export them as CSS variables or JSON.",
+    "Generate random semantic color palettes for Nuxt UI v4 themes — preview live swatches and export them as CSS variables or JSON.",
   "/tools/contrast-checker":
     "Check WCAG AA and AAA color-contrast ratios between any two colors — ensure your Nuxt UI theme meets accessibility standards.",
   "/tools/color-converter":

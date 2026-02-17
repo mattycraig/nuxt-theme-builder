@@ -2,4 +2,4 @@ User-agent: *
 Allow: /
 Disallow: /api/
 
-Sitemap: https://www.nuxt-ui-themes.com/sitemap.xml
+Sitemap: https://nuxt-ui-themes.com/sitemap.xml

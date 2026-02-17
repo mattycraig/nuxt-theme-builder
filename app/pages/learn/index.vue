@@ -1,7 +1,16 @@
 <script setup lang="ts">
 import { LEARN_CATEGORIES } from "~/utils/navigation";
+import { PAGE_DESCRIPTIONS } from "~/utils/seoDescriptions";
 
 const articles = await queryCollection("learn").order("order", "ASC").all();
+
+useSchemaOrg([
+  defineWebPage({
+    "@type": "CollectionPage",
+    name: "Learning Hub — Nuxt UI Theme Builder",
+    description: PAGE_DESCRIPTIONS["/learn"],
+  }),
+]);
 
 const articleByPath = computed(() => {
   const map = new Map<string, (typeof articles)[number]>();

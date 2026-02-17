@@ -4,6 +4,16 @@ import { TOOL_CATEGORIES } from "~/utils/navigation";
 const meta = TOOL_CATEGORIES[0]!.items.find(
   (i) => String(i.to) === "/tools/palette-viewer",
 );
+
+useSchemaOrg([
+  defineSoftwareApp({
+    name: "Palette Viewer — Nuxt UI Theme Builder",
+    description: String(meta?.description ?? ""),
+    applicationCategory: "DesignApplication",
+    operatingSystem: "Any",
+    offers: { price: 0, priceCurrency: "USD" },
+  }),
+]);
 </script>
 
 <template>

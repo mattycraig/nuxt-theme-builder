@@ -53,6 +53,8 @@ const images = [
               :alt="img.alt"
               class="w-full h-56 sm:h-80 lg:h-[26rem] object-cover transition-transform duration-1000 group-hover:scale-[1.03]"
               loading="lazy"
+              width="800"
+              height="600"
             >
           </div>
           <div class="mt-5 sm:mt-6 flex items-baseline justify-between gap-4">

@@ -105,6 +105,8 @@ const products = [
                 :alt="p.name"
                 class="w-full aspect-square object-cover transition-transform duration-500 group-hover:scale-105"
                 loading="lazy"
+                width="400"
+                height="400"
               >
               <!-- Gradient overlay on hover -->
               <div

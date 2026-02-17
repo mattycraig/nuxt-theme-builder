@@ -1,5 +1,14 @@
 <script setup lang="ts">
 import { TEMPLATE_CATEGORIES } from "~/utils/navigation";
+import { PAGE_DESCRIPTIONS } from "~/utils/seoDescriptions";
+
+useSchemaOrg([
+  defineWebPage({
+    "@type": "CollectionPage",
+    name: "Templates — Nuxt UI Theme Builder",
+    description: PAGE_DESCRIPTIONS["/templates"],
+  }),
+]);
 </script>
 
 <template>
