@@ -308,12 +308,12 @@ export default defineNuxtConfig({
   },
 
   routeRules: {
-    // ISR: Homepage and static info pages - revalidate daily
-    "/": { isr: 86400 },
-    "/about": { isr: 86400 },
-    "/help": { isr: 86400 },
-    "/privacy": { isr: 86400 },
-    "/contact": { isr: 86400 },
+    // Prerender: Homepage and static info pages (no server-side data deps)
+    "/": { prerender: true },
+    "/about": { prerender: true },
+    "/help": { prerender: true },
+    "/privacy": { prerender: true },
+    "/contact": { prerender: true },
 
     // ISR: Component/block/template preview pages - revalidate hourly
     "/components/**": { isr: 3600 },
@@ -364,7 +364,15 @@ export default defineNuxtConfig({
     // Prerender learn pages so Nuxt Content SQLite queries happen at build
     // time rather than in Vercel Lambda (where better-sqlite3 fails to load)
     prerender: {
-      routes: ["/learn", ...LEARN_ROUTES],
+      routes: [
+        "/",
+        "/about",
+        "/help",
+        "/privacy",
+        "/contact",
+        "/learn",
+        ...LEARN_ROUTES,
+      ],
     },
     // Vercel-specific configuration
     vercel: {
