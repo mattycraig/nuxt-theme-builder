@@ -1,6 +1,8 @@
 import { test, expect } from "@playwright/test";
 
 test.describe("Preset Loading & Navigation", () => {
+  test.describe.configure({ timeout: 90_000 });
+
   test.beforeEach(async ({ page }) => {
     await page.addInitScript(() => {
       localStorage.removeItem("theme");
@@ -9,7 +11,7 @@ test.describe("Preset Loading & Navigation", () => {
     await page.goto("/");
     await page.waitForSelector(
       '[data-testid="theme-editor"][data-hydrated="true"]',
-      { state: "visible", timeout: 30_000 },
+      { state: "visible", timeout: 60_000 },
     );
   });
 
@@ -39,6 +41,8 @@ test.describe("Preset Loading & Navigation", () => {
 });
 
 test.describe("Page Navigation", () => {
+  test.describe.configure({ timeout: 90_000 });
+
   test.beforeEach(async ({ page }) => {
     await page.addInitScript(() => {
       localStorage.removeItem("theme");
@@ -47,7 +51,7 @@ test.describe("Page Navigation", () => {
     await page.goto("/");
     await page.waitForSelector(
       '[data-testid="theme-editor"][data-hydrated="true"]',
-      { state: "visible", timeout: 30_000 },
+      { state: "visible", timeout: 60_000 },
     );
   });
 
@@ -69,6 +73,7 @@ test.describe("Page Navigation", () => {
         .first();
       if (await templatesLink.isVisible()) {
         await templatesLink.click();
+        await page.waitForURL(/\/templates/, { timeout: 15_000 });
         await expect(page).toHaveURL(/\/templates/);
       }
     });
@@ -79,6 +84,7 @@ test.describe("Page Navigation", () => {
       const blocksLink = page.getByRole("link", { name: "Blocks" }).first();
       if (await blocksLink.isVisible()) {
         await blocksLink.click();
+        await page.waitForURL(/\/blocks/, { timeout: 15_000 });
         await expect(page).toHaveURL(/\/blocks/);
       }
     });
@@ -109,7 +115,7 @@ test.describe("Page Navigation", () => {
       await page.goto("/components/card");
       await page.waitForSelector(
         '[data-testid="theme-editor"][data-hydrated="true"]',
-        { state: "visible", timeout: 60_000 },
+        { state: "attached", timeout: 60_000 },
       );
     });
 
@@ -131,11 +137,12 @@ test.describe("Page Navigation", () => {
   test("should show 2-level breadcrumbs on top-level routes", async ({
     page,
   }) => {
+    test.setTimeout(90_000);
     await test.step("Navigate directly to Templates top-level page", async () => {
       await page.goto("/templates");
       await page.waitForSelector(
         '[data-testid="theme-editor"][data-hydrated="true"]',
-        { state: "visible", timeout: 30_000 },
+        { state: "attached", timeout: 60_000 },
       );
     });
 

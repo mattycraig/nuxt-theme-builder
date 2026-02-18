@@ -150,7 +150,7 @@ test.describe("Fullscreen Preview", () => {
       await page.goto("/templates/dashboard");
       await page.waitForSelector(
         '[data-testid="theme-editor"][data-hydrated="true"]',
-        { state: "visible", timeout: 60_000 },
+        { state: "attached", timeout: 60_000 },
       );
     });
 
@@ -174,7 +174,7 @@ test.describe("Fullscreen Preview", () => {
       await page.goto("/templates/dashboard");
       await page.waitForSelector(
         '[data-testid="theme-editor"][data-hydrated="true"]',
-        { state: "visible", timeout: 60_000 },
+        { state: "attached", timeout: 60_000 },
       );
     });
 

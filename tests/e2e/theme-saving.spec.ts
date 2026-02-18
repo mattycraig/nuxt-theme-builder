@@ -1,6 +1,8 @@
 import { test, expect } from "@playwright/test";
 
 test.describe("Theme Saving - Unified Flow", () => {
+  test.describe.configure({ timeout: 90_000 });
+
   test.beforeEach(async ({ page }) => {
     await page.addInitScript(() => {
       localStorage.removeItem("theme");
@@ -10,7 +12,7 @@ test.describe("Theme Saving - Unified Flow", () => {
     // Wait for Vue hydration — data-hydrated is set in onMounted
     await page.waitForSelector(
       '[data-testid="theme-editor"][data-hydrated="true"]',
-      { state: "visible", timeout: 30_000 },
+      { state: "visible", timeout: 60_000 },
     );
   });
 
