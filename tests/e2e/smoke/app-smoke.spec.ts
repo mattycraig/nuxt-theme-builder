@@ -1,6 +1,8 @@
 import { test, expect } from "@playwright/test";
 
 test.describe("Smoke - Core Theme Builder", () => {
+  test.describe.configure({ timeout: 90_000 });
+
   test.beforeEach(async ({ page }) => {
     await page.addInitScript(() => {
       localStorage.removeItem("theme");
@@ -11,7 +13,7 @@ test.describe("Smoke - Core Theme Builder", () => {
     await page.goto("/");
     await page.waitForSelector(
       '[data-testid="theme-editor"][data-hydrated="true"]',
-      { state: "visible", timeout: 30_000 },
+      { state: "visible", timeout: 60_000 },
     );
   });
 
@@ -42,13 +44,14 @@ test.describe("Smoke - Core Theme Builder", () => {
     await expect(
       page.getByRole("tab", { name: "app.config.ts" }),
     ).toBeVisible();
-    await expect(page.getByText("export default")).toBeVisible();
+    await expect(page.getByText("export default")).toBeVisible({ timeout: 10_000 });
   });
 
   test("navigates to a preview route from sidebar", async ({ page }) => {
     const templatesLink = page.getByRole("link", { name: "Templates" }).first();
     await expect(templatesLink).toBeVisible();
     await templatesLink.click();
+    await page.waitForURL(/\/templates/, { timeout: 15_000 });
     await expect(page).toHaveURL(/\/templates/);
   });
 });

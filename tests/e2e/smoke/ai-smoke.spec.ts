@@ -126,7 +126,7 @@ test.describe("Smoke - AI Theme Generation", () => {
     // Wait for Vue hydration so event handlers are bound
     await page.waitForSelector('[data-hydrated="true"]', {
       state: "attached",
-      timeout: 15_000,
+      timeout: 30_000,
     });
   });
 

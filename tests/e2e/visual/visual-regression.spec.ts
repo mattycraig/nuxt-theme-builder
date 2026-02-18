@@ -24,7 +24,7 @@ test.describe("Visual Regression - Home", () => {
         height: viewport.height,
       });
       await page.goto("/");
-      await page.waitForLoadState("networkidle");
+      await page.waitForLoadState("load");
 
       // Wait for any animations to settle
       await page.waitForTimeout(500);
@@ -40,7 +40,7 @@ test.describe("Visual Regression - Home", () => {
 test.describe("Visual Regression - Editor", () => {
   test.beforeEach(async ({ page }) => {
     await page.goto("/");
-    await page.waitForLoadState("networkidle");
+    await page.waitForLoadState("load");
   });
 
   test("editor sidebar desktop", async ({ page }) => {
@@ -80,7 +80,7 @@ test.describe("Visual Regression - Components Preview", () => {
         height: viewport.height,
       });
       await page.goto("/components");
-      await page.waitForLoadState("networkidle");
+      await page.waitForLoadState("load");
       await page.waitForTimeout(500);
 
       await expect(page).toHaveScreenshot(`components-${viewport.name}.png`, {
@@ -95,7 +95,7 @@ test.describe("Visual Regression - Blocks Preview", () => {
   test("blocks index page", async ({ page }) => {
     await page.setViewportSize({ width: 1440, height: 900 });
     await page.goto("/blocks");
-    await page.waitForLoadState("networkidle");
+    await page.waitForLoadState("load");
     await page.waitForTimeout(500);
 
     await expect(page).toHaveScreenshot("blocks-index.png", {
@@ -109,7 +109,7 @@ test.describe("Visual Regression - Dark Mode", () => {
   test("home page dark mode", async ({ page }) => {
     await page.setViewportSize({ width: 1440, height: 900 });
     await page.goto("/");
-    await page.waitForLoadState("networkidle");
+    await page.waitForLoadState("load");
 
     // Toggle to dark mode if light
     await page.evaluate(() => {
@@ -126,7 +126,7 @@ test.describe("Visual Regression - Dark Mode", () => {
   test("home page light mode", async ({ page }) => {
     await page.setViewportSize({ width: 1440, height: 900 });
     await page.goto("/");
-    await page.waitForLoadState("networkidle");
+    await page.waitForLoadState("load");
 
     // Ensure light mode
     await page.evaluate(() => {

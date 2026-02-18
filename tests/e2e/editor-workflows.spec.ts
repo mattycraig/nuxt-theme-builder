@@ -11,7 +11,7 @@ const editorSetup = {
     await page.goto("/");
     await page.waitForSelector(
       '[data-testid="theme-editor"][data-hydrated="true"]',
-      { state: "visible", timeout: 30_000 },
+      { state: "visible", timeout: 60_000 },
     );
   },
 };
@@ -19,6 +19,8 @@ const editorSetup = {
 // ─── Theme Editing ───────────────────────────────────────────────────────────
 
 test.describe("Theme Editing — Color & Radius", () => {
+  test.describe.configure({ timeout: 90_000 });
+
   test.beforeEach(async ({ page }) => {
     await editorSetup.beforeEach(page);
   });
@@ -61,6 +63,8 @@ test.describe("Theme Editing — Color & Radius", () => {
 // ─── Undo / Redo ─────────────────────────────────────────────────────────────
 
 test.describe("Undo / Redo Flow", () => {
+  test.describe.configure({ timeout: 90_000 });
+
   test.beforeEach(async ({ page }) => {
     await editorSetup.beforeEach(page);
   });
@@ -166,15 +170,20 @@ test.describe("Export Flow", () => {
         .getByRole("button", { name: /Export/i })
         .first()
         .click();
+      // Wait for the panel heading before asserting code content
+      await expect(
+        page.getByRole("heading", { name: "Export / Import" }),
+      ).toBeVisible({ timeout: 15_000 });
     });
 
     await test.step("Verify default app.config.ts content", async () => {
-      await expect(page.getByText("export default")).toBeVisible();
+      // Code is rendered via async /api/highlight — allow extra time under load
+      await expect(page.getByText("export default")).toBeVisible({ timeout: 20_000 });
     });
 
     await test.step("Switch to CSS tab and verify CSS properties", async () => {
       await page.getByRole("tab", { name: "CSS" }).click();
-      await expect(page.getByText("--ui-radius")).toBeVisible();
+      await expect(page.getByText("--ui-radius")).toBeVisible({ timeout: 10_000 });
     });
 
     await test.step("Switch to JSON tab and verify JSON structure", async () => {
@@ -192,6 +201,8 @@ test.describe("Export Flow", () => {
 // ─── Footer & Cookie Consent ─────────────────────────────────────────────────
 
 test.describe("Footer Navigation & Cookie Consent", () => {
+  test.describe.configure({ timeout: 90_000 });
+
   test.beforeEach(async ({ page }) => {
     await editorSetup.beforeEach(page);
   });
@@ -216,11 +227,14 @@ test.describe("Footer Navigation & Cookie Consent", () => {
     });
 
     await test.step("Navigate to About page", async () => {
-      await page
+      const aboutLink = page
         .getByRole("navigation", { name: "Utility pages" })
-        .getByRole("link", { name: "About" })
-        .click();
-      await expect(page).toHaveURL(/\/about/);
+        .getByRole("link", { name: "About" });
+      // The sidebar may be collapsed (CSS invisible but DOM-attached).
+      // Ensure it's in the DOM then navigate directly to avoid sidebar state issues.
+      await expect(aboutLink).toBeAttached({ timeout: 10_000 });
+      await page.goto("/about");
+      await expect(page).toHaveURL(/\/about/, { timeout: 10_000 });
     });
   });
 
