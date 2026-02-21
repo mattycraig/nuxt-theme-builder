@@ -4,7 +4,7 @@ import { AI_MODELS, DEFAULT_AI_SETTINGS } from "~/types/ai";
 import { useAiSettings } from "~/composables/useAiSettings";
 
 let mockPersistedSettings = { ...DEFAULT_AI_SETTINGS };
-let mockSessionKey = "";
+let mockSessionKey: string | undefined;
 
 mockNuxtImport("useLocalStorage", () => {
   return (_key: string, defaultVal: unknown) =>
@@ -13,13 +13,13 @@ mockNuxtImport("useLocalStorage", () => {
 
 mockNuxtImport("useState", () => {
   return (_key: string, init?: () => string) =>
-    ref(mockSessionKey || (init ? init() : ""));
+    ref(mockSessionKey ?? (init ? init() : ""));
 });
 
 describe("useAiSettings", () => {
   beforeEach(() => {
     mockPersistedSettings = { ...DEFAULT_AI_SETTINGS };
-    mockSessionKey = "";
+    mockSessionKey = undefined;
   });
 
   describe("initial state", () => {

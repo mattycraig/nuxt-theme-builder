@@ -54,7 +54,7 @@ jobs:
           NITRO_PRESET: node-server
 
       - name: Run full E2E suite
-        run: pnpm test:e2e:full -- --update-snapshots=missing
+        run: pnpm test:e2e:full
 
       - name: Upload Playwright report
         if: always()
