@@ -5,6 +5,24 @@ All notable changes to this project will be documented in this file.
 This changelog is automatically generated using [changelogen](https://github.com/unjs/changelogen).
 Run `pnpm changelog` to preview or `pnpm release` to bump version locally.
 
+## v1.1.1
+
+### 🔒 Security
+
+- **source-code-embed:** Eliminate TOCTOU file system race condition by using `readdir` with `withFileTypes: true` instead of separate `stat()` calls
+
+### 🐛 Bug Fixes
+
+- **tests:** Correct `mockSessionKey` type to `string | undefined` and use nullish coalescing (`??`) in `useAiSettings` tests
+
+### 🏗 Build
+
+- Embed `--update-snapshots=missing` flag directly into `test:e2e:full` script instead of passing it at call sites
+
+### 👷 CI
+
+- Remove duplicate `--update-snapshots=missing` flag from e2e-nightly workflow now that it lives in the script
+
 ## v1.1.0
 
 ### 🚀 Enhancements

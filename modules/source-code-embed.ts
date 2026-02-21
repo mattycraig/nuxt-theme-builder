@@ -1,5 +1,5 @@
 import { defineNuxtModule } from "nuxt/kit";
-import { readFile, readdir, stat } from "node:fs/promises";
+import { readFile, readdir } from "node:fs/promises";
 import { join, relative } from "node:path";
 
 /**
@@ -16,14 +16,13 @@ export default defineNuxtModule({
     const sourceMap: Record<string, string> = {};
 
     async function walkDir(dir: string) {
-      const entries = await readdir(dir);
+      const entries = await readdir(dir, { withFileTypes: true });
       await Promise.all(
-        entries.map(async (entry) => {
-          const fullPath = join(dir, entry);
-          const info = await stat(fullPath);
-          if (info.isDirectory()) {
+        entries.map(async (dirent) => {
+          const fullPath = join(dir, dirent.name);
+          if (dirent.isDirectory()) {
             await walkDir(fullPath);
-          } else if (entry.endsWith(".vue")) {
+          } else if (dirent.isFile() && dirent.name.endsWith(".vue")) {
             const key = relative(pagesDir, fullPath).replace(/\\/g, "/");
             sourceMap[key] = await readFile(fullPath, "utf-8");
           }
