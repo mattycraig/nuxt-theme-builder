@@ -5,6 +5,10 @@ All notable changes to this project will be documented in this file.
 This changelog is automatically generated using [changelogen](https://github.com/unjs/changelogen).
 Run `pnpm changelog` to preview or `pnpm release` to bump version locally.
 
+## v1.3.1
+
+[compare changes](https://github.com/mattycraig/nuxt-theme-builder/compare/v1.3.0...v1.3.1)
+
 ## v1.3.0
 
 ### 🚀 Enhancements
