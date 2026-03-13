@@ -79,11 +79,31 @@ jobs:
         id: changelog
         run: |
           TAG="${{ needs.bump-version.outputs.new_tag || github.ref_name }}"
-          # Extract section for this version from CHANGELOG.md
-          pnpm changelogen --output temp-changelog.md --from $(git describe --tags --abbrev=0 HEAD~1 2>/dev/null || echo "") --to $TAG
-          echo "body<<EOF" >> $GITHUB_OUTPUT
-          cat temp-changelog.md >> $GITHUB_OUTPUT
-          echo "EOF" >> $GITHUB_OUTPUT
+          BODY_FILE="$(mktemp)"
+
+          # Extract the matching release section directly from CHANGELOG.md.
+          # This avoids recomputing tag ranges on detached tag checkouts.
+          awk -v header="## ${TAG}" '
+            $0 == header {
+              capture = 1
+            }
+            capture {
+              if ($0 ~ /^## v/ && $0 != header) {
+                exit
+              }
+              print
+            }
+          ' CHANGELOG.md > "$BODY_FILE"
+
+          if [ ! -s "$BODY_FILE" ]; then
+            printf '## %s\n\nRelease notes were not found in CHANGELOG.md.\n' "$TAG" > "$BODY_FILE"
+          fi
+
+          {
+            echo "body<<EOF"
+            cat "$BODY_FILE"
+            echo "EOF"
+          } >> "$GITHUB_OUTPUT"
 
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
