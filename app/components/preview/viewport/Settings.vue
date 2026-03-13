@@ -130,7 +130,7 @@ function onCustomHeightInput(val: string | number) {
           <UInput
             :id="widthInputId"
             type="number"
-            :model-value="customWidth ?? ''"
+            :model-value="customWidth ?? undefined"
             :min="320"
             placeholder="e.g. 480"
             size="sm"
@@ -172,7 +172,7 @@ function onCustomHeightInput(val: string | number) {
           <UInput
             :id="heightInputId"
             type="number"
-            :model-value="customHeight ?? ''"
+            :model-value="customHeight ?? undefined"
             :min="200"
             placeholder="e.g. 600"
             size="sm"

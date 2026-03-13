@@ -3,6 +3,7 @@ import { LEARN_ROUTES } from "./shared/constants/routes";
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
   modules: [
+    "@vercel/analytics/nuxt",
     "@nuxt/content",
     "@nuxt/scripts",
     "@nuxt/ui",
