@@ -1,5 +1,11 @@
 import { LEARN_ROUTES } from "./shared/constants/routes";
 
+const nitroPreset = process.env.NITRO_PRESET || "vercel";
+const enableIsrRouteRules =
+  nitroPreset === "vercel" &&
+  process.env.VERCEL === "1" &&
+  process.env.VERCEL_ENV === "production";
+
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
   modules: [
@@ -316,13 +322,18 @@ export default defineNuxtConfig({
     "/privacy": { prerender: true },
     "/contact": { prerender: true },
 
-    // ISR: Component/block/template preview pages - revalidate hourly
-    "/components/**": { isr: 3600 },
-    "/blocks/**": { isr: 3600 },
-    "/templates/**": { isr: 3600 },
+    // ISR depends on Vercel's production runtime. Disable it for local/dev
+    // and CI node-server previews so direct route requests do not 500.
+    ...(enableIsrRouteRules
+      ? {
+          "/components/**": { isr: 3600 },
+          "/blocks/**": { isr: 3600 },
+          "/templates/**": { isr: 3600 },
+          "/tools/**": { isr: 3600 },
+        }
+      : {}),
     "/learn": { prerender: true },
     "/learn/**": { prerender: true },
-    "/tools/**": { isr: 3600 },
 
     // Dynamic routes - no caching (AI generation, auth)
     "/ai": { isr: false },
@@ -398,6 +409,6 @@ export default defineNuxtConfig({
       },
     },
     // Optimize serverless function bundling
-    preset: "vercel",
+    preset: nitroPreset,
   },
 });
