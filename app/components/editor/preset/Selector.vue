@@ -1,6 +1,7 @@
 <script setup lang="ts">
+import type { SelectMenuItem } from "@nuxt/ui";
 import { BUILT_IN_PRESETS } from "~/utils/presets";
-import { PRESET_CATEGORIES, type ThemeConfig } from "~/types/theme";
+import { PRESET_CATEGORIES } from "~/types/theme";
 
 const store = useThemeStore();
 
@@ -78,12 +79,8 @@ onMounted(() => {
   }
 });
 
-const presetItems = computed(() => {
-  const items: Array<
-    | { type: "label"; label: string }
-    | { type: "separator" }
-    | { label: string; value: string; config: ThemeConfig }
-  > = [];
+const presetItems = computed<SelectMenuItem[]>(() => {
+  const items: SelectMenuItem[] = [];
 
   for (const category of PRESET_CATEGORIES) {
     const presetsInCategory = BUILT_IN_PRESETS.filter(
@@ -163,7 +160,7 @@ function onPresetSelect(name: string) {
         <!-- Custom dropdown items: swatches + name -->
         <template #item="{ item }">
           <div
-            v-if="'config' in item"
+            v-if="item && typeof item === 'object' && 'config' in item"
             class="flex items-center gap-2 min-w-0 w-full py-0.5"
           >
             <EditorSwatchStrip :config="item.config" />

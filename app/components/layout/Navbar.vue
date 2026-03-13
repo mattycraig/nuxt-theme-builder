@@ -13,9 +13,7 @@ const { currentPageLabel, mobileNavItems } = useLayoutNavigation();
   >
     <template #leading>
       <UTooltip text="Theme Config">
-        <UDashboardSidebarCollapse
-          :ui="{ leadingIcon: 'i-lucide:sliders-horizontal' }"
-        />
+        <UDashboardSidebarCollapse icon="i-lucide:sliders-horizontal" />
       </UTooltip>
       <USeparator orientation="vertical" class="h-6 mx-2" />
       <SharedAppLogo size="md" class="mr-1" />
