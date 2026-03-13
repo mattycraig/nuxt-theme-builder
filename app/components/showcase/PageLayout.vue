@@ -77,10 +77,13 @@ const sidebarNavItems = computed<NavigationMenuItem[][]>(() => {
 
     <UDashboardPanel id="components-main">
       <template #header>
-        <UDashboardNavbar :title="title">
+        <UDashboardNavbar>
           <template #leading>
             <div class="flex items-center gap-2">
               <UDashboardSidebarCollapse />
+              <span class="hidden sm:block truncate font-medium text-(--ui-text-highlighted)">
+                {{ title }}
+              </span>
             </div>
           </template>
 

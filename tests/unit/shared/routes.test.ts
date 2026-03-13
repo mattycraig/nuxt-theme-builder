@@ -2,7 +2,10 @@ import { describe, it, expect } from "vitest";
 import {
   BLOCK_ROUTES,
   COMPONENT_ROUTES,
+  INDEXABLE_DYNAMIC_ROUTES,
   LEARN_ROUTES,
+  NOINDEX_DEMO_ROUTES,
+  TEMPLATE_ROUTES,
   ALL_DYNAMIC_ROUTES,
 } from "~~/shared/constants/routes";
 import { BLOCK_CATEGORIES } from "~/utils/navigation/blocks";
@@ -34,6 +37,15 @@ describe("shared/constants/routes", () => {
   it("ALL_DYNAMIC_ROUTES is the union of all route arrays", () => {
     const expected = [...BLOCK_ROUTES, ...COMPONENT_ROUTES, ...LEARN_ROUTES];
     expect([...ALL_DYNAMIC_ROUTES]).toEqual(expected);
+  });
+
+  it("NOINDEX_DEMO_ROUTES contains the demo detail routes only", () => {
+    const expected = [...BLOCK_ROUTES, ...COMPONENT_ROUTES, ...TEMPLATE_ROUTES];
+    expect([...NOINDEX_DEMO_ROUTES]).toEqual(expected);
+  });
+
+  it("INDEXABLE_DYNAMIC_ROUTES only contains dynamic learn routes", () => {
+    expect([...INDEXABLE_DYNAMIC_ROUTES]).toEqual([...LEARN_ROUTES]);
   });
 
   it("has no duplicate routes", () => {
