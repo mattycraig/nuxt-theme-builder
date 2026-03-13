@@ -7,6 +7,8 @@ Run `pnpm changelog` to preview or `pnpm release` to bump version locally.
 
 ## v1.3.2
 
+- [compare changes](https://github.com/mattycraig/nuxt-theme-builder/compare/v1.3.1...v1.3.2)
+
 ### 🚀 Enhancements
 
 - Add error page, landing page, login page, and pricing page with respective components and functionality ([e08380a](https://github.com/mattycraig/nuxt-theme-builder/commit/e08380a))
