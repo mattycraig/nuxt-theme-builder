@@ -6,17 +6,20 @@ const { currentPageLabel, mobileNavItems } = useLayoutNavigation();
 
 <template>
   <UDashboardNavbar
-    title="Nuxt UI Theme Builder"
     class="bg-(--ui-bg)"
     :toggle="{ icon: 'i-lucide:sliders-horizontal' }"
-    :ui="{ title: 'hidden sm:block' }"
   >
     <template #leading>
       <UTooltip text="Theme Config">
         <UDashboardSidebarCollapse icon="i-lucide:sliders-horizontal" />
       </UTooltip>
       <USeparator orientation="vertical" class="h-6 mx-2" />
-      <SharedAppLogo size="md" class="mr-1" />
+      <div class="flex items-center gap-2 min-w-0">
+        <SharedAppLogo size="md" class="mr-1" />
+        <span class="hidden sm:block truncate font-semibold text-(--ui-text-highlighted)">
+          Nuxt UI Theme Builder
+        </span>
+      </div>
     </template>
 
     <template #right>

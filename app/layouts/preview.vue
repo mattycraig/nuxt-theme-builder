@@ -4,8 +4,9 @@ import { useThemeStore } from "~/stores/theme";
 import { sanitizeNavigationPath } from "~/utils/helpers";
 import { MSG } from "~/utils/iframeProtocol";
 import type { IframeToParentMessage, IframeMessage } from "~/utils/iframeProtocol";
+import { NOINDEX_DEMO_ROUTES } from "~~/shared/constants/routes";
 
-import { SITE_URL } from "~/utils/seoDescriptions";
+import { SITE_URL, INDEXABLE_ROBOTS } from "~/utils/seoDescriptions";
 
 useThemeApply();
 
@@ -13,6 +14,18 @@ const store = useThemeStore();
 const colorMode = useColorMode();
 const router = useRouter();
 const route = useRoute();
+const noindexDemoRouteSet = new Set<string>(NOINDEX_DEMO_ROUTES);
+const previewRobots = computed(() =>
+  "preview" in route.query
+    ? "noindex, nofollow"
+    : noindexDemoRouteSet.has(route.path)
+      ? "noindex, follow"
+      : INDEXABLE_ROBOTS,
+);
+
+useSeoMeta({
+  robots: previewRobots,
+});
 
 useHead({
   link: [

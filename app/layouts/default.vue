@@ -6,10 +6,13 @@ import { useKeyboardShortcuts } from "~/composables/useKeyboardShortcuts";
 import { useSourceCode } from "~/composables/useSourceCode";
 import {
   PAGE_DESCRIPTIONS,
+  PAGE_TITLES,
   DEFAULT_DESCRIPTION,
   SITE_URL,
   OG_IMAGE_URL,
+  INDEXABLE_ROBOTS,
 } from "~/utils/seoDescriptions";
+import { NOINDEX_DEMO_ROUTES } from "~~/shared/constants/routes";
 
 useThemeApply();
 useKeyboardShortcuts();
@@ -62,6 +65,11 @@ const SECTION_SUFFIXES: Record<string, string> = {
 };
 
 const seoTitle = computed(() => {
+  const explicitTitle = PAGE_TITLES[route.path];
+  if (explicitTitle) {
+    return explicitTitle;
+  }
+
   const label = currentPageLabel.value;
   const section = Object.keys(SECTION_SUFFIXES).find(
     (prefix) =>
@@ -77,9 +85,15 @@ const seoDescription = computed(
   () => PAGE_DESCRIPTIONS[route.path] ?? DEFAULT_DESCRIPTION,
 );
 
+const noindexDemoRouteSet = new Set<string>(NOINDEX_DEMO_ROUTES);
+const seoRobots = computed(() =>
+  noindexDemoRouteSet.has(route.path) ? "noindex, follow" : INDEXABLE_ROBOTS,
+);
+
 useSeoMeta({
   title: seoTitle,
   description: seoDescription,
+  robots: seoRobots,
   ogTitle: seoTitle,
   ogDescription: seoDescription,
   ogType: "website",

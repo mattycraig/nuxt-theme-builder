@@ -112,9 +112,57 @@ export const LEARN_ROUTES = [
   "/learn/best-practices/accessible-color-contrast",
 ] as const;
 
+export const TOOL_ROUTES = [
+  "/tools/color-converter",
+  "/tools/contrast-checker",
+  "/tools/palette-generator",
+  "/tools/palette-viewer",
+] as const;
+
+export const TEMPLATE_ROUTES = [
+  "/templates/blog",
+  "/templates/changelog",
+  "/templates/chat",
+  "/templates/dashboard",
+  "/templates/editor",
+  "/templates/error-page",
+  "/templates/landing",
+  "/templates/login",
+  "/templates/pricing",
+] as const;
+
+export const NOINDEX_DEMO_ROUTES = [
+  ...BLOCK_ROUTES,
+  ...COMPONENT_ROUTES,
+  ...TEMPLATE_ROUTES,
+] as const;
+
+export const INDEXABLE_DYNAMIC_ROUTES = [...LEARN_ROUTES] as const;
+
+export const PUBLIC_STATIC_ROUTES = [
+  "/",
+  "/about",
+  "/ai",
+  "/blocks",
+  "/components",
+  "/contact",
+  "/help",
+  "/learn",
+  "/privacy",
+  "/templates",
+  "/tools",
+] as const;
+
 /** All dynamic routes that need to be included in the sitemap. */
 export const ALL_DYNAMIC_ROUTES = [
   ...BLOCK_ROUTES,
   ...COMPONENT_ROUTES,
   ...LEARN_ROUTES,
+] as const;
+
+export const PUBLIC_PRERENDER_ROUTES = [
+  ...PUBLIC_STATIC_ROUTES,
+  ...TOOL_ROUTES,
+  ...TEMPLATE_ROUTES,
+  ...ALL_DYNAMIC_ROUTES,
 ] as const;

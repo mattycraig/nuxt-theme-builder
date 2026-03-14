@@ -1,4 +1,4 @@
-import { ALL_DYNAMIC_ROUTES } from "~~/shared/constants/routes";
+import { INDEXABLE_DYNAMIC_ROUTES } from "~~/shared/constants/routes";
 
 /**
  * Provides all dynamic route URLs to @nuxtjs/sitemap.
@@ -9,7 +9,7 @@ import { ALL_DYNAMIC_ROUTES } from "~~/shared/constants/routes";
  * resolve which slug values exist at build time.
  */
 export default defineEventHandler(() => {
-  return ALL_DYNAMIC_ROUTES.map((loc) => ({
+  return INDEXABLE_DYNAMIC_ROUTES.map((loc) => ({
     loc,
     changefreq: "weekly",
     priority: 0.7,

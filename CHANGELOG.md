@@ -198,6 +198,7 @@ Run `pnpm changelog` to preview or `pnpm release` to bump version locally.
 ### ❤️ Contributors
 
 - Matthew Jason Craig <themattycraig@gmail.com>
+- Matthew Craig <themattycraig@gmail.com>
 
 ## v1.3.1
 

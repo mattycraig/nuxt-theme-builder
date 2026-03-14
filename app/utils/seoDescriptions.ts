@@ -5,6 +5,22 @@
 
 export const SITE_URL = "https://nuxt-ui-themes.com";
 export const OG_IMAGE_URL = `${SITE_URL}/og-image.png`;
+export const INDEXABLE_ROBOTS =
+  "index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1";
+
+export const PAGE_TITLES: Record<string, string> = {
+  "/": "Nuxt UI Theme Builder — Visual Design-Token Editor",
+  "/about": "About Nuxt UI Theme Builder — Open Source Theme Editor",
+  "/ai": "AI Theme Generator — Nuxt UI Theme Builder",
+  "/blocks": "Nuxt UI Blocks Preview — Nuxt UI Theme Builder",
+  "/components": "Nuxt UI Components Preview — Nuxt UI Theme Builder",
+  "/contact": "Contact Nuxt UI Theme Builder — Support and GitHub",
+  "/help": "Nuxt UI Theme Builder Help — Guides, Shortcuts, Exports",
+  "/learn": "Nuxt UI Theming Guides — Nuxt UI Theme Builder",
+  "/privacy": "Privacy Policy — Nuxt UI Theme Builder",
+  "/templates": "Nuxt UI Templates Preview — Nuxt UI Theme Builder",
+  "/tools": "Nuxt UI Theme Tools — Palette, Contrast, Conversion",
+};
 
 export const PAGE_DESCRIPTIONS: Record<string, string> = {
   "/": "The visual design-token editor for Nuxt UI v4. Configure colors, radius, fonts, and shades — preview 125+ components live — then export as app.config.ts, CSS, or JSON.",
