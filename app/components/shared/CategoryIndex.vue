@@ -288,6 +288,8 @@ function handleClearFilters() {
 
         <USeparator class="my-8" />
       </section>
+
+      <slot name="after-content" />
     </div>
   </UContainer>
 </template>

@@ -1,4 +1,7 @@
-import { LEARN_ROUTES } from "./shared/constants/routes";
+import {
+  NOINDEX_DEMO_ROUTES,
+  PUBLIC_PRERENDER_ROUTES,
+} from "./shared/constants/routes";
 
 const nitroPreset = process.env.NITRO_PRESET || "vercel";
 const enableIsrRouteRules =
@@ -48,6 +51,7 @@ export default defineNuxtConfig({
 
   sitemap: {
     sources: ["/api/__sitemap__/urls"],
+    exclude: [...NOINDEX_DEMO_ROUTES],
   },
 
   schemaOrg: {
@@ -324,11 +328,26 @@ export default defineNuxtConfig({
 
     // ISR depends on Vercel's production runtime. Disable it for local/dev
     // and CI node-server previews so direct route requests do not 500.
+    "/components/**": {
+      headers: {
+        "X-Robots-Tag": "noindex, follow",
+      },
+      ...(enableIsrRouteRules ? { isr: 3600 } : {}),
+    },
+    "/blocks/**": {
+      headers: {
+        "X-Robots-Tag": "noindex, follow",
+      },
+      ...(enableIsrRouteRules ? { isr: 3600 } : {}),
+    },
+    "/templates/**": {
+      headers: {
+        "X-Robots-Tag": "noindex, follow",
+      },
+      ...(enableIsrRouteRules ? { isr: 3600 } : {}),
+    },
     ...(enableIsrRouteRules
       ? {
-          "/components/**": { isr: 3600 },
-          "/blocks/**": { isr: 3600 },
-          "/templates/**": { isr: 3600 },
           "/tools/**": { isr: 3600 },
         }
       : {}),
@@ -388,13 +407,7 @@ export default defineNuxtConfig({
     // time rather than in Vercel Lambda (where better-sqlite3 fails to load)
     prerender: {
       routes: [
-        "/",
-        "/about",
-        "/help",
-        "/privacy",
-        "/contact",
-        "/learn",
-        ...LEARN_ROUTES,
+        ...PUBLIC_PRERENDER_ROUTES,
       ],
     },
     // Vercel-specific configuration
