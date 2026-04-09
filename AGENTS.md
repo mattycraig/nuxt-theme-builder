@@ -148,9 +148,6 @@ pnpm workflow:full      # Full: lint + format + typecheck + test
 # Windows:  ./scripts/dev-workflow.ps1
 # Unix:     ./scripts/dev-workflow.sh
 
-# Release
-pnpm changelog          # Generate changelog preview
-pnpm release            # Bump version + changelog + tag
 ```
 
 ## Development Workflow
@@ -193,11 +190,9 @@ pnpm test:e2e:ui
 - Unit tests: Vitest with Nuxt test environment (`happy-dom`)
 - E2E: Playwright (Chromium)
 - CI workflow (`.github/workflows/ci.yml`) runs lint, typecheck, unit coverage, e2e, then build
-- E2E nightly workflow (`.github/workflows/e2e-nightly.yml`) runs full regression suite daily
 - Security workflow (`.github/workflows/security.yml`) runs dependency review
 - CodeQL workflow (`.github/workflows/codeql.yml`) runs code security scanning
 - Lighthouse workflow (`.github/workflows/lighthouse.yml`) audits Preview deployments
-- Release workflow (`.github/workflows/release.yml`) automates version releases
 - Labeler workflow (`.github/workflows/labeler.yml`) auto-labels PRs by file paths
 - Stale workflow (`.github/workflows/stale.yml`) manages stale issues/PRs
 - Welcome workflow (`.github/workflows/welcome.yml`) greets new contributors

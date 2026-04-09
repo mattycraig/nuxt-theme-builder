@@ -5,7 +5,6 @@
 <h1 align="center">Nuxt UI Theme Builder</h1>
 
 [![CI](https://github.com/mattycraig/nuxt-theme-builder/actions/workflows/ci.yml/badge.svg)](https://github.com/mattycraig/nuxt-theme-builder/actions/workflows/ci.yml)
-[![E2E Full Nightly](https://github.com/mattycraig/nuxt-theme-builder/actions/workflows/e2e-nightly.yml/badge.svg)](https://github.com/mattycraig/nuxt-theme-builder/actions/workflows/e2e-nightly.yml)
 [![Dependency Review](https://github.com/mattycraig/nuxt-theme-builder/actions/workflows/security.yml/badge.svg)](https://github.com/mattycraig/nuxt-theme-builder/actions/workflows/security.yml)
 
 Visual builder for [Nuxt UI v4](https://ui.nuxt.com) themes.
@@ -130,10 +129,6 @@ pnpm workflow           # Full interactive workflow (PowerShell)
 pnpm workflow:commit    # Workflow with commit prompt
 pnpm workflow:quick     # Quick: lint + format + typecheck
 pnpm workflow:full      # Full: lint + format + typecheck + test
-
-# Release
-pnpm changelog          # Generate changelog
-pnpm release            # Bump version + changelog
 ```
 
 ## Development Workflow
@@ -206,8 +201,7 @@ Or use the prompt file: `.github/prompts/dev-workflow.prompt.md`
 - **Unit:** Vitest with Nuxt environment (`happy-dom`)
 - **E2E:** Playwright (Chromium)
 - **CI E2E (fast path):** smoke suite only (`pnpm test:e2e:ci`)
-- **Nightly E2E (full regression):** `.github/workflows/e2e-nightly.yml` runs `pnpm test:e2e:full` daily at 03:00 UTC
-- **Manual full regression:** run the nightly workflow via `workflow_dispatch` or execute `pnpm test:e2e:full` locally
+- **Manual full regression:** run `pnpm test:e2e:full` locally
 - Coverage output: `coverage/`
 - Playwright output: `playwright-report/`, `tests/e2e/test-results/`
 
@@ -223,11 +217,9 @@ Or use the prompt file: `.github/prompts/dev-workflow.prompt.md`
 GitHub Actions workflows:
 
 - `ci.yml` (push/PR to `master`): lint, typecheck, unit coverage, e2e, build
-- `e2e-nightly.yml` (schedule + manual): full Playwright regression suite
 - `security.yml` (PR to `master`): dependency review with high-severity fail threshold
 - `codeql.yml` (schedule + manual): code security scanning
 - `lighthouse.yml` (Preview deployments): Lighthouse audit + PR comment
-- `release.yml` (manual): automated version release
 - `labeler.yml` (PR): auto-labels PRs by file paths
 - `stale.yml` (schedule): manages stale issues/PRs
 - `welcome.yml` (issues/PRs): greets new contributors
