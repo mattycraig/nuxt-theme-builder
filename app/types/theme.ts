@@ -65,7 +65,17 @@ export const PALETTE_CATEGORIES: Record<
   Green: ["lime", "green", "emerald", "teal"],
   Blue: ["cyan", "sky", "blue", "indigo"],
   Purple: ["violet", "purple", "fuchsia", "pink", "rose"],
-  Neutral: ["slate", "gray", "zinc", "neutral", "stone"],
+  Neutral: [
+    "slate",
+    "gray",
+    "zinc",
+    "neutral",
+    "stone",
+    "taupe",
+    "mauve",
+    "mist",
+    "olive",
+  ],
 };
 
 // Semantic Color Keys ─────────────────────────────────────────────────────

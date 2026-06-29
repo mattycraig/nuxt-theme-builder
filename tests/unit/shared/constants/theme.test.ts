@@ -36,8 +36,8 @@ describe("shared/constants/theme", () => {
   });
 
   describe("NEUTRAL_PALETTES", () => {
-    it("contains 5 palettes", () => {
-      expect(NEUTRAL_PALETTES).toHaveLength(5);
+    it("contains 9 palettes", () => {
+      expect(NEUTRAL_PALETTES).toHaveLength(9);
     });
 
     it("has no duplicates", () => {
@@ -48,6 +48,10 @@ describe("shared/constants/theme", () => {
       expect(NEUTRAL_PALETTES).toContain("slate");
       expect(NEUTRAL_PALETTES).toContain("zinc");
       expect(NEUTRAL_PALETTES).toContain("neutral");
+      expect(NEUTRAL_PALETTES).toContain("taupe");
+      expect(NEUTRAL_PALETTES).toContain("mauve");
+      expect(NEUTRAL_PALETTES).toContain("mist");
+      expect(NEUTRAL_PALETTES).toContain("olive");
     });
   });
 

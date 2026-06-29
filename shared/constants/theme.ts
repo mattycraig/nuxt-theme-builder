@@ -42,6 +42,10 @@ export const NEUTRAL_PALETTES = [
   "zinc",
   "neutral",
   "stone",
+  "taupe",
+  "mauve",
+  "mist",
+  "olive",
 ] as const;
 
 /** Combined list of all chromatic + neutral palettes. */
