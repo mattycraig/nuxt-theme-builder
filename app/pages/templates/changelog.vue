@@ -1,8 +1,6 @@
 <script setup lang="ts">
 import { OG_IMAGE_URL } from "~/utils/seoDescriptions";
 
-definePageMeta({ layout: "preview" });
-
 const title = "Changelog — Nuxt UI Theme Builder";
 const description =
   "Product changelog template with version history, release notes, feature highlights, and contributor avatars — built with Nuxt UI v4 components.";

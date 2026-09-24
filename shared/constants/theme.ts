@@ -87,7 +87,10 @@ export interface FontEntry {
   category: FontCategory;
 }
 
-/** All available font options with their categories. Must stay in sync with `nuxt.config.ts` font families. */
+/** Default theme font; the only font `nuxt.config.ts` preloads. */
+export const DEFAULT_FONT = "Geist";
+
+/** All available font options with their categories. `nuxt.config.ts` registers these with @nuxt/fonts. */
 export const FONT_ENTRIES: FontEntry[] = [
   // Sans-serif
   { name: "Public Sans", category: "sans-serif" },

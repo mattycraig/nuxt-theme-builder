@@ -4,8 +4,6 @@ import type { FormSubmitEvent, AuthFormField } from "@nuxt/ui";
 
 import { OG_IMAGE_URL } from "~/utils/seoDescriptions";
 
-definePageMeta({ layout: "preview" });
-
 const title = "Login — Nuxt UI Theme Builder";
 const description =
   "Authentication page template with sign-in and sign-up forms, social login providers, and form validation — built with Nuxt UI v4 components.";

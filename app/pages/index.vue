@@ -3,8 +3,6 @@ import { MSG } from "~/utils/iframeProtocol";
 import { isInIframe } from "~/utils/helpers";
 import { PAGE_DESCRIPTIONS, SITE_URL, OG_IMAGE_URL } from "~/utils/seoDescriptions";
 
-definePageMeta({ layout: "preview" });
-
 const title = "Nuxt UI Theme Builder — Visual Design-Token Editor";
 
 useSeoMeta({

@@ -2,6 +2,7 @@ import {
   NOINDEX_DEMO_ROUTES,
   PUBLIC_PRERENDER_ROUTES,
 } from "./shared/constants/routes";
+import { DEFAULT_FONT, FONT_ENTRIES } from "./shared/constants/theme";
 
 const nitroPreset = process.env.NITRO_PRESET || "vercel";
 const enableIsrRouteRules =
@@ -133,115 +134,15 @@ export default defineNuxtConfig({
   css: ["~/assets/css/main.css"],
 
   fonts: {
-    families: [
-      // Default font — preloaded globally for instant availability
-      { name: "Geist", provider: "google", global: true },
-      // All other theme-selectable fonts: registered but NOT preloaded.
-      // @nuxt/fonts resolves metadata on demand instead of at startup,
-      // avoiding 35×4-weight resolution that stalls cold start.
-      // Sans-serif
-      { name: "Public Sans", provider: "google", global: true, preload: false },
-      { name: "DM Sans", provider: "google", global: true, preload: false },
-      { name: "Figtree", provider: "google", global: true, preload: false },
-      { name: "Inter", provider: "google", global: true, preload: false },
-      { name: "Lato", provider: "google", global: true, preload: false },
-      { name: "Montserrat", provider: "google", global: true, preload: false },
-      { name: "Nunito", provider: "google", global: true, preload: false },
-      { name: "Open Sans", provider: "google", global: true, preload: false },
-      { name: "Outfit", provider: "google", global: true, preload: false },
-      {
-        name: "Plus Jakarta Sans",
-        provider: "google",
-        global: true,
-        preload: false,
-      },
-      { name: "Poppins", provider: "google", global: true, preload: false },
-      { name: "Raleway", provider: "google", global: true, preload: false },
-      { name: "Roboto", provider: "google", global: true, preload: false },
-      {
-        name: "Source Sans 3",
-        provider: "google",
-        global: true,
-        preload: false,
-      },
-      {
-        name: "Space Grotesk",
-        provider: "google",
-        global: true,
-        preload: false,
-      },
-      { name: "Work Sans", provider: "google", global: true, preload: false },
-      // Serif
-      { name: "Lora", provider: "google", global: true, preload: false },
-      {
-        name: "Merriweather",
-        provider: "google",
-        global: true,
-        preload: false,
-      },
-      {
-        name: "Playfair Display",
-        provider: "google",
-        global: true,
-        preload: false,
-      },
-      {
-        name: "Source Serif 4",
-        provider: "google",
-        global: true,
-        preload: false,
-      },
-      {
-        name: "Libre Baskerville",
-        provider: "google",
-        global: true,
-        preload: false,
-      },
-      {
-        name: "DM Serif Display",
-        provider: "google",
-        global: true,
-        preload: false,
-      },
-      {
-        name: "Crimson Text",
-        provider: "google",
-        global: true,
-        preload: false,
-      },
-      // Monospace
-      {
-        name: "JetBrains Mono",
-        provider: "google",
-        global: true,
-        preload: false,
-      },
-      { name: "Fira Code", provider: "google", global: true, preload: false },
-      {
-        name: "Source Code Pro",
-        provider: "google",
-        global: true,
-        preload: false,
-      },
-      {
-        name: "IBM Plex Mono",
-        provider: "google",
-        global: true,
-        preload: false,
-      },
-      { name: "Space Mono", provider: "google", global: true, preload: false },
-      // Display
-      { name: "Sora", provider: "google", global: true, preload: false },
-      { name: "Archivo", provider: "google", global: true, preload: false },
-      { name: "Lexend", provider: "google", global: true, preload: false },
-      { name: "Urbanist", provider: "google", global: true, preload: false },
-      {
-        name: "Bricolage Grotesque",
-        provider: "google",
-        global: true,
-        preload: false,
-      },
-    ],
+    // Every theme-selectable font from shared/constants/theme. Only the default
+    // font is preloaded; the rest are registered but resolve on demand, avoiding
+    // 35×4-weight metadata resolution that stalls cold start.
+    families: FONT_ENTRIES.map(({ name }) => ({
+      name,
+      provider: "google" as const,
+      global: true,
+      ...(name === DEFAULT_FONT ? {} : { preload: false }),
+    })),
     defaults: {
       weights: [400, 500, 600, 700],
       styles: ["normal"],
