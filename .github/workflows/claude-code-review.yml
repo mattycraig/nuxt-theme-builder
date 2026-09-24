@@ -38,7 +38,7 @@ jobs:
             echo "::notice::CLAUDE_CODE_OAUTH_TOKEN is not configured; skipping Claude review."
           fi
 
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
         if: steps.auth.outputs.enabled == 'true'
         with:
           fetch-depth: 1

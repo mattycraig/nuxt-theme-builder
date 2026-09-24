@@ -24,7 +24,8 @@ Record pass/fail and the first actionable error for each.
 ## 2. Dependencies
 
 - `pnpm outdated`: group into patch/minor vs major. Note majors for Nuxt, Nuxt UI, Tailwind, AI SDK, and Vitest/Playwright, with a one-line migration risk each.
-- `pnpm audit --prod`: list high/critical advisories with the dependency path.
+- `pnpm audit`: list high/critical advisories with the dependency path, marking dev-only ones. Include dev dependencies: `--prod` hid two high-severity `sharp` advisories. Note that 0.x packages (like `sharp`) never get minor bumps from `pnpm update` within a caret range.
+- GitHub Actions: for each `uses:` in `.github/workflows/`, find the latest major (`git ls-remote --tags --refs https://github.com/<owner>/<action>.git`; some actions keep majors as branches). Flag actions whose current tag runs on a deprecated Node runtime, and follow the bump procedure in `.claude/rules/github-ci.md`.
 - Don't upgrade majors here. Patch/minor bumps are Dependabot's job unless a security advisory needs a targeted fix.
 
 ## 3. Drift

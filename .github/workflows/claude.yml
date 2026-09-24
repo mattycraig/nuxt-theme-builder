@@ -43,15 +43,15 @@ jobs:
             echo "::notice::CLAUDE_CODE_OAUTH_TOKEN is not configured; skipping Claude."
           fi
 
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
         if: steps.auth.outputs.enabled == 'true'
         with:
           fetch-depth: 1
 
-      - uses: pnpm/action-setup@v4
+      - uses: pnpm/action-setup@v6
         if: steps.auth.outputs.enabled == 'true'
 
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v7
         if: steps.auth.outputs.enabled == 'true'
         with:
           node-version-file: .node-version
