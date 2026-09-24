@@ -36,6 +36,7 @@ Run the `docs-sync` checks in report-only mode and include the findings.
 
 - AI model IDs in `app/types/ai.ts`: flag models the providers have deprecated or retired (check provider docs if network allows; otherwise list them as "verify").
 - Tailwind palettes: compare `shared/constants/theme.ts` palettes with the installed `tailwindcss/theme.css`.
+- `public/.well-known/security.txt`: `Expires` must be in the future. Flag it when it's within 60 days, and renew it to under a year ahead (RFC 9116). An expired file tells researchers the contact is stale.
 
 ## 5. Act
 
