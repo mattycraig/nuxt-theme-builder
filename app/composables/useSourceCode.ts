@@ -11,6 +11,8 @@
 const SOURCE_ELIGIBLE_PREFIXES = ["/templates"] as const;
 
 const sourceCache = new Map<string, string>();
+/** In-flight requests, so callers toggling code view at once share one fetch. */
+const pendingRequests = new Map<string, Promise<void>>();
 const _viewMode = ref<"preview" | "code">("preview");
 const _sourceCode = ref("");
 const _isLoadingSource = ref(false);
@@ -23,6 +25,7 @@ export function _resetSourceCodeState() {
   _isLoadingSource.value = false;
   _sourceError.value = "";
   sourceCache.clear();
+  pendingRequests.clear();
 }
 
 function stripLeadingSlash(path: string): string {
@@ -45,30 +48,44 @@ export function useSourceCode() {
 
   const sourceFilePath = computed(() => `app/pages/${routeKey.value}.vue`);
 
-  async function fetchSource() {
+  function fetchSource(): Promise<void> {
     const key = routeKey.value;
-    if (!key) return;
+    if (!key) return Promise.resolve();
 
-    if (sourceCache.has(key)) {
-      _sourceCode.value = sourceCache.get(key)!;
-      return;
+    const cached = sourceCache.get(key);
+    if (cached !== undefined) {
+      _sourceCode.value = cached;
+      _sourceError.value = "";
+      return Promise.resolve();
     }
+
+    const pending = pendingRequests.get(key);
+    if (pending) return pending;
 
     _isLoadingSource.value = true;
     _sourceError.value = "";
 
-    try {
-      const content = await $fetch<string>(`/api/source/${key}`, {
-        responseType: "text",
+    const request = $fetch<string>(`/api/source/${key}`, {
+      responseType: "text",
+    })
+      .then((content) => {
+        sourceCache.set(key, content);
+        // Drop responses for a route the user has already navigated away from
+        if (routeKey.value === key) _sourceCode.value = content;
+      })
+      .catch(() => {
+        if (routeKey.value === key) {
+          _sourceError.value = "Failed to load source code.";
+          _sourceCode.value = "";
+        }
+      })
+      .finally(() => {
+        pendingRequests.delete(key);
+        _isLoadingSource.value = pendingRequests.size > 0;
       });
-      sourceCache.set(key, content);
-      _sourceCode.value = content;
-    } catch {
-      _sourceError.value = "Failed to load source code.";
-      _sourceCode.value = "";
-    } finally {
-      _isLoadingSource.value = false;
-    }
+
+    pendingRequests.set(key, request);
+    return request;
   }
 
   function setViewMode(mode: "preview" | "code") {
@@ -80,15 +97,14 @@ export function useSourceCode() {
     () => route.path,
     () => {
       _viewMode.value = "preview";
+      _sourceCode.value = "";
       _sourceError.value = "";
     },
   );
 
-  // Auto-fetch source on switch to code view
+  // Load source on switch to code view (served from cache when available)
   watch(_viewMode, (mode) => {
-    if (mode === "code" && !sourceCache.has(routeKey.value)) {
-      fetchSource();
-    }
+    if (mode === "code") fetchSource();
   });
 
   function copySource() {
