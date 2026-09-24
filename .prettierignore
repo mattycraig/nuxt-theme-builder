@@ -1,5 +1,5 @@
 # Prettier only handles non-code files (JSON, MD, YAML, CSS).
-# JS/TS/Vue formatting is handled by ESLint @stylistic.
+# JS/TS/Vue are linted by ESLint; no formatter is configured for them.
 *.ts
 *.js
 *.mjs
@@ -8,11 +8,21 @@
 *.tsx
 *.jsx
 
-# Ignore all other files
-.agents/
-.github/agents
-.github/instructions
-.github/prompts
+# Vendored third-party Claude Code skills (kept identical to upstream)
+.claude/skills/audit-website/
+.claude/skills/document-writer/
+.claude/skills/frontend-design/
+.claude/skills/nuxt/
+.claude/skills/nuxt-content/
+.claude/skills/nuxt-seo/
+.claude/skills/nuxt-ui/
+.claude/skills/pnpm/
+.claude/skills/reka-ui/
+.claude/skills/vite/
+.claude/skills/vitest/
+.claude/skills/vue/
+.claude/skills/vueuse/
+.claude/skills/web-design-guidelines/
 
 # Build outputs
 .output/
@@ -25,6 +35,3 @@ playwright-report/
 
 # Lock files
 pnpm-lock.yaml
-
-# Auto-generated
-.agents/

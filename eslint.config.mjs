@@ -4,7 +4,8 @@ import tseslint from "typescript-eslint";
 
 export default withNuxt(
   {
-    ignores: [".agents/**"],
+    // Vendored third-party Claude Code skills (include upstream generator scripts)
+    ignores: [".claude/skills/**"],
   },
   {
     files: ["**/*.vue"],
@@ -27,7 +28,7 @@ export default withNuxt(
     },
   },
   {
-    files: ["scripts/**/*.mjs"],
+    files: ["scripts/**/*.mjs", ".claude/hooks/**/*.mjs"],
     rules: {
       "no-console": "off",
     },
