@@ -5,7 +5,7 @@ test.describe("Smoke - Core Theme Builder", () => {
 
   test.beforeEach(async ({ page }) => {
     await page.addInitScript(() => {
-      localStorage.removeItem("theme");
+      localStorage.removeItem("theme-presets");
       localStorage.removeItem("theme-builder");
       localStorage.removeItem("cookie-consent");
     });

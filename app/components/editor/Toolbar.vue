@@ -12,8 +12,11 @@ const emit = defineEmits<{
 const store = useThemeStore();
 const { openSaveAs, quickSave } = useSaveThemeModal();
 
+// Saved presets come from localStorage (client-only), so defer anything that
+// depends on them until mounted to keep SSR and hydration output identical.
+const isMounted = useMounted();
 const isSavedPreset = computed(() =>
-  store.activePresetName
+  isMounted.value && store.activePresetName
     ? store.savedPresets.some((p) => p.name === store.activePresetName)
     : false,
 );
@@ -54,7 +57,7 @@ const saveTooltipText = computed(() => {
           @click="handleSaveClick"
         />
         <span
-          v-if="store.hasUnsavedChanges && store.activePresetName"
+          v-if="isSavedPreset && store.hasUnsavedChanges"
           class="absolute top-0 right-0 size-2 rounded-full bg-(--ui-color-warning-500) animate-pulse"
           aria-hidden="true"
         />

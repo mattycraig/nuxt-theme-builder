@@ -4,7 +4,7 @@ import { test, expect } from "@playwright/test";
 const editorSetup = {
   async beforeEach(page: import("@playwright/test").Page) {
     await page.addInitScript(() => {
-      localStorage.removeItem("theme");
+      localStorage.removeItem("theme-presets");
       localStorage.removeItem("theme-builder");
       localStorage.removeItem("cookie-consent");
     });

@@ -1,4 +1,4 @@
-import { describe, it, expect, beforeEach } from "vitest";
+import { describe, it, expect, beforeEach, afterEach } from "vitest";
 import { useThemeStore } from "~/stores/theme";
 import { DEFAULT_THEME, cloneTheme } from "~/utils/defaults";
 import type { ThemeConfig } from "~/types/theme";
@@ -461,6 +461,52 @@ describe("useThemeStore", () => {
       expect(store.savedPresets[0]!.updatedAt).toBeGreaterThanOrEqual(
         originalCreated!,
       );
+    });
+  });
+
+  describe("persistence", () => {
+    function readThemeCookie(): string {
+      const match = document.cookie.match(/(?:^|;\s*)theme=([^;]*)/);
+      return match ? decodeURIComponent(match[1]!) : "";
+    }
+
+    afterEach(() => {
+      localStorage.removeItem("theme-presets");
+    });
+
+    // Browsers silently drop cookies over 4096 bytes, and one saved preset
+    // pushes the serialized store past that, so presets must not share the cookie.
+    it("stores saved presets in localStorage, outside the size-limited cookie", async () => {
+      store.savePreset("Persisted");
+      // Persistence runs in a store subscription, and cookie writes flush a tick later.
+      await nextTick();
+      await nextTick();
+
+      const stored = JSON.parse(localStorage.getItem("theme-presets") ?? "{}");
+      expect(stored.savedPresets?.[0]?.name).toBe("Persisted");
+      expect(readThemeCookie()).toContain('"config"');
+      expect(readThemeCookie()).not.toContain("savedPresets");
+    });
+
+    it("undo after hydration returns to the hydrated theme, not the defaults", async () => {
+      const persisted = cloneTheme(DEFAULT_THEME);
+      persisted.colors.primary = "rose";
+      persisted.font = "Raleway";
+      // useCookie writes on the next tick; flush pending store writes first.
+      await nextTick();
+      document.cookie = `theme=${encodeURIComponent(
+        JSON.stringify({ config: persisted, activePresetName: "" }),
+      )}; path=/`;
+
+      store.$hydrate();
+      expect(store.config.colors.primary).toBe("rose");
+
+      store.setSemanticColorForMode("light", "primary", "lime");
+      store.undo();
+
+      expect(store.config.colors.primary).toBe("rose");
+      expect(store.config.font).toBe("Raleway");
+      expect(store.canUndo).toBe(false);
     });
   });
 });

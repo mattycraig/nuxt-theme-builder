@@ -126,7 +126,7 @@ async function seedApiKey(page: Page) {
 async function clearAiStorage(page: Page) {
   await page.addInitScript(() => {
     localStorage.removeItem("ai-settings");
-    localStorage.removeItem("theme");
+    localStorage.removeItem("theme-presets");
   });
 }
 

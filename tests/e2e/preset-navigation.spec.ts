@@ -5,7 +5,7 @@ test.describe("Preset Loading & Navigation", () => {
 
   test.beforeEach(async ({ page }) => {
     await page.addInitScript(() => {
-      localStorage.removeItem("theme");
+      localStorage.removeItem("theme-presets");
       localStorage.removeItem("theme-builder");
     });
     await page.goto("/");
@@ -45,7 +45,7 @@ test.describe("Page Navigation", () => {
 
   test.beforeEach(async ({ page }) => {
     await page.addInitScript(() => {
-      localStorage.removeItem("theme");
+      localStorage.removeItem("theme-presets");
       localStorage.removeItem("theme-builder");
     });
     await page.goto("/");

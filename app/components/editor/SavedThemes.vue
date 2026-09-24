@@ -113,6 +113,11 @@ function isActive(preset: ThemePreset) {
   return store.activePresetName === preset.name;
 }
 
+// Saved presets live in localStorage, which the server can't read. Render the
+// empty state until mounted so SSR and the first client render match.
+const isMounted = useMounted();
+const presets = computed(() => (isMounted.value ? store.savedPresets : []));
+
 function getDropdownItems(preset: ThemePreset) {
   return [
     [
@@ -168,7 +173,7 @@ function getDropdownItems(preset: ThemePreset) {
 
     <!-- Empty state -->
     <div
-      v-if="store.savedPresets.length === 0"
+      v-if="presets.length === 0"
       class="text-center py-2 space-y-2"
     >
       <UIcon
@@ -211,9 +216,9 @@ function getDropdownItems(preset: ThemePreset) {
     </div>
 
     <!-- Saved themes list -->
-    <ul v-if="store.savedPresets.length > 0" class="space-y-1" role="list">
+    <ul v-if="presets.length > 0" class="space-y-1" role="list">
       <li
-        v-for="preset in store.savedPresets"
+        v-for="preset in presets"
         :key="preset.name"
         class="relative group rounded-lg transition-all duration-150 flex items-center justify-between"
         :class="
