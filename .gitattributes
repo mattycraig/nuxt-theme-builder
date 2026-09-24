@@ -1,0 +1,2 @@
+# Keep LF in the working tree on every OS (.editorconfig and Prettier require it).
+* text=auto eol=lf

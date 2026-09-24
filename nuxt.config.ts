@@ -1,7 +1,9 @@
 import {
   NOINDEX_DEMO_ROUTES,
+  PREVIEW_SHELL_PATH,
   PUBLIC_PRERENDER_ROUTES,
 } from "./shared/constants/routes";
+import { DEFAULT_FONT, FONT_ENTRIES } from "./shared/constants/theme";
 
 const nitroPreset = process.env.NITRO_PRESET || "vercel";
 const enableIsrRouteRules =
@@ -14,12 +16,10 @@ export default defineNuxtConfig({
   modules: [
     "@vercel/analytics/nuxt",
     "@nuxt/content",
-    "@nuxt/scripts",
     "@nuxt/ui",
     "@nuxt/eslint",
     "@nuxtjs/mdc",
     "@nuxtjs/sitemap",
-    "nuxt-og-image",
     "nuxt-schema-org",
     "@pinia/nuxt",
     "pinia-plugin-persistedstate/nuxt",
@@ -51,7 +51,7 @@ export default defineNuxtConfig({
 
   sitemap: {
     sources: ["/api/__sitemap__/urls"],
-    exclude: [...NOINDEX_DEMO_ROUTES],
+    exclude: [...NOINDEX_DEMO_ROUTES, PREVIEW_SHELL_PATH],
   },
 
   schemaOrg: {
@@ -60,18 +60,6 @@ export default defineNuxtConfig({
       name: "Nuxt UI Theme Builder",
       url: "https://nuxt-ui-themes.com",
       logo: "https://nuxt-ui-themes.com/android-chrome-512x512.png",
-    },
-  },
-
-  scripts: {
-    defaultScriptOptions: {
-      trigger: "onNuxtReady",
-    },
-  },
-
-  ogImage: {
-    defaults: {
-      cacheMaxAgeSeconds: 60 * 60 * 24 * 7,
     },
   },
 
@@ -133,115 +121,15 @@ export default defineNuxtConfig({
   css: ["~/assets/css/main.css"],
 
   fonts: {
-    families: [
-      // Default font — preloaded globally for instant availability
-      { name: "Geist", provider: "google", global: true },
-      // All other theme-selectable fonts: registered but NOT preloaded.
-      // @nuxt/fonts resolves metadata on demand instead of at startup,
-      // avoiding 35×4-weight resolution that stalls cold start.
-      // Sans-serif
-      { name: "Public Sans", provider: "google", global: true, preload: false },
-      { name: "DM Sans", provider: "google", global: true, preload: false },
-      { name: "Figtree", provider: "google", global: true, preload: false },
-      { name: "Inter", provider: "google", global: true, preload: false },
-      { name: "Lato", provider: "google", global: true, preload: false },
-      { name: "Montserrat", provider: "google", global: true, preload: false },
-      { name: "Nunito", provider: "google", global: true, preload: false },
-      { name: "Open Sans", provider: "google", global: true, preload: false },
-      { name: "Outfit", provider: "google", global: true, preload: false },
-      {
-        name: "Plus Jakarta Sans",
-        provider: "google",
-        global: true,
-        preload: false,
-      },
-      { name: "Poppins", provider: "google", global: true, preload: false },
-      { name: "Raleway", provider: "google", global: true, preload: false },
-      { name: "Roboto", provider: "google", global: true, preload: false },
-      {
-        name: "Source Sans 3",
-        provider: "google",
-        global: true,
-        preload: false,
-      },
-      {
-        name: "Space Grotesk",
-        provider: "google",
-        global: true,
-        preload: false,
-      },
-      { name: "Work Sans", provider: "google", global: true, preload: false },
-      // Serif
-      { name: "Lora", provider: "google", global: true, preload: false },
-      {
-        name: "Merriweather",
-        provider: "google",
-        global: true,
-        preload: false,
-      },
-      {
-        name: "Playfair Display",
-        provider: "google",
-        global: true,
-        preload: false,
-      },
-      {
-        name: "Source Serif 4",
-        provider: "google",
-        global: true,
-        preload: false,
-      },
-      {
-        name: "Libre Baskerville",
-        provider: "google",
-        global: true,
-        preload: false,
-      },
-      {
-        name: "DM Serif Display",
-        provider: "google",
-        global: true,
-        preload: false,
-      },
-      {
-        name: "Crimson Text",
-        provider: "google",
-        global: true,
-        preload: false,
-      },
-      // Monospace
-      {
-        name: "JetBrains Mono",
-        provider: "google",
-        global: true,
-        preload: false,
-      },
-      { name: "Fira Code", provider: "google", global: true, preload: false },
-      {
-        name: "Source Code Pro",
-        provider: "google",
-        global: true,
-        preload: false,
-      },
-      {
-        name: "IBM Plex Mono",
-        provider: "google",
-        global: true,
-        preload: false,
-      },
-      { name: "Space Mono", provider: "google", global: true, preload: false },
-      // Display
-      { name: "Sora", provider: "google", global: true, preload: false },
-      { name: "Archivo", provider: "google", global: true, preload: false },
-      { name: "Lexend", provider: "google", global: true, preload: false },
-      { name: "Urbanist", provider: "google", global: true, preload: false },
-      {
-        name: "Bricolage Grotesque",
-        provider: "google",
-        global: true,
-        preload: false,
-      },
-    ],
+    // Every theme-selectable font from shared/constants/theme. Only the default
+    // font is preloaded; the rest are registered but resolve on demand, avoiding
+    // 35×4-weight metadata resolution that stalls cold start.
+    families: FONT_ENTRIES.map(({ name }) => ({
+      name,
+      provider: "google" as const,
+      global: true,
+      ...(name === DEFAULT_FONT ? {} : { preload: false }),
+    })),
     defaults: {
       weights: [400, 500, 600, 700],
       styles: ["normal"],
@@ -280,6 +168,9 @@ export default defineNuxtConfig({
     // Disable all security overhead in dev to avoid 431 header-too-large errors
     enabled: process.env.NODE_ENV !== "development",
     rateLimiter: process.env.NODE_ENV === "development" ? false : undefined,
+    // removeLoggers strips console/debugger through `esbuild.drop`, which
+    // Vite 8 ignores. The client minifier does it instead (vite.$client).
+    removeLoggers: false,
     headers: {
       contentSecurityPolicy: {
         "default-src": ["'self'"],
@@ -325,6 +216,12 @@ export default defineNuxtConfig({
     "/help": { prerender: true },
     "/privacy": { prerender: true },
     "/contact": { prerender: true },
+
+    // Blank page every preview iframe starts on (see PREVIEW_SHELL_PATH)
+    [PREVIEW_SHELL_PATH]: {
+      prerender: true,
+      headers: { "X-Robots-Tag": "noindex, nofollow" },
+    },
 
     // ISR depends on Vercel's production runtime. Disable it for local/dev
     // and CI node-server previews so direct route requests do not 500.
@@ -383,6 +280,19 @@ export default defineNuxtConfig({
   },
 
   vite: {
+    $client: {
+      build: {
+        rolldownOptions: {
+          output: {
+            minify: {
+              compress: { dropConsole: true, dropDebugger: true },
+              mangle: true,
+              codegen: true,
+            },
+          },
+        },
+      },
+    },
     optimizeDeps: {
       include: [
         // Pre-bundle CJS deps to avoid repeated transforms during dev

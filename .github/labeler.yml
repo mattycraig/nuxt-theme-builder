@@ -23,7 +23,6 @@ ai:
   - changed-files:
       - any-glob-to-any-file:
           - "app/pages/ai.vue"
-          - "app/layouts/ai.vue"
           - "app/types/ai.ts"
           - "app/composables/useAi*.ts"
           - "app/components/ai/**"
@@ -72,9 +71,18 @@ config:
           - "nuxt.config.ts"
           - "tsconfig.json"
           - "eslint.config.mjs"
-          - "tailwind.config.*"
+          - "content.config.ts"
+          - "knip.json"
 
 server:
   - changed-files:
       - any-glob-to-any-file:
           - "server/**"
+
+claude:
+  - changed-files:
+      - any-glob-to-any-file:
+          - ".claude/**"
+          - "CLAUDE.md"
+          - ".mcp.json"
+          - ".github/workflows/claude*.yml"

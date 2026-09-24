@@ -5,7 +5,7 @@ test.describe("Smoke - Core Theme Builder", () => {
 
   test.beforeEach(async ({ page }) => {
     await page.addInitScript(() => {
-      localStorage.removeItem("theme");
+      localStorage.removeItem("theme-presets");
       localStorage.removeItem("theme-builder");
       localStorage.removeItem("cookie-consent");
     });
@@ -21,7 +21,7 @@ test.describe("Smoke - Core Theme Builder", () => {
     const editor = page.getByTestId("theme-editor");
     await expect(editor).toBeVisible();
 
-    const slider = page.getByRole("slider", { name: "Thumb" });
+    const slider = page.getByRole("slider", { name: "Border Radius" });
     await expect(slider).toBeVisible();
 
     const initialRadius = Number(await slider.getAttribute("aria-valuenow"));

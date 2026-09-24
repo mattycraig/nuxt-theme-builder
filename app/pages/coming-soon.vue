@@ -1,8 +1,4 @@
 <script setup lang="ts">
-definePageMeta({
-  layout: "coming-soon",
-});
-
 const password = ref("");
 const error = ref("");
 const loading = ref(false);

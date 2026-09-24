@@ -4,7 +4,7 @@ Thank you for your interest in contributing! This guide covers everything you ne
 
 ## Prerequisites
 
-- [Node.js 22](https://nodejs.org/) (pinned in `.node-version`)
+- [Node.js 22.22+](https://nodejs.org/) (major pinned in `.node-version`; lint-staged 17, commitlint 21, and Vitest 5 need a current Node 22)
 - [pnpm 10](https://pnpm.io/) (enforced by `packageManager` field)
 
 ## Setup
@@ -66,32 +66,18 @@ ESLint and Prettier run automatically on staged files via Husky + lint-staged.
 | `pnpm build`           | Production build                       |
 | `pnpm lint`            | Run ESLint                             |
 | `pnpm lint:fix`        | Auto-fix lint issues                   |
+| `pnpm format`          | Prettier (JSON, Markdown, YAML, CSS)   |
 | `pnpm typecheck`       | TypeScript type checking               |
 | `pnpm test`            | Run unit tests (Vitest)                |
 | `pnpm test:watch`      | Unit tests in watch mode               |
 | `pnpm test:coverage`   | Unit tests with coverage               |
 | `pnpm test:e2e`        | Run E2E tests (Playwright)             |
+| `pnpm test:e2e:smoke`  | E2E smoke suite (what CI runs)         |
 | `pnpm test:e2e:headed` | E2E tests in headed browser            |
 | `pnpm workflow:quick`  | Quick: lint + format + typecheck       |
 | `pnpm workflow:full`   | Full: lint + format + typecheck + test |
 
-### Automated Workflow
-
-For a streamlined development experience, use the workflow scripts:
-
-**Windows (PowerShell):**
-
-```powershell
-./scripts/dev-workflow.ps1 -AutoCommit -Message "feat: add feature"
-```
-
-**Linux/macOS/CI (Bash):**
-
-```bash
-./scripts/dev-workflow.sh --auto-commit --message "feat: add feature"
-```
-
-These scripts run lint → format → typecheck → test → stage → commit in sequence, auto-fixing issues where possible. See `scripts/` for available flags.
+Run `pnpm workflow:full` before opening a PR. The pre-commit hook lints and formats staged files, and commitlint checks the message. With Claude Code, `/dev-workflow commit` runs the checks and writes the commit for you.
 
 ## Testing
 
@@ -128,15 +114,21 @@ pnpm test:e2e:ui      # Playwright UI mode
 
 ### Common Tasks
 
-**Add a preview route:** See the "Add a New Preview Route" section in [AGENTS.md](./AGENTS.md).
+Each common change has a step-by-step checklist. They double as Claude Code skills (run `/add-preview-route` and so on), but they're plain Markdown you can follow by hand:
 
-**Add a theme field:** See the "Add a New Theme Property" section in [AGENTS.md](./AGENTS.md).
+| Task                           | Checklist                                                                           |
+| ------------------------------ | ----------------------------------------------------------------------------------- |
+| Add a component/block/template | [`.claude/skills/add-preview-route`](./.claude/skills/add-preview-route/SKILL.md)   |
+| Add or change a theme field    | [`.claude/skills/add-theme-property`](./.claude/skills/add-theme-property/SKILL.md) |
+| Add an AI model or provider    | [`.claude/skills/add-ai-model`](./.claude/skills/add-ai-model/SKILL.md)             |
+| Add a design tool              | [`.claude/skills/add-design-tool`](./.claude/skills/add-design-tool/SKILL.md)       |
+| Add a learn article            | [`.claude/skills/add-learn-article`](./.claude/skills/add-learn-article/SKILL.md)   |
 
-**Add an AI model/provider:** See the "Add a New AI Provider Model" section in [AGENTS.md](./AGENTS.md).
+Architecture notes and guardrails for contributors (human or AI) are in [CLAUDE.md](./CLAUDE.md).
 
-**Add a design tool:** See the "Add a New Design Tool" section in [AGENTS.md](./AGENTS.md).
+## Working with Claude Code
 
-**Add a learn article:** See the "Add a Learn Article" section in [AGENTS.md](./AGENTS.md).
+The repo ships a shared Claude Code configuration in `.claude/` (hooks, skills, subagents, path-scoped rules) and `CLAUDE.md`. Personal overrides go in `.claude/settings.local.json` or `CLAUDE.local.md`, both gitignored. See [`.claude/README.md`](./.claude/README.md).
 
 ## Pull Requests
 

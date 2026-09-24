@@ -116,7 +116,7 @@ async function seedApiKey(page: Page) {
       JSON.stringify({
         apiKey: key,
         provider: "openai",
-        model: "gpt-4o-mini",
+        model: "gpt-6-luna",
         persistKey: true,
       }),
     );
@@ -125,8 +125,11 @@ async function seedApiKey(page: Page) {
 
 async function clearAiStorage(page: Page) {
   await page.addInitScript(() => {
+    // Init scripts also run in nested frames (the preview iframe). Clearing
+    // there fires storage events that make the top page drop its seeded key.
+    if (window !== window.top) return;
     localStorage.removeItem("ai-settings");
-    localStorage.removeItem("theme");
+    localStorage.removeItem("theme-presets");
   });
 }
 
@@ -164,6 +167,11 @@ async function mockGenerateHang(page: Page) {
 }
 
 async function gotoAi(page: Page, retries = 3) {
+  // Opening /ai?preview top-level (not in the editor iframe) briefly renders
+  // the editor route, whose cookie notice would cover the chat input.
+  await page.addInitScript(() => {
+    localStorage.setItem("cookie-consent", "accepted");
+  });
   for (let attempt = 1; attempt <= retries; attempt++) {
     await page.goto(AI_URL);
 
@@ -340,7 +348,7 @@ test.describe("AI Theme Generation — Happy Path: Generate, Preview & Apply", (
       expect(lastCapturedBody!.prompt).toBe("A warm sunset themed dashboard");
       expect(lastCapturedBody!.apiKey).toBe(FAKE_API_KEY);
       expect(lastCapturedBody!.provider).toBe("openai");
-      expect(lastCapturedBody!.model).toBe("gpt-4o-mini");
+      expect(lastCapturedBody!.model).toBe("gpt-6-luna");
     });
 
     await test.step("Send follow-up and verify conversation history", async () => {

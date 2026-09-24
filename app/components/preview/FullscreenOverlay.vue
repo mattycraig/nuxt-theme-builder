@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { MSG } from "~/utils/iframeProtocol";
 import { sanitizeNavigationPath } from "~/utils/helpers";
+import { PREVIEW_SHELL_PATH } from "~~/shared/constants/routes";
 
 // ─── State ─────────────────────────────────────────────────────────
 
@@ -32,6 +33,8 @@ const {
 
 const { currentPageLabel } = useLayoutNavigation();
 
+// The iframe starts on the prerendered preview shell (PREVIEW_SHELL_PATH)
+// and is navigated to iframeSrc once it reports PREVIEW_READY.
 const iframeSrc = computed(() => `${route.path}?preview`);
 
 // Trigger shared source fetch when switching to code view in fullscreen
@@ -42,6 +45,7 @@ watch(fullscreenViewMode, (mode) => {
 // ─── Iframe Communication ──────────────────────────────────────────
 
 const fullscreenFrame = ref<HTMLIFrameElement>();
+const fullscreenReady = ref(false);
 
 /** Send a postMessage to the fullscreen iframe preview. */
 function postToFrame(data: Record<string, unknown>) {
@@ -64,11 +68,13 @@ function handleMessage(event: MessageEvent) {
   const { type, path } = event.data || {};
 
   if (type === MSG.PREVIEW_READY) {
+    fullscreenReady.value = true;
     postToFrame({
       type: MSG.THEME_SYNC,
       config: structuredClone(toRaw(store.config)),
     });
     postToFrame({ type: MSG.COLORMODE_SYNC, mode: colorMode.preference });
+    postToFrame({ type: MSG.NAVIGATE, path: iframeSrc.value });
   }
 
   if (type === MSG.NAVIGATE_PARENT && path) {
@@ -78,6 +84,16 @@ function handleMessage(event: MessageEvent) {
     }
   }
 }
+
+// Follow route changes client-side instead of reloading the iframe
+watch(iframeSrc, (path) => {
+  if (fullscreenReady.value) postToFrame({ type: MSG.NAVIGATE, path });
+});
+
+// The iframe unmounts when the overlay closes
+watch(isFullscreen, (open) => {
+  if (!open) fullscreenReady.value = false;
+});
 
 // Keep fullscreen iframe in sync with theme and color mode
 watch(
@@ -256,7 +272,7 @@ onUnmounted(() => {
           >
             <iframe
               ref="fullscreenFrame"
-              :src="iframeSrc"
+              :src="PREVIEW_SHELL_PATH"
               sandbox="allow-scripts allow-same-origin allow-popups allow-popups-to-escape-sandbox"
               title="Theme preview — fullscreen"
               width="100%"

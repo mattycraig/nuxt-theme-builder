@@ -23,23 +23,34 @@ export interface AiModelOption {
   description: string;
 }
 
+/**
+ * Model options per provider. The first entry is the provider's default:
+ * it's selected when the user switches providers, and it replaces a saved
+ * model ID that is no longer listed. Verify IDs against the provider's docs;
+ * the server passes them through unchanged.
+ */
 export const AI_MODELS: Record<AiProvider, AiModelOption[]> = {
   openai: [
     {
-      label: "GPT-4o",
-      value: "gpt-4o",
-      description: "Best for creative themes.",
+      label: "GPT-6 Luna",
+      value: "gpt-6-luna",
+      description: "Fast and affordable.",
     },
     {
-      label: "GPT-4o Mini",
-      value: "gpt-4o-mini",
-      description: "Quick iterations.",
+      label: "GPT-6 Sol",
+      value: "gpt-6-sol",
+      description: "Stronger reasoning for detailed themes.",
+    },
+    {
+      label: "GPT-6 Astra",
+      value: "gpt-6-astra",
+      description: "Most capable, highest cost.",
     },
   ],
   anthropic: [
     {
-      label: "Claude Sonnet 4.5",
-      value: "claude-sonnet-4-5",
+      label: "Claude Sonnet 5",
+      value: "claude-sonnet-5",
       description: "Best balance of speed and quality.",
     },
     {
@@ -48,29 +59,31 @@ export const AI_MODELS: Record<AiProvider, AiModelOption[]> = {
       description: "Fastest and most affordable.",
     },
     {
-      label: "Claude Opus 4.6",
-      value: "claude-opus-4-6",
+      label: "Claude Opus 5.5",
+      value: "claude-opus-5-5",
       description: "Most capable for complex themes.",
     },
   ],
   google: [
     {
-      label: "Gemini 2.5 Flash",
-      value: "gemini-2.5-flash",
-      description: "Fast and cost-effective.",
+      label: "Gemini 3.8 Flash",
+      value: "gemini-3.8-flash",
+      description: "Fast, capable, and cost-effective.",
     },
     {
-      label: "Gemini 2.5 Pro",
-      value: "gemini-2.5-pro",
-      description: "Advanced reasoning and quality.",
-    },
-    {
-      label: "Gemini 2.0 Flash",
-      value: "gemini-2.0-flash",
-      description: "Quick iterations.",
+      label: "Gemini 3.5 Flash-Lite",
+      value: "gemini-3.5-flash-lite",
+      description: "Quickest and cheapest.",
     },
   ],
 };
+
+/** The listed model, or the provider's default when the ID isn't listed (e.g. retired). */
+export function resolveAiModel(provider: AiProvider, model: string): string {
+  const models = AI_MODELS[provider] ?? [];
+  if (models.some((m) => m.value === model)) return model;
+  return models[0]?.value ?? model;
+}
 
 // AI Settings ────────────────────────────────────────────────────────────
 
@@ -84,7 +97,7 @@ export interface AiSettings {
 export const DEFAULT_AI_SETTINGS: AiSettings = {
   apiKey: "",
   provider: "openai",
-  model: "gpt-4o-mini",
+  model: "gpt-6-luna",
   persistKey: false,
 };
 

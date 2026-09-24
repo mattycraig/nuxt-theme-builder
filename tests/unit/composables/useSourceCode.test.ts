@@ -1,8 +1,16 @@
-import { describe, it, expect, beforeEach, vi } from "vitest";
+import { describe, it, expect, beforeEach, afterEach, vi } from "vitest";
+import { effectScope, type EffectScope } from "vue";
+import { flushPromises } from "@vue/test-utils";
 import { mockNuxtImport } from "@nuxt/test-utils/runtime";
 import { _resetSourceCodeState } from "~/composables/useSourceCode";
 
 const routeRef = reactive({ path: "/templates/dashboard" });
+// $fetch is a Nuxt auto-import, so mock it as one (a global stub is bypassed)
+const fetchMock = vi.fn(async (_url: string) => "");
+mockNuxtImport("$fetch", () => {
+  return (...args: unknown[]) => fetchMock(...args);
+});
+
 mockNuxtImport("useRoute", () => {
   return () => routeRef;
 });
@@ -124,6 +132,72 @@ describe("useSourceCode", () => {
       sourceCode.value = "<template>Hello</template>";
       copySource();
       expect(copyFn).toHaveBeenCalledWith("<template>Hello</template>");
+    });
+  });
+
+  describe("fetching", () => {
+    let scope: EffectScope;
+
+    // The layout, preview toolbar, and fullscreen overlay each call useSourceCode().
+    function useInScope(callers = 1) {
+      let api!: ReturnType<typeof useSourceCode>;
+      for (let i = 0; i < callers; i++) {
+        api = scope.run(() => useSourceCode())!;
+      }
+      return api;
+    }
+
+    async function showCode(api: ReturnType<typeof useSourceCode>, path: string) {
+      api.setViewMode("preview");
+      routeRef.path = path;
+      await flushPromises();
+      api.setViewMode("code");
+      await flushPromises();
+    }
+
+    beforeEach(() => {
+      scope = effectScope();
+      fetchMock.mockReset();
+      fetchMock.mockImplementation(async (url: string) => `source of ${url}`);
+    });
+
+    afterEach(() => {
+      scope.stop();
+    });
+
+    it("shows the current route's source when returning to a cached route", async () => {
+      const api = useInScope();
+
+      await showCode(api, "/templates/dashboard");
+      await showCode(api, "/templates/login");
+      await showCode(api, "/templates/dashboard");
+
+      expect(api.sourceCode.value).toBe("source of /api/source/templates/dashboard");
+      expect(fetchMock).toHaveBeenCalledTimes(2);
+    });
+
+    it("fetches once when several components share the composable", async () => {
+      const api = useInScope(3);
+
+      await showCode(api, "/templates/dashboard");
+
+      expect(fetchMock).toHaveBeenCalledTimes(1);
+      expect(api.sourceCode.value).toBe("source of /api/source/templates/dashboard");
+    });
+
+    it("ignores a response that arrives after navigating to another route", async () => {
+      let resolveSlow!: (value: string) => void;
+      fetchMock.mockImplementationOnce(
+        () => new Promise<string>((resolve) => (resolveSlow = resolve)),
+      );
+      const api = useInScope();
+
+      await showCode(api, "/templates/dashboard");
+      await showCode(api, "/templates/login");
+      resolveSlow("stale dashboard source");
+      await flushPromises();
+
+      expect(api.sourceCode.value).toBe("source of /api/source/templates/login");
     });
   });
 });

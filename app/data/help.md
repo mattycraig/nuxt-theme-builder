@@ -20,7 +20,7 @@ The sidebar organizes every design decision into collapsible sections — expand
 - **Color Mode** — Switch between light and dark mode to preview your theme in each context.
 - **Layout** — Set the global border radius (in rem) and choose a font family.
 - **Semantic Colors** — Assign a Tailwind color palette to each semantic slot: primary, secondary, success, info, warning, and error.
-- **Neutral Color** — Pick the gray scale (slate, gray, zinc, neutral, stone) for text, backgrounds, and borders.
+- **Neutral Color** — Pick the gray scale (slate, gray, zinc, neutral, stone, taupe, mauve, mist, olive) for text, backgrounds, and borders.
 - **Text Colors** — Control which neutral shade maps to highlighted, default, muted, dimmed, and toned text tokens.
 - **Background Colors** — Override neutral shades for default, elevated, accented, and inverted backgrounds.
 - **Border Colors** — Override neutral shades for default and accented borders.

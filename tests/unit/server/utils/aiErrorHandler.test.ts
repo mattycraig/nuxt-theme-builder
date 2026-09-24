@@ -1,4 +1,5 @@
 import { describe, it, expect } from "vitest";
+import { NoObjectGeneratedError, NoOutputGeneratedError } from "ai";
 import { classifyAiError } from "~~/server/utils/aiErrorHandler";
 
 describe("server/utils/aiErrorHandler", () => {
@@ -20,6 +21,29 @@ describe("server/utils/aiErrorHandler", () => {
   });
 
   describe("NoObjectGeneratedError", () => {
+    it("classifies a real schema validation failure as 422", () => {
+      const err = new NoObjectGeneratedError({
+        response: { id: "r", timestamp: new Date(0), modelId: "m" },
+        usage: {
+          inputTokens: undefined,
+          inputTokenDetails: {
+            noCacheTokens: undefined,
+            cacheReadTokens: undefined,
+            cacheWriteTokens: undefined,
+          },
+          outputTokens: undefined,
+          outputTokenDetails: { textTokens: undefined, reasoningTokens: undefined },
+          totalTokens: undefined,
+        },
+        finishReason: "stop",
+      });
+      expect(classifyAiError(err).statusCode).toBe(422);
+    });
+
+    it("classifies NoOutputGeneratedError (AI SDK 7) as 422", () => {
+      expect(classifyAiError(new NoOutputGeneratedError()).statusCode).toBe(422);
+    });
+
     it("classifies schema validation failure as 422", () => {
       // NoObjectGeneratedError uses Symbol.hasInstance so we simulate it
       const err = Object.create(null);

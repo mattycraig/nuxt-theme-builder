@@ -6,7 +6,7 @@
 
 # Default owner for everything
 
-- @mattycraig
+* @mattycraig
 
 # Core theme system
 
@@ -30,5 +30,5 @@ vitest.config.ts @mattycraig
 
 # Documentation
 
-\*.md @mattycraig
+*.md @mattycraig
 content/ @mattycraig

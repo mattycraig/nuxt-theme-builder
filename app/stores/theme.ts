@@ -23,7 +23,9 @@ const MAX_HISTORY = 50;
 
 /**
  * Central theme store — single source of truth for all design token configuration.
- * Supports undo/redo, named presets, and localStorage persistence.
+ * Supports undo/redo and named presets. `config` and `activePresetName` persist
+ * to the `theme` cookie (readable during SSR); `savedPresets` persist to
+ * localStorage because they quickly outgrow the 4 KB cookie limit.
  */
 
 export const useThemeStore = defineStore(
@@ -68,6 +70,17 @@ export const useThemeStore = defineStore(
         historyIndex.value++;
       }
       history.value = newHistory;
+    }
+
+    /**
+     * Re-seed history from the current config. Called after persisted state
+     * hydrates, so the first undo returns to the restored theme rather than
+     * the DEFAULT_THEME snapshot the history was created with.
+     */
+    function _resetHistory() {
+      history.value = [cloneTheme(config.value)];
+      historyIndex.value = 0;
+      historyBaseIndex.value = 0;
     }
 
     const canUndo = computed(() => historyIndex.value > 0);
@@ -412,6 +425,7 @@ export const useThemeStore = defineStore(
       randomizeTheme,
       loadConfig,
       _syncConfig,
+      _resetHistory,
 
       // Preset CRUD
       savePreset,
@@ -422,21 +436,30 @@ export const useThemeStore = defineStore(
     };
   },
   {
-    persist: {
-      pick: ["config", "savedPresets", "activePresetName"],
-      afterHydrate(ctx) {
-        const result = ThemeConfigSchema.safeParse(ctx.store.config);
-        if (!result.success) {
-          console.warn(
-            "Persisted theme config is invalid (schema changed?), resetting to defaults:",
-            result.error.issues,
-          );
-          ctx.store.config = cloneTheme(DEFAULT_THEME);
-        } else {
-          ctx.store.config = cloneTheme(result.data as ThemeConfig);
-        }
-
-        if (Array.isArray(ctx.store.savedPresets)) {
+    persist: [
+      {
+        key: "theme",
+        pick: ["config", "activePresetName"],
+        afterHydrate(ctx) {
+          const result = ThemeConfigSchema.safeParse(ctx.store.config);
+          if (!result.success) {
+            console.warn(
+              "Persisted theme config is invalid (schema changed?), resetting to defaults:",
+              result.error.issues,
+            );
+            ctx.store.config = cloneTheme(DEFAULT_THEME);
+          } else {
+            ctx.store.config = cloneTheme(result.data as ThemeConfig);
+          }
+          ctx.store._resetHistory();
+        },
+      },
+      {
+        key: "theme-presets",
+        pick: ["savedPresets"],
+        storage: piniaPluginPersistedstate.localStorage(),
+        afterHydrate(ctx) {
+          if (!Array.isArray(ctx.store.savedPresets)) return;
           const valid = ctx.store.savedPresets.filter(
             (p: ThemePreset) =>
               p?.name && ThemeConfigSchema.safeParse(p.config).success,
@@ -447,8 +470,8 @@ export const useThemeStore = defineStore(
             );
             ctx.store.savedPresets = valid;
           }
-        }
+        },
       },
-    },
+    ],
   },
 );

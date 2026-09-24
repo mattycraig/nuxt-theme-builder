@@ -1,0 +1,72 @@
+name: Claude
+
+# Mention @claude in an issue, PR comment, or review to have Claude Code
+# answer questions or push changes. Requires the Claude GitHub App and a
+# CLAUDE_CODE_OAUTH_TOKEN secret (run `claude setup-token`, or `/install-github-app`
+# in Claude Code). The action only responds to users with write access.
+
+on:
+  issue_comment:
+    types: [created]
+  pull_request_review_comment:
+    types: [created]
+  pull_request_review:
+    types: [submitted]
+  issues:
+    types: [opened, assigned]
+
+permissions:
+  contents: write
+  pull-requests: write
+  issues: write
+  id-token: write
+  actions: read
+
+jobs:
+  claude:
+    if: >
+      (github.event_name == 'issue_comment' && contains(github.event.comment.body, '@claude')) ||
+      (github.event_name == 'pull_request_review_comment' && contains(github.event.comment.body, '@claude')) ||
+      (github.event_name == 'pull_request_review' && contains(github.event.review.body, '@claude')) ||
+      (github.event_name == 'issues' && (contains(github.event.issue.body, '@claude') || contains(github.event.issue.title, '@claude')))
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - name: Check Claude credentials
+        id: auth
+        env:
+          CLAUDE_CODE_OAUTH_TOKEN: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
+        run: |
+          if [ -n "$CLAUDE_CODE_OAUTH_TOKEN" ]; then
+            echo "enabled=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "::notice::CLAUDE_CODE_OAUTH_TOKEN is not configured; skipping Claude."
+          fi
+
+      - uses: actions/checkout@v7
+        if: steps.auth.outputs.enabled == 'true'
+        with:
+          fetch-depth: 1
+
+      - uses: pnpm/action-setup@v6
+        if: steps.auth.outputs.enabled == 'true'
+
+      - uses: actions/setup-node@v7
+        if: steps.auth.outputs.enabled == 'true'
+        with:
+          node-version-file: .node-version
+          cache: pnpm
+
+      # Dependencies + .nuxt/ let Claude run lint, typecheck, and tests.
+      - run: pnpm install --frozen-lockfile
+        if: steps.auth.outputs.enabled == 'true'
+
+      - uses: anthropics/claude-code-action@v1
+        if: steps.auth.outputs.enabled == 'true'
+        with:
+          claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
+          additional_permissions: |
+            actions: read
+          claude_args: |
+            --max-turns 60
+            --allowedTools "Bash(pnpm lint),Bash(pnpm lint:fix),Bash(pnpm format),Bash(pnpm format:check),Bash(pnpm typecheck),Bash(pnpm test),Bash(pnpm vitest:*),Bash(git diff:*),Bash(git log:*),Bash(git status:*)"

@@ -1,8 +1,6 @@
 {
   "$schema": "https://unpkg.com/knip@5/schema.json",
   "entry": [
-    "app/app.vue",
-    "app/app.config.ts",
     "app/pages/**/*.vue",
     "app/layouts/**/*.vue",
     "app/middleware/**/*.ts",
@@ -23,19 +21,11 @@
     "modules/**/*.ts",
     "shared/**/*.ts"
   ],
-  "ignore": [
-    ".nuxt/**",
-    ".output/**",
-    "coverage/**",
-    "playwright-report/**",
-    ".agents/**"
-  ],
   "ignoreDependencies": [
     "@iconify-json/lucide",
     "@iconify-json/simple-icons",
     "sharp",
     "vue-tsc",
-    "vue",
     "h3",
     "vitest-environment-nuxt"
   ],

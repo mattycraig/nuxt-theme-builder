@@ -27,6 +27,10 @@ logs
 # VS Code MCP config (contains API keys)
 .vscode/mcp.json
 
+# Claude Code personal overrides (shared config lives in .claude/settings.json and CLAUDE.md)
+.claude/settings.local.json
+CLAUDE.local.md
+
 # Test coverage
 coverage/
 
@@ -46,6 +50,5 @@ blob-report/
 --port/
 
 
-# Sentry Config File
-.env.sentry-build-plugin
+# squirrelscan (audit-website skill) output
 audit-report.txt

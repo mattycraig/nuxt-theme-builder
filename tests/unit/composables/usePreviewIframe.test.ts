@@ -1,6 +1,12 @@
-import { describe, it, expect, vi, beforeEach } from "vitest";
+import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
+import { nextTick } from "vue";
+import { mockNuxtImport } from "@nuxt/test-utils/runtime";
 import { DEFAULT_THEME } from "~/utils/defaults";
+import { useThemeStore } from "~/stores/theme";
+import { mountWithComposable } from "../../setup/component";
+import { createThemeConfig } from "../../setup/fixtures";
 import {
+  usePreviewIframe,
   createIframeMessageHandler,
   type IframeMessageActions,
   type IframeMessageContext,
@@ -13,6 +19,13 @@ import {
  */
 
 const ORIGIN = "http://localhost:3000";
+
+const { navigateToMock, toastAddMock } = vi.hoisted(() => ({
+  navigateToMock: vi.fn(),
+  toastAddMock: vi.fn(),
+}));
+mockNuxtImport("navigateTo", () => navigateToMock);
+mockNuxtImport("useToast", () => () => ({ add: toastAddMock }));
 
 function makeActions(): IframeMessageActions {
   return {
@@ -153,6 +166,22 @@ describe("usePreviewIframe — message handler logic", () => {
       );
       expect(actions.navigateIframe).toHaveBeenCalledWith("/ai?preview");
     });
+
+    it("keeps loading while it navigates the iframe off the shell", () => {
+      ctx = {
+        ...defaultCtx,
+        iframeInitialSrc: "/preview",
+        iframeSrc: "/components/button?preview",
+      };
+      handleMessage(
+        createMessageEvent(ORIGIN, { type: "preview-ready" }),
+      );
+      expect(actions.setIframeLoading).toHaveBeenCalledWith(true);
+      expect(actions.setIframeLoading).not.toHaveBeenCalledWith(false);
+      expect(actions.navigateIframe).toHaveBeenCalledWith(
+        "/components/button?preview",
+      );
+    });
   });
 
   describe("apply-ai-theme", () => {
@@ -284,5 +313,140 @@ describe("usePreviewIframe — message handler logic", () => {
       );
       expect(actions.randomizeTheme).toHaveBeenCalled();
     });
+  });
+});
+
+describe("usePreviewIframe — wiring", () => {
+  let store: ReturnType<typeof useThemeStore>;
+  let postMessage: ReturnType<typeof vi.fn>;
+  let mounted: Awaited<
+    ReturnType<typeof mountWithComposable<ReturnType<typeof usePreviewIframe>>>
+  >;
+
+  function send(data: Record<string, unknown>, origin = window.location.origin) {
+    window.dispatchEvent(new MessageEvent("message", { origin, data }));
+  }
+
+  function sentTypes(): string[] {
+    return postMessage.mock.calls.map(([msg]) => (msg as { type: string }).type);
+  }
+
+  beforeEach(async () => {
+    store = useThemeStore();
+    store.resetToDefaults();
+    navigateToMock.mockClear();
+    toastAddMock.mockClear();
+    postMessage = vi.fn();
+    mounted = await mountWithComposable(() => usePreviewIframe());
+    mounted.result.previewFrame.value = {
+      contentWindow: { postMessage },
+    } as unknown as HTMLIFrameElement;
+  });
+
+  afterEach(() => {
+    mounted.wrapper.unmount();
+    useSaveThemeModal().cancel();
+    useExportPanel().close();
+  });
+
+  it("starts the iframe on the prerendered preview shell", () => {
+    expect(mounted.result.iframeInitialSrc.value).toBe("/preview");
+    expect(mounted.result.iframeLoading.value).toBe(true);
+  });
+
+  it("completes the ready handshake, then moves the iframe to the current route", () => {
+    send({ type: "preview-ready" });
+
+    expect(mounted.result.iframeReady.value).toBe(true);
+    expect(sentTypes()).toEqual(["theme-sync", "colormode-sync", "navigate"]);
+    expect(postMessage.mock.calls[0]![0]).toMatchObject({
+      config: store.config,
+    });
+    expect(postMessage.mock.calls[0]![1]).toBe(window.location.origin);
+    expect(postMessage.mock.calls[2]![0]).toEqual({
+      type: "navigate",
+      path: mounted.result.iframeSrc.value,
+    });
+
+    // The theme is applied before the page renders, so there's no flash of
+    // the default theme. The overlay stays up until the page is there.
+    expect(mounted.result.iframeLoading.value).toBe(true);
+    send({ type: "navigate-done" });
+    expect(mounted.result.iframeLoading.value).toBe(false);
+  });
+
+  it("ignores messages from other origins", () => {
+    send({ type: "preview-ready" }, "https://evil.example");
+    expect(mounted.result.iframeReady.value).toBe(false);
+    expect(postMessage).not.toHaveBeenCalled();
+  });
+
+  it("re-requests readiness on iframe load only until the iframe is ready", () => {
+    mounted.result.handleIframeLoad();
+    expect(sentTypes()).toEqual(["request-ready"]);
+
+    send({ type: "preview-ready" });
+    postMessage.mockClear();
+    mounted.result.handleIframeLoad();
+    expect(postMessage).not.toHaveBeenCalled();
+  });
+
+  it("pushes theme changes to the iframe", async () => {
+    store.setRadiusForMode("light", 0.75);
+    await nextTick();
+    expect(sentTypes()).toContain("theme-sync");
+    const last = postMessage.mock.calls.at(-1)![0] as { config: { radius: number } };
+    expect(last.config.radius).toBe(0.75);
+  });
+
+  it("pushes color mode changes to the iframe", async () => {
+    useColorMode().preference = "dark";
+    await nextTick();
+    expect(postMessage).toHaveBeenCalledWith(
+      { type: "colormode-sync", mode: "dark" },
+      window.location.origin,
+    );
+    useColorMode().preference = "system";
+  });
+
+  it("applies a validated AI theme, shows a toast, and opens save and export", () => {
+    const config = createThemeConfig({
+      colors: { ...DEFAULT_THEME.colors, primary: "rose" },
+    });
+    send({ type: "apply-ai-theme", config, save: true, export: true });
+
+    expect(store.config.colors.primary).toBe("rose");
+    expect(toastAddMock).toHaveBeenCalledWith(
+      expect.objectContaining({ title: "Theme applied" }),
+    );
+    expect(useSaveThemeModal().isOpen.value).toBe(true);
+    expect(useExportPanel().isOpen.value).toBe(true);
+  });
+
+  it("forwards undo and redo shortcuts from the iframe to the store", () => {
+    store.setRadiusForMode("light", 0.75);
+
+    send({ type: "keyboard-shortcut", key: "z", shift: false });
+    expect(store.config.radius).toBe(DEFAULT_THEME.radius);
+
+    send({ type: "keyboard-shortcut", key: "z", shift: true });
+    expect(store.config.radius).toBe(0.75);
+  });
+
+  it("randomizes the theme on request", () => {
+    const before = JSON.stringify(store.config);
+    send({ type: "randomize-theme" });
+    expect(JSON.stringify(store.config)).not.toBe(before);
+  });
+
+  it("navigates the editor when a link is clicked inside the iframe", () => {
+    send({ type: "navigate-parent", path: "/components/button" });
+    expect(navigateToMock).toHaveBeenCalledWith("/components/button");
+  });
+
+  it("stops listening after unmount", () => {
+    mounted.wrapper.unmount();
+    send({ type: "preview-ready" });
+    expect(mounted.result.iframeReady.value).toBe(false);
   });
 });

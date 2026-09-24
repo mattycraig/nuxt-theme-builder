@@ -8,6 +8,12 @@ export default defineVitestConfig({
     environmentOptions: {
       nuxt: {
         domEnvironment: "happy-dom",
+        overrides: {
+          // The build cache key ignores test-mode overrides, so after a
+          // `pnpm build` Nuxt restores the production build, the Vite config
+          // hook never fires, and Vitest exits 0 without running any tests.
+          experimental: { buildCache: false },
+        },
       },
     },
     include: ["tests/**/*.test.ts"],

@@ -18,7 +18,7 @@ Design and preview semantic palettes, neutral scales, radius, fonts, and light/d
 - Theme editor sidebar with undo/redo and preset management
 - Route-based previews for components, blocks, and full templates
 - Iframe preview sync + fullscreen mode
-- Source code viewer for block/template pages
+- Source view for templates; copyable source and AI prompts for every block
 - AI theme generation (BYOK) with OpenAI, Anthropic, and Google models
 - Export panel for app config, CSS, and JSON formats
 - Interactive design tools (color converter, contrast checker, palette generator/viewer)
@@ -42,7 +42,7 @@ Design and preview semantic palettes, neutral scales, radius, fonts, and light/d
 ```text
 app/
 	app.vue
-	layouts/               # default, preview, ai, coming-soon
+	layouts/               # default (editor shell), preview (iframe), coming-soon
 	pages/                 # home, ai, components/*, blocks/*, templates/*, tools/*, learn/*, utility pages
 	components/            # editor, preview, layout, ai, tools, learn
 	composables/           # theme apply/export, iframe sync, source mode, AI state, shortcuts
@@ -59,16 +59,18 @@ server/api/
 	source/[...path].get.ts
 modules/
 	source-code-embed.ts
+shared/constants/        # palettes, fonts, routes, AI fallbacks (used by app + server)
 tests/
 	unit/
-	e2e/
+	e2e/                   # smoke/ runs in CI
+.claude/                 # Claude Code settings, hooks, rules, skills, subagents
 ```
 
 ## Getting Started
 
 ### Requirements
 
-- Node.js 22+
+- Node.js 22.22+ (lint-staged 17, commitlint 21, and Vitest 5 need a current Node 22)
 - pnpm 10+
 
 ### Install
@@ -111,7 +113,10 @@ pnpm generate
 # Quality
 pnpm lint
 pnpm lint:fix
+pnpm format
+pnpm format:check
 pnpm typecheck
+pnpm knip
 
 # Tests
 pnpm test
@@ -125,76 +130,25 @@ pnpm test:e2e:headed
 pnpm test:e2e:ui
 
 # Workflow automation
-pnpm workflow           # Full interactive workflow (PowerShell)
-pnpm workflow:commit    # Workflow with commit prompt
 pnpm workflow:quick     # Quick: lint + format + typecheck
 pnpm workflow:full      # Full: lint + format + typecheck + test
 ```
 
 ## Development Workflow
 
-Automated workflow for validating and committing changes:
+Before committing, run `pnpm workflow:quick` (lint, format, typecheck) or `pnpm workflow:full` (adds unit tests). Husky runs ESLint/Prettier on staged files and commitlint on every commit, and CI runs the full suite on each PR. In Claude Code, `/dev-workflow [quick|full|commit]` runs the same pipeline, fixes what it can, and drafts the commit.
 
-### Quick Commands
+## Claude Code
 
-```bash
-# Quick validation (no tests)
-pnpm workflow:quick
+This repository is set up for [Claude Code](https://code.claude.com) (CLI, IDE, desktop, and web):
 
-# Full validation (with tests)
-pnpm workflow:full
+- **`CLAUDE.md`**: project context and guardrails loaded into every session, plus path-scoped rules in `.claude/rules/`.
+- **Skills** (run with `/name`): `/dev-workflow [quick|full|commit]`, `/add-preview-route`, `/add-theme-property`, `/add-design-tool`, `/add-learn-article`, `/add-ai-model`, `/run-app`, `/docs-sync`, `/maintenance`, plus vendored Nuxt/Vue/Nuxt UI reference skills.
+- **Subagents**: `code-reviewer`, `test-writer`, `a11y-reviewer`.
+- **Hooks**: auto-fix edited files, lint changed files before finishing, block edits to lockfiles/secrets/generated output, block `--no-verify` and direct pushes to `master`, and install dependencies at session start on the web.
+- **GitHub**: mention `@claude` on issues/PRs (`claude.yml`), and every PR gets an automatic review (`claude-code-review.yml`) once a `CLAUDE_CODE_OAUTH_TOKEN` secret is configured.
 
-# Interactive workflow with commit
-pnpm workflow:commit
-```
-
-### PowerShell Script (Windows)
-
-```powershell
-# Interactive workflow
-.\scripts\dev-workflow.ps1
-
-# With commit message and push
-.\scripts\dev-workflow.ps1 -CommitMessage "feat: add feature" -Push
-
-# Skip tests for quick iteration
-.\scripts\dev-workflow.ps1 -SkipTests
-
-# Include E2E tests
-.\scripts\dev-workflow.ps1 -RunE2E
-
-# Dry run to preview
-.\scripts\dev-workflow.ps1 -DryRun
-```
-
-### Bash Script (Linux/macOS/CI)
-
-```bash
-# Interactive workflow
-./scripts/dev-workflow.sh
-
-# With commit message and push
-./scripts/dev-workflow.sh --message "feat: add feature" --push
-
-# Skip tests for quick iteration
-./scripts/dev-workflow.sh --skip-tests
-
-# Include E2E tests
-./scripts/dev-workflow.sh --run-e2e
-
-# Dry run to preview
-./scripts/dev-workflow.sh --dry-run
-```
-
-### Copilot Chat Modes
-
-In VS Code with Copilot, use these custom chat modes:
-
-- **Dev Workflow**: Full lint → format → typecheck → test → stage
-- **Quick Check**: Fast lint + typecheck only
-- **Commit Ready**: Full workflow with commit message suggestion
-
-Or use the prompt file: `.github/prompts/dev-workflow.prompt.md`
+See [`.claude/README.md`](./.claude/README.md) for setup and details.
 
 ## Testing
 
@@ -216,9 +170,11 @@ Or use the prompt file: `.github/prompts/dev-workflow.prompt.md`
 
 GitHub Actions workflows:
 
-- `ci.yml` (push/PR to `master`): lint, typecheck, unit coverage, e2e, build
+- `ci.yml` (push/PR to `master`): lint + format check, typecheck, unit tests with coverage, production build + e2e smoke
 - `security.yml` (PR to `master`): dependency review with high-severity fail threshold
-- `codeql.yml` (schedule + manual): code security scanning
+- `codeql.yml` (push/PR to `master` + weekly): code security scanning
+- `claude.yml` (`@claude` mentions): Claude Code answers or implements from issues and PR comments
+- `claude-code-review.yml` (PRs): automatic Claude Code review using the repo's review checklist
 - `lighthouse.yml` (Preview deployments): Lighthouse audit + PR comment
 - `labeler.yml` (PR): auto-labels PRs by file paths
 - `stale.yml` (schedule): manages stale issues/PRs
@@ -235,7 +191,8 @@ Deployment:
 - Keep navigation additions synced in `app/utils/navigation/` modules.
 - For theme model changes, update types → defaults → store → apply/export composables → tests.
 - For new design tools, add component → page → navigation registration → SEO description.
-- For new learn articles, add markdown file to `content/learn/<category>/` with required frontmatter.
+- For new learn articles, add the markdown file to `content/learn/<category>/` and register it in `app/utils/navigation/learn.ts` and `shared/constants/routes.ts`.
+- Step-by-step checklists for these tasks live in `.claude/skills/*/SKILL.md` (usable with or without Claude Code).
 - Ensure `pnpm lint`, `pnpm typecheck`, `pnpm test`, and `pnpm test:e2e:ci` pass before merging.
 
 ## License

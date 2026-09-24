@@ -10,7 +10,7 @@ const mockLoadConfig = vi.fn();
 const mock$fetch = vi.fn();
 const mockApiKey = ref("");
 const mockProvider = ref("openai");
-const mockModel = ref("gpt-4o-mini");
+const mockModel = ref("gpt-6-luna");
 const mockMessages = ref<unknown[]>([]);
 
 mockNuxtImport("useState", () => {
@@ -40,7 +40,10 @@ mockNuxtImport("useAiSettings", () => {
   });
 });
 
-vi.stubGlobal("$fetch", (...args: unknown[]) => mock$fetch(...args));
+// $fetch is a Nuxt auto-import, so mock it as one (a global stub is bypassed)
+mockNuxtImport("$fetch", () => {
+  return (...args: unknown[]) => mock$fetch(...args);
+});
 
 describe("useAiChat", () => {
   let chat: ReturnType<typeof useAiChat>;
@@ -49,7 +52,7 @@ describe("useAiChat", () => {
     mockMessages.value = [];
     mockApiKey.value = "";
     mockProvider.value = "openai";
-    mockModel.value = "gpt-4o-mini";
+    mockModel.value = "gpt-6-luna";
     mockToastAdd.mockReset();
     mockLoadConfig.mockReset();
     mock$fetch.mockReset();
@@ -118,10 +121,31 @@ describe("useAiChat", () => {
             prompt: "Make it red",
             apiKey: "sk-test-key",
             provider: "openai",
-            model: "gpt-4o-mini",
+            model: "gpt-6-luna",
           }),
         }),
       );
+    });
+
+    it("sends prior turns as history without repeating the current prompt", async () => {
+      mockApiKey.value = "sk-test";
+      mockMessages.value = [
+        { id: "1", role: "user", content: "Make it blue", timestamp: 1 },
+        { id: "2", role: "assistant", content: "Blue theme", timestamp: 2 },
+      ];
+      mock$fetch.mockResolvedValue({
+        themeConfig: DEFAULT_THEME,
+        explanation: "Done",
+      });
+
+      await chat.sendMessage("Now make it warmer");
+
+      const body = mock$fetch.mock.calls[0]![1].body;
+      expect(body.prompt).toBe("Now make it warmer");
+      expect(body.conversationHistory).toEqual([
+        { role: "user", content: "Make it blue" },
+        { role: "assistant", content: "Blue theme" },
+      ]);
     });
 
     it("adds assistant message on successful response", async () => {

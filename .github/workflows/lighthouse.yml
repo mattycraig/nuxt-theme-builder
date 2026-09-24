@@ -17,7 +17,7 @@ jobs:
       github.event.deployment_status.state == 'success' &&
       github.event.deployment_status.environment == 'Preview'
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
         with:
           fetch-depth: 1
 
@@ -28,24 +28,13 @@ jobs:
           urls: ${{ github.event.deployment_status.target_url }}
           uploadArtifacts: true
           temporaryPublicStorage: true
-          configJson: |
-            {
-              "ci": {
-                "assert": {
-                  "assertions": {
-                    "categories:performance": ["warn", { "minScore": 0.8 }],
-                    "categories:accessibility": ["error", { "minScore": 0.9 }],
-                    "categories:best-practices": ["warn", { "minScore": 0.9 }],
-                    "categories:seo": ["warn", { "minScore": 0.8 }]
-                  }
-                }
-              }
-            }
+          # lighthouse-ci-action has no inline-config input; assertions live in this file.
+          configPath: ./.github/lighthouse/lighthouserc.json
 
       - name: Format Lighthouse results
         id: format
         if: always()
-        uses: actions/github-script@v7
+        uses: actions/github-script@v9
         with:
           script: |
             const results = ${{ steps.lighthouse.outputs.manifest }};

@@ -6,6 +6,7 @@ import type {
   BorderTokenOverrides,
 } from "~/types/theme";
 import { DEFAULT_COLOR_SHADES } from "~/types/theme";
+import { DEFAULT_FONT } from "~~/shared/constants/theme";
 import { toRaw } from "vue";
 
 // Light Mode Token Defaults ──────────────────────────────────────────────
@@ -97,7 +98,7 @@ export const DEFAULT_THEME: ThemeConfig = {
   },
   neutral: "zinc",
   radius: 0.375,
-  font: "Geist",
+  font: DEFAULT_FONT,
   lightOverrides: { ...DEFAULT_LIGHT_OVERRIDES },
   darkOverrides: { ...DEFAULT_DARK_OVERRIDES },
 
@@ -113,7 +114,7 @@ export const DEFAULT_THEME: ThemeConfig = {
   darkColorShades: { ...DEFAULT_COLOR_SHADES },
   darkNeutral: "zinc",
   darkRadius: 0.375,
-  darkFont: "Geist",
+  darkFont: DEFAULT_FONT,
 };
 
 // Utility Functions ───────────────────────────────────────────────────────

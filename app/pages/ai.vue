@@ -5,10 +5,6 @@ import {
   INDEXABLE_ROBOTS,
 } from "~/utils/seoDescriptions";
 
-definePageMeta({
-  layout: "ai",
-});
-
 const title = "AI Theme Generator — Nuxt UI Theme Builder";
 const description =
   "Generate custom Nuxt UI themes with AI. Describe your design vision and get a complete theme configuration you can apply instantly.";
