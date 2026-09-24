@@ -13,19 +13,22 @@ jobs:
   lighthouse:
     name: Lighthouse Audit
     runs-on: ubuntu-latest
+    # Preview deployments sit behind Vercel Authentication, so auditing them
+    # only measured Vercel's login page. Audit the live site after each
+    # production deploy instead.
     if: >
       github.event.deployment_status.state == 'success' &&
-      github.event.deployment_status.environment == 'Preview'
+      github.event.deployment_status.environment == 'Production'
     steps:
       - uses: actions/checkout@v7
         with:
           fetch-depth: 1
 
-      - name: Audit preview URL with Lighthouse
+      - name: Audit the production site with Lighthouse
         id: lighthouse
         uses: treosh/lighthouse-ci-action@v12
         with:
-          urls: ${{ github.event.deployment_status.target_url }}
+          urls: https://nuxt-ui-themes.com/
           uploadArtifacts: true
           temporaryPublicStorage: true
           # lighthouse-ci-action has no inline-config input; assertions live in this file.
@@ -48,6 +51,15 @@ jobs:
             const result = results[0];
             const summary = result.summary;
             const url = Object.values(links)[0];
+
+            // `links` is keyed by the URL Lighthouse ended up on. A different
+            // host means a redirect (e.g. a login wall), so the scores aren't
+            // the site's.
+            const finalUrl = Object.keys(links)[0];
+            if (finalUrl && new URL(finalUrl).host !== new URL(result.url).host) {
+              core.setFailed(`Lighthouse was redirected to ${new URL(finalUrl).host} instead of auditing ${result.url}`);
+              return;
+            }
 
             const score = (v) => `${Math.round(v * 100)}`;
             const emoji = (v) => v >= 0.9 ? '🟢' : v >= 0.5 ? '🟡' : '🔴';
