@@ -29,6 +29,18 @@ describe("useCookieConsent — decision logic", () => {
       localStorage.setItem(COOKIE_CONSENT_STORAGE_KEY, "dismissed");
       expect(shouldShowConsentToast()).toBe(false);
     });
+
+    // The editor shows the notice; the preview iframe must not show a second
+    // one. The ?preview query can't be used: prerendered demo routes hydrate
+    // without it before navigating to the real URL.
+    it("returns false inside the preview iframe", () => {
+      const parent = vi.spyOn(window, "parent", "get").mockReturnValue({} as Window);
+      try {
+        expect(shouldShowConsentToast()).toBe(false);
+      } finally {
+        parent.mockRestore();
+      }
+    });
   });
 
   describe("buildConsentToastConfig", () => {

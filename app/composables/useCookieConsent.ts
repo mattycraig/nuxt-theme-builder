@@ -1,10 +1,16 @@
+import { isInIframe } from "~/utils/helpers";
+
 export const COOKIE_CONSENT_STORAGE_KEY = "cookie-consent";
 
 /**
- * Checks whether the consent toast should be shown and returns
- * the toast configuration if so. Exported for direct unit testing.
+ * Whether the consent toast should be shown. Exported for direct unit testing.
+ *
+ * The editor already shows the notice, so the preview iframe never does. This
+ * checks for the iframe rather than the `?preview` query: demo routes are
+ * prerendered, and the iframe first hydrates the route without its query.
  */
 export function shouldShowConsentToast(): boolean {
+  if (isInIframe()) return false;
   return !localStorage.getItem(COOKIE_CONSENT_STORAGE_KEY);
 }
 
@@ -51,11 +57,7 @@ export function buildConsentToastConfig(
 export function useCookieConsent() {
   if (import.meta.server) return;
 
-  const route = useRoute();
-
   onMounted(() => {
-    // The host app already shows the consent banner — skip inside the preview iframe
-    if ("preview" in route.query) return;
     if (!shouldShowConsentToast()) return;
 
     const toast = useToast();

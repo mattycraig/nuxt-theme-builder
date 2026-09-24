@@ -164,6 +164,11 @@ async function mockGenerateHang(page: Page) {
 }
 
 async function gotoAi(page: Page, retries = 3) {
+  // Opening /ai?preview top-level (not in the editor iframe) briefly renders
+  // the editor route, whose cookie notice would cover the chat input.
+  await page.addInitScript(() => {
+    localStorage.setItem("cookie-consent", "accepted");
+  });
   for (let attempt = 1; attempt <= retries; attempt++) {
     await page.goto(AI_URL);
 
