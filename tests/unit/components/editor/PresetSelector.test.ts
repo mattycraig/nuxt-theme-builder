@@ -34,7 +34,17 @@ describe("EditorPresetSelector", () => {
 
   it("auto-loads first preset for fresh store", async () => {
     const store = useThemeStore();
+    store.activePresetName = "";
     await mountSelector();
-    expect(store.activePresetName).toBeTruthy();
+    expect(store.activePresetName).toBe("Default");
+  });
+
+  it("keeps an edited theme restored without an active preset", async () => {
+    const store = useThemeStore();
+    store.setSemanticColorForMode("light", "primary", "rose");
+    store.activePresetName = "";
+    await mountSelector();
+    expect(store.config.colors.primary).toBe("rose");
+    expect(store.activePresetName).toBe("");
   });
 });

@@ -70,9 +70,16 @@ onMounted(() => {
     return;
   }
 
-  // Only auto-load the first built-in preset on initial app load (no saved presets, no active preset)
-  if (store.savedPresets.length === 0 && BUILT_IN_PRESETS.length > 0) {
-    const defaultPreset = BUILT_IN_PRESETS[0]!;
+  // Only auto-load the first built-in preset on a fresh visit (no saved
+  // presets, no active preset, untouched config). An edited or randomized
+  // theme restored from the cookie has no active preset either, and must
+  // not be replaced on reload.
+  const defaultPreset = BUILT_IN_PRESETS[0];
+  if (
+    defaultPreset &&
+    store.savedPresets.length === 0 &&
+    JSON.stringify(store.config) === JSON.stringify(defaultPreset.config)
+  ) {
     selectedPresetName.value = defaultPreset.name;
     skipNextWatch = true;
     store.loadPreset(defaultPreset);
