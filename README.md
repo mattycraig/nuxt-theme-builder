@@ -175,7 +175,7 @@ GitHub Actions workflows:
 - `codeql.yml` (push/PR to `master` + weekly): code security scanning
 - `claude.yml` (`@claude` mentions): Claude Code answers or implements from issues and PR comments
 - `claude-code-review.yml` (PRs): automatic Claude Code review using the repo's review checklist
-- `lighthouse.yml` (Preview deployments): Lighthouse audit + PR comment
+- `lighthouse.yml` (Production deployments): Lighthouse audit of the live site (accessibility must score ≥ 0.9), commented on the merged PR
 - `labeler.yml` (PR): auto-labels PRs by file paths
 - `stale.yml` (schedule): manages stale issues/PRs
 - `welcome.yml` (issues/PRs): greets new contributors
@@ -183,7 +183,7 @@ GitHub Actions workflows:
 Deployment:
 
 - Hosted on Vercel
-- Preview environment audited by Lighthouse workflow
+- Production site audited by the Lighthouse workflow after each deploy (Preview deployments require Vercel login)
 
 ## Contributing
 

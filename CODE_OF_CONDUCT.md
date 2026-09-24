@@ -59,9 +59,9 @@ representative at an online or offline event.
 ## Enforcement
 
 Instances of abusive, harassing, or otherwise unacceptable behavior may be
-reported to the community leaders responsible for enforcement at
-[GitHub Issues](https://github.com/mattycraig/nuxt-theme-builder/issues) or
-by contacting the maintainer directly via their [GitHub profile](https://github.com/mattycraig).
+reported privately to the maintainer, [@mattycraig](https://github.com/mattycraig),
+using the contact details on their GitHub profile. Please don't report incidents
+in public issues, pull requests, or discussions.
 
 All complaints will be reviewed and investigated promptly and fairly.
 

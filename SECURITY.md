@@ -14,8 +14,7 @@ If you discover a security vulnerability in Nuxt UI Theme Builder, please report
 
 ### How to Report
 
-1. **Email:** Send details to the repository owner via [GitHub profile contact](https://github.com/mattycraig)
-2. **GitHub Security Advisories:** Use the [private vulnerability reporting](https://github.com/mattycraig/nuxt-theme-builder/security/advisories/new) feature
+Use GitHub's [private vulnerability reporting](https://github.com/mattycraig/nuxt-theme-builder/security/advisories/new). Only the maintainer can see the report, and you can discuss and follow the fix there. If you can't use it, contact the maintainer via their [GitHub profile](https://github.com/mattycraig) and don't include vulnerability details until you have a private channel.
 
 ### What to Include
 
