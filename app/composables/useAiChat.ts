@@ -58,19 +58,21 @@ export function useAiChat() {
       return;
     }
 
+    // Snapshot prior turns before adding this prompt; the server appends
+    // `prompt` itself, so including it here would send it twice.
+    const conversationHistory = messages.value
+      .filter((m) => m.role !== "system")
+      .slice(-MAX_CONVERSATION_WINDOW)
+      .map((m) => ({
+        role: m.role as "user" | "assistant",
+        content: m.content,
+      }));
+
     error.value = null;
     addMessage("user", prompt.trim());
     isGenerating.value = true;
 
     try {
-      const conversationHistory = messages.value
-        .filter((m) => m.role !== "system")
-        .slice(-MAX_CONVERSATION_WINDOW)
-        .map((m) => ({
-          role: m.role as "user" | "assistant",
-          content: m.content,
-        }));
-
       const response = await $fetch<AiGenerateResponse>("/api/ai/generate", {
         method: "POST",
         body: {

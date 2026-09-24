@@ -3,7 +3,53 @@
  *
  * Extracted from the route handler for independent review and maintainability.
  * Changes here directly affect the quality and structure of AI-generated themes.
+ *
+ * Value lists are generated from shared/constants/theme so the prompt can't
+ * drift from the response schema: the model is told to use ONLY listed values.
  */
+import {
+  CHROMATIC_PALETTES,
+  NEUTRAL_PALETTES,
+  FONT_ENTRIES,
+  SHADE_VALUES,
+  RADIUS_MIN,
+  RADIUS_MAX,
+  type FontCategory,
+} from "~~/shared/constants/theme";
+
+/** Character notes that help the model match neutrals to the primary's temperature. */
+const NEUTRAL_PALETTE_NOTES: Record<(typeof NEUTRAL_PALETTES)[number], string> =
+  {
+    slate: "cool blue-gray",
+    gray: "pure gray",
+    zinc: "warm gray",
+    neutral: "true neutral",
+    stone: "warm brownish gray",
+    taupe: "warm brown-beige gray",
+    mauve: "soft purple-tinted gray",
+    mist: "cool blue-tinted gray",
+    olive: "earthy green-tinted gray",
+  };
+
+const FONT_CATEGORY_LABELS: Record<FontCategory, string> = {
+  "sans-serif": "Sans-serif",
+  serif: "Serif",
+  monospace: "Monospace",
+  display: "Display",
+};
+
+const fontLines = Object.entries(FONT_CATEGORY_LABELS)
+  .map(([category, label]) => {
+    const names = FONT_ENTRIES.filter((f) => f.category === category).map(
+      (f) => f.name,
+    );
+    return `${label}: ${names.join(", ")}`;
+  })
+  .join("\n");
+
+const neutralOptions = NEUTRAL_PALETTES.map(
+  (name) => `${name} (${NEUTRAL_PALETTE_NOTES[name]})`,
+).join(", ");
 
 export const AI_SYSTEM_PROMPT = `You are a UI theme designer for Nuxt UI v4. Generate beautiful, harmonious themes by selecting from the available design tokens.
 
@@ -12,8 +58,8 @@ IMPORTANT: You must generate SEPARATE color palettes for light mode and dark mod
 ## Available Values
 
 ### Color Palettes (for semantic colors)
-Chromatic: red, orange, amber, yellow, lime, green, emerald, teal, cyan, sky, blue, indigo, violet, purple, fuchsia, pink, rose
-Neutral: slate, gray, zinc, neutral, stone
+Chromatic: ${CHROMATIC_PALETTES.join(", ")}
+Neutral: ${NEUTRAL_PALETTES.join(", ")}
 
 ### Semantic Color Roles
 - primary: Main brand color, used for buttons, links, and interactive elements
@@ -24,16 +70,13 @@ Neutral: slate, gray, zinc, neutral, stone
 - error: Errors, destructive actions, critical alerts
 
 ### Neutral Palette (for backgrounds, text, borders)
-Options: slate (cool blue-gray), gray (pure gray), zinc (warm gray), neutral (true neutral), stone (warm brownish gray)
+Options: ${neutralOptions}
 
 ### Border Radius
-Range: 0 to 2 (in rem). 0 = sharp corners, 0.375 = standard, 0.5 = moderately rounded, 1 = very rounded
+Range: ${RADIUS_MIN} to ${RADIUS_MAX} (in rem). 0 = sharp corners, 0.375 = standard, 0.5 = moderately rounded, 1 = very rounded
 
 ### Fonts (pick ONE per mode)
-Sans-serif: Public Sans, DM Sans, Figtree, Geist, Inter, Lato, Montserrat, Nunito, Open Sans, Outfit, Plus Jakarta Sans, Poppins, Raleway, Roboto, Source Sans 3, Space Grotesk, Work Sans
-Serif: Lora, Merriweather, Playfair Display, Source Serif 4, Libre Baskerville, DM Serif Display, Crimson Text
-Monospace: JetBrains Mono, Fira Code, Source Code Pro, IBM Plex Mono, Space Mono
-Display: Sora, Archivo, Lexend, Urbanist, Bricolage Grotesque
+${fontLines}
 
 ## Light Mode vs Dark Mode
 
@@ -52,7 +95,7 @@ These CAN and SHOULD differ when appropriate. Consider:
 These are optional. Only include them if the user asks for fine-grained control over text/bg/border shades, or if you have a strong design reason.
 If omitted, sensible defaults will be applied automatically.
 
-Available shades: white, black, 50, 100, 200, 300, 400, 500, 600, 700, 800, 900, 950
+Available shades: ${SHADE_VALUES.join(", ")}
 
 **Light mode overrides** (text should be dark on light backgrounds):
 - text: dimmed (lightest text), muted, toned, default (body text), highlighted (headings), inverted (text on dark bg)
