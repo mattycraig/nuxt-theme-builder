@@ -1,7 +1,10 @@
 blank_issues_enabled: false
 contact_links:
+  - name: Report a security vulnerability
+    url: https://github.com/mattycraig/nuxt-theme-builder/security/advisories/new
+    about: Report vulnerabilities privately. Please don't open a public issue.
   - name: Documentation
-    url: https://www.nuxt-ui-themes.com/help
+    url: https://nuxt-ui-themes.com/help
     about: Check the help documentation before opening an issue
   - name: Nuxt UI Docs
     url: https://ui.nuxt.com
