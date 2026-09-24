@@ -13,6 +13,16 @@
  * @module shared/constants/routes
  */
 
+/**
+ * Blank page that every preview iframe loads first. Pages are prerendered
+ * without their query string, so loading `/components/button?preview`
+ * directly would serve the editor's HTML (with its own nested iframe) and
+ * only switch to the preview layout after hydration. The shell is
+ * prerendered with the preview layout, and the parent then navigates it
+ * client-side with a NAVIGATE message.
+ */
+export const PREVIEW_SHELL_PATH = "/preview";
+
 export const BLOCK_ROUTES = [
   "/blocks/hero",
   "/blocks/cta",

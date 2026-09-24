@@ -15,6 +15,7 @@ paths:
 
 - `app.vue` decides the layout (`coming-soon` / `preview` / `default`). `definePageMeta({ layout })` is ignored because `<NuxtLayout :name>` wins.
 - The default layout renders the page twice: hidden (for route reactivity) and inside the iframe (visible, `?preview`). Don't remove the hidden `<slot />` wrapper in `default.vue`.
+- Preview iframes (editor and fullscreen) always load `PREVIEW_SHELL_PATH` (`/preview`) first, then the parent sends `NAVIGATE` after `PREVIEW_READY`. Never point an iframe `src` at `<route>?preview`: pages are prerendered without their query, so that URL serves the editor's HTML (with its own nested iframe) and only switches layout after hydration. Top-level `?preview` URLs still work, just slowly (the AI e2e specs use them).
 - Every postMessage handler checks `event.origin === window.location.origin` and switches on `MSG.*` constants. Add new message types to `iframeProtocol.ts` (constant + interface + the right union) before using them.
 - Navigation paths from messages go through `sanitizeNavigationPath`. Parent and iframe both suppress echo navigations with a flag; preserve that when changing navigation.
 - `useSourceCode`, `usePreviewFullscreen`, `useSaveThemeModal`, and `useExportPanel` are module-level singletons shared by several components. Code that reacts to shared state must tolerate being registered once per caller (dedupe fetches, ignore stale responses).

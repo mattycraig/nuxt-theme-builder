@@ -166,6 +166,22 @@ describe("usePreviewIframe — message handler logic", () => {
       );
       expect(actions.navigateIframe).toHaveBeenCalledWith("/ai?preview");
     });
+
+    it("keeps loading while it navigates the iframe off the shell", () => {
+      ctx = {
+        ...defaultCtx,
+        iframeInitialSrc: "/preview",
+        iframeSrc: "/components/button?preview",
+      };
+      handleMessage(
+        createMessageEvent(ORIGIN, { type: "preview-ready" }),
+      );
+      expect(actions.setIframeLoading).toHaveBeenCalledWith(true);
+      expect(actions.setIframeLoading).not.toHaveBeenCalledWith(false);
+      expect(actions.navigateIframe).toHaveBeenCalledWith(
+        "/components/button?preview",
+      );
+    });
   });
 
   describe("apply-ai-theme", () => {
@@ -333,16 +349,30 @@ describe("usePreviewIframe — wiring", () => {
     useExportPanel().close();
   });
 
-  it("completes the ready handshake with the current theme and color mode", () => {
+  it("starts the iframe on the prerendered preview shell", () => {
+    expect(mounted.result.iframeInitialSrc.value).toBe("/preview");
+    expect(mounted.result.iframeLoading.value).toBe(true);
+  });
+
+  it("completes the ready handshake, then moves the iframe to the current route", () => {
     send({ type: "preview-ready" });
 
     expect(mounted.result.iframeReady.value).toBe(true);
-    expect(mounted.result.iframeLoading.value).toBe(false);
-    expect(sentTypes()).toEqual(["theme-sync", "colormode-sync"]);
+    expect(sentTypes()).toEqual(["theme-sync", "colormode-sync", "navigate"]);
     expect(postMessage.mock.calls[0]![0]).toMatchObject({
       config: store.config,
     });
     expect(postMessage.mock.calls[0]![1]).toBe(window.location.origin);
+    expect(postMessage.mock.calls[2]![0]).toEqual({
+      type: "navigate",
+      path: mounted.result.iframeSrc.value,
+    });
+
+    // The theme is applied before the page renders, so there's no flash of
+    // the default theme. The overlay stays up until the page is there.
+    expect(mounted.result.iframeLoading.value).toBe(true);
+    send({ type: "navigate-done" });
+    expect(mounted.result.iframeLoading.value).toBe(false);
   });
 
   it("ignores messages from other origins", () => {

@@ -3,6 +3,7 @@ import { sanitizeNavigationPath, showThemeAppliedToast } from "~/utils/helpers";
 import { ThemeConfigSchema } from "~/types/theme";
 import type { ThemeConfig } from "~/types/theme";
 import { MSG } from "~/utils/iframeProtocol";
+import { PREVIEW_SHELL_PATH } from "~~/shared/constants/routes";
 import type { ParentToIframeMessage } from "~/utils/iframeProtocol";
 
 /** Callback interface for the message handler, enabling direct unit testing. */
@@ -59,11 +60,14 @@ export function createIframeMessageHandler(
 
       case MSG.PREVIEW_READY:
         actions.setIframeReady(true);
-        actions.setIframeLoading(false);
         actions.syncThemeToIframe(ctx.storeConfig);
         actions.syncColorModeToIframe(ctx.colorModePreference);
         if (ctx.iframeSrc !== ctx.iframeInitialSrc) {
+          // Keep the loading overlay up until NAVIGATE_DONE arrives.
+          actions.setIframeLoading(true);
           actions.navigateIframe(ctx.iframeSrc);
+        } else {
+          actions.setIframeLoading(false);
         }
         break;
 
@@ -122,7 +126,9 @@ export function usePreviewIframe() {
   const iframeReady = ref(false);
 
   const iframeSrc = computed(() => `${route.path}?preview`);
-  const iframeInitialSrc = ref(`${route.path}?preview`);
+  // The iframe always starts on the prerendered preview shell and is then
+  // navigated to iframeSrc once it reports PREVIEW_READY.
+  const iframeInitialSrc = ref(PREVIEW_SHELL_PATH);
 
   // When the iframe itself navigates (user clicked a link), skip echoing navigate back
   const navigatingFromIframe = ref(false);

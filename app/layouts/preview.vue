@@ -4,7 +4,10 @@ import { useThemeStore } from "~/stores/theme";
 import { sanitizeNavigationPath } from "~/utils/helpers";
 import { MSG } from "~/utils/iframeProtocol";
 import type { IframeToParentMessage, IframeMessage } from "~/utils/iframeProtocol";
-import { NOINDEX_DEMO_ROUTES } from "~~/shared/constants/routes";
+import {
+  NOINDEX_DEMO_ROUTES,
+  PREVIEW_SHELL_PATH,
+} from "~~/shared/constants/routes";
 
 import { SITE_URL, INDEXABLE_ROBOTS } from "~/utils/seoDescriptions";
 
@@ -16,7 +19,7 @@ const router = useRouter();
 const route = useRoute();
 const noindexDemoRouteSet = new Set<string>(NOINDEX_DEMO_ROUTES);
 const previewRobots = computed(() =>
-  "preview" in route.query
+  "preview" in route.query || route.path === PREVIEW_SHELL_PATH
     ? "noindex, nofollow"
     : noindexDemoRouteSet.has(route.path)
       ? "noindex, follow"
@@ -60,6 +63,8 @@ router.afterEach((to) => {
     navigatingFromParent.value = false;
     return;
   }
+  // The shell is where the iframe starts, not a page the user navigated to.
+  if (to.path === PREVIEW_SHELL_PATH) return;
   postToParent({ type: MSG.NAVIGATE_PARENT, path: to.path });
 });
 
@@ -82,7 +87,9 @@ function handleMessage(event: MessageEvent) {
     const safePath = sanitizeNavigationPath(String(msg.path));
     if (safePath) {
       navigatingFromParent.value = true;
-      router.push(safePath).then(() => {
+      // Report completion even if navigation fails, so the parent's loading
+      // overlay can't get stuck.
+      router.push(safePath).finally(() => {
         navigatingFromParent.value = false;
         postToParent({ type: MSG.NAVIGATE_DONE });
       });

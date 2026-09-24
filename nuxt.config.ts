@@ -1,5 +1,6 @@
 import {
   NOINDEX_DEMO_ROUTES,
+  PREVIEW_SHELL_PATH,
   PUBLIC_PRERENDER_ROUTES,
 } from "./shared/constants/routes";
 import { DEFAULT_FONT, FONT_ENTRIES } from "./shared/constants/theme";
@@ -50,7 +51,7 @@ export default defineNuxtConfig({
 
   sitemap: {
     sources: ["/api/__sitemap__/urls"],
-    exclude: [...NOINDEX_DEMO_ROUTES],
+    exclude: [...NOINDEX_DEMO_ROUTES, PREVIEW_SHELL_PATH],
   },
 
   schemaOrg: {
@@ -212,6 +213,12 @@ export default defineNuxtConfig({
     "/help": { prerender: true },
     "/privacy": { prerender: true },
     "/contact": { prerender: true },
+
+    // Blank page every preview iframe starts on (see PREVIEW_SHELL_PATH)
+    [PREVIEW_SHELL_PATH]: {
+      prerender: true,
+      headers: { "X-Robots-Tag": "noindex, nofollow" },
+    },
 
     // ISR depends on Vercel's production runtime. Disable it for local/dev
     // and CI node-server previews so direct route requests do not 500.
