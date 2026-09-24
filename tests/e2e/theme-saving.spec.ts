@@ -235,7 +235,7 @@ test.describe("Theme Saving - Unified Flow", () => {
     });
 
     await test.step("Modify theme to trigger unsaved state", async () => {
-      const slider = page.getByRole("slider", { name: "Thumb" });
+      const slider = page.getByRole("slider", { name: "Border Radius" });
       await slider.focus();
       await slider.press("ArrowRight");
     });

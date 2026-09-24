@@ -125,6 +125,9 @@ async function seedApiKey(page: Page) {
 
 async function clearAiStorage(page: Page) {
   await page.addInitScript(() => {
+    // Init scripts also run in nested frames (the preview iframe). Clearing
+    // there fires storage events that make the top page drop its seeded key.
+    if (window !== window.top) return;
     localStorage.removeItem("ai-settings");
     localStorage.removeItem("theme-presets");
   });

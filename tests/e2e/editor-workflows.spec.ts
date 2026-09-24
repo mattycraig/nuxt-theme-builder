@@ -41,21 +41,18 @@ test.describe("Theme Editing — Color & Radius", () => {
 
   test("should change border radius via slider", async ({ page }) => {
     await test.step("Interact with radius slider and verify value changes", async () => {
-      const slider = page.getByRole("slider", { name: "Thumb" });
-      if (await slider.isVisible()) {
-        await slider.focus();
-        const initialRadius = await slider.getAttribute("aria-valuenow");
-        await slider.press("ArrowRight");
-        await slider.press("ArrowRight");
-        await slider.press("ArrowRight");
+      const slider = page.getByRole("slider", { name: "Border Radius" });
+      await expect(slider).toBeVisible();
+      await slider.focus();
+      const initialRadius = Number(await slider.getAttribute("aria-valuenow"));
+      await slider.press("ArrowRight");
+      await slider.press("ArrowRight");
+      await slider.press("ArrowRight");
 
-        const newRadius = await slider.getAttribute("aria-valuenow");
-        if (initialRadius && newRadius) {
-          expect(Number(newRadius)).toBeGreaterThanOrEqual(
-            Number(initialRadius),
-          );
-        }
-      }
+      await expect(async () => {
+        const newRadius = Number(await slider.getAttribute("aria-valuenow"));
+        expect(newRadius).toBeGreaterThan(initialRadius);
+      }).toPass({ timeout: 2_000 });
     });
   });
 });
@@ -71,12 +68,13 @@ test.describe("Undo / Redo Flow", () => {
 
   test("should undo a radius change via toolbar button", async ({ page }) => {
     await test.step("Change radius then undo", async () => {
-      const slider = page.getByRole("slider", { name: "Thumb" });
-      if (!(await slider.isVisible())) return;
+      const slider = page.getByRole("slider", { name: "Border Radius" });
+      await expect(slider).toBeVisible();
 
       const initialValue = await slider.getAttribute("aria-valuenow");
       await slider.focus();
-      await slider.press("ArrowRight");
+      // One step: on a busy runner, two presses can land in separate 300ms
+      // debounce windows and become two history entries.
       await slider.press("ArrowRight");
 
       await expect(async () => {
@@ -100,8 +98,8 @@ test.describe("Undo / Redo Flow", () => {
 
   test("should redo after undo via toolbar button", async ({ page }) => {
     await test.step("Change, undo, then redo", async () => {
-      const slider = page.getByRole("slider", { name: "Thumb" });
-      if (!(await slider.isVisible())) return;
+      const slider = page.getByRole("slider", { name: "Border Radius" });
+      await expect(slider).toBeVisible();
 
       const initialValue = await slider.getAttribute("aria-valuenow");
       await slider.focus();

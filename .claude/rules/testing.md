@@ -23,6 +23,8 @@ paths:
 - CI runs `tests/e2e/smoke/` only. Put critical user flows there and keep them fast and deterministic.
 - Wait for `[data-testid="theme-editor"][data-hydrated="true"]` before interacting with the editor.
 - Each test gets a fresh context. `page.addInitScript` runs on every navigation, including `reload()`, so don't use storage-clearing init scripts in specs that test persistence.
+- Init scripts also run in every nested frame, including the preview iframe. A clear-then-seed pair there fires `storage` events that can reset `useLocalStorage` state in the top page, so start storage-clearing scripts with `if (window !== window.top) return;`.
+- Don't guard assertions with `if (await x.isVisible())`. When the locator stops matching, the test passes without checking anything.
 - Prefer role/label locators (`getByRole`, `getByLabel`) over CSS selectors. They double as accessibility checks.
 - Mock `/api/ai/generate` with `page.route` and never use real API keys.
 - Visual baselines live in `tests/e2e/visual/*-snapshots/`. Update them deliberately with `pnpm test:e2e:full` or `--update-snapshots`, never by hand.
