@@ -19,7 +19,8 @@ The sidebar organizes every design decision into collapsible sections — expand
 - **Presets** — Start fast with a built-in preset like Ocean, Forest, or Sunset, then customize from there.
 - **Color Mode** — Switch between light and dark mode to preview your theme in each context.
 - **Layout** — Set the global border radius (in rem) and choose a font family.
-- **Semantic Colors** — Assign a Tailwind color palette to each semantic slot: primary, secondary, success, info, warning, and error.
+- **Custom Palettes** — Generate a full 50–950 palette from one brand color, then use it like any Tailwind palette. See [Custom Palettes](#custom-palettes).
+- **Semantic Colors** — Assign a Tailwind color palette or one of your custom palettes to each semantic slot: primary, secondary, success, info, warning, and error.
 - **Neutral Color** — Pick the gray scale (slate, gray, zinc, neutral, stone, taupe, mauve, mist, olive) for text, backgrounds, and borders.
 - **Text Colors** — Control which neutral shade maps to highlighted, default, muted, dimmed, and toned text tokens.
 - **Background Colors** — Override neutral shades for default, elevated, accented, and inverted backgrounds.
@@ -68,7 +69,7 @@ export default defineAppConfig({
 });
 ```
 
-**To use it:** drop this into your project's `app.config.ts`. Nuxt UI reads these values at runtime and injects the CSS variables for you.
+**To use it:** drop this into your project's `app.config.ts`. Nuxt UI reads these values at runtime and injects the CSS variables for you. If a slot uses a custom palette (for example `primary: "brand"`), also add the `@theme static` block from the CSS export, which defines that palette's shades.
 
 ### CSS Custom Properties
 
@@ -76,6 +77,7 @@ Produces a complete stylesheet containing:
 
 - `@import` statements for Tailwind CSS v4 and Nuxt UI
 - A `@theme` block for the `--font-sans` variable
+- A `@theme static` block defining your custom palettes (`--color-brand-50` … `--color-brand-950`), when you have any
 - `:root` overrides for light mode tokens (radius, text, backgrounds, borders)
 - `.dark` overrides for dark mode tokens
 
@@ -160,6 +162,22 @@ Nuxt UI assigns specific neutral shades to semantic tokens like `--ui-text-muted
 The **Text Colors**, **Background Colors**, and **Border Colors** sections let you override which shade maps to each token — independently for light and dark modes. You get precise control over contrast and readability without touching the underlying color palette.
 
 For example, if your light mode muted text looks too faint, bump it from shade 400 to 500. The CSS export only includes overrides that differ from Nuxt UI's defaults, keeping your output clean.
+
+---
+
+## Custom Palettes
+
+Use a custom palette when no Tailwind palette matches your brand, for example the exact yellow from your logo.
+
+1. In **Custom Palettes**, click **New palette**, give it a name (like `brand`), and enter your base color as a hex value or with the color picker.
+2. The editor generates the 50–950 shades around that color. It follows the Tailwind palette with the closest hue, so the scale looks at home next to the built-in palettes.
+3. Pick the palette for a semantic color, either from that color's dropdown (custom palettes are listed first) or with **Use for** in the palette's **⋯** menu.
+
+Your exact base color lands on the shade with the closest lightness, marked with a dot in the preview strip. When you assign the palette, that shade becomes the role's main shade, so `--ui-primary` is exactly your brand color. Changing the base color later updates every color that uses the palette.
+
+Custom palettes are shared by light and dark mode, and a theme can have up to six. Loading a built-in preset, randomizing, or applying an AI theme keeps them. Deleting one moves the colors that used it to the built-in palette it was based on.
+
+Names must be lowercase letters, numbers, and dashes, and can't reuse a built-in palette or semantic color name (like `yellow` or `primary`).
 
 ---
 

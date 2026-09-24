@@ -17,6 +17,10 @@ import {
   DEFAULT_COLOR_SHADES,
   RADIUS_MIN,
   RADIUS_MAX,
+  CUSTOM_PALETTE_MAX,
+  CUSTOM_PALETTE_NAME_MAX_LENGTH,
+  CUSTOM_PALETTE_NAME_PATTERN,
+  RESERVED_PALETTE_NAMES,
 } from "~~/shared/constants/theme";
 import type { FontCategory, FontEntry } from "~~/shared/constants/theme";
 
@@ -32,6 +36,10 @@ export {
   DEFAULT_COLOR_SHADES,
   RADIUS_MIN,
   RADIUS_MAX,
+  CUSTOM_PALETTE_MAX,
+  CUSTOM_PALETTE_NAME_MAX_LENGTH,
+  CUSTOM_PALETTE_NAME_PATTERN,
+  RESERVED_PALETTE_NAMES,
 };
 export type { FontCategory, FontEntry };
 
@@ -43,6 +51,20 @@ export type ChromaticPalette = (typeof CHROMATIC_PALETTES)[number];
 export type NeutralPalette = (typeof NEUTRAL_PALETTES)[number];
 
 export type AnyPalette = ChromaticPalette | NeutralPalette;
+
+/**
+ * A palette a semantic role can use: a built-in Tailwind palette or the name
+ * of one of the theme's custom palettes (see `ThemeConfig.customPalettes`).
+ */
+export type PaletteName = AnyPalette | (string & {});
+
+/** A user-defined palette, generated from one base color. */
+export interface CustomPalette {
+  /** Lowercase kebab-case slug, used as `--color-<name>-*` and in app.config. */
+  name: string;
+  /** Base color as lowercase `#rrggbb`; the 50–950 shades are derived from it. */
+  color: string;
+}
 
 // Color Category Groupings ────────────────────────────────────────────────
 // Logical groupings of palettes for categorized dropdown display.
@@ -107,7 +129,7 @@ export const NUMERIC_SHADE_KEYS = [
 
 export type NumericShade = (typeof NUMERIC_SHADE_KEYS)[number];
 
-export type SemanticColors = Record<SemanticColorKey, AnyPalette>;
+export type SemanticColors = Record<SemanticColorKey, PaletteName>;
 export type SemanticShades = Record<SemanticColorKey, NeutralShade>;
 
 // Token Override Keys ─────────────────────────────────────────────────────
@@ -171,6 +193,10 @@ export interface ThemeConfig {
   darkNeutral: NeutralPalette;
   darkRadius: number;
   darkFont: string;
+
+  // Shared by both modes. Omitted (not `[]`) when the theme has none, so
+  // themes without custom palettes serialize exactly as before.
+  customPalettes?: CustomPalette[];
 }
 
 export const PRESET_CATEGORIES = [
@@ -225,7 +251,6 @@ export function getFontFallbackStack(fontName: string): string {
 // DEFAULT_COLOR_SHADES re-exported from shared/ above.
 
 const neutralPaletteSchema = z.enum(NEUTRAL_PALETTES);
-const anyPaletteSchema = z.enum(ALL_PALETTES);
 const neutralShadeSchema = z.enum(SHADE_VALUES);
 
 function shadeRecordSchema<T extends readonly string[]>(keys: T) {
@@ -246,14 +271,52 @@ const tokenOverridesSchema = z.object({
   border: borderTokenOverridesSchema,
 });
 
+const BUILT_IN_PALETTES: ReadonlySet<string> = new Set(ALL_PALETTES);
+
+/** Whether `name` is usable as a custom palette name (format + not reserved). */
+export function isValidCustomPaletteName(name: string): boolean {
+  return (
+    name.length <= CUSTOM_PALETTE_NAME_MAX_LENGTH &&
+    CUSTOM_PALETTE_NAME_PATTERN.test(name) &&
+    !RESERVED_PALETTE_NAMES.has(name)
+  );
+}
+
+// Built-in palette, or a custom palette name (existence is checked against
+// `customPalettes` in the theme-level refinement below).
+const paletteNameSchema = z
+  .string()
+  .refine(
+    (name) => BUILT_IN_PALETTES.has(name) || isValidCustomPaletteName(name),
+    { message: "Unknown palette" },
+  );
+
 const semanticColorsSchema = z.object({
-  primary: anyPaletteSchema,
-  secondary: anyPaletteSchema,
-  success: anyPaletteSchema,
-  info: anyPaletteSchema,
-  warning: anyPaletteSchema,
-  error: anyPaletteSchema,
+  primary: paletteNameSchema,
+  secondary: paletteNameSchema,
+  success: paletteNameSchema,
+  info: paletteNameSchema,
+  warning: paletteNameSchema,
+  error: paletteNameSchema,
 });
+
+const customPaletteSchema = z.object({
+  name: z.string().refine(isValidCustomPaletteName, {
+    message: `Palette names must be lowercase letters, numbers, and dashes (max ${CUSTOM_PALETTE_NAME_MAX_LENGTH}), and can't reuse a built-in palette or role name`,
+  }),
+  color: z
+    .string()
+    .regex(/^#[0-9a-fA-F]{6}$/, "Palette color must be a #rrggbb hex color")
+    .transform((hex) => hex.toLowerCase()),
+});
+
+const customPalettesSchema = z
+  .array(customPaletteSchema)
+  .max(CUSTOM_PALETTE_MAX)
+  .refine(
+    (palettes) => new Set(palettes.map((p) => p.name)).size === palettes.length,
+    { message: "Custom palette names must be unique" },
+  );
 
 const semanticShadesSchema = z
   .object({
@@ -281,18 +344,46 @@ const rawThemeSchema = z.object({
   darkNeutral: neutralPaletteSchema.optional(),
   darkRadius: z.number().finite().min(RADIUS_MIN).max(RADIUS_MAX).optional(),
   darkFont: z.enum(FONT_OPTIONS).optional(),
+
+  // Custom palettes — optional for backward compatibility
+  customPalettes: customPalettesSchema.optional(),
+});
+
+/** Every semantic role must point at a built-in or a defined custom palette. */
+const referencedPalettesSchema = rawThemeSchema.superRefine((data, ctx) => {
+  const defined = new Set((data.customPalettes ?? []).map((p) => p.name));
+  for (const field of ["colors", "darkColors"] as const) {
+    const colors = data[field];
+    if (!colors) continue;
+    for (const key of SEMANTIC_COLOR_KEYS) {
+      const name = colors[key];
+      if (!BUILT_IN_PALETTES.has(name) && !defined.has(name)) {
+        ctx.addIssue({
+          code: "custom",
+          path: [field, key],
+          message: `Custom palette "${name}" is not defined in customPalettes`,
+        });
+      }
+    }
+  }
 });
 
 /**
  * Backward-compatibility transform: dark-mode fields were added after
  * launch, so persisted configs may lack them. `.optional()` + `.transform()`
  * fills missing dark-mode values by mirroring the light-mode counterpart.
+ * `customPalettes` stays absent when empty, so older themes (and saved
+ * presets compared by JSON in `hasUnsavedChanges`) serialize unchanged.
  */
-export const ThemeConfigSchema = rawThemeSchema.transform((data) => ({
-  ...data,
-  darkColors: data.darkColors ?? { ...data.colors },
-  darkColorShades: data.darkColorShades ?? { ...data.colorShades },
-  darkNeutral: data.darkNeutral ?? data.neutral,
-  darkRadius: data.darkRadius ?? data.radius,
-  darkFont: data.darkFont ?? data.font,
-}));
+export const ThemeConfigSchema = referencedPalettesSchema.transform((data) => {
+  const { customPalettes, ...rest } = data;
+  return {
+    ...rest,
+    darkColors: data.darkColors ?? { ...data.colors },
+    darkColorShades: data.darkColorShades ?? { ...data.colorShades },
+    darkNeutral: data.darkNeutral ?? data.neutral,
+    darkRadius: data.darkRadius ?? data.radius,
+    darkFont: data.darkFont ?? data.font,
+    ...(customPalettes?.length ? { customPalettes } : {}),
+  };
+});

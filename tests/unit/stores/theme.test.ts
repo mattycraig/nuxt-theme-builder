@@ -1,6 +1,9 @@
 import { describe, it, expect, beforeEach, afterEach } from "vitest";
 import { useThemeStore } from "~/stores/theme";
 import { DEFAULT_THEME, cloneTheme } from "~/utils/defaults";
+import { BUILT_IN_PRESETS } from "~/utils/presets";
+import { generatePalette } from "~/utils/paletteGenerator";
+import { CUSTOM_PALETTE_MAX, CUSTOM_PALETTE_NAME_MAX_LENGTH } from "~/types/theme";
 import type { ThemeConfig } from "~/types/theme";
 
 describe("useThemeStore", () => {
@@ -464,6 +467,224 @@ describe("useThemeStore", () => {
     });
   });
 
+  describe("custom palettes", () => {
+    const YELLOW = "#f5c518"; // anchors at 400
+    const NAVY = "#1e3a8a"; // anchors at 900
+
+    function addBrand(color = YELLOW) {
+      expect(store.addCustomPalette("brand", color)).toEqual({ success: true });
+    }
+
+    it("adds a palette with a normalized color and one history entry", () => {
+      store.addCustomPalette("brand", "#F5C518");
+      expect(store.config.customPalettes).toEqual([
+        { name: "brand", color: YELLOW },
+      ]);
+      store.undo();
+      expect(store.config.customPalettes).toBeUndefined();
+    });
+
+    it("rejects invalid names, duplicates, and bad colors", () => {
+      addBrand();
+      expect(store.addCustomPalette("brand", YELLOW).error).toMatch(/exists/);
+      expect(store.addCustomPalette("yellow", YELLOW).error).toMatch(/built-in/);
+      expect(store.addCustomPalette("accent", "nope").error).toMatch(/hex/);
+      expect(store.config.customPalettes).toHaveLength(1);
+    });
+
+    it(`stops at ${CUSTOM_PALETTE_MAX} palettes`, () => {
+      for (let i = 0; i < CUSTOM_PALETTE_MAX; i++) {
+        store.addCustomPalette(`brand-${i}`, YELLOW);
+      }
+      expect(store.addCustomPalette("one-more", YELLOW).success).toBe(false);
+      expect(store.config.customPalettes).toHaveLength(CUSTOM_PALETTE_MAX);
+    });
+
+    it("stores plain objects that survive cloning", () => {
+      addBrand();
+      store.addCustomPalette("accent", NAVY);
+      store.removeCustomPalette("brand");
+      expect(() => cloneTheme(store.config)).not.toThrow();
+      store.undo();
+      expect(store.config.customPalettes?.map((p) => p.name)).toEqual([
+        "brand",
+        "accent",
+      ]);
+    });
+
+    describe("assigning to a role", () => {
+      it("puts the exact base color on the role's main shade", () => {
+        addBrand();
+        store.setSemanticColorForMode("light", "primary", "brand");
+        expect(store.config.colors.primary).toBe("brand");
+        expect(store.config.colorShades.primary).toBe("400");
+        expect(store.config.darkColors.primary).toBe(
+          DEFAULT_THEME.darkColors.primary,
+        );
+      });
+
+      it("records the palette and shade change as one undo step", () => {
+        addBrand();
+        const shadeBefore = store.config.colorShades.primary;
+        store.setSemanticColorForMode("light", "primary", "brand");
+        store.undo();
+        expect(store.config.colors.primary).toBe(DEFAULT_THEME.colors.primary);
+        expect(store.config.colorShades.primary).toBe(shadeBefore);
+      });
+
+      it("resets the automatic shade when switching back to a built-in palette", () => {
+        addBrand();
+        store.setSemanticColorForMode("light", "primary", "brand");
+        store.setSemanticColorForMode("light", "primary", "rose");
+        expect(store.config.colorShades.primary).toBe("500");
+      });
+
+      it("leaves the shade alone when switching between built-in palettes", () => {
+        store.setSemanticShadeForMode("light", "primary", "700");
+        store.setSemanticColorForMode("light", "primary", "rose");
+        expect(store.config.colorShades.primary).toBe("700");
+      });
+    });
+
+    describe("changing a palette's color", () => {
+      it("updates the color and moves roles that follow the anchor", () => {
+        addBrand();
+        store.setSemanticColorForMode("light", "primary", "brand");
+        store.setSemanticColorForMode("dark", "primary", "brand");
+        store.setSemanticShadeForMode("dark", "primary", "600");
+        store.setCustomPaletteColor("brand", NAVY);
+        expect(store.config.customPalettes?.[0]?.color).toBe(NAVY);
+        expect(store.config.colorShades.primary).toBe("900");
+        // A shade the user picked by hand stays put
+        expect(store.config.darkColorShades.primary).toBe("600");
+      });
+
+      it("previews without history, then commits once", () => {
+        addBrand();
+        store.setSemanticColorForMode("light", "primary", "brand");
+        store.setCustomPaletteColorVisual("brand", "#e0b000");
+        store.setCustomPaletteColorVisual("brand", NAVY);
+        store.setCustomPaletteColor("brand", NAVY);
+        store.undo();
+        expect(store.config.customPalettes?.[0]?.color).toBe(YELLOW);
+        expect(store.config.colorShades.primary).toBe("400");
+      });
+
+      it("ignores invalid colors", () => {
+        addBrand();
+        store.setCustomPaletteColor("brand", "#12");
+        expect(store.config.customPalettes?.[0]?.color).toBe(YELLOW);
+      });
+    });
+
+    describe("renaming", () => {
+      it("renames the palette and every role using it, in both modes", () => {
+        addBrand();
+        store.setSemanticColorForMode("light", "primary", "brand");
+        store.setSemanticColorForMode("dark", "secondary", "brand");
+        expect(store.renameCustomPalette("brand", "logo")).toEqual({
+          success: true,
+        });
+        expect(store.config.customPalettes?.[0]?.name).toBe("logo");
+        expect(store.config.colors.primary).toBe("logo");
+        expect(store.config.darkColors.secondary).toBe("logo");
+        store.undo();
+        expect(store.config.colors.primary).toBe("brand");
+        expect(store.config.customPalettes?.[0]?.name).toBe("brand");
+      });
+
+      it("rejects invalid or taken names", () => {
+        addBrand();
+        store.addCustomPalette("accent", NAVY);
+        expect(store.renameCustomPalette("brand", "accent").success).toBe(false);
+        expect(store.renameCustomPalette("brand", "Bad Name").success).toBe(
+          false,
+        );
+        expect(store.renameCustomPalette("missing", "x").success).toBe(false);
+        expect(store.config.customPalettes?.[0]?.name).toBe("brand");
+      });
+    });
+
+    describe("removing", () => {
+      it("moves roles to the palette it was modeled on and keeps the shade", () => {
+        addBrand();
+        store.setSemanticColorForMode("light", "primary", "brand");
+        store.setSemanticColorForMode("dark", "warning", "brand");
+        store.removeCustomPalette("brand");
+        expect(store.config.customPalettes).toBeUndefined();
+        expect(store.config.colors.primary).toBe("yellow");
+        expect(store.config.colorShades.primary).toBe("400");
+        expect(store.config.darkColors.warning).toBe("yellow");
+      });
+
+      it("undoes as a single step", () => {
+        addBrand();
+        store.setSemanticColorForMode("light", "primary", "brand");
+        store.removeCustomPalette("brand");
+        store.undo();
+        expect(store.config.colors.primary).toBe("brand");
+        expect(store.config.customPalettes).toHaveLength(1);
+      });
+    });
+
+    describe("when another theme replaces the config", () => {
+      it("keeps custom palettes when loading a built-in preset", () => {
+        addBrand();
+        store.loadPreset(BUILT_IN_PRESETS[1]!);
+        expect(store.config.customPalettes).toEqual([
+          { name: "brand", color: YELLOW },
+        ]);
+      });
+
+      it("keeps custom palettes when randomizing", () => {
+        addBrand();
+        store.randomizeTheme();
+        expect(store.config.customPalettes).toHaveLength(1);
+      });
+
+      it("keeps custom palettes for generated themes when asked", () => {
+        addBrand();
+        store.loadConfig(cloneTheme(DEFAULT_THEME), { keepCustomPalettes: true });
+        expect(store.config.customPalettes).toHaveLength(1);
+      });
+
+      it("replaces them on a plain import", () => {
+        addBrand();
+        store.loadConfig(cloneTheme(DEFAULT_THEME));
+        expect(store.config.customPalettes).toBeUndefined();
+      });
+
+      it("loads saved themes exactly as saved", () => {
+        store.savePreset("Plain");
+        addBrand();
+        store.loadPreset(store.savedPresets[0]!);
+        expect(store.config.customPalettes).toBeUndefined();
+        expect(store.hasUnsavedChanges).toBe(false);
+      });
+
+      it("clears them on reset", () => {
+        addBrand();
+        store.resetToDefaults();
+        expect(store.config.customPalettes).toBeUndefined();
+      });
+    });
+
+    it("reports no unsaved changes right after loading a saved theme that uses one", () => {
+      addBrand();
+      store.setSemanticColorForMode("light", "primary", "brand");
+      store.savePreset("Branded");
+      store.resetToDefaults();
+      store.loadPreset(store.savedPresets[0]!);
+      expect(store.config.colors.primary).toBe("brand");
+      expect(store.hasUnsavedChanges).toBe(false);
+    });
+
+    it("resolves the generated anchor the store relies on", () => {
+      expect(generatePalette(YELLOW)?.anchor).toBe("400");
+      expect(generatePalette(NAVY)?.anchor).toBe("900");
+    });
+  });
+
   describe("persistence", () => {
     function readThemeCookie(): string {
       const match = document.cookie.match(/(?:^|;\s*)theme=([^;]*)/);
@@ -486,6 +707,25 @@ describe("useThemeStore", () => {
       expect(stored.savedPresets?.[0]?.name).toBe("Persisted");
       expect(readThemeCookie()).toContain('"config"');
       expect(readThemeCookie()).not.toContain("savedPresets");
+    });
+
+    it("keeps the cookie under the browser limit with the most custom palettes", async () => {
+      // Largest built-in preset plus the maximum number of longest-named palettes
+      const largest = [...BUILT_IN_PRESETS].sort(
+        (a, b) => JSON.stringify(b.config).length - JSON.stringify(a.config).length,
+      )[0]!;
+      store.loadPreset(largest);
+      for (let i = 0; i < CUSTOM_PALETTE_MAX; i++) {
+        const name = `p${i}`.padEnd(CUSTOM_PALETTE_NAME_MAX_LENGTH, "x");
+        expect(store.addCustomPalette(name, "#f5c518").success).toBe(true);
+      }
+      await nextTick();
+      await nextTick();
+
+      const raw = document.cookie.match(/(?:^|;\s*)theme=([^;]*)/)?.[1] ?? "";
+      expect(decodeURIComponent(raw)).toContain(`"p0`);
+      // Leave headroom under 4096 for the cookie name and attributes
+      expect(raw.length).toBeLessThan(3800);
     });
 
     it("undo after hydration returns to the hydrated theme, not the defaults", async () => {

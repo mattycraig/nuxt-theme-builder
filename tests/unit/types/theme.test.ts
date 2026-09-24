@@ -10,7 +10,11 @@ import {
   BG_TOKEN_KEYS,
   BORDER_TOKEN_KEYS,
   FONT_OPTIONS,
+  CUSTOM_PALETTE_MAX,
+  RESERVED_PALETTE_NAMES,
+  isValidCustomPaletteName,
 } from "~/types/theme";
+import type { ThemeConfig } from "~/types/theme";
 import { DEFAULT_THEME, cloneTheme } from "~/utils/defaults";
 
 describe("ThemeConfigSchema", () => {
@@ -143,6 +147,120 @@ describe("ThemeConfigSchema — backward compatibility transform", () => {
     if (result.success) {
       expect(result.data.colorShades.primary).toBe("500");
     }
+  });
+});
+
+describe("ThemeConfigSchema — custom palettes", () => {
+  function withBrand(): ThemeConfig {
+    const config = cloneTheme(DEFAULT_THEME);
+    config.customPalettes = [{ name: "brand", color: "#f5c518" }];
+    config.colors.primary = "brand";
+    config.darkColors.primary = "brand";
+    return config;
+  }
+
+  function issuePaths(input: unknown): string[] {
+    const result = ThemeConfigSchema.safeParse(input);
+    return result.success ? [] : result.error.issues.map((i) => i.path.join("."));
+  }
+
+  it("accepts roles that use a defined custom palette", () => {
+    const result = ThemeConfigSchema.safeParse(withBrand());
+    expect(result.success).toBe(true);
+    if (result.success) {
+      expect(result.data.colors.primary).toBe("brand");
+      expect(result.data.customPalettes).toEqual([
+        { name: "brand", color: "#f5c518" },
+      ]);
+    }
+  });
+
+  it("parses themes without custom palettes unchanged", () => {
+    const result = ThemeConfigSchema.safeParse(cloneTheme(DEFAULT_THEME));
+    expect(result.success).toBe(true);
+    if (result.success) {
+      expect("customPalettes" in result.data).toBe(false);
+      expect(JSON.stringify(result.data)).toBe(JSON.stringify(DEFAULT_THEME));
+    }
+  });
+
+  it("drops an empty custom palette list", () => {
+    const config = { ...cloneTheme(DEFAULT_THEME), customPalettes: [] };
+    const result = ThemeConfigSchema.safeParse(config);
+    expect(result.success).toBe(true);
+    if (result.success) expect("customPalettes" in result.data).toBe(false);
+  });
+
+  it("lowercases palette colors", () => {
+    const config = withBrand();
+    config.customPalettes![0]!.color = "#F5C518";
+    const result = ThemeConfigSchema.safeParse(config);
+    expect(result.success && result.data.customPalettes?.[0]?.color).toBe(
+      "#f5c518",
+    );
+  });
+
+  it("rejects roles that use an undefined custom palette", () => {
+    const config = withBrand();
+    delete config.customPalettes;
+    expect(issuePaths(config)).toEqual(["colors.primary", "darkColors.primary"]);
+  });
+
+  it("checks custom palette references in omitted dark colors via light colors", () => {
+    const { darkColors, ...rest } = withBrand();
+    const result = ThemeConfigSchema.safeParse(rest);
+    expect(result.success && result.data.darkColors.primary).toBe("brand");
+  });
+
+  it.each([
+    ["Brand", "uppercase"],
+    ["1brand", "leading digit"],
+    ["brand-", "trailing dash"],
+    ["my--brand", "double dash"],
+    ["brand yellow", "space"],
+    ["a".repeat(25), "too long"],
+    ["yellow", "built-in palette"],
+    ["primary", "semantic role (would alias --ui-color-primary)"],
+    ["old-neutral", "Nuxt UI internal palette"],
+  ])("rejects the palette name %j (%s)", (name) => {
+    const config = withBrand();
+    config.customPalettes![0]!.name = name;
+    config.colors.primary = "indigo";
+    config.darkColors.primary = "indigo";
+    expect(issuePaths(config)).toContain("customPalettes.0.name");
+  });
+
+  it("rejects invalid palette colors", () => {
+    for (const color of ["#fc0", "f5c518", "#f5c5188", "red", "#f5c51g"]) {
+      const config = withBrand();
+      config.customPalettes![0]!.color = color;
+      expect(issuePaths(config)).toContain("customPalettes.0.color");
+    }
+  });
+
+  it("rejects duplicate palette names", () => {
+    const config = withBrand();
+    config.customPalettes!.push({ name: "brand", color: "#000000" });
+    expect(issuePaths(config)).toContain("customPalettes");
+  });
+
+  it(`rejects more than ${CUSTOM_PALETTE_MAX} palettes`, () => {
+    const config = withBrand();
+    config.customPalettes = Array.from(
+      { length: CUSTOM_PALETTE_MAX + 1 },
+      (_, i) => ({ name: `brand-${i}`, color: "#f5c518" }),
+    );
+    config.colors.primary = "brand-0";
+    config.darkColors.primary = "brand-0";
+    expect(issuePaths(config)).toContain("customPalettes");
+  });
+
+  it("reserves every built-in palette and semantic role name", () => {
+    for (const name of [...CHROMATIC_PALETTES, ...NEUTRAL_PALETTES, ...SEMANTIC_COLOR_KEYS]) {
+      expect(RESERVED_PALETTE_NAMES.has(name)).toBe(true);
+      expect(isValidCustomPaletteName(name)).toBe(false);
+    }
+    expect(isValidCustomPaletteName("brand-yellow-2")).toBe(true);
   });
 });
 

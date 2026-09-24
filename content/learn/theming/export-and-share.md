@@ -60,6 +60,8 @@ Exports all theme tokens as CSS custom properties:
 }
 ```
 
+If your theme uses custom palettes, the CSS export also starts with a `@theme static` block that defines them (`--color-brand-50` … `--color-brand-950`). Add it alongside the `app.config.ts` export, which refers to those palettes by name.
+
 **Best for**: Projects that need fine-grained shade control, non-Nuxt UI projects using Tailwind v4, or when integrating with existing CSS architectures.
 
 **How to use**:

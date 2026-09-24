@@ -13,6 +13,7 @@ import {
   formatRgb,
   formatHsl,
   formatOklch,
+  isOklchInSrgbGamut,
   type RGB,
 } from "~/utils/colorConversion";
 
@@ -250,5 +251,27 @@ describe("formatOklch", () => {
     expect(formatOklch({ l: 0.623, c: 0.214, h: 259.82 })).toBe(
       "oklch(0.623 0.214 259.82)",
     );
+  });
+});
+
+// sRGB Gamut ──────────────────────────────────────────────────────────────
+
+describe("isOklchInSrgbGamut", () => {
+  it("accepts colors converted from sRGB", () => {
+    for (const hex of ["#000000", "#ffffff", "#ff0000", "#00ff00", "#0000ff"]) {
+      expect(isOklchInSrgbGamut(rgbToOklch(hexToRgb(hex)!))).toBe(true);
+    }
+  });
+
+  it("rejects colors more saturated than sRGB allows", () => {
+    // Tailwind's lime-400 is a Display P3 color
+    expect(isOklchInSrgbGamut({ l: 0.841, c: 0.238, h: 128.85 })).toBe(false);
+    expect(isOklchInSrgbGamut({ l: 0.5, c: 0.4, h: 150 })).toBe(false);
+  });
+
+  it("accepts gray at any lightness", () => {
+    for (const l of [0, 0.25, 0.5, 0.75, 1]) {
+      expect(isOklchInSrgbGamut({ l, c: 0, h: 0 })).toBe(true);
+    }
   });
 });

@@ -194,7 +194,7 @@ export function usePreviewIframe() {
       syncColorModeToIframe,
       navigateIframe,
       navigateTo: (path) => { navigatingFromIframe.value = true; navigateTo(path); },
-      loadConfig: (config) => { store.loadConfig(config); },
+      loadConfig: (config) => { store.loadConfig(config, { keepCustomPalettes: true }); },
       showToast: () => { showThemeAppliedToast(toast); },
       openSaveAs: () => { openSaveAs(); },
       exportOpen: () => { exportPanel.open(); },

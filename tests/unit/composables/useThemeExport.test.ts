@@ -58,6 +58,47 @@ describe("useThemeExport", () => {
     });
   });
 
+  describe("custom palettes", () => {
+    beforeEach(() => {
+      store.addCustomPalette("brand", "#f5c518");
+      store.setSemanticColorForMode("light", "primary", "brand");
+    });
+
+    it("assigns the custom palette by name in app.config", () => {
+      const output = exportComposable.appConfigExport.value;
+      expect(output).toContain("primary: 'brand'");
+      expect(output).toContain(
+        "// Custom palettes (brand) — add the @theme static block",
+      );
+    });
+
+    it("defines the palette in the CSS export", () => {
+      expect(exportComposable.cssExport.value).toContain(
+        "--color-brand-400: #f5c518;",
+      );
+    });
+
+    it("round-trips through JSON import", () => {
+      const json = exportComposable.jsonExport.value;
+      store.resetToDefaults();
+      expect(exportComposable.importJSON(json)).toEqual({ success: true });
+      expect(store.config.colors.primary).toBe("brand");
+      expect(store.config.customPalettes).toEqual([
+        { name: "brand", color: "#f5c518" },
+      ]);
+    });
+
+    it("reports a role that points at a missing palette on import", () => {
+      const config = JSON.parse(exportComposable.jsonExport.value);
+      delete config.customPalettes;
+      const result = exportComposable.importJSON(JSON.stringify(config));
+      expect(result.success).toBe(false);
+      expect(result.error).toContain(
+        'colors.primary: Custom palette "brand" is not defined',
+      );
+    });
+  });
+
   describe("cssExport", () => {
     it("includes tailwind and nuxt ui imports", () => {
       const output = exportComposable.cssExport.value;

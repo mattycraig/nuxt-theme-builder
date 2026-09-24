@@ -138,7 +138,9 @@ export function useAiChat() {
       return;
     }
 
-    store.loadConfig(validated.data as ThemeConfig);
+    store.loadConfig(validated.data as ThemeConfig, {
+      keepCustomPalettes: true,
+    });
     showThemeAppliedToast(toast);
   }
 

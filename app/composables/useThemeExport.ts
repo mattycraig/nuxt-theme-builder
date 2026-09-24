@@ -46,6 +46,13 @@ export function useThemeExport() {
     lines.push(`    },`);
     lines.push(`  },`);
     lines.push(`})`);
+    const customPaletteNames = (cfg.customPalettes ?? []).map((p) => p.name);
+    if (customPaletteNames.length > 0) {
+      lines.push(``);
+      lines.push(
+        `// Custom palettes (${customPaletteNames.join(", ")}) — add the @theme static block from the CSS export to your main.css`,
+      );
+    }
     if (hasShadeOverrides || hasDarkColorDiffs) {
       lines.push(``);
       lines.push(
