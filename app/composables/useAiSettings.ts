@@ -1,5 +1,5 @@
 import type { AiSettings, AiProvider } from "~/types/ai";
-import { DEFAULT_AI_SETTINGS, AI_MODELS } from "~/types/ai";
+import { DEFAULT_AI_SETTINGS, AI_MODELS, resolveAiModel } from "~/types/ai";
 
 const AI_SETTINGS_STORAGE_KEY = "ai-settings";
 
@@ -23,6 +23,11 @@ export function useAiSettings() {
   const settings = computed<AiSettings>({
     get: () => ({
       ...persistedSettings.value,
+      // Saved settings can name a model that has since been retired.
+      model: resolveAiModel(
+        persistedSettings.value.provider,
+        persistedSettings.value.model,
+      ),
       apiKey: persistedSettings.value.persistKey
         ? persistedSettings.value.apiKey
         : sessionKey.value,

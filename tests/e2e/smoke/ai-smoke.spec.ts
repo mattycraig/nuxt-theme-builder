@@ -101,7 +101,7 @@ async function seedApiKey(page: Page) {
       JSON.stringify({
         apiKey: key,
         provider: "openai",
-        model: "gpt-4o-mini",
+        model: "gpt-6-luna",
         persistKey: true,
       }),
     );

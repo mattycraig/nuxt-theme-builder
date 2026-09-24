@@ -10,7 +10,7 @@ const mockLoadConfig = vi.fn();
 const mock$fetch = vi.fn();
 const mockApiKey = ref("");
 const mockProvider = ref("openai");
-const mockModel = ref("gpt-4o-mini");
+const mockModel = ref("gpt-6-luna");
 const mockMessages = ref<unknown[]>([]);
 
 mockNuxtImport("useState", () => {
@@ -52,7 +52,7 @@ describe("useAiChat", () => {
     mockMessages.value = [];
     mockApiKey.value = "";
     mockProvider.value = "openai";
-    mockModel.value = "gpt-4o-mini";
+    mockModel.value = "gpt-6-luna";
     mockToastAdd.mockReset();
     mockLoadConfig.mockReset();
     mock$fetch.mockReset();
@@ -121,7 +121,7 @@ describe("useAiChat", () => {
             prompt: "Make it red",
             apiKey: "sk-test-key",
             provider: "openai",
-            model: "gpt-4o-mini",
+            model: "gpt-6-luna",
           }),
         }),
       );

@@ -1,10 +1,11 @@
 import { z } from "zod";
-import { createOpenAI } from "@ai-sdk/openai";
-import { createAnthropic } from "@ai-sdk/anthropic";
-import { createGoogle } from "@ai-sdk/google";
 import { checkRateLimit, type RateLimitStore } from "~~/server/utils/rateLimit";
 import { classifyAiError } from "~~/server/utils/aiErrorHandler";
-import { generateAiTheme } from "~~/server/utils/aiGenerate";
+import {
+  AI_PROVIDER_IDS,
+  createProviderModel,
+  generateAiTheme,
+} from "~~/server/utils/aiGenerate";
 
 // ─── Limits ────────────────────────────────────────────────────────────
 
@@ -15,7 +16,7 @@ const MAX_CONVERSATION_MESSAGES = 6;
 const requestSchema = z.object({
   prompt: z.string().min(1).max(2000),
   apiKey: z.string().min(1).max(512),
-  provider: z.enum(["openai", "anthropic", "google"]),
+  provider: z.enum(AI_PROVIDER_IDS),
   model: z.string().min(1).max(128),
   conversationHistory: z
     .array(
@@ -29,21 +30,6 @@ const requestSchema = z.object({
 });
 
 const rateLimitMap: RateLimitStore = new Map();
-
-function getProviderModel(
-  provider: z.infer<typeof requestSchema>["provider"],
-  modelId: string,
-  apiKey: string,
-) {
-  switch (provider) {
-    case "anthropic":
-      return createAnthropic({ apiKey })(modelId);
-    case "google":
-      return createGoogle({ apiKey })(modelId);
-    default:
-      return createOpenAI({ apiKey })(modelId);
-  }
-}
 
 export default defineEventHandler(async (event) => {
   // Prefer platform-specific headers that are harder to spoof,
@@ -89,7 +75,7 @@ export default defineEventHandler(async (event) => {
 
   try {
     return await generateAiTheme({
-      model: getProviderModel(provider, model, apiKey),
+      model: createProviderModel(provider, model, apiKey),
       prompt,
       conversationHistory,
       abortSignal: AbortSignal.timeout(AI_TIMEOUT_MS),

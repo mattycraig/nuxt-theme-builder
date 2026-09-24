@@ -33,9 +33,10 @@ describe("useAiSettings", () => {
       expect(provider.value).toBe("openai");
     });
 
-    it("defaults to gpt-4o-mini model", () => {
+    it("defaults to the first OpenAI model", () => {
       const { model } = useAiSettings();
-      expect(model.value).toBe("gpt-4o-mini");
+      expect(model.value).toBe("gpt-6-luna");
+      expect(DEFAULT_AI_SETTINGS.model).toBe(AI_MODELS.openai[0]!.value);
     });
 
     it("defaults to not persisting key", () => {
@@ -89,8 +90,28 @@ describe("useAiSettings", () => {
   describe("model", () => {
     it("can be set directly", () => {
       const { model } = useAiSettings();
-      model.value = "gpt-4o";
-      expect(model.value).toBe("gpt-4o");
+      model.value = "gpt-6-sol";
+      expect(model.value).toBe("gpt-6-sol");
+    });
+
+    it("replaces a saved model that is no longer listed with the provider default", () => {
+      mockPersistedSettings = {
+        ...DEFAULT_AI_SETTINGS,
+        provider: "google",
+        model: "gemini-2.0-flash",
+      };
+      const { model } = useAiSettings();
+      expect(model.value).toBe(AI_MODELS.google[0]!.value);
+    });
+
+    it("keeps a saved model that is still listed", () => {
+      mockPersistedSettings = {
+        ...DEFAULT_AI_SETTINGS,
+        provider: "anthropic",
+        model: "claude-opus-5-5",
+      };
+      const { model } = useAiSettings();
+      expect(model.value).toBe("claude-opus-5-5");
     });
   });
 

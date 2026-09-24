@@ -1,5 +1,8 @@
 import { z } from "zod";
 import { generateText, Output, type LanguageModel } from "ai";
+import { createOpenAI } from "@ai-sdk/openai";
+import { createAnthropic } from "@ai-sdk/anthropic";
+import { createGoogle } from "@ai-sdk/google";
 import { buildThemeConfig } from "~~/server/utils/aiResponseBuilder";
 import { AI_SYSTEM_PROMPT } from "~~/server/utils/aiSystemPrompt";
 import {
@@ -12,6 +15,27 @@ import {
 } from "~~/shared/constants/theme";
 
 const MAX_RETRIES = 2;
+
+// ─── Providers ────────────────────────────────────────────────────────
+
+export const AI_PROVIDER_IDS = ["openai", "anthropic", "google"] as const;
+export type AiProviderId = (typeof AI_PROVIDER_IDS)[number];
+
+/** Build the AI SDK model for a BYOK request. The key is used only for this call. */
+export function createProviderModel(
+  provider: AiProviderId,
+  modelId: string,
+  apiKey: string,
+): LanguageModel {
+  switch (provider) {
+    case "anthropic":
+      return createAnthropic({ apiKey })(modelId);
+    case "google":
+      return createGoogle({ apiKey })(modelId);
+    default:
+      return createOpenAI({ apiKey })(modelId);
+  }
+}
 
 // ─── Response schema (built from shared constants) ────────────────────
 

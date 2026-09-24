@@ -116,7 +116,7 @@ async function seedApiKey(page: Page) {
       JSON.stringify({
         apiKey: key,
         provider: "openai",
-        model: "gpt-4o-mini",
+        model: "gpt-6-luna",
         persistKey: true,
       }),
     );
@@ -348,7 +348,7 @@ test.describe("AI Theme Generation — Happy Path: Generate, Preview & Apply", (
       expect(lastCapturedBody!.prompt).toBe("A warm sunset themed dashboard");
       expect(lastCapturedBody!.apiKey).toBe(FAKE_API_KEY);
       expect(lastCapturedBody!.provider).toBe("openai");
-      expect(lastCapturedBody!.model).toBe("gpt-4o-mini");
+      expect(lastCapturedBody!.model).toBe("gpt-6-luna");
     });
 
     await test.step("Send follow-up and verify conversation history", async () => {
