@@ -136,58 +136,7 @@ pnpm workflow:full      # Full: lint + format + typecheck + test
 
 ## Development Workflow
 
-Automated workflow for validating and committing changes:
-
-### Quick Commands
-
-```bash
-# Quick validation (no tests)
-pnpm workflow:quick
-
-# Full validation (with tests)
-pnpm workflow:full
-
-# Interactive workflow with commit (Bash; see below for PowerShell)
-./scripts/dev-workflow.sh --auto-commit
-```
-
-### PowerShell Script (Windows)
-
-```powershell
-# Interactive workflow
-.\scripts\dev-workflow.ps1
-
-# With commit message and push
-.\scripts\dev-workflow.ps1 -CommitMessage "feat: add feature" -Push
-
-# Skip tests for quick iteration
-.\scripts\dev-workflow.ps1 -SkipTests
-
-# Include E2E tests
-.\scripts\dev-workflow.ps1 -RunE2E
-
-# Dry run to preview
-.\scripts\dev-workflow.ps1 -DryRun
-```
-
-### Bash Script (Linux/macOS/CI)
-
-```bash
-# Interactive workflow
-./scripts/dev-workflow.sh
-
-# With commit message and push
-./scripts/dev-workflow.sh --message "feat: add feature" --push
-
-# Skip tests for quick iteration
-./scripts/dev-workflow.sh --skip-tests
-
-# Include E2E tests
-./scripts/dev-workflow.sh --run-e2e
-
-# Dry run to preview
-./scripts/dev-workflow.sh --dry-run
-```
+Before committing, run `pnpm workflow:quick` (lint, format, typecheck) or `pnpm workflow:full` (adds unit tests). Husky runs ESLint/Prettier on staged files and commitlint on every commit, and CI runs the full suite on each PR. In Claude Code, `/dev-workflow [quick|full|commit]` runs the same pipeline, fixes what it can, and drafts the commit.
 
 ## Claude Code
 

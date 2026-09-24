@@ -12,7 +12,7 @@ Everything Claude Code needs to work in this repo is checked in, so the CLI, IDE
 | MCP servers       | `.mcp.json`                                    | Nuxt UI and Nuxt documentation servers (approve on first use)         |
 | GitHub automation | `.github/workflows/claude*.yml`                | `@claude` mentions and automatic PR review                            |
 
-`AGENTS.md` points other coding agents to `CLAUDE.md`.
+Claude Code is the only AI coding assistant configured for this repo. There is deliberately no `AGENTS.md`, Copilot instructions, or other tool-specific config: add new agent guidance to `CLAUDE.md`, a rule, or a skill.
 
 ## Hooks
 

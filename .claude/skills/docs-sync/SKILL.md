@@ -12,7 +12,7 @@ Verify every factual claim against the source. Anything unverifiable or wrong ge
 
 ## Checks
 
-1. **Commands**: every `pnpm <script>` mentioned in README.md, CONTRIBUTING.md, CLAUDE.md, `.claude/**`, and `.github/**` exists in `package.json` `scripts`, and every script flag referenced for `scripts/dev-workflow.{sh,ps1}` exists in those scripts.
+1. **Commands**: every `pnpm <script>` mentioned in README.md, CONTRIBUTING.md, CLAUDE.md, `.claude/**`, and `.github/**` exists in `package.json` `scripts`.
 2. **Files and paths**: every path mentioned in docs exists (`ls`/`Glob`). Pay special attention to the architecture trees in README.md and CLAUDE.md.
 3. **CI/workflows**: descriptions of `.github/workflows/*.yml` (triggers, jobs, what runs) match the YAML.
 4. **Env vars**: `.env.example` lists exactly the variables read by `nuxt.config.ts`, `server/`, `playwright.config.ts`, and workflows, each with an accurate description.

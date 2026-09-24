@@ -77,23 +77,7 @@ ESLint and Prettier run automatically on staged files via Husky + lint-staged.
 | `pnpm workflow:quick`  | Quick: lint + format + typecheck       |
 | `pnpm workflow:full`   | Full: lint + format + typecheck + test |
 
-### Automated Workflow
-
-For a streamlined development experience, use the workflow scripts:
-
-**Windows (PowerShell):**
-
-```powershell
-./scripts/dev-workflow.ps1 -AutoCommit -CommitMessage "feat: add feature"
-```
-
-**Linux/macOS/CI (Bash):**
-
-```bash
-./scripts/dev-workflow.sh --auto-commit --message "feat: add feature"
-```
-
-These scripts run lint → format → typecheck → test → stage → commit in sequence, auto-fixing issues where possible. See `scripts/` for available flags.
+Run `pnpm workflow:full` before opening a PR. The pre-commit hook lints and formats staged files, and commitlint checks the message. With Claude Code, `/dev-workflow commit` runs the checks and writes the commit for you.
 
 ## Testing
 
