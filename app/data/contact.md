@@ -3,7 +3,7 @@
 Nuxt UI Theme Builder is open source and we welcome contributions of all kinds — code, documentation, design, and ideas.
 
 - [Browse the source on GitHub](https://github.com/mattycraig/nuxt-theme-builder){target="\_blank"}
-- [Read the contributing guidelines](https://github.com/mattycraig/nuxt-theme-builder/blob/master/AGENTS.md){target="\_blank"}
+- [Read the contributing guidelines](https://github.com/mattycraig/nuxt-theme-builder/blob/master/CONTRIBUTING.md){target="\_blank"}
 
 Whether it's fixing a typo, adding a preview page, or improving the AI flow — every contribution counts.
 
