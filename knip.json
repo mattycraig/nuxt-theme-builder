@@ -26,7 +26,6 @@
     "@iconify-json/simple-icons",
     "sharp",
     "vue-tsc",
-    "vue",
     "h3",
     "vitest-environment-nuxt"
   ],

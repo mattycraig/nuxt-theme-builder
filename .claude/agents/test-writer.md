@@ -13,7 +13,7 @@ You write tests for the Nuxt UI Theme Builder. Read `.claude/rules/testing.md` f
 1. List the behaviors that matter: public API, edge cases, error paths, and for a bug the exact failing scenario.
 2. Extend the existing test file in its style (describe blocks per function/feature, `beforeEach` resets). Create a new file only when none exists.
 3. Use the repo's tools:
-   - `mockNuxtImport("useX", () => …)` at module scope for auto-imports; `vi.stubGlobal("$fetch", …)` for network, restored in `afterEach`.
+   - `mockNuxtImport("useX", () => …)` at module scope for auto-imports, **including `$fetch`**. Since Nuxt 4.5 it's an auto-import, so `vi.stubGlobal("$fetch", …)` is silently bypassed. Delegate to a module-level `vi.fn()` with a resolved default.
    - `mountWithComposable`, `mountWithUApp`, `mountComponent` from `tests/setup/component.ts`; `createThemeConfig` from `tests/setup/fixtures.ts`.
    - `effectScope()` for composables with watchers called outside components; `flushPromises()` / `await nextTick()` for async state.
    - Store persistence writes asynchronously: `await nextTick()` before reading `document.cookie` / `localStorage`.

@@ -2,6 +2,7 @@ import {
   APICallError,
   RetryError,
   NoObjectGeneratedError,
+  NoOutputGeneratedError,
 } from "ai";
 
 export interface ClassifiedError {
@@ -25,8 +26,11 @@ export function classifyAiError(err: unknown): ClassifiedError {
     };
   }
 
-  // Schema validation failure — AI returned data that doesn't match
-  if (NoObjectGeneratedError.isInstance(err)) {
+  // Schema validation failure or empty output — AI returned no usable theme
+  if (
+    NoObjectGeneratedError.isInstance(err) ||
+    NoOutputGeneratedError.isInstance(err)
+  ) {
     return {
       statusCode: 422,
       statusMessage:

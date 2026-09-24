@@ -10,7 +10,7 @@ paths:
 ## Unit (Vitest, `environment: "nuxt"`, happy-dom)
 
 - Mirror the source path: `app/composables/useX.ts` → `tests/unit/composables/useX.test.ts`.
-- Mock auto-imports with `mockNuxtImport` (hoisted, so define mocks at module scope). Stub globals like `$fetch` with `vi.stubGlobal` and restore them in `afterEach`.
+- Mock auto-imports with `mockNuxtImport` (hoisted, so define mocks at module scope). That includes `$fetch`: since Nuxt 4.5 it's auto-imported from `#build/fetch.mjs`, so `vi.stubGlobal("$fetch", …)` is silently bypassed. Delegate to a module-level `vi.fn()` that returns a resolved promise by default.
 - Helpers: `tests/setup/component.ts` (`mountComponent`, `mountWithUApp` for components that need Nuxt UI's `UApp`/tooltip provider, `mountWithComposable` for lifecycle-dependent composables) and `tests/setup/fixtures.ts` (`createThemeConfig`, `createMockCategories`).
 - The Pinia store is shared across tests. Reset it in `beforeEach` (`store.resetToDefaults()`, clear `savedPresets`).
 - Persistence is async: the persist plugin writes from a store subscription, and `useCookie` writes on the next tick. `await nextTick()` before reading `document.cookie` / `localStorage`. Nuxt shares `useCookie` refs by name, so seed cookies only after flushing pending writes.

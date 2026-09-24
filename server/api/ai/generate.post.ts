@@ -1,86 +1,16 @@
 import { z } from "zod";
-import {
-  generateObject,
-} from "ai";
 import { createOpenAI } from "@ai-sdk/openai";
 import { createAnthropic } from "@ai-sdk/anthropic";
-import { createGoogleGenerativeAI } from "@ai-sdk/google";
+import { createGoogle } from "@ai-sdk/google";
 import { checkRateLimit, type RateLimitStore } from "~~/server/utils/rateLimit";
 import { classifyAiError } from "~~/server/utils/aiErrorHandler";
-import { buildThemeConfig } from "~~/server/utils/aiResponseBuilder";
-import {
-  ALL_PALETTES,
-  NEUTRAL_PALETTES,
-  SHADE_VALUES,
-  FONT_OPTIONS,
-  RADIUS_MIN,
-  RADIUS_MAX,
-} from "~~/shared/constants/theme";
+import { generateAiTheme } from "~~/server/utils/aiGenerate";
 
 // ─── Limits ────────────────────────────────────────────────────────────
 
 const AI_TIMEOUT_MS = 60_000;
 const MAX_PROMPT_CHARS = 20_000;
-const MAX_RETRIES = 2;
 const MAX_CONVERSATION_MESSAGES = 6;
-
-// ─── Zod schemas (built from shared constants) ────────────────────────
-
-const anyPaletteSchema = z.enum(ALL_PALETTES);
-const neutralPaletteSchema = z.enum(NEUTRAL_PALETTES);
-const neutralShadeSchema = z.enum(SHADE_VALUES);
-
-const semanticColorsSchema = z.object({
-  primary: anyPaletteSchema,
-  secondary: anyPaletteSchema,
-  success: anyPaletteSchema,
-  info: anyPaletteSchema,
-  warning: anyPaletteSchema,
-  error: anyPaletteSchema,
-});
-
-const tokenOverridesSchema = z.object({
-  text: z.object({
-    dimmed: neutralShadeSchema,
-    muted: neutralShadeSchema,
-    toned: neutralShadeSchema,
-    default: neutralShadeSchema,
-    highlighted: neutralShadeSchema,
-    inverted: neutralShadeSchema,
-  }),
-  bg: z.object({
-    default: neutralShadeSchema,
-    muted: neutralShadeSchema,
-    elevated: neutralShadeSchema,
-    accented: neutralShadeSchema,
-    inverted: neutralShadeSchema,
-  }),
-  border: z.object({
-    default: neutralShadeSchema,
-    muted: neutralShadeSchema,
-    accented: neutralShadeSchema,
-    inverted: neutralShadeSchema,
-  }),
-});
-
-const aiThemeSchema = z.object({
-  colors: semanticColorsSchema,
-  neutral: neutralPaletteSchema,
-  radius: z.number().min(RADIUS_MIN).max(RADIUS_MAX),
-  font: z.enum(FONT_OPTIONS),
-  darkColors: semanticColorsSchema,
-  darkNeutral: neutralPaletteSchema,
-  darkRadius: z.number().min(RADIUS_MIN).max(RADIUS_MAX),
-  darkFont: z.enum(FONT_OPTIONS),
-  lightOverrides: tokenOverridesSchema.nullable(),
-  darkOverrides: tokenOverridesSchema.nullable(),
-  explanation: z.string(),
-});
-
-/**
- * Server-side fallback overrides use values from shared/constants/aiDefaults.ts.
- * These intentionally differ from client defaults for optimal AI output.
- */
 
 const requestSchema = z.object({
   prompt: z.string().min(1).max(2000),
@@ -94,11 +24,26 @@ const requestSchema = z.object({
         content: z.string().min(1).max(4000),
       }),
     )
-    .max(6)
+    .max(MAX_CONVERSATION_MESSAGES)
     .nullable(),
 });
 
 const rateLimitMap: RateLimitStore = new Map();
+
+function getProviderModel(
+  provider: z.infer<typeof requestSchema>["provider"],
+  modelId: string,
+  apiKey: string,
+) {
+  switch (provider) {
+    case "anthropic":
+      return createAnthropic({ apiKey })(modelId);
+    case "google":
+      return createGoogle({ apiKey })(modelId);
+    default:
+      return createOpenAI({ apiKey })(modelId);
+  }
+}
 
 export default defineEventHandler(async (event) => {
   // Prefer platform-specific headers that are harder to spoof,
@@ -143,50 +88,12 @@ export default defineEventHandler(async (event) => {
   }
 
   try {
-    function getProviderModel(p: string, m: string, key: string) {
-      switch (p) {
-        case "anthropic": {
-          const anthropic = createAnthropic({ apiKey: key });
-          return anthropic(m);
-        }
-        case "google": {
-          const google = createGoogleGenerativeAI({ apiKey: key });
-          return google(m);
-        }
-        default: {
-          const openai = createOpenAI({ apiKey: key });
-          return openai(m);
-        }
-      }
-    }
-
-    const aiModel = getProviderModel(provider, model, apiKey);
-
-    const messages: {
-      role: "user" | "assistant" | "system";
-      content: string;
-    }[] = [{ role: "system", content: AI_SYSTEM_PROMPT }];
-
-    if (conversationHistory?.length) {
-      const recentHistory = conversationHistory.slice(
-        -MAX_CONVERSATION_MESSAGES,
-      );
-      for (const msg of recentHistory) {
-        messages.push({ role: msg.role, content: msg.content });
-      }
-    }
-
-    messages.push({ role: "user", content: prompt });
-
-    const result = await generateObject({
-      model: aiModel,
-      schema: aiThemeSchema,
-      messages,
-      maxRetries: MAX_RETRIES,
+    return await generateAiTheme({
+      model: getProviderModel(provider, model, apiKey),
+      prompt,
+      conversationHistory,
       abortSignal: AbortSignal.timeout(AI_TIMEOUT_MS),
     });
-
-    return buildThemeConfig(result.object);
   } catch (err: unknown) {
     console.error("[AI Generate Error]", err);
 

@@ -70,7 +70,7 @@ tests/
 
 ### Requirements
 
-- Node.js 22+
+- Node.js 22.22+ (lint-staged 17, commitlint 21, and Vitest 5 need a current Node 22)
 - pnpm 10+
 
 ### Install

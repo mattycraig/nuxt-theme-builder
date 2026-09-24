@@ -15,12 +15,10 @@ export default defineNuxtConfig({
   modules: [
     "@vercel/analytics/nuxt",
     "@nuxt/content",
-    "@nuxt/scripts",
     "@nuxt/ui",
     "@nuxt/eslint",
     "@nuxtjs/mdc",
     "@nuxtjs/sitemap",
-    "nuxt-og-image",
     "nuxt-schema-org",
     "@pinia/nuxt",
     "pinia-plugin-persistedstate/nuxt",
@@ -61,18 +59,6 @@ export default defineNuxtConfig({
       name: "Nuxt UI Theme Builder",
       url: "https://nuxt-ui-themes.com",
       logo: "https://nuxt-ui-themes.com/android-chrome-512x512.png",
-    },
-  },
-
-  scripts: {
-    defaultScriptOptions: {
-      trigger: "onNuxtReady",
-    },
-  },
-
-  ogImage: {
-    defaults: {
-      cacheMaxAgeSeconds: 60 * 60 * 24 * 7,
     },
   },
 

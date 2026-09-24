@@ -57,7 +57,7 @@ function getHighlighter(): Promise<HighlighterCore> {
 }
 
 export default defineEventHandler(async (event) => {
-  let body: { code: string; lang?: string } | null = null;
+  let body: { code: string; lang?: string };
 
   try {
     body = await readBody<{ code: string; lang?: string }>(event);

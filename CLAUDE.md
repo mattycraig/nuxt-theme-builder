@@ -2,7 +2,7 @@
 
 Nuxt 4 app for building, previewing, and exporting [Nuxt UI v4](https://ui.nuxt.com) themes: semantic palettes, per-role shades, neutral scale, radius, font, and independent light/dark token overrides, previewed live across real component, block, and template pages. Also ships AI theme generation (BYOK), design tools, and a Nuxt Content learning hub. Live at https://nuxt-ui-themes.com.
 
-Stack: Nuxt 4 · Vue 3 `<script setup lang="ts">` · Nuxt UI v4 · Tailwind CSS v4 · Pinia (+ persistedstate) · VueUse · Nuxt Content v3 · zod · AI SDK · nuxt-security · Vitest · Playwright. Node 22, pnpm 10 (enforced).
+Stack: Nuxt 4 · Vue 3 `<script setup lang="ts">` · Nuxt UI v4 · Tailwind CSS v4 · Pinia (+ persistedstate) · VueUse · Nuxt Content v3 · zod · AI SDK · nuxt-security · Vitest · Playwright. Node 22.22+, pnpm 10 (enforced), TypeScript 6 (typescript-eslint doesn't support 7 yet), ESLint 10.
 
 ## Commands
 

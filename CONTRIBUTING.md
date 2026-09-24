@@ -4,7 +4,7 @@ Thank you for your interest in contributing! This guide covers everything you ne
 
 ## Prerequisites
 
-- [Node.js 22](https://nodejs.org/) (pinned in `.node-version`)
+- [Node.js 22.22+](https://nodejs.org/) (major pinned in `.node-version`; lint-staged 17, commitlint 21, and Vitest 5 need a current Node 22)
 - [pnpm 10](https://pnpm.io/) (enforced by `packageManager` field)
 
 ## Setup

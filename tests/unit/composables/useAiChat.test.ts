@@ -40,7 +40,10 @@ mockNuxtImport("useAiSettings", () => {
   });
 });
 
-vi.stubGlobal("$fetch", (...args: unknown[]) => mock$fetch(...args));
+// $fetch is a Nuxt auto-import, so mock it as one (a global stub is bypassed)
+mockNuxtImport("$fetch", () => {
+  return (...args: unknown[]) => mock$fetch(...args);
+});
 
 describe("useAiChat", () => {
   let chat: ReturnType<typeof useAiChat>;

@@ -5,6 +5,12 @@ import { mockNuxtImport } from "@nuxt/test-utils/runtime";
 import { _resetSourceCodeState } from "~/composables/useSourceCode";
 
 const routeRef = reactive({ path: "/templates/dashboard" });
+// $fetch is a Nuxt auto-import, so mock it as one (a global stub is bypassed)
+const fetchMock = vi.fn(async (_url: string) => "");
+mockNuxtImport("$fetch", () => {
+  return (...args: unknown[]) => fetchMock(...args);
+});
+
 mockNuxtImport("useRoute", () => {
   return () => routeRef;
 });
@@ -130,7 +136,6 @@ describe("useSourceCode", () => {
   });
 
   describe("fetching", () => {
-    const fetchMock = vi.fn();
     let scope: EffectScope;
 
     // The layout, preview toolbar, and fullscreen overlay each call useSourceCode().
@@ -154,12 +159,10 @@ describe("useSourceCode", () => {
       scope = effectScope();
       fetchMock.mockReset();
       fetchMock.mockImplementation(async (url: string) => `source of ${url}`);
-      vi.stubGlobal("$fetch", fetchMock);
     });
 
     afterEach(() => {
       scope.stop();
-      vi.unstubAllGlobals();
     });
 
     it("shows the current route's source when returning to a cached route", async () => {
