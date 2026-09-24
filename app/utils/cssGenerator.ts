@@ -6,18 +6,20 @@ import type {
   TextTokenOverrides,
   BgTokenOverrides,
   BorderTokenOverrides,
-  SemanticColorKey,
   SemanticColors,
   SemanticShades,
-  AnyPalette,
+  CustomPalette,
 } from "~/types/theme";
 import {
   SEMANTIC_COLOR_KEYS,
   NUMERIC_SHADE_KEYS,
   getFontFallbackStack,
+  isValidCustomPaletteName,
 } from "~/types/theme";
 import { shadeToCSS } from "~/utils/defaults";
-import { ALL_HEX_MAP, NEUTRAL_HEX_MAP } from "~/utils/colorPalettes";
+import { NEUTRAL_HEX_MAP } from "~/utils/colorPalettes";
+import { getPaletteShadeMap } from "~/utils/customPalettes";
+import { generatePalette, normalizeHexColor } from "~/utils/paletteGenerator";
 import { typedEntries } from "~/utils/helpers";
 
 type TokenCategory = "text" | "bg" | "border";
@@ -163,9 +165,10 @@ const DEFAULT_SHADE_INDEX = NUMERIC_SHADE_KEYS.indexOf("500");
  *   (clamped at palette boundaries)
  */
 export function generateShadeOverrideLines(
-  colors: Record<SemanticColorKey, AnyPalette>,
-  colorShades: Record<SemanticColorKey, NeutralShade>,
+  colors: SemanticColors,
+  colorShades: SemanticShades,
   indent: string = "  ",
+  customPalettes: readonly CustomPalette[] = [],
 ): string[] {
   const lines: string[] = [];
 
@@ -182,9 +185,8 @@ export function generateShadeOverrideLines(
       continue;
     }
 
-    const palette = colors[key];
-    const hexMap = ALL_HEX_MAP[palette];
-    if (!hexMap) continue;
+    const hexMap = getPaletteShadeMap(colors[key], customPalettes);
+    if (!hexMap["500"]) continue;
 
     const selectedIdx = NUMERIC_SHADE_KEYS.indexOf(shade);
     const offset = selectedIdx - DEFAULT_SHADE_INDEX;
@@ -217,6 +219,7 @@ export function generateDarkPaletteOverrideLines(
   darkColors: SemanticColors,
   darkShades: SemanticShades,
   indent: string = "  ",
+  customPalettes: readonly CustomPalette[] = [],
 ): string[] {
   const lines: string[] = [];
 
@@ -238,8 +241,8 @@ export function generateDarkPaletteOverrideLines(
       continue;
     }
 
-    const hexMap = ALL_HEX_MAP[darkPalette];
-    if (!hexMap) continue;
+    const hexMap = getPaletteShadeMap(darkPalette, customPalettes);
+    if (!hexMap["500"]) continue;
 
     if (darkShade === "500" && darkPalette !== lightPalette) {
       // Simple remap: dark uses a different palette at default shade
@@ -296,6 +299,28 @@ export function generateDarkNeutralOverrideLines(
 }
 
 /**
+ * Define each custom palette as Tailwind color variables
+ * (`--color-<name>-50` … `-950`). Nuxt UI resolves a semantic color set to
+ * `<name>` through these, exactly as it does for built-in palettes.
+ * Entries that fail validation are skipped, since names end up in CSS.
+ */
+export function generateCustomPaletteLines(
+  customPalettes: readonly CustomPalette[] | undefined,
+  indent: string = "  ",
+): string[] {
+  const lines: string[] = [];
+  for (const { name, color } of customPalettes ?? []) {
+    const hex = normalizeHexColor(color);
+    const palette = hex && generatePalette(hex);
+    if (!palette || !isValidCustomPaletteName(name)) continue;
+    for (const shade of NUMERIC_SHADE_KEYS) {
+      lines.push(`${indent}--color-${name}-${shade}: ${palette.shades[shade]};`);
+    }
+  }
+  return lines;
+}
+
+/**
  * Generate a complete export-ready CSS string including @import and @theme preamble.
  * Used by useThemeExport for the CSS export tab.
  */
@@ -316,10 +341,21 @@ export function generateExportCSS(
   lines.push(`}`);
   lines.push(``);
 
+  // `static` makes Tailwind emit the variables even though only Nuxt UI's
+  // runtime color styles reference them (and adds bg-<name>-500 etc.).
+  const customPaletteLines = generateCustomPaletteLines(config.customPalettes);
+  if (customPaletteLines.length > 0) {
+    lines.push(`@theme static {`);
+    lines.push(...customPaletteLines);
+    lines.push(`}`);
+    lines.push(``);
+  }
+
   const { rootCSS, darkCSS } = generateThemeCSS(
     config,
     lightDefaults,
     darkDefaults,
+    { customPaletteVars: false },
   );
 
   lines.push(rootCSS);
@@ -334,12 +370,16 @@ export function generateExportCSS(
 /**
  * Generate the complete theme CSS override string for both light and dark modes.
  * Used by both useThemeApply (DOM injection) and useThemeExport (export output).
+ * `customPaletteVars: false` leaves custom palette variables out of `:root`
+ * (the export puts them in `@theme static` instead).
  */
 export function generateThemeCSS(
   config: ThemeConfig,
   lightDefaults: TokenOverrides,
   darkDefaults: TokenOverrides,
+  options: { customPaletteVars?: boolean } = {},
 ): ThemeCSSResult {
+  const { customPaletteVars = true } = options;
   const rootLines: string[] = [];
   rootLines.push(`:root {`);
   rootLines.push(
@@ -348,13 +388,22 @@ export function generateThemeCSS(
   const safeRadius = Math.max(0, Math.min(Number(config.radius) || 0, 2));
   rootLines.push(`  --ui-radius: ${safeRadius}rem;`);
 
+  if (customPaletteVars) {
+    rootLines.push(...generateCustomPaletteLines(config.customPalettes));
+  }
+
   rootLines.push(
     ...generateOverrideLines(config.lightOverrides, lightDefaults),
   );
 
   // Shade-shifted palette overrides for light mode
   rootLines.push(
-    ...generateShadeOverrideLines(config.colors, config.colorShades),
+    ...generateShadeOverrideLines(
+      config.colors,
+      config.colorShades,
+      "  ",
+      config.customPalettes,
+    ),
   );
 
   rootLines.push(`}`);
@@ -402,6 +451,8 @@ export function generateThemeCSS(
       config.colorShades,
       config.darkColors,
       config.darkColorShades,
+      "  ",
+      config.customPalettes,
     ),
   );
 

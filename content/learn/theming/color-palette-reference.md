@@ -128,6 +128,10 @@ export default defineAppConfig({
 - `blue` primary + `sky` secondary + `slate` neutral
 - `violet` primary + `purple` secondary + `zinc` neutral
 
+## When No Palette Fits
+
+If none of these palettes matches your brand, create a custom palette in the [Theme Builder](/): enter one base color and it generates the 50–950 scale, following the curve of the Tailwind palette with the closest hue. See [Brand Colors with Custom Palettes](/learn/theming/customize-colors#brand-colors-with-custom-palettes).
+
 ## Try Interactive Palette Selection
 
 The [Nuxt UI Theme Builder](/) lets you preview every palette applied to real components in real time. Select a palette, see it on 125+ components, and export when you're happy.

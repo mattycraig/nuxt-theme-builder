@@ -62,4 +62,52 @@ test.describe("Smoke - Persistence across reloads", () => {
       .poll(async () => (await readThemeCookie(page))?.config)
       .toEqual(reloaded);
   });
+
+  test("keeps a custom palette assigned to primary after a reload", async ({
+    page,
+  }) => {
+    // Resolve --ui-primary inside the preview iframe to an rgb() value
+    const previewPrimary = () =>
+      page
+        .frameLocator("iframe")
+        .first()
+        .locator("body")
+        .evaluate(() => {
+          const probe = document.createElement("div");
+          probe.style.backgroundColor = "var(--ui-primary)";
+          document.body.appendChild(probe);
+          const value = getComputedStyle(probe).backgroundColor;
+          probe.remove();
+          return value;
+        })
+        .catch(() => "");
+
+    await page.goto("/");
+    await waitForEditor(page);
+
+    await page.getByRole("button", { name: "New palette" }).click();
+    const form = page.getByRole("form", { name: "New custom palette" });
+    await form.getByRole("textbox", { name: "Base color" }).fill("#f5c518");
+    await form.getByRole("button", { name: "Create" }).click();
+    await page.getByRole("button", { name: "Actions for brand" }).click();
+    await page.getByRole("menuitem", { name: "Use for" }).hover();
+    await page.getByRole("menuitem", { name: "Primary" }).click();
+
+    await expect
+      .poll(previewPrimary, { timeout: 30_000 })
+      .toBe("rgb(245, 197, 24)");
+
+    await page.reload();
+    await waitForEditor(page);
+
+    const config = (await readThemeCookie(page)).config;
+    expect(config.customPalettes).toEqual([
+      { name: "brand", color: "#f5c518" },
+    ]);
+    expect(config.colors.primary).toBe("brand");
+    await expect
+      .poll(previewPrimary, { timeout: 30_000 })
+      .toBe("rgb(245, 197, 24)");
+  });
 });
+

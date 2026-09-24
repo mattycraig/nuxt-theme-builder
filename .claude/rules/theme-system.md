@@ -7,6 +7,8 @@ paths:
   - "app/utils/cssGenerator.ts"
   - "app/utils/defaults.ts"
   - "app/utils/presets.ts"
+  - "app/utils/paletteGenerator.ts"
+  - "app/utils/customPalettes.ts"
 ---
 
 # Theme system rules
@@ -19,3 +21,5 @@ paths:
 - `afterHydrate` re-validates everything with `ThemeConfigSchema` and calls `_resetHistory()`.
 - Dark mode differences are emitted as CSS variables under `.dark`, not through app config. Keep the two-strategy apply model in `useThemeApply`.
 - Generated CSS must pass `isCleanCSS`, and user-controlled values go through `sanitizeCSSValue`.
+- Custom palettes (`config.customPalettes`) store only a name and base color; `generatePalette` derives the shades. Its output is snapshot-tested because changing it restyles every saved theme that uses a custom palette. Resolve palette names with `getPaletteShadeMap` / `getPaletteSwatch`, not `ALL_HEX_MAP` directly.
+- Custom palette names become `--color-<name>-*` variables and `app.config.ts` values. The schema restricts them to kebab-case slugs and reserves built-in palette and semantic role names (Nuxt UI aliases `--color-<role>-*` to `--ui-color-<role>-*`, so a palette named `primary` would create a cycle). `customPalettes` is omitted, never `[]`, when empty.

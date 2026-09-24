@@ -286,9 +286,11 @@ describe("useAiChat", () => {
   });
 
   describe("applyTheme", () => {
-    it("loads valid theme config into store", () => {
+    it("loads valid theme config into store, keeping custom palettes", () => {
       chat.applyTheme(DEFAULT_THEME);
-      expect(mockLoadConfig).toHaveBeenCalledWith(DEFAULT_THEME);
+      expect(mockLoadConfig).toHaveBeenCalledWith(DEFAULT_THEME, {
+        keepCustomPalettes: true,
+      });
     });
 
     it("shows success toast on valid theme", () => {

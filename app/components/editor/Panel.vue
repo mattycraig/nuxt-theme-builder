@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import type {
   NeutralShade,
+  SemanticColorKey,
   TextTokenKey,
   BgTokenKey,
   BorderTokenKey,
@@ -12,9 +13,11 @@ import {
   BORDER_TOKEN_KEYS,
 } from "~/types/theme";
 import { capitalize } from "~/utils/helpers";
+import { generatePalette } from "~/utils/paletteGenerator";
 import { useThemeModeAccessors } from "~/composables/useThemeModeAccessors";
 
 const store = useThemeStore();
+const toast = useToast();
 
 const {
   mode,
@@ -31,6 +34,7 @@ const SECTION_KEYS = [
   "presets",
   "colorMode",
   "layout",
+  "customPalettes",
   "semanticColors",
   "neutralColor",
   "textColors",
@@ -45,6 +49,7 @@ const DEFAULT_OPEN_SECTIONS: SectionKey[] = [
   "presets",
   "colorMode",
   "layout",
+  "customPalettes",
   "semanticColors",
   "neutralColor",
 ];
@@ -73,13 +78,95 @@ function _scheduleRadiusCommit(val: number) {
   }, 300);
 }
 
-// Cancel stale debounced radius commits after undo/redo/undoAll
+// Custom palette colors update live while picking; one history entry is
+// committed once the color settles (same pattern as radius).
+let _paletteColorTimer: ReturnType<typeof setTimeout> | null = null;
+let _pendingPaletteColor: { name: string; color: string } | null = null;
+
+function _cancelPaletteColorCommit() {
+  if (_paletteColorTimer) clearTimeout(_paletteColorTimer);
+  _paletteColorTimer = null;
+  _pendingPaletteColor = null;
+}
+
+function _flushPaletteColorCommit() {
+  const pending = _pendingPaletteColor;
+  _cancelPaletteColorCommit();
+  if (pending) store.setCustomPaletteColor(pending.name, pending.color);
+}
+
+function onPaletteColorChange(name: string, color: string) {
+  if (_pendingPaletteColor && _pendingPaletteColor.name !== name) {
+    _flushPaletteColorCommit();
+  }
+  store.setCustomPaletteColorVisual(name, color);
+  if (_paletteColorTimer) clearTimeout(_paletteColorTimer);
+  _pendingPaletteColor = { name, color };
+  _paletteColorTimer = setTimeout(_flushPaletteColorCommit, 300);
+}
+
+// Cancel stale debounced commits after undo/redo/undoAll
 watch(
   () => store.historyNavCount,
   () => {
     _cancelRadiusCommit();
+    _cancelPaletteColorCommit();
   },
 );
+
+const customPalettesEditor = useTemplateRef<{ startCreate: () => void }>(
+  "customPalettesEditor",
+);
+
+async function onCreatePaletteRequest() {
+  sectionOpen.customPalettes = true;
+  await nextTick();
+  customPalettesEditor.value?.startCreate();
+}
+
+function showPaletteError(error?: string) {
+  toast.add({
+    title: "Couldn't update palette",
+    description: error,
+    color: "error",
+    icon: "i-lucide-alert-circle",
+  });
+}
+
+function onCreatePalette(name: string, color: string) {
+  _flushPaletteColorCommit();
+  const result = store.addCustomPalette(name, color);
+  if (!result.success) showPaletteError(result.error);
+}
+
+function onRenamePalette(oldName: string, newName: string) {
+  _flushPaletteColorCommit();
+  const result = store.renameCustomPalette(oldName, newName);
+  if (!result.success) showPaletteError(result.error);
+}
+
+function onRemovePalette(name: string) {
+  _flushPaletteColorCommit();
+  const palette = store.config.customPalettes?.find((p) => p.name === name);
+  const inUse = SEMANTIC_COLOR_KEYS.some(
+    (key) =>
+      store.config.colors[key] === name || store.config.darkColors[key] === name,
+  );
+  store.removeCustomPalette(name);
+  const fallback = palette && generatePalette(palette.color)?.reference;
+  if (inUse && fallback) {
+    toast.add({
+      title: `Deleted "${name}"`,
+      description: `Colors that used it now use ${capitalize(fallback)}. Undo to restore it.`,
+      icon: "i-lucide-trash-2",
+    });
+  }
+}
+
+function onAssignPalette(name: string, role: SemanticColorKey) {
+  _flushPaletteColorCommit();
+  store.setSemanticColorForMode(mode.value, role, name);
+}
 
 function onRadiusChange(val: number) {
   store.setRadiusVisualForMode(mode.value, val);
@@ -111,6 +198,7 @@ onMounted(() => {
 
 onUnmounted(() => {
   _cancelRadiusCommit();
+  _flushPaletteColorCommit();
 });
 </script>
 
@@ -198,6 +286,26 @@ onUnmounted(() => {
 
       <USeparator />
 
+      <!-- Custom Palettes (shared by light and dark mode) -->
+      <EditorSection
+        v-model:open="sectionOpen.customPalettes"
+        icon="i-lucide-swatch-book"
+        label="Custom Palettes"
+        default-open
+      >
+        <EditorCustomPalettes
+          ref="customPalettesEditor"
+          :palettes="store.config.customPalettes ?? []"
+          @create="onCreatePalette"
+          @update:color="onPaletteColorChange"
+          @rename="onRenamePalette"
+          @remove="onRemovePalette"
+          @assign="onAssignPalette"
+        />
+      </EditorSection>
+
+      <USeparator />
+
       <!-- Semantic Colors -->
       <EditorSection
         v-model:open="sectionOpen.semanticColors"
@@ -213,9 +321,11 @@ onUnmounted(() => {
             :model-value="currentColors[key]"
             :shade="currentColorShades[key]"
             :label="capitalize(key)"
+            :custom-palettes="store.config.customPalettes"
             @update:model-value="
               store.setSemanticColorForMode(mode, key, $event)
             "
+            @create-palette="onCreatePaletteRequest"
             @update:shade="store.setSemanticShadeForMode(mode, key, $event)"
           />
         </div>

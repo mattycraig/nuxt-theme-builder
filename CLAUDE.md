@@ -31,7 +31,7 @@ app/types/theme.ts       ThemeConfig types + ThemeConfigSchema (zod); re-exports
 shared/constants/        Cross-layer constants (palettes, fonts, shades, routes, AI fallbacks)
 app/composables/         useThemeApply, useThemeExport, usePreviewIframe, useSourceCode, useAi*, …
 app/utils/navigation/    Sidebar / command-palette registry for every preview route
-app/utils/cssGenerator.ts, defaults.ts, presets.ts, iframeProtocol.ts, seoDescriptions.ts
+app/utils/cssGenerator.ts, defaults.ts, presets.ts, paletteGenerator.ts, customPalettes.ts, iframeProtocol.ts, seoDescriptions.ts
 app/pages/               components/[slug], blocks/[slug] (data-driven), templates/*.vue, tools/, learn/
 server/api/              ai/generate.post.ts, auth/launch.post.ts, highlight.post.ts, source/[...path].get.ts
 modules/source-code-embed.ts  Embeds app/pages/**/*.vue as a Nitro virtual module for /api/source

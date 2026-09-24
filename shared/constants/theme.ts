@@ -161,6 +161,39 @@ export const SEMANTIC_COLOR_KEYS = [
   "error",
 ] as const;
 
+// ─── Custom Palettes ────────────────────────────────────────────────────
+
+/**
+ * Maximum custom palettes per theme. Each one adds ~70–90 bytes to the
+ * URL-encoded `theme` cookie, which browsers drop above 4096 bytes.
+ */
+export const CUSTOM_PALETTE_MAX = 6;
+
+/** Maximum length of a custom palette name. */
+export const CUSTOM_PALETTE_NAME_MAX_LENGTH = 24;
+
+/**
+ * Custom palette names become CSS custom properties (`--color-<name>-500`)
+ * and `app.config.ts` values, so they are lowercase kebab-case slugs.
+ */
+export const CUSTOM_PALETTE_NAME_PATTERN = /^[a-z][a-z0-9]*(?:-[a-z0-9]+)*$/;
+
+/**
+ * Names a custom palette can't use. Built-in palettes would be shadowed,
+ * and Nuxt UI aliases `--color-<role>-*` to `--ui-color-<role>-*`, so a
+ * palette named after a semantic role would create a CSS variable cycle.
+ */
+export const RESERVED_PALETTE_NAMES: ReadonlySet<string> = new Set([
+  ...ALL_PALETTES,
+  ...SEMANTIC_COLOR_KEYS,
+  "old-neutral",
+  "white",
+  "black",
+  "current",
+  "inherit",
+  "transparent",
+]);
+
 // ─── Default Color Shades ───────────────────────────────────────────────
 
 /**

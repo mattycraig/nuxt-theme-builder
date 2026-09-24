@@ -6,9 +6,11 @@ import {
   generateShadeOverrideLines,
   generateDarkPaletteOverrideLines,
   generateDarkNeutralOverrideLines,
+  generateCustomPaletteLines,
   getOverriddenTokenKeys,
   isCleanCSS,
 } from "~/utils/cssGenerator";
+import { generatePalette } from "~/utils/paletteGenerator";
 import {
   DEFAULT_LIGHT_OVERRIDES,
   DEFAULT_DARK_OVERRIDES,
@@ -451,5 +453,102 @@ describe("isCleanCSS", () => {
 
   it("rejects closing tags that could break style context", () => {
     expect(isCleanCSS("</style>")).toBe(false);
+  });
+});
+
+describe("custom palettes", () => {
+  const BRAND = { name: "brand", color: "#f5c518" };
+  const shades = generatePalette(BRAND.color)!.shades;
+
+  function brandTheme() {
+    const config = cloneTheme(DEFAULT_THEME);
+    config.customPalettes = [{ ...BRAND }];
+    config.colors.primary = "brand";
+    config.darkColors.primary = "brand";
+    config.colorShades.primary = "500";
+    config.darkColorShades.primary = "500";
+    return config;
+  }
+
+  it("defines every shade as a Tailwind color variable", () => {
+    const lines = generateCustomPaletteLines([BRAND], "");
+    expect(lines).toHaveLength(NUMERIC_SHADE_KEYS.length);
+    expect(lines).toContain(`--color-brand-400: #f5c518;`);
+    expect(lines).toContain(`--color-brand-50: ${shades["50"]};`);
+  });
+
+  it("skips entries that would be unsafe in CSS", () => {
+    const lines = generateCustomPaletteLines([
+      { name: "x;}body{", color: "#f5c518" },
+      { name: "primary", color: "#f5c518" },
+      { name: "ok", color: "red;}" },
+    ]);
+    expect(lines).toEqual([]);
+  });
+
+  it("emits custom palette variables in :root for the live preview", () => {
+    const { rootCSS, darkCSS } = generateThemeCSS(
+      brandTheme(),
+      DEFAULT_LIGHT_OVERRIDES,
+      DEFAULT_DARK_OVERRIDES,
+    );
+    expect(rootCSS).toContain("--color-brand-400: #f5c518;");
+    expect(darkCSS).not.toContain("--color-brand");
+    expect(isCleanCSS(rootCSS)).toBe(true);
+  });
+
+  it("shade-shifts custom palettes like built-in ones", () => {
+    const config = brandTheme();
+    config.colorShades.primary = "400";
+    const lines = generateShadeOverrideLines(
+      config.colors,
+      config.colorShades,
+      "",
+      config.customPalettes,
+    );
+    expect(lines).toContain("--ui-color-primary-500: #f5c518;");
+    expect(lines).toContain(`--ui-color-primary-600: ${shades["500"]};`);
+  });
+
+  it("remaps dark mode to a custom palette", () => {
+    const config = cloneTheme(DEFAULT_THEME);
+    config.customPalettes = [{ ...BRAND }];
+    config.darkColors.primary = "brand";
+    const { darkCSS } = generateThemeCSS(
+      config,
+      DEFAULT_LIGHT_OVERRIDES,
+      DEFAULT_DARK_OVERRIDES,
+    );
+    // Dark shade is 500, so shades map straight across; the base color sits at 400
+    expect(darkCSS).toContain(`--ui-color-primary-500: ${shades["500"]};`);
+    expect(darkCSS).toContain("--ui-color-primary-400: #f5c518;");
+  });
+
+  it("skips shade overrides for a role whose custom palette is missing", () => {
+    const config = brandTheme();
+    config.colorShades.primary = "400";
+    const lines = generateShadeOverrideLines(config.colors, config.colorShades);
+    expect(lines.some((l) => l.includes("--ui-color-primary-"))).toBe(false);
+  });
+
+  it("puts custom palettes in @theme static in the export, not :root", () => {
+    const output = generateExportCSS(
+      brandTheme(),
+      DEFAULT_LIGHT_OVERRIDES,
+      DEFAULT_DARK_OVERRIDES,
+    );
+    const themeBlock = output.match(/@theme static \{[^}]*\}/)?.[0] ?? "";
+    expect(themeBlock).toContain("--color-brand-400: #f5c518;");
+    expect(themeBlock).toContain(`--color-brand-950: ${shades["950"]};`);
+    expect(output.match(/--color-brand-400/g)).toHaveLength(1);
+  });
+
+  it("leaves exports without custom palettes unchanged", () => {
+    const output = generateExportCSS(
+      DEFAULT_THEME,
+      DEFAULT_LIGHT_OVERRIDES,
+      DEFAULT_DARK_OVERRIDES,
+    );
+    expect(output).not.toContain("@theme static");
   });
 });

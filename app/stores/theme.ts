@@ -2,7 +2,10 @@ import type {
   ThemeConfig,
   ThemePreset,
   SemanticColorKey,
-  AnyPalette,
+  SemanticColors,
+  SemanticShades,
+  CustomPalette,
+  PaletteName,
   ChromaticPalette,
   NeutralPalette,
   NeutralShade,
@@ -16,8 +19,22 @@ import {
   NEUTRAL_PALETTES,
   SEMANTIC_COLOR_KEYS,
   FONT_OPTIONS,
+  CUSTOM_PALETTE_MAX,
+  DEFAULT_COLOR_SHADES,
 } from "~/types/theme";
 import { DEFAULT_THEME, cloneTheme } from "~/utils/defaults";
+import {
+  generatePalette,
+  normalizeHexColor,
+} from "~/utils/paletteGenerator";
+import {
+  getCustomPaletteAnchor,
+  getCustomPaletteNameError,
+  isBuiltInPalette,
+  mergeCustomPalettes,
+} from "~/utils/customPalettes";
+
+type ActionResult = { success: boolean; error?: string };
 
 const MAX_HISTORY = 50;
 
@@ -152,9 +169,21 @@ export const useThemeStore = defineStore(
     function setSemanticColorForMode(
       mode: "light" | "dark",
       key: SemanticColorKey,
-      value: AnyPalette,
+      value: PaletteName,
     ) {
-      config.value[_modeField(mode, "colors", "darkColors")][key] = value;
+      const colors = config.value[_modeField(mode, "colors", "darkColors")];
+      const shades =
+        config.value[_modeField(mode, "colorShades", "darkColorShades")];
+      const previous = colors[key];
+      colors[key] = value;
+      // A custom palette puts its exact base color on the role's main shade.
+      // Leaving one for a built-in palette drops that automatic shade again.
+      const anchor = getCustomPaletteAnchor(value, config.value.customPalettes);
+      if (anchor) {
+        shades[key] = anchor;
+      } else if (!isBuiltInPalette(previous) && previous !== value) {
+        shades[key] = DEFAULT_COLOR_SHADES[key];
+      }
       _pushHistory();
     }
 
@@ -215,6 +244,125 @@ export const useThemeStore = defineStore(
       _pushHistory();
     }
 
+    // Custom Palettes ────────────────────────────────────────────────
+
+    function _customPalettes(): CustomPalette[] {
+      return config.value.customPalettes ?? [];
+    }
+
+    /** Store plain copies (structuredClone in cloneTheme rejects proxies); drop the key when empty. */
+    function _setCustomPalettes(palettes: readonly CustomPalette[]) {
+      if (palettes.length) {
+        config.value.customPalettes = palettes.map(({ name, color }) => ({
+          name,
+          color,
+        }));
+      } else {
+        delete config.value.customPalettes;
+      }
+    }
+
+    /** Call `fn` for every role, in both modes, that uses palette `name`. */
+    function _forEachRoleUsing(
+      name: string,
+      fn: (
+        colors: SemanticColors,
+        shades: SemanticShades,
+        key: SemanticColorKey,
+      ) => void,
+    ) {
+      const modes = [
+        [config.value.colors, config.value.colorShades],
+        [config.value.darkColors, config.value.darkColorShades],
+      ] as const;
+      for (const [colors, shades] of modes) {
+        for (const key of SEMANTIC_COLOR_KEYS) {
+          if (colors[key] === name) fn(colors, shades, key);
+        }
+      }
+    }
+
+    /** Carry the current custom palettes into a config that replaces this one. */
+    function _withCurrentCustomPalettes(next: ThemeConfig): ThemeConfig {
+      const merged = mergeCustomPalettes(
+        next.customPalettes,
+        config.value.customPalettes,
+      );
+      if (merged) next.customPalettes = merged;
+      return next;
+    }
+
+    function addCustomPalette(name: string, color: string): ActionResult {
+      const palettes = _customPalettes();
+      if (palettes.length >= CUSTOM_PALETTE_MAX) {
+        return {
+          success: false,
+          error: `A theme can have up to ${CUSTOM_PALETTE_MAX} custom palettes`,
+        };
+      }
+      const nameError = getCustomPaletteNameError(name, palettes);
+      if (nameError) return { success: false, error: nameError };
+      const hex = normalizeHexColor(color);
+      if (!hex) return { success: false, error: "Enter a hex color like #f5c518" };
+      _setCustomPalettes([...palettes, { name, color: hex }]);
+      _pushHistory();
+      return { success: true };
+    }
+
+    function _applyCustomPaletteColor(name: string, color: string) {
+      const palette = _customPalettes().find((p) => p.name === name);
+      const hex = normalizeHexColor(color);
+      if (!palette || !hex || palette.color === hex) return;
+      const oldAnchor = generatePalette(palette.color)?.anchor;
+      const newAnchor = generatePalette(hex)?.anchor;
+      palette.color = hex;
+      // Roles showing the exact base color keep showing it as its shade moves
+      if (oldAnchor && newAnchor && oldAnchor !== newAnchor) {
+        _forEachRoleUsing(name, (_colors, shades, key) => {
+          if (shades[key] === oldAnchor) shades[key] = newAnchor;
+        });
+      }
+    }
+
+    function setCustomPaletteColor(name: string, color: string) {
+      _applyCustomPaletteColor(name, color);
+      _pushHistory();
+    }
+
+    /** Update a custom palette's color without a history entry (used while picking) */
+    function setCustomPaletteColorVisual(name: string, color: string) {
+      _applyCustomPaletteColor(name, color);
+    }
+
+    function renameCustomPalette(oldName: string, newName: string): ActionResult {
+      const palettes = _customPalettes();
+      const palette = palettes.find((p) => p.name === oldName);
+      if (!palette) return { success: false, error: "Palette not found" };
+      if (newName === oldName) return { success: true };
+      const nameError = getCustomPaletteNameError(newName, palettes, oldName);
+      if (nameError) return { success: false, error: nameError };
+      palette.name = newName;
+      _forEachRoleUsing(oldName, (colors, _shades, key) => {
+        colors[key] = newName;
+      });
+      _pushHistory();
+      return { success: true };
+    }
+
+    function removeCustomPalette(name: string) {
+      const palettes = _customPalettes();
+      const palette = palettes.find((p) => p.name === name);
+      if (!palette) return;
+      // Roles fall back to the built-in palette the custom one was modeled on;
+      // their shade stays, and sits at a similar lightness on that palette.
+      const fallback = generatePalette(palette.color)?.reference;
+      _forEachRoleUsing(name, (colors, _shades, key) => {
+        colors[key] = fallback ?? DEFAULT_THEME.colors[key];
+      });
+      _setCustomPalettes(palettes.filter((p) => p.name !== name));
+      _pushHistory();
+    }
+
     // Config Management ──────────────────────────────────────────────
 
     function resetToDefaults() {
@@ -251,7 +399,7 @@ export const useThemeStore = defineStore(
         darkColors[key] = pickForKey(key);
       }
 
-      config.value = {
+      config.value = _withCurrentCustomPalettes({
         ...cloneTheme(DEFAULT_THEME),
         colors: lightColors as ThemeConfig["colors"],
         darkColors: darkColors as ThemeConfig["darkColors"],
@@ -261,12 +409,19 @@ export const useThemeStore = defineStore(
         darkRadius: randRadius,
         font,
         darkFont: font,
-      };
+      });
       activePresetName.value = "";
       _pushHistory();
     }
 
-    function loadConfig(newConfig: ThemeConfig) {
+    /**
+     * Replace the config. `keepCustomPalettes` carries the user's custom
+     * palettes over (for generated themes, e.g. AI); imports replace them.
+     */
+    function loadConfig(
+      newConfig: ThemeConfig,
+      options: { keepCustomPalettes?: boolean } = {},
+    ) {
       const result = ThemeConfigSchema.safeParse(newConfig);
       if (!result.success) {
         console.warn(
@@ -275,7 +430,10 @@ export const useThemeStore = defineStore(
         );
         config.value = cloneTheme(DEFAULT_THEME);
       } else {
-        config.value = cloneTheme(result.data as ThemeConfig);
+        const next = cloneTheme(result.data as ThemeConfig);
+        config.value = options.keepCustomPalettes
+          ? _withCurrentCustomPalettes(next)
+          : next;
       }
       _pushHistory();
       historyBaseIndex.value = historyIndex.value;
@@ -385,7 +543,10 @@ export const useThemeStore = defineStore(
         );
         return;
       }
-      config.value = cloneTheme(result.data as ThemeConfig);
+      // Built-in presets keep the user's custom palettes; saved themes are
+      // self-contained and load exactly as saved.
+      const next = cloneTheme(result.data as ThemeConfig);
+      config.value = preset.builtIn ? _withCurrentCustomPalettes(next) : next;
       activePresetName.value = preset.name;
       _pushHistory();
       historyBaseIndex.value = historyIndex.value;
@@ -419,6 +580,13 @@ export const useThemeStore = defineStore(
       setTextOverride,
       setBgOverride,
       setBorderOverride,
+
+      // Custom palettes
+      addCustomPalette,
+      setCustomPaletteColor,
+      setCustomPaletteColorVisual,
+      renameCustomPalette,
+      removeCustomPalette,
 
       // Config management
       resetToDefaults,

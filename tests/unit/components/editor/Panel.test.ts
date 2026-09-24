@@ -65,4 +65,26 @@ describe("EditorPanel", () => {
     expect(html).toContain("Error");
     expect(html).toContain("Info");
   });
+
+  it("renders the custom palettes section", async () => {
+    const wrapper = await mountPanel();
+    expect(wrapper.html()).toContain("Custom Palettes");
+    expect(wrapper.text()).toContain("New palette");
+  });
+
+  it("previews custom palette colors live and commits one history entry", async () => {
+    const store = useThemeStore();
+    store.addCustomPalette("brand", "#f5c518");
+    const wrapper = await mountPanel();
+
+    const hex = wrapper.find('input[aria-label="brand base color"]');
+    await hex.setValue("#e0b000");
+    await hex.setValue("#1e3a8a");
+    expect(store.config.customPalettes?.[0]?.color).toBe("#1e3a8a");
+
+    await new Promise((resolve) => setTimeout(resolve, 400));
+    store.undo();
+    expect(store.config.customPalettes?.[0]?.color).toBe("#f5c518");
+  });
 });
+

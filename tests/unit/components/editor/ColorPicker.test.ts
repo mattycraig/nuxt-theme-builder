@@ -52,4 +52,15 @@ describe("EditorColorPicker", () => {
     const html = wrapper.html();
     expect(html).toContain("Success: emerald");
   });
+
+  it("shows a custom palette's generated shades", async () => {
+    const wrapper = await mountColorPicker({
+      modelValue: "brand",
+      shade: "400",
+      customPalettes: [{ name: "brand", color: "#f5c518" }],
+    });
+    expect(wrapper.html()).toContain("Primary: brand");
+    const selected = wrapper.find('[role="radio"][aria-checked="true"]');
+    expect(selected.attributes("aria-label")).toBe("Shade 400 — #f5c518");
+  });
 });

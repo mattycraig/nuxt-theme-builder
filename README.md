@@ -16,6 +16,7 @@ Design and preview semantic palettes, neutral scales, radius, fonts, and light/d
 ## Highlights
 
 - Theme editor sidebar with undo/redo and preset management
+- Custom palettes: generate a full 50–950 scale from one brand color and use it for any semantic role
 - Route-based previews for components, blocks, and full templates
 - Iframe preview sync + fullscreen mode
 - Source view for templates; copyable source and AI prompts for every block

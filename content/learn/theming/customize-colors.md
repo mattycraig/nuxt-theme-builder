@@ -90,6 +90,38 @@ Then in your CSS, override specific shades using CSS variables:
 }
 ```
 
+## Brand Colors with Custom Palettes
+
+When your brand color doesn't fit any Tailwind palette, define your own palette with `@theme static` in your main CSS file and assign it by name:
+
+```css
+@import "tailwindcss";
+@import "@nuxt/ui";
+
+@theme static {
+  --color-brand-50: #fefceb;
+  --color-brand-100: #fdf7c9;
+  /* ... */
+  --color-brand-400: #f5c518;
+  /* ... */
+  --color-brand-950: #40220d;
+}
+```
+
+```ts
+export default defineAppConfig({
+  ui: {
+    colors: {
+      primary: "brand",
+    },
+  },
+});
+```
+
+Nuxt UI resolves `primary: "brand"` through the `--color-brand-*` variables, just as it does for built-in palettes. `static` makes Tailwind emit the variables even though only Nuxt UI's runtime styles reference them, and you also get utilities like `bg-brand-500`.
+
+Writing eleven shades by hand is tedious. In the Theme Builder, **Custom Palettes** generates the full scale from a single base color and previews it on every component. The CSS export includes the `@theme static` block.
+
 ## Light and Dark Mode Colors
 
 One of the most powerful features is setting **independent colors per mode**. Your light theme might use a deep indigo primary while your dark theme uses a brighter variant:
