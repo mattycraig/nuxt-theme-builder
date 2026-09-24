@@ -168,6 +168,9 @@ export default defineNuxtConfig({
     // Disable all security overhead in dev to avoid 431 header-too-large errors
     enabled: process.env.NODE_ENV !== "development",
     rateLimiter: process.env.NODE_ENV === "development" ? false : undefined,
+    // removeLoggers strips console/debugger through `esbuild.drop`, which
+    // Vite 8 ignores. The client minifier does it instead (vite.$client).
+    removeLoggers: false,
     headers: {
       contentSecurityPolicy: {
         "default-src": ["'self'"],
@@ -277,6 +280,19 @@ export default defineNuxtConfig({
   },
 
   vite: {
+    $client: {
+      build: {
+        rolldownOptions: {
+          output: {
+            minify: {
+              compress: { dropConsole: true, dropDebugger: true },
+              mangle: true,
+              codegen: true,
+            },
+          },
+        },
+      },
+    },
     optimizeDeps: {
       include: [
         // Pre-bundle CJS deps to avoid repeated transforms during dev
