@@ -21,6 +21,7 @@
 - [ ] My code follows the project's style guidelines
 - [ ] I have run `pnpm lint` with no errors
 - [ ] I have run `pnpm typecheck` with no errors
+- [ ] I have run `pnpm format:check` (or `pnpm format`)
 - [ ] I have added/updated tests for my changes
 - [ ] All new and existing tests pass (`pnpm test`)
 - [ ] I have updated documentation where applicable

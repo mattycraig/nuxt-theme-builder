@@ -49,8 +49,10 @@ This policy covers:
 
 This project implements:
 
-- `nuxt-security` module for CSP, rate limiting, and security headers
-- Zod schema validation for all API inputs/outputs
-- DOMPurify for sanitizing user content
-- No server-side storage of user API keys
-- Dependency vulnerability scanning via Renovate and GitHub Dependabot
+- `nuxt-security` for CSP (nonce + `strict-dynamic`), security headers, request rate limiting, and XSS validation
+- Zod validation of AI-generation and syntax-highlighting requests, and of all theme data loaded from storage, imports, presets, AI output, or iframe messages
+- A per-IP rate limit on the AI generation endpoint
+- An allow-list and path sanitization for the source-code endpoint, which serves only build-time-embedded template sources
+- Server-side safety checks on highlighted HTML, re-sanitized with DOMPurify before rendering
+- No server-side storage or logging of user AI API keys (bring-your-own-key, sent per request)
+- Dependabot security updates, dependency review on pull requests, and CodeQL code scanning
