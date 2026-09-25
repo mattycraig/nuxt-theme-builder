@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { MSG } from "~/utils/iframeProtocol";
 import { sanitizeNavigationPath } from "~/utils/helpers";
-import { PREVIEW_SHELL_PATH } from "~~/shared/constants/routes";
+import { PREVIEW_SHELL_PATH, isFramedRoute } from "~~/shared/constants/routes";
 
 // ─── State ─────────────────────────────────────────────────────────
 
@@ -94,6 +94,15 @@ watch(iframeSrc, (path) => {
 watch(isFullscreen, (open) => {
   if (!open) fullscreenReady.value = false;
 });
+
+// Only demo routes have a preview to expand (e.g. a link inside the iframe
+// can lead to a page the editor renders directly)
+watch(
+  () => isFramedRoute(route.path),
+  (framed) => {
+    if (!framed) isFullscreen.value = false;
+  },
+);
 
 // Keep fullscreen iframe in sync with theme and color mode
 watch(

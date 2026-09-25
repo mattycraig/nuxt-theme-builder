@@ -6,7 +6,11 @@ import {
   LEARN_ROUTES,
   NOINDEX_DEMO_ROUTES,
   TEMPLATE_ROUTES,
+  TOOL_ROUTES,
+  PUBLIC_STATIC_ROUTES,
   ALL_DYNAMIC_ROUTES,
+  PREVIEW_SHELL_PATH,
+  isFramedRoute,
 } from "~~/shared/constants/routes";
 import { BLOCK_CATEGORIES } from "~/utils/navigation/blocks";
 import { COMPONENT_CATEGORIES } from "~/utils/navigation/components";
@@ -57,5 +61,37 @@ describe("shared/constants/routes", () => {
     for (const route of ALL_DYNAMIC_ROUTES) {
       expect(route).toMatch(/^\//);
     }
+  });
+
+  describe("isFramedRoute", () => {
+    it("frames every demo route and the AI app", () => {
+      for (const route of [...NOINDEX_DEMO_ROUTES, "/ai"]) {
+        expect(isFramedRoute(route), route).toBe(true);
+      }
+    });
+
+    it("renders every other public page directly", () => {
+      const direct = [
+        ...PUBLIC_STATIC_ROUTES.filter((route) => route !== "/ai"),
+        ...LEARN_ROUTES,
+        ...TOOL_ROUTES,
+        PREVIEW_SHELL_PATH,
+      ];
+      for (const route of direct) {
+        expect(isFramedRoute(route), route).toBe(false);
+      }
+    });
+
+    it("treats a trailing slash like the bare path", () => {
+      expect(isFramedRoute("/components/button/")).toBe(true);
+      expect(isFramedRoute("/components/")).toBe(false);
+      expect(isFramedRoute("/ai/")).toBe(true);
+    });
+
+    it("does not frame nested or look-alike paths", () => {
+      expect(isFramedRoute("/components/button/extra")).toBe(false);
+      expect(isFramedRoute("/componentsx/button")).toBe(false);
+      expect(isFramedRoute("/aim")).toBe(false);
+    });
   });
 });

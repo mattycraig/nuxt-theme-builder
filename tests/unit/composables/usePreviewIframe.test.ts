@@ -27,6 +27,9 @@ const { navigateToMock, toastAddMock } = vi.hoisted(() => ({
 mockNuxtImport("navigateTo", () => navigateToMock);
 mockNuxtImport("useToast", () => () => ({ add: toastAddMock }));
 
+const mockRoute = reactive({ path: "/components/badge" });
+mockNuxtImport("useRoute", () => () => mockRoute);
+
 function makeActions(): IframeMessageActions {
   return {
     setIframeLoading: vi.fn(),
@@ -332,6 +335,7 @@ describe("usePreviewIframe — wiring", () => {
   }
 
   beforeEach(async () => {
+    mockRoute.path = "/components/badge";
     store = useThemeStore();
     store.resetToDefaults();
     navigateToMock.mockClear();
@@ -442,6 +446,36 @@ describe("usePreviewIframe — wiring", () => {
   it("navigates the editor when a link is clicked inside the iframe", () => {
     send({ type: "navigate-parent", path: "/components/button" });
     expect(navigateToMock).toHaveBeenCalledWith("/components/button");
+  });
+
+  it("only uses the iframe on demo routes", async () => {
+    expect(mounted.result.isFramed.value).toBe(true);
+    mockRoute.path = "/learn/theming/customize-colors";
+    await nextTick();
+    expect(mounted.result.isFramed.value).toBe(false);
+  });
+
+  it("repeats the ready handshake after a page rendered without the iframe", async () => {
+    send({ type: "preview-ready" });
+    send({ type: "navigate-done" });
+
+    // The iframe unmounts, so nothing is sent to it
+    mockRoute.path = "/about";
+    await nextTick();
+    expect(mounted.result.iframeReady.value).toBe(false);
+    expect(mounted.result.iframeLoading.value).toBe(true);
+
+    // The remounted iframe starts on the shell and must report ready first
+    postMessage.mockClear();
+    mockRoute.path = "/components/button";
+    await nextTick();
+    expect(postMessage).not.toHaveBeenCalled();
+
+    send({ type: "preview-ready" });
+    expect(postMessage.mock.calls.at(-1)![0]).toEqual({
+      type: "navigate",
+      path: "/components/button?preview",
+    });
   });
 
   it("stops listening after unmount", () => {

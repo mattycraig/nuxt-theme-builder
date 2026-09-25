@@ -3,7 +3,7 @@ import { sanitizeNavigationPath, showThemeAppliedToast } from "~/utils/helpers";
 import { ThemeConfigSchema } from "~/types/theme";
 import type { ThemeConfig } from "~/types/theme";
 import { MSG } from "~/utils/iframeProtocol";
-import { PREVIEW_SHELL_PATH } from "~~/shared/constants/routes";
+import { PREVIEW_SHELL_PATH, isFramedRoute } from "~~/shared/constants/routes";
 import type { ParentToIframeMessage } from "~/utils/iframeProtocol";
 
 /** Callback interface for the message handler, enabling direct unit testing. */
@@ -112,6 +112,9 @@ export function createIframeMessageHandler(
  * - Two-way postMessage communication (theme sync, color mode sync, navigation)
  * - Iframe readiness detection with fallback re-request
  * - Route synchronization between host and iframe without full reloads
+ *
+ * Only demo routes use the iframe (see `isFramedRoute`). Other pages render
+ * directly in the editor, and the iframe is unmounted while they're shown.
  */
 export function usePreviewIframe() {
   const store = useThemeStore();
@@ -125,6 +128,7 @@ export function usePreviewIframe() {
   const iframeLoading = ref(true);
   const iframeReady = ref(false);
 
+  const isFramed = computed(() => isFramedRoute(route.path));
   const iframeSrc = computed(() => `${route.path}?preview`);
   // The iframe always starts on the prerendered preview shell and is then
   // navigated to iframeSrc once it reports PREVIEW_READY.
@@ -166,9 +170,17 @@ export function usePreviewIframe() {
       iframeLoading.value = false;
       return;
     }
-    if (!iframeReady.value) return;
+    if (!iframeReady.value || !isFramed.value) return;
     iframeLoading.value = true;
     navigateIframe(newSrc);
+  });
+
+  // The iframe unmounts on direct routes. The next one starts on the shell
+  // again, so it has to repeat the ready handshake.
+  watch(isFramed, (framed) => {
+    if (framed) return;
+    iframeReady.value = false;
+    iframeLoading.value = true;
   });
 
   // Sync theme config on every change
@@ -247,6 +259,7 @@ export function usePreviewIframe() {
     previewFrame,
     iframeLoading,
     iframeReady,
+    isFramed,
     iframeSrc,
     iframeInitialSrc,
     handleIframeLoad,
