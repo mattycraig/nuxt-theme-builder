@@ -8,7 +8,8 @@ test.describe("Fullscreen Preview", () => {
       localStorage.removeItem("theme-presets");
       localStorage.removeItem("theme-builder");
     });
-    await page.goto("/");
+    // Only demo routes render in the preview iframe
+    await page.goto("/components/button");
     await page.waitForSelector(
       '[data-testid="theme-editor"][data-hydrated="true"]',
       { state: "visible", timeout: 60_000 },
@@ -53,6 +54,22 @@ test.describe("Fullscreen Preview", () => {
       await exitButton.click();
       await expect(dialog).not.toBeVisible();
     });
+  });
+
+  test("is not offered on pages rendered without the iframe", async ({
+    page,
+  }) => {
+    await page.goto("/about");
+    await page.waitForSelector(
+      '[data-testid="theme-editor"][data-hydrated="true"]',
+      { state: "visible", timeout: 60_000 },
+    );
+    await expect(
+      page.getByRole("button", { name: "Expand preview to fullscreen" }),
+    ).toHaveCount(0);
+    await expect(
+      page.getByRole("toolbar", { name: "Preview controls" }),
+    ).toBeVisible();
   });
 
   test("should close fullscreen with Escape key", async ({ page }) => {

@@ -24,7 +24,7 @@ Font-provider `403`/"Could not fetch" warnings during build/test come from sandb
 
 ```
 app/app.vue              Picks the layout: coming-soon | preview (?preview query or /preview shell) | default
-app/layouts/default.vue  Editor shell: sidebar editor + iframe preview + source view + command palette
+app/layouts/default.vue  Editor shell: sidebar editor + page area (iframe preview for demos) + source view + command palette
 app/layouts/preview.vue  What renders inside the iframe; syncs with the parent via postMessage
 app/stores/theme.ts      Single source of truth: ThemeConfig, undo/redo history, saved presets
 app/types/theme.ts       ThemeConfig types + ThemeConfigSchema (zod); re-exports shared constants
@@ -38,13 +38,13 @@ modules/source-code-embed.ts  Embeds app/pages/**/*.vue as a Nitro virtual modul
 content/learn/           Nuxt Content articles (schema in content.config.ts)
 ```
 
-Preview iframes start on the prerendered `/preview` shell and are moved to the current route with `NAVIGATE` after the ready handshake, so the theme is applied before the demo page renders.
+Only demo routes use the preview iframe (`isFramedRoute` in `shared/constants/routes.ts`: component, block, and template pages, plus `/ai`). Every other page renders directly in the editor so search engines see its content; the iframe document is `noindex`. Preview iframes start on the prerendered `/preview` shell and are moved to the current route with `NAVIGATE` after the ready handshake, so the theme is applied before the demo page renders.
 
 Data flow: editor controls call store setters → `useThemeApply()` writes semantic palette names to `useAppConfig().ui.colors` **and** injects CSS variables (radius, font, shade shifts, token overrides, dark-mode deltas) via `useHead` → the default layout posts `THEME_SYNC` / `COLORMODE_SYNC` to the iframe → `preview.vue` applies them with `store._syncConfig()` (no history) → export composables serialize the config without mutating runtime state.
 
 ## Guardrails
 
-- **Layout selection lives in `app.vue`.** `<NuxtLayout :name>` overrides page meta, so `definePageMeta({ layout })` has no effect. Preview pages render inside the iframe with the `preview` layout.
+- **Layout selection lives in `app.vue`.** `<NuxtLayout :name>` overrides page meta, so `definePageMeta({ layout })` has no effect. Demo pages render inside the iframe with the `preview` layout; everything else renders directly in `default.vue`.
 - **Theme store**: every user-facing mutation pushes history; iframe sync uses `_syncConfig` (no history). Anything loaded from outside (persisted state, imports, presets, AI output, postMessage) goes through `ThemeConfigSchema`.
 - **Persistence is split on purpose.** `config` + `activePresetName` go in the `theme` cookie (readable during SSR, ~2 KB). `savedPresets` go in localStorage under `theme-presets`. Browsers silently drop cookies over 4096 bytes, and one saved preset is enough to push the whole store past that. After hydration the store calls `_resetHistory()` so undo can't jump back to `DEFAULT_THEME`.
 - **Client-only state must not change SSR output.** Gate anything rendered from localStorage behind `useMounted()` or `<ClientOnly>` (see `EditorSavedThemes`, `EditorToolbar`), otherwise hydration mismatches.
