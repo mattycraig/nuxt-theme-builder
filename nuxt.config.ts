@@ -113,10 +113,9 @@ export default defineNuxtConfig({
   devtools: { enabled: process.env.NODE_ENV === "development" },
   compatibilityDate: "2025-01-01",
 
-  experimental: {
-    // Caches build artifacts between restarts — dramatically speeds up subsequent cold starts
-    buildCache: true,
-  },
+  // No experimental.buildCache: on a cache hit Nuxt skips the Vite build, so
+  // @nuxt/fonts never downloads the fonts and publishes the empty placeholder
+  // files it wrote during the cached build ("Failed to decode downloaded font").
 
   css: ["~/assets/css/main.css"],
 
@@ -130,6 +129,10 @@ export default defineNuxtConfig({
       global: true,
       ...(name === DEFAULT_FONT ? {} : { preload: false }),
     })),
+    // Versioned path: /_fonts/ files are served immutable for a year, and
+    // browsers still hold the empty files that earlier deploys published.
+    // Bump the version if broken font files ever ship again.
+    assets: { prefix: "/_fonts/v2" },
     defaults: {
       weights: [400, 500, 600, 700],
       styles: ["normal"],
