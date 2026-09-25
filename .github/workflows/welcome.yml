@@ -11,10 +11,11 @@ permissions:
   pull-requests: write
 
 jobs:
-  welcome-issue:
-    name: Welcome New Issue Author
+  # first-interaction v3 requires both messages on every run and posts the one
+  # that matches the event, so a single job handles issues and PRs.
+  welcome:
+    name: Welcome First-Time Contributor
     runs-on: ubuntu-latest
-    if: github.event_name == 'issues'
     steps:
       - uses: actions/first-interaction@v3
         with:
@@ -28,15 +29,6 @@ jobs:
             - A maintainer will review your issue soon
             - Please watch for follow-up questions
             - Check out our [Contributing Guide](https://github.com/mattycraig/nuxt-theme-builder/blob/master/CONTRIBUTING.md)
-
-  welcome-pr:
-    name: Welcome New PR Author
-    runs-on: ubuntu-latest
-    if: github.event_name == 'pull_request_target'
-    steps:
-      - uses: actions/first-interaction@v3
-        with:
-          repo_token: ${{ secrets.GITHUB_TOKEN }}
           pr_message: |
             👋 Welcome to Nuxt UI Theme Builder!
 
