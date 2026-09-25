@@ -31,8 +31,29 @@ const {
 } = useSourceCode();
 
 // Iframe preview ────────────────────────────────────────────────────────
-const { previewFrame, iframeLoading, iframeInitialSrc, handleIframeLoad } =
-  usePreviewIframe();
+const {
+  previewFrame,
+  iframeLoading,
+  iframeInitialSrc,
+  isFramed,
+  handleIframeLoad,
+} = usePreviewIframe();
+
+// Direct pages scroll inside the page container, which the router's
+// window-based scroll behavior doesn't reach.
+const pageScroll = useTemplateRef<HTMLElement>("pageScroll");
+watch(
+  () => [route.path, route.hash] as const,
+  ([path, hash], [previousPath]) => {
+    const container = pageScroll.value;
+    if (!container || isFramed.value) return;
+    const target =
+      hash && document.getElementById(decodeURIComponent(hash.slice(1)));
+    if (target) target.scrollIntoView();
+    else if (path !== previousPath) container.scrollTop = 0;
+  },
+  { flush: "post" },
+);
 
 // Preview resize ────────────────────────────────────────────────────────
 const {
@@ -141,6 +162,7 @@ useSchemaOrg([
         v-model:custom-width="customWidth"
         v-model:preview-height="previewHeight"
         v-model:custom-height="customHeight"
+        :framed="isFramed"
       />
 
       <!-- Source code view (replaces iframe when active) -->
@@ -153,8 +175,9 @@ useSchemaOrg([
         @retry="retrySource"
       />
 
-      <!-- Preview area with resizable iframe -->
+      <!-- Preview area with resizable iframe (demo routes only) -->
       <PreviewFrame
+        v-if="isFramed"
         v-show="
           (viewMode === 'preview' || !hasSourcePage) && !isPreviewFullscreen
         "
@@ -171,6 +194,37 @@ useSchemaOrg([
         @keyboard-resize="handleKeyboardResize"
         @keyboard-height-resize="handleKeyboardHeightResize"
       />
+
+      <!--
+        Page slot. Demo routes (isFramedRoute) are shown by the iframe, so
+        their copy here stays hidden and inert: NuxtPage still renders it to
+        keep route reactivity working (iframeSrc, breadcrumbs, etc.). Every
+        other page is shown here directly, so search engines see its content
+        as part of the page (the iframe document is noindex). The same two
+        elements switch between both modes so the page never moves between
+        containers and remounts. Do not remove this slot.
+
+        SharedHiddenRouteWrapper blocks dashboard:sidebar:toggle/collapse
+        hook registrations from demo pages' UDashboardSidebar instances,
+        which would otherwise open the wrong sidebar at mobile widths.
+      -->
+      <div
+        :class="isFramed ? 'hidden' : 'flex-1 min-h-0 p-4 sm:px-6'"
+        :inert="isFramed"
+      >
+        <div
+          ref="pageScroll"
+          :class="
+            isFramed
+              ? undefined
+              : 'h-full overflow-y-auto rounded-xl border border-(--ui-border-accented) shadow-xl bg-(--ui-bg)'
+          "
+        >
+          <SharedHiddenRouteWrapper>
+            <slot />
+          </SharedHiddenRouteWrapper>
+        </div>
+      </div>
     </main>
 
     <!-- Fullscreen preview overlay -->
@@ -182,25 +236,6 @@ useSchemaOrg([
       placeholder="Search pages & actions\u2026"
       @update:model-value="onSearchSelect"
     />
-
-    <!--
-      WARNING — Hidden page slot.
-      NuxtPage is rendered here so Vue Router's route reactivity keeps
-      working (iframeSrc, breadcrumbs, etc.), but the actual visible
-      content is rendered inside the iframe. The `hidden` class +
-      `inert` + `aria-hidden` ensure it is invisible to both sighted
-      users and assistive technology. Do not remove this element.
-
-      SharedHiddenRouteWrapper intercepts nuxtApp.hook() to block
-      dashboard:sidebar:toggle/collapse hook registrations from child
-      UDashboardSidebar instances — preventing the wrong sidebar from
-      opening at mobile widths.
-    -->
-    <div class="hidden" inert>
-      <SharedHiddenRouteWrapper>
-        <slot />
-      </SharedHiddenRouteWrapper>
-    </div>
 
     <!-- Singleton modals rendered at layout level -->
     <SharedSaveThemeModal />

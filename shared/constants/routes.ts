@@ -23,6 +23,24 @@
  */
 export const PREVIEW_SHELL_PATH = "/preview";
 
+/**
+ * Component, block, and template demos, plus /ai (a full-screen app with its
+ * own dashboard shell).
+ */
+const FRAMED_ROUTE_PATTERN =
+  /^\/(?:(?:components|blocks|templates)\/[^/]+|ai)\/?$/;
+
+/**
+ * Whether the editor renders `path` inside the resizable preview iframe.
+ *
+ * Demos need the iframe so their breakpoints follow the preview width. Every
+ * other page renders directly in the editor: the iframe document is noindex,
+ * so content shown only through it doesn't count for search engines.
+ */
+export function isFramedRoute(path: string): boolean {
+  return FRAMED_ROUTE_PATTERN.test(path);
+}
+
 export const BLOCK_ROUTES = [
   "/blocks/hero",
   "/blocks/cta",

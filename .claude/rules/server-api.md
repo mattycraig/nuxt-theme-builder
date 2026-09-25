@@ -14,4 +14,4 @@ paths:
 - `/api/source/[...path]` must reject `..`, null bytes, and anything outside `templates/` (`isAllowedSourcePath`). Content comes only from the build-time virtual map, never from disk.
 - `/api/highlight` disables the nuxt-security XSS validator by route rule because it accepts raw code. Its output must still pass `isSafeHighlightedHtml`.
 - CSP uses nonces + `strict-dynamic`. New third-party scripts, fonts, or connect targets need matching CSP entries in `nuxt.config.ts`.
-- Route rules: demo routes (`/components/**`, `/blocks/**`, `/templates/**`) are `noindex`. ISR is enabled only for Vercel production builds (`enableIsrRouteRules`). `/api/**` and `/ai` are never cached.
+- Route rules: demo routes get an `X-Robots-Tag: noindex` header per path, built from `NOINDEX_DEMO_ROUTES`. Don't use a `/components/**` header rule: Nitro matches it against `/components` too, and `@nuxtjs/sitemap` drops any route with a noindex header (`tests/unit/nuxt-config.test.ts` checks this). ISR is enabled only for Vercel production builds (`enableIsrRouteRules`). `/api/**` and `/ai` are never cached.

@@ -223,28 +223,23 @@ export default defineNuxtConfig({
       headers: { "X-Robots-Tag": "noindex, nofollow" },
     },
 
+    // Demo pages are noindex, listed one by one: "/components/**" also
+    // matches /components itself, and the sitemap drops any route whose
+    // rules carry a noindex header.
+    ...Object.fromEntries(
+      NOINDEX_DEMO_ROUTES.map((path) => [
+        path,
+        { headers: { "X-Robots-Tag": "noindex, follow" } },
+      ]),
+    ),
+
     // ISR depends on Vercel's production runtime. Disable it for local/dev
     // and CI node-server previews so direct route requests do not 500.
-    "/components/**": {
-      headers: {
-        "X-Robots-Tag": "noindex, follow",
-      },
-      ...(enableIsrRouteRules ? { isr: 3600 } : {}),
-    },
-    "/blocks/**": {
-      headers: {
-        "X-Robots-Tag": "noindex, follow",
-      },
-      ...(enableIsrRouteRules ? { isr: 3600 } : {}),
-    },
-    "/templates/**": {
-      headers: {
-        "X-Robots-Tag": "noindex, follow",
-      },
-      ...(enableIsrRouteRules ? { isr: 3600 } : {}),
-    },
     ...(enableIsrRouteRules
       ? {
+          "/components/**": { isr: 3600 },
+          "/blocks/**": { isr: 3600 },
+          "/templates/**": { isr: 3600 },
           "/tools/**": { isr: 3600 },
         }
       : {}),

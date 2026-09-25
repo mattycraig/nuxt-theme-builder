@@ -82,7 +82,8 @@ test.describe("Smoke - Persistence across reloads", () => {
         })
         .catch(() => "");
 
-    await page.goto("/");
+    // Only demo routes render in the preview iframe
+    await page.goto("/components/button");
     await waitForEditor(page);
 
     await page.getByRole("button", { name: "New palette" }).click();

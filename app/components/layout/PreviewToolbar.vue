@@ -1,4 +1,7 @@
 <script setup lang="ts">
+// Viewport and fullscreen controls only apply to routes shown in the iframe
+defineProps<{ framed: boolean }>();
+
 const previewWidth = defineModel<"mobile" | "tablet" | "desktop">(
   "previewWidth",
   { required: true },
@@ -32,7 +35,7 @@ const exportPanel = useExportPanel();
     />
 
     <!-- Center: width presets + viewport settings -->
-    <div class="absolute left-1/2 -translate-x-1/2">
+    <div v-if="framed" class="absolute left-1/2 -translate-x-1/2">
       <PreviewViewportControls
         v-model:active-width="previewWidth"
         v-model:custom-width="customWidth"
@@ -46,7 +49,10 @@ const exportPanel = useExportPanel();
       <PreviewViewModeToggle v-if="hasSourcePage" v-model="viewMode" />
 
       <!-- Fullscreen toggle -->
-      <UTooltip :text="isFullscreen ? 'Exit fullscreen' : 'Fullscreen preview'">
+      <UTooltip
+        v-if="framed"
+        :text="isFullscreen ? 'Exit fullscreen' : 'Fullscreen preview'"
+      >
         <UButton
           :icon="isFullscreen ? 'i-lucide-minimize' : 'i-lucide-maximize'"
           :aria-label="
@@ -63,6 +69,7 @@ const exportPanel = useExportPanel();
       </UTooltip>
 
       <USeparator
+        v-if="framed"
         orientation="vertical"
         class="h-6 mx-1"
         :ui="{ border: 'dark:border-accented' }"

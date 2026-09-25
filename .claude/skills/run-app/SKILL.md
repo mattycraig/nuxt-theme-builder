@@ -25,7 +25,7 @@ argument-hint: "[route or scenario to verify]"
 
 ## Useful checks
 
-- **Theme sync**: change a control in the sidebar and assert that a CSS variable inside the preview iframe changes (`frameLocator("iframe")`).
+- **Theme sync**: on a demo route such as `/components/button`, change a control in the sidebar and assert that a CSS variable inside the preview iframe changes (`frameLocator("iframe")`). Other pages render without the iframe, so check the top document there.
 - **Persistence**: `context.cookies()` → `theme` cookie holds `{ config, activePresetName }` (must stay under 4096 bytes); `localStorage["theme-presets"]` holds saved presets. Reload and assert that both survive.
 - **Undo after reload**: make a change, then `ControlOrMeta+z` should return to the reloaded theme.
 - **Source view** (`/templates/*`): toggle to code, navigate to another template and back, and confirm the code matches the route.
