@@ -11,16 +11,16 @@ permissions:
   pull-requests: write
 
 jobs:
-  # first-interaction v3 requires both messages on every run and posts the one
-  # that matches the event, so a single job handles issues and PRs.
+  # actions/first-interaction@v3 is not used: it welcomes any PR author who has
+  # never opened an *issue* (its PR check doesn't filter by author at all), so
+  # the maintainer and bots got a "first pull request" comment on every PR.
   welcome:
     name: Welcome First-Time Contributor
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/first-interaction@v3
-        with:
-          repo_token: ${{ secrets.GITHUB_TOKEN }}
-          issue_message: |
+      - uses: actions/github-script@v9
+        env:
+          ISSUE_MESSAGE: |
             👋 Welcome to Nuxt UI Theme Builder!
 
             Thank you for opening your first issue. We appreciate you taking the time to report this.
@@ -29,7 +29,7 @@ jobs:
             - A maintainer will review your issue soon
             - Please watch for follow-up questions
             - Check out our [Contributing Guide](https://github.com/mattycraig/nuxt-theme-builder/blob/master/CONTRIBUTING.md)
-          pr_message: |
+          PR_MESSAGE: |
             👋 Welcome to Nuxt UI Theme Builder!
 
             Thank you for your first pull request! We're excited to review your contribution.
@@ -41,3 +41,39 @@ jobs:
             - [ ] PR description explains the change
 
             A maintainer will review your PR soon. Thanks for contributing! 🎉
+        with:
+          script: |
+            const isPullRequest = context.eventName === "pull_request_target";
+            const item = isPullRequest ? context.payload.pull_request : context.payload.issue;
+            const author = item.user;
+
+            if (author.type === "Bot") {
+              core.info(`Skipping: ${author.login} is a bot`);
+              return;
+            }
+            if (["OWNER", "MEMBER", "COLLABORATOR"].includes(item.author_association)) {
+              core.info(`Skipping: ${author.login} is ${item.author_association}`);
+              return;
+            }
+
+            // listForRepo returns both issues and PRs, so one query covers either
+            // event; keep only earlier items of the same kind by the same author.
+            const previous = await github.paginate(github.rest.issues.listForRepo, {
+              ...context.repo,
+              creator: author.login,
+              state: "all",
+              per_page: 100,
+            });
+            const hasEarlier = previous.some(
+              (other) => other.number < item.number && Boolean(other.pull_request) === isPullRequest,
+            );
+            if (hasEarlier) {
+              core.info(`Skipping: not ${author.login}'s first ${isPullRequest ? "pull request" : "issue"}`);
+              return;
+            }
+
+            await github.rest.issues.createComment({
+              ...context.repo,
+              issue_number: item.number,
+              body: isPullRequest ? process.env.PR_MESSAGE : process.env.ISSUE_MESSAGE,
+            });
