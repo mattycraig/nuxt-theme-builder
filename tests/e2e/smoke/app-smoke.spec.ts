@@ -32,6 +32,27 @@ test.describe("Smoke - Core Theme Builder", () => {
     expect(newRadius).toBeGreaterThanOrEqual(initialRadius);
   });
 
+  test("keeps the editor toolbar pinned while the sidebar scrolls", async ({
+    page,
+  }) => {
+    const { scrolled, offset } = await page
+      .getByTestId("theme-editor")
+      .evaluate((editor) => {
+        const scroller = editor.parentElement!;
+        scroller.scrollTop = scroller.scrollHeight;
+        const toolbar = editor.firstElementChild!;
+        return {
+          scrolled: scroller.scrollTop,
+          offset:
+            toolbar.getBoundingClientRect().top -
+            scroller.getBoundingClientRect().top,
+        };
+      });
+
+    expect(scrolled).toBeGreaterThan(500);
+    expect(Math.abs(offset)).toBeLessThanOrEqual(1);
+  });
+
   test("opens export panel and renders app config output", async ({ page }) => {
     await page
       .getByRole("button", { name: /Export/i })
