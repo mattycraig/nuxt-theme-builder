@@ -101,6 +101,12 @@ export const COMPONENT_CATEGORIES: ComponentCategory[] = [
         to: "/components/progress",
       },
       {
+        label: "ProgressGroup",
+        icon: "i-lucide-chart-bar-stacked",
+        description: "Segmented progress bar that breaks a total into labeled parts.",
+        to: "/components/progress-group",
+      },
+      {
         label: "Separator",
         icon: "i-lucide-minus",
         description: "Visual dividers between content sections.",
@@ -183,6 +189,12 @@ export const COMPONENT_CATEGORIES: ComponentCategory[] = [
         to: "/components/input-number",
       },
       {
+        label: "InputRating",
+        icon: "i-lucide-star",
+        description: "Star rating input with half steps, custom icons, and readonly mode.",
+        to: "/components/input-rating",
+      },
+      {
         label: "InputTags",
         icon: "i-lucide-tags",
         description: "Tag input for entering multiple values as tokens.",
@@ -193,6 +205,12 @@ export const COMPONENT_CATEGORIES: ComponentCategory[] = [
         icon: "i-lucide-clock",
         description: "Time input with hour and minute selection.",
         to: "/components/input-time",
+      },
+      {
+        label: "Listbox",
+        icon: "i-lucide-list-checks",
+        description: "Always-visible option list with filtering and multiple selection.",
+        to: "/components/listbox",
       },
       {
         label: "PinInput",
@@ -275,6 +293,12 @@ export const COMPONENT_CATEGORIES: ComponentCategory[] = [
         to: "/components/scroll-area",
       },
       {
+        label: "Splitter",
+        icon: "i-lucide-columns-2",
+        description: "Resizable panels separated by draggable handles.",
+        to: "/components/splitter",
+      },
+      {
         label: "Table",
         icon: "i-lucide-table",
         description:
@@ -348,6 +372,12 @@ export const COMPONENT_CATEGORIES: ComponentCategory[] = [
         to: "/components/pagination",
       },
       {
+        label: "Sidebar",
+        icon: "i-lucide-panel-left",
+        description: "Collapsible app sidebar with icon and offcanvas modes.",
+        to: "/components/sidebar",
+      },
+      {
         label: "Stepper",
         icon: "i-lucide-footprints",
         description: "Multi-step progress indicator for wizards and flows.",
@@ -359,6 +389,32 @@ export const COMPONENT_CATEGORIES: ComponentCategory[] = [
         description:
           "Tabbed interfaces for organizing content into switchable panels.",
         to: "/components/tabs",
+      },
+    ],
+  },
+  {
+    label: "Chat",
+    icon: "i-lucide-bot",
+    slug: "chat",
+    description: "Building blocks for AI chat interfaces.",
+    items: [
+      {
+        label: "ChatReasoning",
+        icon: "i-lucide-brain",
+        description: "Collapsible reasoning trace that opens while the model thinks.",
+        to: "/components/chat-reasoning",
+      },
+      {
+        label: "ChatShimmer",
+        icon: "i-lucide-sparkles",
+        description: "Animated shimmer text for in-progress AI responses.",
+        to: "/components/chat-shimmer",
+      },
+      {
+        label: "ChatTool",
+        icon: "i-lucide-wrench",
+        description: "Tool call status with collapsible output and approval actions.",
+        to: "/components/chat-tool",
       },
     ],
   },
