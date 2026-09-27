@@ -133,6 +133,10 @@ WCAG also requires that color is **not the only means** of conveying information
 - **Status indicators**: Combine color with shape (icons, text labels)
 - **Charts/graphs**: Use patterns or labels alongside color coding
 
+## Check Your Colors
+
+Paste any text and background color into the [Contrast Checker](/tools/contrast-checker) to see the exact ratio and whether it passes AA and AAA. Then open the [Theme Builder](/), switch between light and dark mode, and adjust the text and background tokens until every pair passes.
+
 ## Next Steps
 
 - [Dark Mode Theming with Nuxt UI](/learn/theming/dark-mode-guide) - design accessible dark themes

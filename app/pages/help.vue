@@ -1,5 +1,13 @@
 <script setup lang="ts">
 import helpMd from "~/data/help.md?raw";
+import { extractFaqEntries } from "~/utils/markdown";
+
+useSchemaOrg([
+  defineWebPage({ "@type": ["WebPage", "FAQPage"] }),
+  ...extractFaqEntries(helpMd, "Frequently Asked Questions").map((entry) =>
+    defineQuestion({ name: entry.question, acceptedAnswer: entry.answer }),
+  ),
+]);
 
 const tocLinks = [
   { label: "Getting Started", to: "#getting-started", icon: "i-lucide-rocket" },

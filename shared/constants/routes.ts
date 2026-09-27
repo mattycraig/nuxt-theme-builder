@@ -1,5 +1,5 @@
 /**
- * Dynamic route paths for blocks, components, and learn articles.
+ * Dynamic route paths for blocks, components, learn articles, and themes.
  *
  * Used by the sitemap endpoint (server/api/__sitemap__/urls.ts) to provide
  * all dynamic routes to @nuxtjs/sitemap at build time.
@@ -9,6 +9,7 @@
  *   - app/utils/navigation/components.ts → COMPONENT_CATEGORIES
  *   - app/utils/navigation/learn.ts     → LEARN_CATEGORIES
  *   - content/learn/**\/*.md             → article files
+ *   - app/utils/presets.ts              → BUILT_IN_PRESETS (via presetSlug)
  *
  * @module shared/constants/routes
  */
@@ -134,10 +135,47 @@ export const LEARN_ROUTES = [
   "/learn/theming/css-variables-reference",
   "/learn/theming/typography-font-pairing",
   "/learn/theming/export-and-share",
+  "/learn/theming/brand-hex-color",
+  "/learn/theming/global-border-radius",
+  "/learn/theming/migrate-theme-to-v4",
   "/learn/components/styling-cheat-sheet",
+  "/learn/components/restyle-one-component",
   "/learn/tailwind/tailwind-v4-theming",
   "/learn/best-practices/design-system-guide",
   "/learn/best-practices/accessible-color-contrast",
+  "/learn/best-practices/nuxt-ui-vs-shadcn-vue-theming",
+] as const;
+
+/** One gallery page per built-in preset, at `/themes/<presetSlug(name)>`. */
+export const THEME_ROUTES = [
+  "/themes/default",
+  "/themes/nuxt-ui",
+  "/themes/shadcn",
+  "/themes/cherry",
+  "/themes/sunset",
+  "/themes/sahara",
+  "/themes/sunflower",
+  "/themes/zest",
+  "/themes/forest",
+  "/themes/emerald",
+  "/themes/coastal",
+  "/themes/arctic",
+  "/themes/minimal",
+  "/themes/corporate",
+  "/themes/dark-mono",
+  "/themes/lavender",
+  "/themes/neon",
+  "/themes/blush",
+  "/themes/rose-gold",
+  "/themes/spotify",
+  "/themes/youtube",
+  "/themes/slack",
+  "/themes/discord",
+  "/themes/github",
+  "/themes/stripe",
+  "/themes/twitch",
+  "/themes/netflix",
+  "/themes/linear",
 ] as const;
 
 export const TOOL_ROUTES = [
@@ -165,7 +203,10 @@ export const NOINDEX_DEMO_ROUTES = [
   ...TEMPLATE_ROUTES,
 ] as const;
 
-export const INDEXABLE_DYNAMIC_ROUTES = [...LEARN_ROUTES] as const;
+export const INDEXABLE_DYNAMIC_ROUTES = [
+  ...LEARN_ROUTES,
+  ...THEME_ROUTES,
+] as const;
 
 export const PUBLIC_STATIC_ROUTES = [
   "/",
@@ -178,6 +219,7 @@ export const PUBLIC_STATIC_ROUTES = [
   "/learn",
   "/privacy",
   "/templates",
+  "/themes",
   "/tools",
 ] as const;
 
@@ -186,6 +228,7 @@ export const ALL_DYNAMIC_ROUTES = [
   ...BLOCK_ROUTES,
   ...COMPONENT_ROUTES,
   ...LEARN_ROUTES,
+  ...THEME_ROUTES,
 ] as const;
 
 export const PUBLIC_PRERENDER_ROUTES = [

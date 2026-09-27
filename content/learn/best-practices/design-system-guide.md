@@ -142,6 +142,8 @@ As your app grows:
 
 Use the [Nuxt UI Theme Builder](/) to define your token foundation visually, preview it across 125+ components, and export the configuration. It's the fastest way to bootstrap a design system for any Nuxt UI project.
 
+Not sure where to start? Pick one of the [built-in themes](/themes) as your baseline, then stress-test it on full-page [templates](/templates) before you commit to it.
+
 ## Next Steps
 
 - [How to Customize Nuxt UI Theme Colors](/learn/theming/customize-colors) - configure your color foundation
