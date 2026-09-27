@@ -303,29 +303,35 @@ export const BUILT_IN_PRESETS: ThemePreset[] = [
   },
 
   // ── 2. Nuxt UI (green) ────────────────────────────────────────────────
-  // Matches the official Nuxt UI out-of-the-box defaults.
+  // Matches the official Nuxt UI out-of-the-box defaults. Nuxt UI's docs and
+  // starter templates replace Tailwind's green with the Nuxt brand green
+  // (400 = #00DC82, 500 = #00C16A), so primary and success use a custom
+  // palette generated from #00DC82, which reproduces that scale.
   {
     name: "Nuxt UI",
     description:
-      "Official Nuxt UI defaults. Green primary, blue secondary, slate neutral with standard shading.",
+      "Official Nuxt UI defaults. Nuxt green primary, blue secondary, slate neutral with standard shading.",
     category: "Essentials",
     builtIn: true,
     config: preset({
       colors: {
-        primary: "green",
+        primary: "nuxt-green",
         secondary: "blue",
-        success: "green",
+        success: "nuxt-green",
         info: "blue",
         warning: "yellow",
         error: "red",
       },
+      customPalettes: [{ name: "nuxt-green", color: "#00dc82" }],
       colorShades: SHADES_DEFAULT,
       neutral: "slate",
       radius: 0.25,
       font: "Public Sans",
       lightOverrides: LIGHT_STANDARD,
       darkOverrides: DARK_STANDARD,
-      darkColorShades: SHADES_BRIGHT,
+      // No dark shade shift: Nuxt UI already maps --ui-primary to the 400
+      // shade under `.dark`, and a "400" here would shift it again to 300.
+      darkColorShades: SHADES_DEFAULT,
     }),
   },
 

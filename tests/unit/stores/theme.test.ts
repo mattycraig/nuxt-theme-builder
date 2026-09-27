@@ -631,9 +631,10 @@ describe("useThemeStore", () => {
       it("keeps custom palettes when loading a built-in preset", () => {
         addBrand();
         store.loadPreset(BUILT_IN_PRESETS[1]!);
-        expect(store.config.customPalettes).toEqual([
-          { name: "brand", color: YELLOW },
-        ]);
+        expect(store.config.customPalettes).toContainEqual({
+          name: "brand",
+          color: YELLOW,
+        });
       });
 
       it("keeps custom palettes when randomizing", () => {
@@ -715,7 +716,8 @@ describe("useThemeStore", () => {
         (a, b) => JSON.stringify(b.config).length - JSON.stringify(a.config).length,
       )[0]!;
       store.loadPreset(largest);
-      for (let i = 0; i < CUSTOM_PALETTE_MAX; i++) {
+      const room = CUSTOM_PALETTE_MAX - (largest.config.customPalettes?.length ?? 0);
+      for (let i = 0; i < room; i++) {
         const name = `p${i}`.padEnd(CUSTOM_PALETTE_NAME_MAX_LENGTH, "x");
         expect(store.addCustomPalette(name, "#f5c518").success).toBe(true);
       }
