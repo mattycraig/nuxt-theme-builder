@@ -194,7 +194,7 @@ function getDropdownItems(preset: ThemePreset) {
         <span class="font-medium">Save</span> button in the toolbar to save your
         current theme, or use the presets below.
       </p>
-      <div class="flex flex-col items-center justify-center gap-2 pt-1">
+      <div class="flex flex-wrap items-center justify-center gap-2 pt-1">
         <UButton
           to="/ai"
           label="Generate with AI"
@@ -204,7 +204,7 @@ function getDropdownItems(preset: ThemePreset) {
           size="xs"
         />
         <UButton
-          label="I'm feeling lucky!"
+          label="Feeling lucky"
           icon="i-lucide-dices"
           variant="outline"
           color="neutral"
