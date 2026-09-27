@@ -13,8 +13,6 @@ const emailAlerts = ref(true);
 const weeklyDigest = ref(false);
 const storageUsed = ref(64);
 
-const SHADES = [50, 100, 200, 300, 400, 500, 600, 700, 800, 900, 950] as const;
-
 const statuses = [
   { label: "Paid", color: "success" },
   { label: "Synced", color: "info" },
@@ -101,25 +99,8 @@ const statuses = [
       </template>
     </UCard>
 
-    <figcaption class="flex flex-col gap-1.5">
-      <div
-        class="flex h-4 overflow-hidden rounded-(--ui-radius)"
-        aria-hidden="true"
-      >
-        <span
-          v-for="shade in SHADES"
-          :key="shade"
-          class="flex-1"
-          :style="{ background: `var(--ui-color-primary-${shade})` }"
-        />
-      </div>
-      <div
-        class="flex justify-between font-mono text-[11px] text-(--ui-text-dimmed)"
-      >
-        <span>primary-50</span>
-        <span>500</span>
-        <span>950</span>
-      </div>
+    <figcaption>
+      <HomeModeSwatches />
     </figcaption>
   </figure>
 </template>
