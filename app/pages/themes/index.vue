@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { PRESET_CATEGORIES } from "~/types/theme";
 import { BUILT_IN_PRESETS, presetSlug } from "~/utils/presets";
-import { resolveModeSwatches } from "~/utils/themeSwatches";
+import { resolveModeColors } from "~/utils/themeSwatches";
 import { PAGE_DESCRIPTIONS } from "~/utils/seoDescriptions";
 
 useSchemaOrg([
@@ -19,8 +19,8 @@ const groups = PRESET_CATEGORIES.map((category) => ({
       name: p.name,
       description: p.description ?? "",
       to: `/themes/${presetSlug(p.name)}`,
-      light: resolveModeSwatches(p.config, "light"),
-      dark: resolveModeSwatches(p.config, "dark"),
+      light: resolveModeColors(p.config, "light"),
+      dark: resolveModeColors(p.config, "dark"),
     }),
   ),
 })).filter((group) => group.themes.length > 0);

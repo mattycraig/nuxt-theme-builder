@@ -24,12 +24,14 @@ function handleRandomTheme() {
   >
     <div class="flex flex-col gap-8">
       <div class="flex flex-col gap-5">
-        <UBadge
-          label="Free and open source · Nuxt UI v4"
-          color="primary"
-          variant="subtle"
-          class="self-start"
-        />
+        <div class="flex items-center gap-3">
+          <SharedAppLogo size="lg" :linked="false" />
+          <UBadge
+            label="Free and open source · Nuxt UI v4"
+            color="primary"
+            variant="subtle"
+          />
+        </div>
         <h1
           id="home-hero-heading"
           class="text-4xl font-extrabold tracking-tight text-balance text-(--ui-text-highlighted) sm:text-5xl leading-[1.08]"

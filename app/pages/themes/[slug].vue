@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { BUILT_IN_PRESETS, findPresetBySlug, presetSlug } from "~/utils/presets";
-import { resolveModeSwatches } from "~/utils/themeSwatches";
+import { resolveModeColors } from "~/utils/themeSwatches";
 import { generateAppConfigExport } from "~/utils/appConfigGenerator";
 import { generateExportCSS } from "~/utils/cssGenerator";
 import {
@@ -18,8 +18,8 @@ if (!preset) {
 }
 
 const config = preset.config;
-const light = resolveModeSwatches(config, "light");
-const dark = resolveModeSwatches(config, "dark");
+const light = resolveModeColors(config, "light");
+const dark = resolveModeColors(config, "dark");
 const isBrand = preset.category === "Brands";
 
 const title = `${preset.name} Theme for Nuxt UI — Nuxt UI Theme Builder`;
@@ -79,7 +79,7 @@ const related = BUILT_IN_PRESETS.filter(
   name: p.name,
   description: p.description ?? "",
   to: `/themes/${presetSlug(p.name)}`,
-  swatches: resolveModeSwatches(p.config, "light").semantic,
+  swatches: resolveModeColors(p.config, "light").semantic,
 }));
 
 const store = useThemeStore();

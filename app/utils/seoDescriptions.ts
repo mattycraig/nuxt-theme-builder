@@ -63,6 +63,8 @@ export const PAGE_DESCRIPTIONS: Record<string, string> = {
     "Preview Nuxt UI kbd components styled with your theme — keyboard shortcut indicators for key bindings and hotkeys.",
   "/components/progress":
     "Preview Nuxt UI progress components styled with your theme — progress bars and loading indicators with semantic coloring.",
+  "/components/progress-group":
+    "Preview Nuxt UI progress-group components styled with your theme — segmented progress bars that break a total into labeled, colored parts.",
   "/components/separator":
     "Preview Nuxt UI separator components styled with your theme — visual dividers between content sections in horizontal and vertical orientations.",
   "/components/skeleton":
@@ -89,10 +91,14 @@ export const PAGE_DESCRIPTIONS: Record<string, string> = {
     "Preview Nuxt UI input-menu components styled with your theme — input with dropdown menu for suggestions or autocomplete.",
   "/components/input-number":
     "Preview Nuxt UI input-number components styled with your theme — numeric input with increment and decrement controls.",
+  "/components/input-rating":
+    "Preview Nuxt UI input-rating components styled with your theme — star rating input with half steps, custom icons, and readonly display.",
   "/components/input-tags":
     "Preview Nuxt UI input-tags components styled with your theme — tag input for entering multiple values as tokens.",
   "/components/input-time":
     "Preview Nuxt UI input-time components styled with your theme — time input with hour and minute selection controls.",
+  "/components/listbox":
+    "Preview Nuxt UI listbox components styled with your theme — always-visible option lists with filtering, groups, and multiple selection.",
   "/components/pin-input":
     "Preview Nuxt UI pin-input components styled with your theme — segmented single-character input for PIN codes, OTPs, and verification flows.",
   "/components/radio-group":
@@ -119,6 +125,8 @@ export const PAGE_DESCRIPTIONS: Record<string, string> = {
     "Preview Nuxt UI marquee components styled with your theme — auto-scrolling horizontal content ticker for logos and announcements.",
   "/components/scroll-area":
     "Preview Nuxt UI scroll-area components styled with your theme — custom scrollbar container with overflow management.",
+  "/components/splitter":
+    "Preview Nuxt UI splitter components styled with your theme — resizable, collapsible, and nested panels with draggable handles.",
   "/components/table":
     "Preview Nuxt UI table components styled with your theme — sortable data tables with pagination, selection, and custom cell rendering.",
   "/components/timeline":
@@ -141,11 +149,20 @@ export const PAGE_DESCRIPTIONS: Record<string, string> = {
     "Preview Nuxt UI navigation-menu components styled with your theme — navigation menu with icon links and active state indicators.",
   "/components/pagination":
     "Preview Nuxt UI pagination components styled with your theme — page navigation controls for paginated data sets.",
+  "/components/sidebar":
+    "Preview Nuxt UI sidebar components styled with your theme — collapsible app sidebar with icon, offcanvas, floating, and inset variants.",
   "/components/stepper":
     "Preview Nuxt UI stepper components styled with your theme — multi-step progress indicator for wizards and flows.",
   "/components/tabs":
     "Preview Nuxt UI tab components styled with your theme — horizontal and vertical tab layouts for organizing content sections.",
 
+  // Chat components
+  "/components/chat-reasoning":
+    "Preview Nuxt UI chat-reasoning components styled with your theme — collapsible AI reasoning traces that stream open and close to a summary.",
+  "/components/chat-shimmer":
+    "Preview Nuxt UI chat-shimmer components styled with your theme — animated shimmer text for in-progress AI responses.",
+  "/components/chat-tool":
+    "Preview Nuxt UI chat-tool components styled with your theme — AI tool call status with collapsible output and approval actions.",
   // Overlay components
   "/components/context-menu":
     "Preview Nuxt UI context-menu components styled with your theme — right-click context menus with grouped actions.",

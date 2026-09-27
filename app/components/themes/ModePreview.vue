@@ -1,12 +1,12 @@
 <script setup lang="ts">
-import type { ModeSwatches } from "~/utils/themeSwatches";
+import type { ModeColors } from "~/utils/themeSwatches";
 
 /**
  * A small mock-up of a theme in one color mode, drawn with literal colors
  * so it shows the gallery theme rather than the theme being edited.
  */
 const props = defineProps<{
-  swatches: ModeSwatches;
+  swatches: ModeColors;
   /** Show the full list of semantic colors under the mock-up. */
   detailed?: boolean;
 }>();

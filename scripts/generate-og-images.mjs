@@ -32,7 +32,7 @@ const jiti = createJiti(import.meta.url, {
   },
 });
 const { BUILT_IN_PRESETS, presetSlug } = await jiti.import("~/utils/presets");
-const { resolveModeSwatches } = await jiti.import("~/utils/themeSwatches");
+const { resolveModeColors } = await jiti.import("~/utils/themeSwatches");
 const { parseColor, rgbToHex } = await jiti.import("~/utils/colorConversion");
 
 const WIDTH = 1200;
@@ -164,8 +164,8 @@ function modePanel(swatches, x, width, heading) {
 }
 
 function themeSvg(preset) {
-  const light = resolveModeSwatches(preset.config, "light");
-  const dark = resolveModeSwatches(preset.config, "dark");
+  const light = resolveModeColors(preset.config, "light");
+  const dark = resolveModeColors(preset.config, "dark");
   const half = WIDTH / 2;
   return `<svg xmlns="http://www.w3.org/2000/svg" width="${WIDTH}" height="${HEIGHT}" viewBox="0 0 ${WIDTH} ${HEIGHT}">
   ${modePanel(light, 0, half, "Light")}
