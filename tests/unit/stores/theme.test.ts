@@ -637,6 +637,17 @@ describe("useThemeStore", () => {
         });
       });
 
+      it("lets a built-in preset's palette replace a same-named custom palette", () => {
+        // The preset's roles depend on its own definition, so it wins the clash
+        expect(store.addCustomPalette("nuxt-green", YELLOW)).toEqual({
+          success: true,
+        });
+        store.loadPreset(BUILT_IN_PRESETS.find((p) => p.name === "Nuxt UI")!);
+        expect(
+          store.config.customPalettes?.filter((p) => p.name === "nuxt-green"),
+        ).toEqual([{ name: "nuxt-green", color: "#00dc82" }]);
+      });
+
       it("keeps custom palettes when randomizing", () => {
         addBrand();
         store.randomizeTheme();
