@@ -136,6 +136,8 @@ If none of these palettes matches your brand, create a custom palette in the [Th
 
 The [Nuxt UI Theme Builder](/) lets you preview every palette applied to real components in real time. Select a palette, see it on 125+ components, and export when you're happy.
 
+To compare every shade side by side, open the [Palette Viewer](/tools/palette-viewer). Click any swatch to copy its value.
+
 ## Next Steps
 
 - [How to Customize Nuxt UI Theme Colors](/learn/theming/customize-colors) - apply these palettes to your project

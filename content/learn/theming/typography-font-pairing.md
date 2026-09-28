@@ -165,6 +165,8 @@ Stick to a consistent type scale. Tailwind's default scale works well:
 
 The [Nuxt UI Theme Builder](/) includes a font selector with 30+ pre-loaded Google Fonts. Select a font, see it applied to every component instantly, and export the configuration.
 
+To judge a font on long-form text, preview it on the [Blog](/templates/blog) and [Changelog](/templates/changelog) templates.
+
 ## Next Steps
 
 - [Building a Design System with Nuxt UI](/learn/best-practices/design-system-guide) - encode typography rules into your system

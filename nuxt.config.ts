@@ -16,6 +16,7 @@ export default defineNuxtConfig({
   modules: [
     "@vercel/analytics/nuxt",
     "@nuxt/content",
+    "nuxt-llms",
     "@nuxt/ui",
     "@nuxt/eslint",
     "@nuxtjs/mdc",
@@ -52,6 +53,61 @@ export default defineNuxtConfig({
   sitemap: {
     sources: ["/api/__sitemap__/urls"],
     exclude: [...NOINDEX_DEMO_ROUTES, PREVIEW_SHELL_PATH],
+  },
+
+  // /llms.txt and /llms-full.txt. Nuxt Content fills the Learning Hub section;
+  // server/plugins/llms-themes.ts adds the theme gallery.
+  llms: {
+    domain: "https://nuxt-ui-themes.com",
+    title: "Nuxt UI Theme Builder",
+    description:
+      "Free visual theme editor for Nuxt UI v4. Configure semantic colors, shades, neutral palette, radius, fonts, and separate light/dark tokens, preview them on 125+ components, blocks, and templates, then export app.config.ts, CSS variables, or JSON.",
+    sections: [
+      {
+        title: "Learning Hub",
+        description:
+          "Guides, references, and quick tips for theming Nuxt UI v4 and Tailwind CSS v4.",
+        contentCollection: "learn",
+      },
+      {
+        title: "Tools",
+        description: "Standalone color utilities for Nuxt UI theme work.",
+        links: [
+          {
+            title: "Palette Viewer",
+            description:
+              "Every Tailwind CSS / Nuxt UI palette with all shade values.",
+            href: "https://nuxt-ui-themes.com/tools/palette-viewer",
+          },
+          {
+            title: "Palette Generator",
+            description: "Random semantic color palettes for Nuxt UI themes.",
+            href: "https://nuxt-ui-themes.com/tools/palette-generator",
+          },
+          {
+            title: "Contrast Checker",
+            description: "WCAG AA and AAA contrast ratios for two colors.",
+            href: "https://nuxt-ui-themes.com/tools/contrast-checker",
+          },
+          {
+            title: "Color Converter",
+            description: "Convert between HEX, RGB, HSL, and OKLCH.",
+            href: "https://nuxt-ui-themes.com/tools/color-converter",
+          },
+        ],
+      },
+    ],
+    notes: [
+      "Free and open source, with no account. Themes are saved in the browser.",
+      "AI theme generation is bring-your-own-key; the server never stores API keys.",
+    ],
+    full: {
+      title: "Nuxt UI Theme Builder: Learning Hub",
+      description:
+        "The full text of every Learning Hub article about theming Nuxt UI v4.",
+    },
+    // Link to the article pages rather than raw /raw/*.md copies.
+    contentRawMarkdown: false,
   },
 
   schemaOrg: {
@@ -248,6 +304,8 @@ export default defineNuxtConfig({
       : {}),
     "/learn": { prerender: true },
     "/learn/**": { prerender: true },
+    "/themes": { prerender: true },
+    "/themes/**": { prerender: true },
 
     // Dynamic routes - no caching (AI generation, auth)
     "/ai": { isr: false },
@@ -306,6 +364,9 @@ export default defineNuxtConfig({
   },
 
   nitro: {
+    // Learn articles as raw markdown, so the sitemap can read their dates
+    // without the Nuxt Content database (server/api/__sitemap__/urls.ts).
+    serverAssets: [{ baseName: "learn", dir: "../content/learn" }],
     // Force-bundle shiki into serverless output so subpath imports
     // (shiki/core, shiki/engine/javascript, etc.) resolve on Vercel
     externals: {

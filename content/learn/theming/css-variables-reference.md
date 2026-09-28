@@ -4,6 +4,7 @@ description: Complete reference of CSS custom properties (design tokens) used by
 category: theming
 format: reference
 date: "2026-02-14"
+updated: "2026-09-27"
 tags: ["css-variables", "tokens", "design-tokens", "nuxt-ui", "tailwind"]
 order: 4
 featured: false
@@ -52,26 +53,25 @@ Use OKLCH color values for perceptual uniformity across shades.
 
 ## Border Radius Variables
 
-Nuxt UI uses a radius scale that components reference for consistent rounding:
+One variable sets the base radius, and Nuxt UI derives Tailwind's whole radius scale from it:
 
 ```css
 :root {
-  --ui-radius: 0.375rem; /* Base radius (md) */
+  --ui-radius: 0.25rem; /* Default */
 }
 ```
 
-Available radius values map to Tailwind's scale:
+| Utility       | Value                          | Default (`0.25rem`) |
+| ------------- | ------------------------------ | ------------------- |
+| `rounded-xs`  | `calc(var(--ui-radius) * 0.5)` | 2px                 |
+| `rounded-sm`  | `var(--ui-radius)`             | 4px                 |
+| `rounded-md`  | `calc(var(--ui-radius) * 1.5)` | 6px                 |
+| `rounded-lg`  | `calc(var(--ui-radius) * 2)`   | 8px                 |
+| `rounded-xl`  | `calc(var(--ui-radius) * 3)`   | 12px                |
+| `rounded-2xl` | `calc(var(--ui-radius) * 4)`   | 16px                |
+| `rounded-3xl` | `calc(var(--ui-radius) * 6)`   | 24px                |
 
-| Value  | Token      | Pixels        |
-| ------ | ---------- | ------------- |
-| `none` | `0`        | 0px           |
-| `xs`   | `0.125rem` | 2px           |
-| `sm`   | `0.25rem`  | 4px           |
-| `md`   | `0.375rem` | 6px           |
-| `lg`   | `0.5rem`   | 8px           |
-| `xl`   | `0.75rem`  | 12px          |
-| `2xl`  | `1rem`     | 16px          |
-| `full` | `9999px`   | Fully rounded |
+Buttons and inputs use `rounded-md` and cards use `rounded-lg`, so changing `--ui-radius` rescales them all. See [Change the Border Radius Everywhere in Nuxt UI](/learn/theming/global-border-radius).
 
 ## Typography Variables
 
@@ -135,6 +135,8 @@ Examples:
 ## Export Variables from the Theme Builder
 
 The [Nuxt UI Theme Builder](/) can export your entire theme as CSS variables. Use the **CSS** export format to get a ready-to-paste stylesheet with all your customizations.
+
+Need a variable in a different color format? The [Color Converter](/tools/color-converter) converts between HEX, RGB, HSL, and OKLCH.
 
 ## Next Steps
 

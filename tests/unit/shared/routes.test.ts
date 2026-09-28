@@ -6,6 +6,7 @@ import {
   LEARN_ROUTES,
   NOINDEX_DEMO_ROUTES,
   TEMPLATE_ROUTES,
+  THEME_ROUTES,
   TOOL_ROUTES,
   PUBLIC_STATIC_ROUTES,
   ALL_DYNAMIC_ROUTES,
@@ -15,6 +16,8 @@ import {
 import { BLOCK_CATEGORIES } from "~/utils/navigation/blocks";
 import { COMPONENT_CATEGORIES } from "~/utils/navigation/components";
 import { LEARN_CATEGORIES } from "~/utils/navigation/learn";
+import { THEME_CATEGORIES } from "~/utils/navigation/themes";
+import { BUILT_IN_PRESETS, presetSlug } from "~/utils/presets";
 
 describe("shared/constants/routes", () => {
   it("BLOCK_ROUTES matches every block navigation item", () => {
@@ -38,8 +41,27 @@ describe("shared/constants/routes", () => {
     expect([...LEARN_ROUTES].sort()).toEqual(navPaths.sort());
   });
 
+  it("THEME_ROUTES has one page per built-in preset", () => {
+    const presetPaths = BUILT_IN_PRESETS.map(
+      (p) => `/themes/${presetSlug(p.name)}`,
+    );
+    expect([...THEME_ROUTES].sort()).toEqual(presetPaths.sort());
+  });
+
+  it("THEME_ROUTES matches every theme navigation item", () => {
+    const navPaths = THEME_CATEGORIES.flatMap((cat) =>
+      cat.items.map((item) => String(item.to)),
+    );
+    expect([...THEME_ROUTES].sort()).toEqual(navPaths.sort());
+  });
+
   it("ALL_DYNAMIC_ROUTES is the union of all route arrays", () => {
-    const expected = [...BLOCK_ROUTES, ...COMPONENT_ROUTES, ...LEARN_ROUTES];
+    const expected = [
+      ...BLOCK_ROUTES,
+      ...COMPONENT_ROUTES,
+      ...LEARN_ROUTES,
+      ...THEME_ROUTES,
+    ];
     expect([...ALL_DYNAMIC_ROUTES]).toEqual(expected);
   });
 
@@ -48,8 +70,11 @@ describe("shared/constants/routes", () => {
     expect([...NOINDEX_DEMO_ROUTES]).toEqual(expected);
   });
 
-  it("INDEXABLE_DYNAMIC_ROUTES only contains dynamic learn routes", () => {
-    expect([...INDEXABLE_DYNAMIC_ROUTES]).toEqual([...LEARN_ROUTES]);
+  it("INDEXABLE_DYNAMIC_ROUTES contains the learn and theme routes", () => {
+    expect([...INDEXABLE_DYNAMIC_ROUTES]).toEqual([
+      ...LEARN_ROUTES,
+      ...THEME_ROUTES,
+    ]);
   });
 
   it("has no duplicate routes", () => {
@@ -74,6 +99,7 @@ describe("shared/constants/routes", () => {
       const direct = [
         ...PUBLIC_STATIC_ROUTES.filter((route) => route !== "/ai"),
         ...LEARN_ROUTES,
+        ...THEME_ROUTES,
         ...TOOL_ROUTES,
         PREVIEW_SHELL_PATH,
       ];

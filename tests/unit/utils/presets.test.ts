@@ -1,5 +1,9 @@
 ﻿import { describe, it, expect } from "vitest";
-import { BUILT_IN_PRESETS } from "~/utils/presets";
+import {
+  BUILT_IN_PRESETS,
+  findPresetBySlug,
+  presetSlug,
+} from "~/utils/presets";
 import { ThemeConfigSchema } from "~/types/theme";
 import { getPaletteShadeMap } from "~/utils/customPalettes";
 
@@ -114,5 +118,29 @@ describe("BUILT_IN_PRESETS", () => {
     expect(defaultPreset).toBeDefined();
     const result = ThemeConfigSchema.safeParse(defaultPreset!.config);
     expect(result.success).toBe(true);
+  });
+});
+
+describe("presetSlug", () => {
+  it("lowercases and hyphenates preset names", () => {
+    expect(presetSlug("Rose Gold")).toBe("rose-gold");
+    expect(presetSlug("Nuxt UI")).toBe("nuxt-ui");
+    expect(presetSlug("shadcn")).toBe("shadcn");
+    expect(presetSlug("  Dark -- Mono! ")).toBe("dark-mono");
+  });
+
+  it("gives every built-in preset a unique slug", () => {
+    const slugs = BUILT_IN_PRESETS.map((p) => presetSlug(p.name));
+    expect(new Set(slugs).size).toBe(slugs.length);
+  });
+});
+
+describe("findPresetBySlug", () => {
+  it("finds the preset for its slug", () => {
+    expect(findPresetBySlug("rose-gold")?.name).toBe("Rose Gold");
+  });
+
+  it("returns undefined for an unknown slug", () => {
+    expect(findPresetBySlug("not-a-theme")).toBeUndefined();
   });
 });

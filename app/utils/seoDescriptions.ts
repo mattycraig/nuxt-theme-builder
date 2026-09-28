@@ -19,6 +19,7 @@ export const PAGE_TITLES: Record<string, string> = {
   "/learn": "Nuxt UI Theming Guides — Nuxt UI Theme Builder",
   "/privacy": "Privacy Policy — Nuxt UI Theme Builder",
   "/templates": "Nuxt UI Templates Preview — Nuxt UI Theme Builder",
+  "/themes": "Free Nuxt UI Themes — Light and Dark Theme Gallery",
   "/tools": "Nuxt UI Theme Tools — Palette, Contrast, Conversion",
 };
 
@@ -267,6 +268,20 @@ export const PAGE_DESCRIPTIONS: Record<string, string> = {
     "How to build a consistent, scalable design system for Nuxt applications using Nuxt UI v4 design tokens and conventions.",
   "/learn/best-practices/accessible-color-contrast":
     "Ensure your theme colors meet WCAG 2.2 contrast requirements for text, UI components, and interactive elements.",
+  "/learn/theming/brand-hex-color":
+    "Use your exact brand hex color in Nuxt UI: generate a 50–950 custom palette, assign it to primary, and put your color on the main shade.",
+  "/learn/theming/global-border-radius":
+    "Change the border radius of every Nuxt UI component with one CSS variable, --ui-radius, and set a different value for dark mode.",
+  "/learn/theming/migrate-theme-to-v4":
+    "Migrate a Nuxt UI v2 or v3 theme to v4 — ui.colors, gray to neutral, Tailwind CSS v4, slot-based overrides, and the Nuxt UI Pro merge.",
+  "/learn/components/restyle-one-component":
+    "Restyle a single Nuxt UI component everywhere with app.config.ts slots, or just once with the ui and class props, without breaking the theme.",
+  "/learn/best-practices/nuxt-ui-vs-shadcn-vue-theming":
+    "Nuxt UI vs shadcn-vue theming compared — color models, dark mode, radius scales, and component customization for Vue and Nuxt projects.",
+
+  // ── Theme gallery ──────────────────────────────────────────────────────
+  "/themes":
+    "Browse free Nuxt UI v4 themes with light and dark modes — copy the app.config.ts and CSS, or load any theme in the visual Theme Builder.",
 
   // ── Tool pages ─────────────────────────────────────────────────────────
   "/tools":

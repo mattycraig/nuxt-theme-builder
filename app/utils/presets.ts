@@ -1167,3 +1167,16 @@ export const BUILT_IN_PRESETS: ThemePreset[] = [
     }),
   },
 ];
+
+/** URL slug for a preset's gallery page: "Rose Gold" → "rose-gold". */
+export function presetSlug(name: string): string {
+  return name
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "");
+}
+
+/** The built-in preset shown at `/themes/<slug>`, if any. */
+export function findPresetBySlug(slug: string): ThemePreset | undefined {
+  return BUILT_IN_PRESETS.find((p) => presetSlug(p.name) === slug);
+}

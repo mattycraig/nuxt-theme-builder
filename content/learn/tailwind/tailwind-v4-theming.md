@@ -154,6 +154,8 @@ If upgrading from Tailwind v3:
 
 The [Nuxt UI Theme Builder](/) generates Tailwind v4-compatible output. Configure your theme visually, then export as CSS variables that slot directly into your `@theme` block.
 
+Moving hex values from a v3 config? The [Color Converter](/tools/color-converter) turns them into the OKLCH values Tailwind v4 uses.
+
 ## Next Steps
 
 - [CSS Variables Reference for Nuxt UI Themes](/learn/theming/css-variables-reference) - complete variable list
