@@ -5,6 +5,7 @@ import {
   presetSlug,
 } from "~/utils/presets";
 import { ThemeConfigSchema } from "~/types/theme";
+import { getPaletteShadeMap } from "~/utils/customPalettes";
 
 describe("BUILT_IN_PRESETS", () => {
   it("contains at least one preset", () => {
@@ -63,6 +64,53 @@ describe("BUILT_IN_PRESETS", () => {
     expect(nuxtUi).toBeDefined();
     const result = ThemeConfigSchema.safeParse(nuxtUi!.config);
     expect(result.success).toBe(true);
+  });
+
+  it("Nuxt UI preset matches Nuxt UI's shipped color defaults", () => {
+    const config = BUILT_IN_PRESETS.find((p) => p.name === "Nuxt UI")!.config;
+    expect(config.colors).toMatchObject({
+      secondary: "blue",
+      info: "blue",
+      warning: "yellow",
+      error: "red",
+    });
+    expect(config.neutral).toBe("slate");
+    expect(config.radius).toBe(0.25);
+    // Nuxt UI itself uses the 500 shade in light mode and 400 in dark mode, so
+    // the preset must not shift either (a dark "400" would render 300).
+    expect(Object.values(config.colorShades)).toEqual(Array(6).fill("500"));
+    expect(Object.values(config.darkColorShades)).toEqual(Array(6).fill("500"));
+  });
+
+  it("Nuxt UI preset uses the Nuxt brand green, not Tailwind's green", () => {
+    const config = BUILT_IN_PRESETS.find((p) => p.name === "Nuxt UI")!.config;
+    const nuxtGreen: Record<string, string> = {
+      "50": "#effdf5",
+      "100": "#d9fbe8",
+      "200": "#b3f5d1",
+      "300": "#75edae",
+      "400": "#00dc82",
+      "500": "#00c16a",
+      "600": "#00a155",
+      "700": "#007f45",
+      "800": "#016538",
+      "900": "#0a5331",
+      "950": "#052e16",
+    };
+    const channels = (hex: string) =>
+      [1, 3, 5].map((i) => parseInt(hex.slice(i, i + 2), 16));
+
+    for (const colors of [config.colors, config.darkColors]) {
+      expect(colors.primary).toBe(colors.success);
+      const shades = getPaletteShadeMap(colors.primary, config.customPalettes);
+      expect(shades["400"]).toBe("#00dc82");
+      for (const [shade, expected] of Object.entries(nuxtGreen)) {
+        const actual = channels(shades[shade]!);
+        channels(expected).forEach((value, i) =>
+          expect(Math.abs(actual[i]! - value)).toBeLessThanOrEqual(8),
+        );
+      }
+    }
   });
 
   it("Default preset exists and passes schema validation", () => {

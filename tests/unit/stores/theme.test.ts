@@ -631,9 +631,21 @@ describe("useThemeStore", () => {
       it("keeps custom palettes when loading a built-in preset", () => {
         addBrand();
         store.loadPreset(BUILT_IN_PRESETS[1]!);
-        expect(store.config.customPalettes).toEqual([
-          { name: "brand", color: YELLOW },
-        ]);
+        expect(store.config.customPalettes).toContainEqual({
+          name: "brand",
+          color: YELLOW,
+        });
+      });
+
+      it("lets a built-in preset's palette replace a same-named custom palette", () => {
+        // The preset's roles depend on its own definition, so it wins the clash
+        expect(store.addCustomPalette("nuxt-green", YELLOW)).toEqual({
+          success: true,
+        });
+        store.loadPreset(BUILT_IN_PRESETS.find((p) => p.name === "Nuxt UI")!);
+        expect(
+          store.config.customPalettes?.filter((p) => p.name === "nuxt-green"),
+        ).toEqual([{ name: "nuxt-green", color: "#00dc82" }]);
       });
 
       it("keeps custom palettes when randomizing", () => {
@@ -715,7 +727,8 @@ describe("useThemeStore", () => {
         (a, b) => JSON.stringify(b.config).length - JSON.stringify(a.config).length,
       )[0]!;
       store.loadPreset(largest);
-      for (let i = 0; i < CUSTOM_PALETTE_MAX; i++) {
+      const room = CUSTOM_PALETTE_MAX - (largest.config.customPalettes?.length ?? 0);
+      for (let i = 0; i < room; i++) {
         const name = `p${i}`.padEnd(CUSTOM_PALETTE_NAME_MAX_LENGTH, "x");
         expect(store.addCustomPalette(name, "#f5c518").success).toBe(true);
       }
