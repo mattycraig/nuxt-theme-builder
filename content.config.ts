@@ -15,6 +15,8 @@ export default defineContentConfig({
         ]),
         format: z.enum(["guide", "reference", "tip"]).default("guide"),
         date: z.string(),
+        /** Last substantive edit (YYYY-MM-DD). Feeds dateModified and the sitemap lastmod. */
+        updated: z.string().optional(),
         tags: z.array(z.string()).optional(),
         description: z.string(),
         image: z.string().optional(),

@@ -28,6 +28,15 @@ useSchemaOrg([
     name: "Nuxt UI Theme Builder — Visual Design-Token Editor",
     description: PAGE_DESCRIPTIONS["/"],
   }),
+  defineSoftwareApp({
+    name: "Nuxt UI Theme Builder",
+    description: PAGE_DESCRIPTIONS["/"],
+    applicationCategory: "DesignApplication",
+    operatingSystem: "Any",
+    url: SITE_URL,
+    image: OG_IMAGE_URL,
+    offers: { price: 0, priceCurrency: "USD" },
+  }),
 ]);
 </script>
 

@@ -61,6 +61,13 @@ useSchemaOrg([
           </p>
         </div>
       </section>
+      <LearnRelatedGuides
+        :paths="[
+          '/learn/tailwind/tailwind-v4-theming',
+          '/learn/theming/css-variables-reference',
+          '/learn/theming/customize-colors',
+        ]"
+      />
     </div>
   </UContainer>
 </template>

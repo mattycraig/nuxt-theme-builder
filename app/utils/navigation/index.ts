@@ -14,6 +14,7 @@ export { TEMPLATE_CATEGORIES, TEMPLATE_NAV_ITEMS } from "./templates";
 export { LEARN_CATEGORIES, LEARN_NAV_ITEMS } from "./learn";
 export { UTILITY_NAV_ITEMS } from "./utilities";
 export { TOOL_CATEGORIES, TOOL_NAV_ITEMS } from "./tools";
+export { THEME_NAV_ITEMS } from "./themes";
 
 // Main Navigation Items ───────────────────────────────────────────────────
 
@@ -38,6 +39,11 @@ export const NAVIGATION_ITEMS: NavigationMenuItem[][] = [
       label: "Templates",
       icon: "i-lucide-app-window",
       to: "/templates",
+    },
+    {
+      label: "Themes",
+      icon: "i-lucide-swatch-book",
+      to: "/themes",
     },
     {
       label: "Learn",

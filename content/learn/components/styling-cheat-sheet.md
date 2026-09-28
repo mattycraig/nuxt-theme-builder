@@ -163,6 +163,8 @@ Destructive action → color="error"     variant="solid"
 
 The [Nuxt UI Theme Builder](/) renders every component variant with your active theme. Change a color, see it update across all buttons, alerts, badges, and inputs instantly.
 
+Jump straight to a component to see these props in action: [Button](/components/button), [Badge](/components/badge), [Alert](/components/alert), [Input](/components/input), or [Card](/components/card). The full list lives on the [Components](/components) page.
+
 ## Next Steps
 
 - [How to Customize Nuxt UI Theme Colors](/learn/theming/customize-colors) - define your color palette

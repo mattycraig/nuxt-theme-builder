@@ -16,7 +16,7 @@ Here's the workflow:
 The sidebar organizes every design decision into collapsible sections — expand only what you need:
 
 - **My Themes** — Load, rename, duplicate, export, or delete your saved theme configurations.
-- **Presets** — Start fast with a built-in preset like Ocean, Forest, or Sunset, then customize from there.
+- **Presets** — Start fast with a built-in preset like Coastal, Forest, or Sunset, then customize from there.
 - **Color Mode** — Switch between light and dark mode to preview your theme in each context.
 - **Layout** — Set the global border radius (in rem) and choose a font family.
 - **Custom Palettes** — Generate a full 50–950 palette from one brand color, then use it like any Tailwind palette. See [Custom Palettes](#custom-palettes).
@@ -137,7 +137,7 @@ Right-click (or use the context menu) on any saved theme to:
 
 ## Built-in Presets
 
-Don't want to start from a blank canvas? The **Presets** dropdown in the sidebar offers curated configurations like Ocean, Forest, Sunset, and more. Select one to load a complete theme instantly.
+Don't want to start from a blank canvas? The **Presets** dropdown in the sidebar offers curated configurations like Coastal, Forest, Sunset, and more. Select one to load a complete theme instantly. To compare them side by side, or copy a theme's code without loading it, browse the [theme gallery](/themes).
 
 Presets are a starting point, not a ceiling. Once loaded, change any token you like — your edits diverge from the preset. Save the result as a new named theme to keep your version.
 
@@ -222,7 +222,7 @@ The [Tools](/tools) section includes standalone utilities for color work:
 
 ### Where is my theme stored?
 
-In your browser's localStorage under the `theme` key. It persists across page reloads and browser restarts — but it's local to your device and browser. Export your theme regularly to back it up or move it to another machine.
+In your browser. The theme you're editing lives in a `theme` cookie, and your saved themes live in localStorage under `theme-presets`. Both persist across page reloads and browser restarts, but they're local to your device and browser. Export your theme regularly to back it up or move it to another machine.
 
 ### Does this work with Nuxt UI v3?
 
@@ -234,7 +234,7 @@ Yes. If you run Nuxt UI in a plain Vue app (without the Nuxt framework), the CSS
 
 ### How do I reset everything?
 
-Click **Reset to defaults** in the sidebar toolbar to revert all tokens to their initial values. For a complete clean slate, clear the `theme` key from localStorage via DevTools → Application → Local Storage.
+Click **Reset to defaults** in the sidebar toolbar to revert all tokens to their initial values. For a complete clean slate, delete the `theme` cookie and the `theme-presets` localStorage entry in DevTools → Application.
 
 ### Can I share a theme with a link?
 
