@@ -1,3 +1,8 @@
+/**
+ * Resolve a ThemeConfig into concrete CSS colors for one color mode, for
+ * places that draw a theme other than the live one (homepage hero swatches,
+ * the /themes gallery, generated share images) and so can't use `--ui-*`.
+ */
 import type { ThemeConfig } from "~/types/theme";
 import { SEMANTIC_COLOR_KEYS } from "~/types/theme";
 import { NEUTRAL_HEX_MAP } from "~/utils/colorPalettes";
@@ -69,4 +74,63 @@ export function getModeSurface(config: ThemeConfig, mode: SwatchMode): string {
     NEUTRAL_HEX_MAP[neutral]?.[shade] ??
     (mode === "dark" ? "#18181b" : "#ffffff")
   );
+}
+
+export interface SemanticSwatch {
+  key: (typeof SEMANTIC_COLOR_KEYS)[number];
+  palette: string;
+  shade: string;
+  color: string;
+}
+
+/** Everything needed to draw a theme in one mode with literal colors. */
+export interface ModeColors {
+  mode: SwatchMode;
+  semantic: SemanticSwatch[];
+  neutral: string;
+  bg: string;
+  bgElevated: string;
+  border: string;
+  text: string;
+  textHighlighted: string;
+  textMuted: string;
+  /** Label color on solid semantic fills (Nuxt UI's `text-inverted`). */
+  textInverted: string;
+  radius: number;
+  font: string;
+}
+
+/**
+ * Semantic colors, surfaces, text, radius, and font for one mode, following
+ * the same palette + shade picks as the editor.
+ */
+export function resolveModeColors(
+  config: ThemeConfig,
+  mode: SwatchMode,
+): ModeColors {
+  const dark = mode === "dark";
+  const colors = dark ? config.darkColors : config.colors;
+  const shades = dark ? config.darkColorShades : config.colorShades;
+  const neutral = dark ? config.darkNeutral : config.neutral;
+  const tokens = dark ? config.darkOverrides : config.lightOverrides;
+
+  return {
+    mode,
+    semantic: SEMANTIC_COLOR_KEYS.map((key) => ({
+      key,
+      palette: colors[key],
+      shade: shades[key],
+      color: shadeColor(colors[key], shades[key], config),
+    })),
+    neutral,
+    bg: shadeColor(neutral, tokens.bg.default, config),
+    bgElevated: shadeColor(neutral, tokens.bg.elevated, config),
+    border: shadeColor(neutral, tokens.border.default, config),
+    text: shadeColor(neutral, tokens.text.default, config),
+    textHighlighted: shadeColor(neutral, tokens.text.highlighted, config),
+    textMuted: shadeColor(neutral, tokens.text.muted, config),
+    textInverted: shadeColor(neutral, tokens.text.inverted, config),
+    radius: dark ? config.darkRadius : config.radius,
+    font: dark ? config.darkFont : config.font,
+  };
 }

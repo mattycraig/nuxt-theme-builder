@@ -24,7 +24,6 @@
   "ignoreDependencies": [
     "@iconify-json/lucide",
     "@iconify-json/simple-icons",
-    "sharp",
     "vue-tsc",
     "h3",
     "vitest-environment-nuxt"

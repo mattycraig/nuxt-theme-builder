@@ -75,7 +75,7 @@ const {
 const { isFullscreen: isPreviewFullscreen } = usePreviewFullscreen();
 
 // Navigation & search ───────────────────────────────────────────────────
-const { currentPageLabel } = useLayoutNavigation();
+const { currentPageLabel, breadcrumbItems } = useLayoutNavigation();
 const { searchGroups, onSearchSelect } = useCommandPalette();
 
 // SEO ───────────────────────────────────────────────────────────────────
@@ -140,6 +140,22 @@ useSchemaOrg([
     description: seoDescription,
   }),
 ]);
+
+// Home → section → page, for every page below the homepage.
+useSchemaOrg(
+  computed(() =>
+    breadcrumbItems.value.length > 1
+      ? [
+          defineBreadcrumb({
+            itemListElement: breadcrumbItems.value.map((item) => ({
+              name: item.label,
+              item: item.to,
+            })),
+          }),
+        ]
+      : [],
+  ),
+);
 </script>
 
 <template>

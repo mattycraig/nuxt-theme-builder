@@ -61,6 +61,13 @@ useSchemaOrg([
           </p>
         </div>
       </section>
+      <LearnRelatedGuides
+        :paths="[
+          '/learn/theming/customize-colors',
+          '/learn/theming/color-palette-reference',
+          '/learn/best-practices/design-system-guide',
+        ]"
+      />
     </div>
   </UContainer>
 </template>

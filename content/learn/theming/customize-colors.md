@@ -132,6 +132,8 @@ The Theme Builder lets you configure light and dark mode independently - any col
 
 The [Nuxt UI Theme Builder](/) makes this entire process visual. Select palettes from dropdowns, see changes reflected across 125+ components in real time, and export the final configuration as `app.config.ts`, CSS variables, or JSON.
 
+Short on ideas? The [Palette Generator](/tools/palette-generator) suggests random semantic color sets, and the [theme gallery](/themes) has ready-made combinations you can load with one click.
+
 ## Next Steps
 
 - [CSS Variables Reference for Nuxt UI Themes](/learn/theming/css-variables-reference) - full list of available design tokens

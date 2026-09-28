@@ -105,6 +105,10 @@ export default defineAppConfig({
 });
 ```
 
+## Try It in the Theme Builder
+
+Open the [Nuxt UI Theme Builder](/) and use the color mode switch in the sidebar to edit light and dark mode separately. Every semantic color, shade, and token override can differ between the two. Check your dark text and background pairs with the [Contrast Checker](/tools/contrast-checker), or start from a dark-first theme such as [Dark Mono](/themes/dark-mono).
+
 ## Next Steps
 
 - [How to Customize Nuxt UI Theme Colors](/learn/theming/customize-colors) - full color configuration guide

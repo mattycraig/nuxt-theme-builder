@@ -52,6 +52,27 @@ export const LEARN_CATEGORIES: LearnCategory[] = [
           "Export themes as app.config.ts, CSS variables, or JSON and share with your team.",
         to: "/learn/theming/export-and-share",
       },
+      {
+        label: "Use Your Brand Hex Color",
+        icon: "i-lucide-pipette",
+        description:
+          "Turn one brand hex value into a full palette and make it your primary color.",
+        to: "/learn/theming/brand-hex-color",
+      },
+      {
+        label: "Change the Border Radius",
+        icon: "i-lucide-square-dashed",
+        description:
+          "One CSS variable controls the corner rounding of every component.",
+        to: "/learn/theming/global-border-radius",
+      },
+      {
+        label: "Migrate Your Theme to v4",
+        icon: "i-lucide-arrow-right-left",
+        description:
+          "Move a Nuxt UI v2 or v3 theme to v4: colors, tokens, and component overrides.",
+        to: "/learn/theming/migrate-theme-to-v4",
+      },
     ],
   },
   {
@@ -67,6 +88,13 @@ export const LEARN_CATEGORIES: LearnCategory[] = [
         description:
           "Quick reference for customizing Nuxt UI components with variants, colors, and sizes.",
         to: "/learn/components/styling-cheat-sheet",
+      },
+      {
+        label: "Restyle One Component",
+        icon: "i-lucide-pencil-ruler",
+        description:
+          "Change one component everywhere with app.config, or once with the ui prop.",
+        to: "/learn/components/restyle-one-component",
       },
     ],
   },
@@ -106,6 +134,13 @@ export const LEARN_CATEGORIES: LearnCategory[] = [
         description:
           "Ensure your theme colors meet WCAG 2.2 contrast requirements.",
         to: "/learn/best-practices/accessible-color-contrast",
+      },
+      {
+        label: "Nuxt UI vs shadcn-vue Theming",
+        icon: "i-lucide-scale",
+        description:
+          "How colors, dark mode, radius, and overrides compare between the two.",
+        to: "/learn/best-practices/nuxt-ui-vs-shadcn-vue-theming",
       },
     ],
   },

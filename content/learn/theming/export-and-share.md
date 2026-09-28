@@ -153,6 +153,8 @@ The Theme Builder generates output compatible with:
 
 Head to the [Theme Builder](/) to create, preview, and export your theme. The full workflow - from palette selection to production-ready export - takes just a few minutes.
 
+Want a head start? Every theme in the [theme gallery](/themes) shows its export code, ready to copy.
+
 ## Next Steps
 
 - [How to Customize Nuxt UI Theme Colors](/learn/theming/customize-colors) - start with color configuration

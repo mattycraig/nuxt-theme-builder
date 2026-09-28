@@ -94,6 +94,7 @@ test.describe("Smoke - Indexable pages", () => {
       path: "/learn/theming/customize-colors",
       heading: "How to Customize Nuxt UI Theme Colors",
     },
+    { path: "/themes/sunset", heading: "Sunset Theme for Nuxt UI" },
   ]) {
     test(`renders ${path} in the page itself`, async ({ page }) => {
       const documents: string[] = [];
