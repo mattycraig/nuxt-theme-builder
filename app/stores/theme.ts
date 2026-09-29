@@ -477,6 +477,33 @@ export const useThemeStore = defineStore(
       return { isUpdate };
     }
 
+    /**
+     * Add a preset (e.g. a built-in theme) to the saved themes without
+     * changing the current theme. Never overwrites a saved theme of the
+     * same name, since the user may have edited it.
+     */
+    function addToSavedPresets(preset: ThemePreset): {
+      saved: boolean;
+      reason?: "exists" | "invalid";
+    } {
+      if (savedPresets.value.some((p) => p.name === preset.name)) {
+        return { saved: false, reason: "exists" };
+      }
+      const result = ThemeConfigSchema.safeParse(preset.config);
+      if (!result.success) return { saved: false, reason: "invalid" };
+      const now = Date.now();
+      savedPresets.value = [
+        ...savedPresets.value,
+        {
+          name: preset.name,
+          config: cloneTheme(result.data as ThemeConfig),
+          createdAt: now,
+          updatedAt: now,
+        },
+      ];
+      return { saved: true };
+    }
+
     function duplicatePreset(sourceName: string): { newName: string } {
       const source = savedPresets.value.find((p) => p.name === sourceName);
       if (!source) throw new Error(`Preset "${sourceName}" not found`);
@@ -597,6 +624,7 @@ export const useThemeStore = defineStore(
 
       // Preset CRUD
       savePreset,
+      addToSavedPresets,
       duplicatePreset,
       deletePreset,
       renamePreset,

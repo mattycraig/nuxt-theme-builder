@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { THEME_CATEGORIES } from "~/utils/navigation";
 import { BUILT_IN_PRESETS, presetSlug } from "~/utils/presets";
-import { resolveModeColors } from "~/utils/themeSwatches";
 import { PAGE_DESCRIPTIONS } from "~/utils/seoDescriptions";
 
 useSchemaOrg([
@@ -14,17 +13,8 @@ useSchemaOrg([
 
 const categories = THEME_CATEGORIES.filter((cat) => cat.items.length > 0);
 
-const themeByPath = new Map(
-  BUILT_IN_PRESETS.map((p) => [
-    `/themes/${presetSlug(p.name)}`,
-    {
-      name: p.name,
-      modes: [
-        resolveModeColors(p.config, "light"),
-        resolveModeColors(p.config, "dark"),
-      ],
-    },
-  ]),
+const presetByPath = new Map(
+  BUILT_IN_PRESETS.map((p) => [`/themes/${presetSlug(p.name)}`, p]),
 );
 </script>
 
@@ -43,35 +33,16 @@ const themeByPath = new Map(
 
     <template #grid="{ category }">
       <ul class="grid gap-4 sm:grid-cols-2 xl:grid-cols-3" role="list">
-        <li v-for="item in category.items" :key="String(item.to)">
-          <NuxtLink
+        <li
+          v-for="item in category.items"
+          :key="String(item.to)"
+          class="flex"
+        >
+          <ThemesGalleryCard
+            v-if="presetByPath.get(String(item.to))"
+            :preset="presetByPath.get(String(item.to))!"
             :to="String(item.to)"
-            class="group flex h-full flex-col overflow-hidden rounded-xl border border-(--ui-border) transition-shadow hover:ring-2 hover:ring-(--ui-primary)/40 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--ui-primary)"
-          >
-            <span class="grid grid-cols-2" aria-hidden="true">
-              <span
-                v-for="mode in themeByPath.get(String(item.to))?.modes"
-                :key="mode.mode"
-                class="flex h-20 items-end gap-1.5 p-3"
-                :style="{ backgroundColor: mode.bg }"
-              >
-                <span
-                  v-for="s in mode.semantic"
-                  :key="s.key"
-                  class="size-5 rounded-full"
-                  :style="{ backgroundColor: s.color }"
-                />
-              </span>
-            </span>
-            <span class="flex flex-1 flex-col gap-1 p-4">
-              <span class="font-medium text-(--ui-text-highlighted)">
-                {{ themeByPath.get(String(item.to))?.name ?? item.label }}
-              </span>
-              <span class="text-sm text-(--ui-text-muted)">
-                {{ item.description }}
-              </span>
-            </span>
-          </NuxtLink>
+          />
         </li>
       </ul>
     </template>
