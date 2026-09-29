@@ -82,19 +82,7 @@ const related = BUILT_IN_PRESETS.filter(
   swatches: resolveModeColors(p.config, "light").semantic,
 }));
 
-const store = useThemeStore();
-const toast = useToast();
-
-async function openInBuilder() {
-  store.loadPreset(preset!);
-  toast.add({
-    title: `${preset!.name} theme applied`,
-    description: "Undo from the sidebar if you want your previous theme back.",
-    icon: "i-lucide-check",
-    color: "success",
-  });
-  await navigateTo("/templates/landing");
-}
+const { previewPreset } = usePresetActions();
 </script>
 
 <template>
@@ -117,10 +105,10 @@ async function openInBuilder() {
 
       <div class="flex flex-wrap gap-3">
         <UButton
-          label="Preview in the builder"
-          icon="i-lucide-wand-sparkles"
+          label="Preview theme"
+          icon="i-lucide-eye"
           size="lg"
-          @click="openInBuilder"
+          @click="previewPreset(preset!)"
         />
         <UButton
           label="Copy the code"

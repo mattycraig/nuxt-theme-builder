@@ -9,9 +9,15 @@ import {
   LEARN_NAV_ITEMS,
   TOOL_NAV_ITEMS,
   UTILITY_NAV_ITEMS,
+  THEME_NAV_ITEMS,
+  THEME_CATEGORIES,
+  COMPONENT_CATEGORIES,
+  LEARN_CATEGORIES,
+  TOOL_CATEGORIES,
   flattenNavigationItems,
   flattenCategories,
 } from "~/utils/navigation";
+import lucide from "@iconify-json/lucide/icons.json";
 
 describe("NAVIGATION_ITEMS", () => {
   it("is a non-empty nested array", () => {
@@ -282,7 +288,7 @@ describe("cross-cutting navigation integrity", () => {
     }
   });
 
-  it("all icons follow i-lucide-* pattern", () => {
+  it("all icons are existing i-lucide-* icons", () => {
     const allItems = [
       ...COMPONENT_NAV_ITEMS,
       ...BLOCK_NAV_ITEMS,
@@ -290,13 +296,31 @@ describe("cross-cutting navigation integrity", () => {
       ...LEARN_NAV_ITEMS,
       ...TOOL_NAV_ITEMS,
       ...UTILITY_NAV_ITEMS,
+      ...THEME_NAV_ITEMS,
       ...NAVIGATION_ITEMS.flat(),
+      ...[
+        ...COMPONENT_CATEGORIES,
+        ...BLOCK_CATEGORIES,
+        ...TEMPLATE_CATEGORIES,
+        ...LEARN_CATEGORIES,
+        ...TOOL_CATEGORIES,
+        ...THEME_CATEGORIES,
+      ].map((cat) => ({ label: cat.label, icon: cat.icon })),
     ];
+    const lucideNames = new Set([
+      ...Object.keys(lucide.icons),
+      ...Object.keys(lucide.aliases ?? {}),
+    ]);
     for (const item of allItems) {
       if (item.icon) {
-        expect(String(item.icon), `${item.label} icon: ${item.icon}`).toMatch(
-          /^i-lucide-/,
+        const icon = String(item.icon);
+        expect(icon, `${item.label} icon: ${icon}`).toMatch(
+          /^i-lucide-[a-z0-9-]+$/,
         );
+        expect(
+          lucideNames.has(icon.slice("i-lucide-".length)),
+          `${item.label} icon "${icon}" is not in the Lucide set`,
+        ).toBe(true);
       }
     }
   });

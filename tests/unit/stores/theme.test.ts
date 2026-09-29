@@ -227,6 +227,55 @@ describe("useThemeStore", () => {
     });
   });
 
+  describe("addToSavedPresets", () => {
+    it("saves a preset without changing the current theme", () => {
+      const custom = cloneTheme(DEFAULT_THEME);
+      custom.colors.primary = "pink";
+      const before = store.config.colors.primary;
+      const activeBefore = store.activePresetName;
+      const canUndoBefore = store.canUndo;
+
+      const result = store.addToSavedPresets({ name: "Pink", config: custom });
+
+      expect(result).toEqual({ saved: true });
+      expect(store.savedPresets).toHaveLength(1);
+      expect(store.savedPresets[0]!.name).toBe("Pink");
+      expect(store.savedPresets[0]!.config.colors.primary).toBe("pink");
+      expect(store.config.colors.primary).toBe(before);
+      expect(store.activePresetName).toBe(activeBefore);
+      expect(store.canUndo).toBe(canUndoBefore);
+    });
+
+    it("stores a deep copy of the preset config", () => {
+      const custom = cloneTheme(DEFAULT_THEME);
+      store.addToSavedPresets({ name: "Copy", config: custom });
+      custom.colors.primary = "teal";
+      expect(store.savedPresets[0]!.config.colors.primary).not.toBe("teal");
+    });
+
+    it("never overwrites a saved theme with the same name", () => {
+      store.setSemanticColorForMode("light", "primary", "amber");
+      store.savePreset("Cherry");
+      const custom = cloneTheme(DEFAULT_THEME);
+      custom.colors.primary = "red";
+
+      const result = store.addToSavedPresets({ name: "Cherry", config: custom });
+
+      expect(result).toEqual({ saved: false, reason: "exists" });
+      expect(store.savedPresets).toHaveLength(1);
+      expect(store.savedPresets[0]!.config.colors.primary).toBe("amber");
+    });
+
+    it("rejects an invalid config", () => {
+      const result = store.addToSavedPresets({
+        name: "Broken",
+        config: { colors: {} } as unknown as ThemeConfig,
+      });
+      expect(result).toEqual({ saved: false, reason: "invalid" });
+      expect(store.savedPresets).toHaveLength(0);
+    });
+  });
+
   describe("duplicatePreset", () => {
     it("duplicates an existing preset with 'Copy of' prefix", () => {
       store.savePreset("Original");
