@@ -1,19 +1,16 @@
 import type { ThemePreset } from "~/types/theme";
 import { useThemeStore } from "~/stores/theme";
 
-/** Page a previewed theme opens on: a full template shows it off best. */
-const PREVIEW_ROUTE = "/templates/landing";
-
 /**
  * Actions for a built-in theme shown outside the editor (theme gallery and
- * theme detail pages): preview it in the builder, or add it to My Themes.
+ * theme detail pages): preview it, or add it to My Themes.
  */
 export function usePresetActions() {
   const store = useThemeStore();
   const toast = useToast();
 
-  /** Apply the preset (undoable) and open a template to preview it. */
-  async function previewPreset(preset: ThemePreset) {
+  /** Apply the preset (undoable) in place, without leaving the page. */
+  function previewPreset(preset: ThemePreset) {
     store.loadPreset(preset);
     toast.add({
       title: `${preset.name} theme applied`,
@@ -21,7 +18,6 @@ export function usePresetActions() {
       icon: "i-lucide-check",
       color: "success",
     });
-    await navigateTo(PREVIEW_ROUTE);
   }
 
   /** Whether a saved theme with this preset's name is already in My Themes. */

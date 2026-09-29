@@ -24,12 +24,12 @@ describe("usePresetActions", () => {
     store.savedPresets.splice(0);
   });
 
-  it("previewPreset applies the theme and opens a template", async () => {
+  it("previewPreset applies the theme without leaving the page", () => {
     const { previewPreset } = usePresetActions();
-    await previewPreset(cherry);
+    previewPreset(cherry);
     expect(store.activePresetName).toBe("Cherry");
     expect(store.config.colors.primary).toBe(cherry.config.colors.primary);
-    expect(navigateToMock).toHaveBeenCalledWith("/templates/landing");
+    expect(navigateToMock).not.toHaveBeenCalled();
   });
 
   it("savePreset adds the theme to My Themes without applying it", () => {

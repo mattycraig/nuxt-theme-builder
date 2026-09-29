@@ -83,6 +83,11 @@ const related = BUILT_IN_PRESETS.filter(
 }));
 
 const { previewPreset } = usePresetActions();
+
+async function openInBuilder() {
+  previewPreset(preset!);
+  await navigateTo("/templates/landing");
+}
 </script>
 
 <template>
@@ -108,7 +113,7 @@ const { previewPreset } = usePresetActions();
           label="Preview in the builder"
           icon="i-lucide-wand-sparkles"
           size="lg"
-          @click="previewPreset(preset!)"
+          @click="openInBuilder"
         />
         <UButton
           label="Copy the code"
