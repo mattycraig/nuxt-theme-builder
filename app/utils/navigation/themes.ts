@@ -33,7 +33,7 @@ export const THEME_CATEGORIES: ComponentCategory[] = PRESET_CATEGORIES.map(
     items: BUILT_IN_PRESETS.filter((p) => p.category === category).map(
       (p) => ({
         label: `${p.name} Theme`,
-        icon: "i-lucide-swatch-book.",
+        icon: "i-lucide-swatch-book",
         description: p.description ?? "",
         to: `/themes/${presetSlug(p.name)}`,
       }),
