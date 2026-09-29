@@ -83,11 +83,6 @@ const related = BUILT_IN_PRESETS.filter(
 }));
 
 const { previewPreset } = usePresetActions();
-
-async function openInBuilder() {
-  previewPreset(preset!);
-  await navigateTo("/templates/landing");
-}
 </script>
 
 <template>
@@ -110,10 +105,10 @@ async function openInBuilder() {
 
       <div class="flex flex-wrap gap-3">
         <UButton
-          label="Preview in the builder"
-          icon="i-lucide-wand-sparkles"
+          label="Preview theme"
+          icon="i-lucide-eye"
           size="lg"
-          @click="openInBuilder"
+          @click="previewPreset(preset!)"
         />
         <UButton
           label="Copy the code"
