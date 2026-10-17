@@ -65,10 +65,7 @@
             <UUser
               :name="state === 'expanded' ? 'Ava Martinez' : undefined"
               :description="state === 'expanded' ? 'ava@acme.dev' : undefined"
-              :avatar="{
-                src: 'https://i.pravatar.cc/64?u=ava',
-                alt: 'Ava Martinez',
-              }"
+              :avatar="footerAvatar"
               size="sm"
             />
           </template>
@@ -137,6 +134,10 @@ import type { NavigationMenuItem, SidebarProps } from "@nuxt/ui";
 
 const collapsibleOptions = ["icon", "offcanvas"] as const;
 const variantOptions = ["sidebar", "floating", "inset"] as const;
+
+// vue-tsc 3.3.12+ drops v-for/slot scope from template expressions that contain "//",
+// so avatar URLs used inside a scope are built here.
+const footerAvatar = { src: "https://i.pravatar.cc/64?u=ava", alt: "Ava Martinez" };
 
 const open = ref(true);
 const collapsible = ref<NonNullable<SidebarProps["collapsible"]>>("icon");

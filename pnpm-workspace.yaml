@@ -1,3 +1,9 @@
 onlyBuiltDependencies:
   - better-sqlite3
   - sharp
+
+overrides:
+  # remark-mdc 3.11.1 wraps the strong/emphasis handlers without the
+  # `attention` hook that mdast-util-to-markdown 2.1.3+ relies on, so serializing
+  # bold text recurses until the stack overflows (breaks /llms-full.txt).
+  mdast-util-to-markdown: 2.1.2
