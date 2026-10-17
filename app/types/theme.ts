@@ -22,7 +22,7 @@ import {
   CUSTOM_PALETTE_NAME_PATTERN,
   RESERVED_PALETTE_NAMES,
 } from "~~/shared/constants/theme";
-import type { FontCategory, FontEntry } from "~~/shared/constants/theme";
+import type { FontCategory } from "~~/shared/constants/theme";
 
 // Re-export shared constants so existing app/ imports continue to work
 export {
@@ -34,14 +34,12 @@ export {
   FONT_OPTIONS,
   SEMANTIC_COLOR_KEYS,
   DEFAULT_COLOR_SHADES,
-  RADIUS_MIN,
-  RADIUS_MAX,
   CUSTOM_PALETTE_MAX,
   CUSTOM_PALETTE_NAME_MAX_LENGTH,
   CUSTOM_PALETTE_NAME_PATTERN,
   RESERVED_PALETTE_NAMES,
 };
-export type { FontCategory, FontEntry };
+export type { FontCategory };
 
 // Color Palette Constants ─────────────────────────────────────────────────
 // Tailwind CSS color palette names available for semantic color assignment.
@@ -208,7 +206,7 @@ export const PRESET_CATEGORIES = [
   "Brands",
 ] as const;
 
-export type PresetCategory = (typeof PRESET_CATEGORIES)[number];
+type PresetCategory = (typeof PRESET_CATEGORIES)[number];
 
 export interface ThemePreset {
   name: string;
@@ -222,7 +220,7 @@ export interface ThemePreset {
 
 // Font Options ────────────────────────────────────────────────────────────
 // Must match fonts registered in nuxt.config.ts `fonts.families`.
-// Constants (FONT_ENTRIES, FONT_OPTIONS) and types (FontCategory, FontEntry)
+// Constants (FONT_ENTRIES, FONT_OPTIONS) and the FontCategory type
 // are re-exported from shared/ above.
 
 const FONT_CATEGORY_MAP = new Map<string, FontCategory>(

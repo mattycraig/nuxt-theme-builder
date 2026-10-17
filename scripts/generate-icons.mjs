@@ -1,6 +1,6 @@
 /**
  * Generate PNG icons from SVG sources.
- * Run: node scripts/generate-icons.mjs
+ * Run: pnpm icons:generate
  */
 import sharp from "sharp";
 import { readFileSync } from "node:fs";

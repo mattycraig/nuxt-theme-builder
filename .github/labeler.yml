@@ -72,7 +72,6 @@ config:
           - "tsconfig.json"
           - "eslint.config.mjs"
           - "content.config.ts"
-          - "knip.json"
 
 server:
   - changed-files:

@@ -136,7 +136,7 @@ jobs:
         run: pnpm check:fonts
 
       - name: Run E2E tests
-        run: pnpm test:e2e:ci
+        run: pnpm test:e2e:smoke
 
       - name: Upload Playwright report
         if: always()

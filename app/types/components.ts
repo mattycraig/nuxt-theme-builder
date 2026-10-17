@@ -3,7 +3,7 @@ import type { Component } from "vue";
 
 export type NavigationBadge = "new" | "updated";
 
-export interface NavigationItemWithBadge extends NavigationMenuItem {
+interface NavigationItemWithBadge extends NavigationMenuItem {
   badge?: NavigationBadge;
 }
 

@@ -7,6 +7,7 @@
     "build": "nuxt build",
     "check:fonts": "node scripts/check-font-assets.mjs",
     "og:generate": "node scripts/generate-og-images.mjs",
+    "icons:generate": "node scripts/generate-icons.mjs",
     "dev": "nuxt dev",
     "generate": "nuxt generate",
     "preview": "nuxt preview",
@@ -25,7 +26,6 @@
     "test:e2e": "playwright test",
     "test:e2e:full": "playwright test --update-snapshots=missing",
     "test:e2e:smoke": "playwright test tests/e2e/smoke",
-    "test:e2e:ci": "playwright test tests/e2e/smoke",
     "test:e2e:headed": "playwright test --headed",
     "test:e2e:ui": "playwright test --ui",
     "workflow:quick": "pnpm lint:fix && pnpm format && pnpm typecheck",
@@ -43,6 +43,7 @@
     "@pinia/nuxt": "^0.11.3",
     "@tiptap/extension-emoji": "^3.31.3",
     "@vercel/analytics": "^2.0.1",
+    "@vercel/speed-insights": "^2.0.0",
     "@vueuse/nuxt": "^15.0.0",
     "ai": "^7.0.113",
     "better-sqlite3": "^13.0.3",
@@ -64,7 +65,6 @@
     "@nuxt/eslint": "^1.17.0",
     "@nuxt/test-utils": "^4.3.2",
     "@playwright/test": "^1.63.0",
-    "@vercel/speed-insights": "^2.0.0",
     "@vitest/coverage-v8": "^5.0.1",
     "@vue/test-utils": "^2.5.1",
     "dotenv": "^18.0.3",
@@ -80,5 +80,107 @@
     "typescript-eslint": "^8.70.1",
     "vitest": "^5.0.1",
     "vue-tsc": "^3.3.11"
+  },
+  "commitlint": {
+    "extends": [
+      "@commitlint/config-conventional"
+    ],
+    "rules": {
+      "type-enum": [
+        2,
+        "always",
+        [
+          "feat",
+          "fix",
+          "docs",
+          "style",
+          "refactor",
+          "perf",
+          "test",
+          "build",
+          "ci",
+          "chore",
+          "revert"
+        ]
+      ],
+      "subject-case": [
+        2,
+        "never",
+        [
+          "start-case",
+          "pascal-case",
+          "upper-case"
+        ]
+      ],
+      "header-max-length": [
+        2,
+        "always",
+        100
+      ],
+      "body-max-line-length": [
+        0
+      ]
+    }
+  },
+  "knip": {
+    "entry": [
+      "app/pages/**/*.vue",
+      "app/layouts/**/*.vue",
+      "app/middleware/**/*.ts",
+      "app/components/**/*.vue",
+      "app/composables/**/*.ts",
+      "app/stores/**/*.ts",
+      "app/utils/**/*.ts",
+      "app/types/**/*.ts",
+      "app/data/**/*.ts",
+      "server/**/*.ts",
+      "modules/**/*.ts",
+      "shared/**/*.ts",
+      "content.config.ts"
+    ],
+    "project": [
+      "app/**/*.{ts,vue}",
+      "server/**/*.ts",
+      "modules/**/*.ts",
+      "shared/**/*.ts"
+    ],
+    "ignoreDependencies": [
+      "@iconify-json/simple-icons",
+      "vue-tsc",
+      "h3",
+      "vitest-environment-nuxt"
+    ],
+    "paths": {
+      "#source-code-map": [
+        "server/types/source-code-map.d.ts"
+      ]
+    },
+    "vitest": {
+      "entry": [
+        "tests/unit/**/*.test.ts"
+      ]
+    },
+    "playwright": {
+      "entry": [
+        "tests/e2e/**/*.spec.ts"
+      ]
+    }
+  },
+  "lint-staged": {
+    "*.{ts,vue,mjs}": [
+      "eslint --fix"
+    ],
+    "*.{json,md,yaml,yml,css}": [
+      "prettier --write"
+    ]
+  },
+  "prettier": {
+    "singleQuote": false,
+    "semi": true,
+    "trailingComma": "all",
+    "tabWidth": 2,
+    "useTabs": false,
+    "printWidth": 80,
+    "endOfLine": "lf"
   }
 }

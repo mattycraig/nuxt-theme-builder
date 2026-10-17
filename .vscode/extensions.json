@@ -1,9 +1,0 @@
-{
-  "recommendations": [
-    "anthropic.claude-code",
-    "vue.volar",
-    "dbaeumer.vscode-eslint",
-    "esbenp.prettier-vscode",
-    "bradlc.vscode-tailwindcss"
-  ]
-}
