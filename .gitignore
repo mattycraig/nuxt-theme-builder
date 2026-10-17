@@ -48,7 +48,3 @@ blob-report/
 
 # Accidental CLI artifacts
 --port/
-
-
-# squirrelscan (audit-website skill) output
-audit-report.txt
