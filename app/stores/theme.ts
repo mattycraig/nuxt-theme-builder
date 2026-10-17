@@ -9,6 +9,7 @@ import type {
   ChromaticPalette,
   NeutralPalette,
   NeutralShade,
+  NumericShade,
   TextTokenKey,
   BgTokenKey,
   BorderTokenKey,
@@ -363,6 +364,63 @@ export const useThemeStore = defineStore(
       _pushHistory();
     }
 
+    /**
+     * Apply colors picked from a logo in one history entry: primary (and
+     * secondary, if given) in both modes, plus the neutral palette. With
+     * `exact`, each color becomes a `logo-<role>` custom palette holding the
+     * exact hex; otherwise (or when the custom palette limit is reached) the
+     * closest built-in palette is used at the shade nearest in lightness.
+     */
+    function applyLogoColors(
+      colors: { primary: string; secondary?: string; neutral: NeutralPalette },
+      options: { exact: boolean },
+    ): ActionResult & { usedBuiltIn?: boolean } {
+      const roles = [
+        ["primary", colors.primary],
+        ["secondary", colors.secondary],
+      ] as const;
+      const palettes = _customPalettes().map((p) => ({ ...p }));
+      let usedBuiltIn = false;
+      const picks: [SemanticColorKey, PaletteName, NumericShade][] = [];
+
+      for (const [role, color] of roles) {
+        if (!color) continue;
+        const hex = normalizeHexColor(color);
+        const generated = hex && generatePalette(hex);
+        if (!hex || !generated) {
+          return { success: false, error: "Enter a hex color like #f5c518" };
+        }
+        let palette: PaletteName = generated.reference;
+        if (options.exact) {
+          const name = `logo-${role}`;
+          const existing = palettes.find((p) => p.name === name);
+          if (existing) {
+            existing.color = hex;
+            palette = name;
+          } else if (palettes.length < CUSTOM_PALETTE_MAX) {
+            palettes.push({ name, color: hex });
+            palette = name;
+          } else {
+            usedBuiltIn = true;
+          }
+        }
+        picks.push([role, palette, generated.anchor]);
+      }
+
+      _setCustomPalettes(palettes);
+      for (const [role, palette, shade] of picks) {
+        config.value.colors[role] = palette;
+        config.value.darkColors[role] = palette;
+        config.value.colorShades[role] = shade;
+        config.value.darkColorShades[role] = shade;
+      }
+      config.value.neutral = colors.neutral;
+      config.value.darkNeutral = colors.neutral;
+      activePresetName.value = "";
+      _pushHistory();
+      return { success: true, usedBuiltIn };
+    }
+
     // Config Management ──────────────────────────────────────────────
 
     function resetToDefaults() {
@@ -614,6 +672,7 @@ export const useThemeStore = defineStore(
       setCustomPaletteColorVisual,
       renameCustomPalette,
       removeCustomPalette,
+      applyLogoColors,
 
       // Config management
       resetToDefaults,
