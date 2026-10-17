@@ -1,5 +1,9 @@
 <script setup lang="ts">
 const sizes = ["xs", "sm", "md", "lg", "xl"] as const;
+
+// vue-tsc 3.3.12+ drops v-for/slot scope from template expressions that contain "//",
+// so avatar URLs used inside a scope are built here.
+const sizesAvatar = { src: "https://i.pravatar.cc/128?u=user-sizes" };
 </script>
 
 <template>
@@ -27,7 +31,7 @@ const sizes = ["xs", "sm", "md", "lg", "xl"] as const;
           :size="size"
           name="Jane Cooper"
           :description="size"
-          :avatar="{ src: 'https://i.pravatar.cc/128?u=user-sizes' }"
+          :avatar="sizesAvatar"
         />
       </div>
     </ShowcaseSpecimen>

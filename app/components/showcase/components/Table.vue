@@ -1,4 +1,8 @@
 <script setup lang="ts">
+// vue-tsc 3.3.12+ drops v-for/slot scope from template expressions that contain "//",
+// so avatar URLs used inside a scope are built here.
+const avatarUrl = (seed: string) => `https://i.pravatar.cc/128?u=${seed}`;
+
 const columns = [
   { accessorKey: "name", header: "Name" },
   { accessorKey: "email", header: "Email" },
@@ -106,7 +110,7 @@ function statusColor(status: string) {
         <template #name-cell="{ row }">
           <div class="flex items-center gap-2">
             <UAvatar
-              :src="`https://i.pravatar.cc/128?u=${row.original.name}`"
+              :src="avatarUrl(row.original.name)"
               :alt="row.original.name"
               size="xs"
             />
