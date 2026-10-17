@@ -24,6 +24,7 @@ const exportTabs: TabsItem[] = [
 ];
 
 const { appConfigExport, cssExport, jsonExport, importJSON } = useThemeExport();
+const { copyShareLink } = useThemeShare();
 const toast = useToast();
 
 const TAB_META: Record<
@@ -110,6 +111,33 @@ function handleFileUpload(event: Event) {
 
 <template>
   <div class="flex flex-col gap-4">
+    <!-- Share link section -->
+    <section aria-labelledby="share-heading">
+      <div class="flex items-center gap-2 mb-2">
+        <UIcon name="i-lucide-link" class="size-4 text-(--ui-text-muted)" />
+        <h3
+          id="share-heading"
+          class="text-sm font-semibold text-(--ui-text-highlighted)"
+        >
+          Share Link
+        </h3>
+      </div>
+      <p class="text-xs text-(--ui-text-muted) mb-3">
+        Copy a link that opens this page with your theme loaded. The whole
+        theme lives in the link, so nothing is uploaded.
+      </p>
+      <UButton
+        label="Copy share link"
+        icon="i-lucide-copy"
+        color="primary"
+        variant="soft"
+        size="xs"
+        @click="copyShareLink()"
+      />
+    </section>
+
+    <USeparator />
+
     <!-- Export section -->
     <section aria-labelledby="export-heading">
       <div class="flex items-center gap-2 mb-3">

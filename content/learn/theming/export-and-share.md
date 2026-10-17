@@ -116,6 +116,12 @@ You can import a previously exported JSON theme:
 
 ## Sharing Themes
 
+### Share a Link
+
+The fastest way to show someone a theme is a share link. Click the link icon in the sidebar toolbar (or **Copy share link** in the Export / Import panel) and send the URL. It opens the same page with your theme loaded, ready to tweak or export.
+
+The theme is compressed into the link's `?theme=` parameter, so nothing is uploaded or stored on a server.
+
 ### Share with Your Team
 
 1. Export as JSON
@@ -127,6 +133,7 @@ You can import a previously exported JSON theme:
 
 Consider sharing your themes:
 
+- Post a share link so others can open the theme in one click
 - Export as JSON and include in a GitHub Gist
 - Share the app.config values in community forums
 - Include a screenshot from the Theme Builder showing the result

@@ -91,6 +91,12 @@ Exports the full `ThemeConfig` object — every color, shade override, radius, a
 
 ---
 
+## Sharing a Theme by Link
+
+Click the **link** icon in the sidebar toolbar, choose **Copy Share Link** in the command palette, or use **Copy share link** at the top of the Export / Import panel. The link opens the page you're on with your theme loaded, so you can share a theme on a specific template or component.
+
+The theme is compressed into the link's `?theme=` parameter, and nothing is uploaded. Opening a link replaces the current theme, and **Undo** brings the previous one back.
+
 ## Importing Themes
 
 The Import section lives inside the same Export / Import panel. Expand **Import Theme** to see two options:
@@ -238,4 +244,4 @@ Click **Reset to defaults** in the sidebar toolbar to revert all tokens to their
 
 ### Can I share a theme with a link?
 
-Not via URL at this time. Export your theme as JSON, share the file, and the recipient can import it through the Import panel.
+Yes. Click the **link** icon in the sidebar toolbar, or **Copy share link** in the Export / Import panel, and send the link. Whoever opens it lands on the same page with your theme loaded. The whole theme is packed into the link itself, so nothing is uploaded or stored on a server.

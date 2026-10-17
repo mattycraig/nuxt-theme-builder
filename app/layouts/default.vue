@@ -19,6 +19,10 @@ useKeyboardShortcuts();
 
 const route = useRoute();
 
+// Share links (`?theme=`) load after hydration, so SSR output is unaffected.
+const { loadSharedTheme } = useThemeShare();
+onMounted(loadSharedTheme);
+
 // Source code viewer (singleton — shared with PreviewFullscreenOverlay)
 const {
   viewMode,
