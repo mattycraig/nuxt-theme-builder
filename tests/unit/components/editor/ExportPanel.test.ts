@@ -37,6 +37,8 @@ describe("EditorExportPanel", () => {
     expect(html).toContain("app.config.ts");
     expect(html).toContain("CSS");
     expect(html).toContain("JSON");
+    expect(html).toContain("Tokens");
+    expect(html).toContain("Tailwind");
   });
 
   it("renders import textarea", async () => {

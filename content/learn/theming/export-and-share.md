@@ -1,6 +1,6 @@
 ---
 title: How to Export and Share Nuxt UI Themes
-description: Export your Nuxt UI v4 themes as app.config.ts, CSS variables, or JSON - and share them with your team or the community.
+description: Export your Nuxt UI v4 themes as app.config.ts, CSS variables, JSON, design tokens, or a standalone Tailwind theme - and share them with your team or the community.
 category: theming
 format: guide
 date: "2026-02-14"
@@ -9,7 +9,7 @@ order: 10
 featured: false
 ---
 
-Once you've created a theme in the Nuxt UI Theme Builder, you need to get it into your project. The builder supports three export formats, each suited to different workflows.
+Once you've created a theme in the Nuxt UI Theme Builder, you need to get it into your project. The builder supports five export formats, each suited to different workflows.
 
 ## Export Formats
 
@@ -91,6 +91,50 @@ Machine-readable format for programmatic consumption:
 
 **Best for**: Storing theme data, building theme APIs, sharing between tools, or version-controlling theme decisions.
 
+### 4. Design Tokens
+
+A `tokens.json` file in the W3C Design Tokens format (`$type` / `$value`), with a `light` and a `dark` group. Each holds the full 50–950 scale for every semantic color as Nuxt UI renders it, the neutral scale, the text, background, and border tokens, the radius scale, and the font stack:
+
+```json
+{
+  "light": {
+    "color": {
+      "primary": {
+        "DEFAULT": { "$type": "color", "$value": "#4f39f6" },
+        "500": { "$type": "color", "$value": "#4f39f6" }
+      }
+    },
+    "text": { "muted": { "$type": "color", "$value": "#71717b" } },
+    "radius": { "md": { "$type": "dimension", "$value": "0.5625rem" } }
+  }
+}
+```
+
+**Best for**: Keeping Figma in sync through Tokens Studio (each mode imports as a token set), or generating platform files with Style Dictionary.
+
+### 5. Standalone Tailwind Theme
+
+A `tailwind.css` file for Tailwind CSS v4 projects that don't use Nuxt UI. It defines the same utilities Nuxt UI provides (`bg-primary`, `text-muted`, `bg-elevated`, `border-accented`, `rounded-md`) with literal colors, plus a `.dark` block for dark mode:
+
+```css
+@import "tailwindcss";
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+@theme {
+  --color-primary: #4f39f6;
+  --text-color-muted: #71717b;
+  --background-color-elevated: #f4f4f5;
+  --radius-md: 0.5625rem;
+}
+
+.dark {
+  --color-primary: #7c86ff;
+}
+```
+
+**Best for**: Sharing one brand theme between a Nuxt UI app and a plain Tailwind site or design system.
+
 ## Saving and Managing Themes
 
 ### Save Presets
@@ -146,7 +190,8 @@ Consider sharing your themes:
 The Theme Builder generates output compatible with:
 
 - **Nuxt UI v4** (primary target)
-- **Tailwind CSS v4** (CSS variable format)
+- **Tailwind CSS v4** (CSS variable format, or the standalone Tailwind theme without Nuxt UI)
+- **Figma and design tools** (Design Tokens JSON via Tokens Studio or Style Dictionary)
 - **Any Vue/Nuxt project** (JSON format for custom consumption)
 
 ## Try It Now

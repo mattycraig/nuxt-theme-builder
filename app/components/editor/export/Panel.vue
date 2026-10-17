@@ -1,29 +1,41 @@
 <script setup lang="ts">
 import type { TabsItem } from "@nuxt/ui";
 
-type ExportTab = "appconfig" | "css" | "json";
+type ExportTab = "appconfig" | "css" | "json" | "tokens" | "tailwind";
 
 const activeTab = ref<ExportTab>("appconfig");
 
 const exportTabs: TabsItem[] = [
   {
     label: "app.config.ts",
-    icon: "i-lucide-file-cog",
     value: "appconfig",
   },
   {
     label: "CSS",
-    icon: "i-lucide-palette",
     value: "css",
   },
   {
     label: "JSON",
-    icon: "i-lucide-braces",
     value: "json",
+  },
+  {
+    label: "Tokens",
+    value: "tokens",
+  },
+  {
+    label: "Tailwind",
+    value: "tailwind",
   },
 ];
 
-const { appConfigExport, cssExport, jsonExport, importJSON } = useThemeExport();
+const {
+  appConfigExport,
+  cssExport,
+  jsonExport,
+  designTokensExport,
+  tailwindExport,
+  importJSON,
+} = useThemeExport();
 const toast = useToast();
 
 const TAB_META: Record<
@@ -41,12 +53,24 @@ const TAB_META: Record<
     language: "json",
     mimeType: "application/json",
   },
+  tokens: {
+    filename: "tokens.json",
+    language: "json",
+    mimeType: "application/json",
+  },
+  tailwind: {
+    filename: "tailwind.css",
+    language: "css",
+    mimeType: "text/css",
+  },
 };
 
 const exportSources: Record<ExportTab, ComputedRef<string>> = {
   appconfig: appConfigExport,
   css: cssExport,
   json: jsonExport,
+  tokens: designTokensExport,
+  tailwind: tailwindExport,
 };
 
 const currentCode = computed(() => exportSources[activeTab.value]?.value ?? "");
@@ -132,6 +156,7 @@ function handleFileUpload(event: Event) {
         variant="pill"
         size="xs"
         :content="false"
+        :ui="{ trigger: 'px-2' }"
         class="mb-3"
       />
 
