@@ -12,6 +12,7 @@ import type {
   TextTokenKey,
   BgTokenKey,
   BorderTokenKey,
+  ComponentGroup,
 } from "~/types/theme";
 import {
   ThemeConfigSchema,
@@ -21,6 +22,8 @@ import {
   FONT_OPTIONS,
   CUSTOM_PALETTE_MAX,
   DEFAULT_COLOR_SHADES,
+  COMPONENT_DEFAULT_OPTIONS,
+  normalizeComponentDefaults,
 } from "~/types/theme";
 import { DEFAULT_THEME, cloneTheme } from "~/utils/defaults";
 import {
@@ -282,13 +285,20 @@ export const useThemeStore = defineStore(
       }
     }
 
-    /** Carry the current custom palettes into a config that replaces this one. */
-    function _withCurrentCustomPalettes(next: ThemeConfig): ThemeConfig {
+    /**
+     * Carry the current custom palettes and component defaults into a
+     * config that replaces this one (presets, AI, randomize). Component
+     * defaults only carry over when `next` doesn't set its own.
+     */
+    function _withCurrentAdditions(next: ThemeConfig): ThemeConfig {
       const merged = mergeCustomPalettes(
         next.customPalettes,
         config.value.customPalettes,
       );
       if (merged) next.customPalettes = merged;
+      if (!next.components && config.value.components) {
+        next.components = normalizeComponentDefaults(config.value.components);
+      }
       return next;
     }
 
@@ -363,6 +373,39 @@ export const useThemeStore = defineStore(
       _pushHistory();
     }
 
+    // Component Defaults ─────────────────────────────────────────────
+
+    /**
+     * Set (or with `undefined`, clear) the default for one component prop.
+     * Props and values outside `COMPONENT_DEFAULT_OPTIONS` are ignored.
+     */
+    function setComponentDefault(
+      group: ComponentGroup,
+      prop: string,
+      value: string | undefined,
+    ) {
+      const values = (
+        COMPONENT_DEFAULT_OPTIONS[group] as Record<string, readonly string[]>
+      )?.[prop];
+      if (!values) return;
+      if (value !== undefined && !values.includes(value)) return;
+      // normalizeComponentDefaults builds fresh plain objects (cloneTheme's
+      // structuredClone rejects reactive proxies).
+      const next = normalizeComponentDefaults({
+        ...config.value.components,
+        [group]: { ...config.value.components?.[group], [prop]: value },
+      });
+      if (next) config.value.components = next;
+      else delete config.value.components;
+      _pushHistory();
+    }
+
+    function resetComponentDefaults() {
+      if (!config.value.components) return;
+      delete config.value.components;
+      _pushHistory();
+    }
+
     // Config Management ──────────────────────────────────────────────
 
     function resetToDefaults() {
@@ -399,7 +442,7 @@ export const useThemeStore = defineStore(
         darkColors[key] = pickForKey(key);
       }
 
-      config.value = _withCurrentCustomPalettes({
+      config.value = _withCurrentAdditions({
         ...cloneTheme(DEFAULT_THEME),
         colors: lightColors as ThemeConfig["colors"],
         darkColors: darkColors as ThemeConfig["darkColors"],
@@ -416,7 +459,8 @@ export const useThemeStore = defineStore(
 
     /**
      * Replace the config. `keepCustomPalettes` carries the user's custom
-     * palettes over (for generated themes, e.g. AI); imports replace them.
+     * palettes and component defaults over (for generated themes, e.g. AI);
+     * imports replace them.
      */
     function loadConfig(
       newConfig: ThemeConfig,
@@ -432,7 +476,7 @@ export const useThemeStore = defineStore(
       } else {
         const next = cloneTheme(result.data as ThemeConfig);
         config.value = options.keepCustomPalettes
-          ? _withCurrentCustomPalettes(next)
+          ? _withCurrentAdditions(next)
           : next;
       }
       _pushHistory();
@@ -573,7 +617,7 @@ export const useThemeStore = defineStore(
       // Built-in presets keep the user's custom palettes; saved themes are
       // self-contained and load exactly as saved.
       const next = cloneTheme(result.data as ThemeConfig);
-      config.value = preset.builtIn ? _withCurrentCustomPalettes(next) : next;
+      config.value = preset.builtIn ? _withCurrentAdditions(next) : next;
       activePresetName.value = preset.name;
       _pushHistory();
       historyBaseIndex.value = historyIndex.value;
@@ -614,6 +658,10 @@ export const useThemeStore = defineStore(
       setCustomPaletteColorVisual,
       renameCustomPalette,
       removeCustomPalette,
+
+      // Component defaults
+      setComponentDefault,
+      resetComponentDefaults,
 
       // Config management
       resetToDefaults,

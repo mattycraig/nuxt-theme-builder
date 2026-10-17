@@ -208,3 +208,49 @@ export const DEFAULT_COLOR_SHADES = {
   warning: "500" as const,
   error: "500" as const,
 };
+
+// ─── Component Defaults ─────────────────────────────────────────────────
+
+const COMPONENT_COLORS = [...SEMANTIC_COLOR_KEYS, "neutral"] as const;
+const COMPONENT_SIZES = ["xs", "sm", "md", "lg", "xl"] as const;
+
+/**
+ * Props a theme can set defaults for, per component group, with the values
+ * Nuxt UI accepts. Each group maps to one or more `appConfig.ui.<component>`
+ * keys (see `COMPONENT_DEFAULT_TARGETS`) and becomes their `defaultVariants`.
+ */
+export const COMPONENT_DEFAULT_OPTIONS = {
+  button: {
+    color: COMPONENT_COLORS,
+    variant: ["solid", "outline", "soft", "subtle", "ghost", "link"],
+    size: COMPONENT_SIZES,
+  },
+  field: {
+    color: COMPONENT_COLORS,
+    variant: ["outline", "soft", "subtle", "ghost", "none"],
+    size: COMPONENT_SIZES,
+  },
+  badge: {
+    color: COMPONENT_COLORS,
+    variant: ["solid", "outline", "soft", "subtle"],
+    size: COMPONENT_SIZES,
+  },
+  card: {
+    variant: ["solid", "outline", "soft", "subtle"],
+  },
+} as const;
+
+/** The Nuxt UI app config keys each component group sets defaults for. */
+export const COMPONENT_DEFAULT_TARGETS = {
+  button: ["button"],
+  field: [
+    "input",
+    "textarea",
+    "select",
+    "selectMenu",
+    "inputMenu",
+    "inputNumber",
+  ],
+  badge: ["badge"],
+  card: ["card"],
+} as const satisfies Record<keyof typeof COMPONENT_DEFAULT_OPTIONS, readonly string[]>;

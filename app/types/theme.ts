@@ -21,6 +21,8 @@ import {
   CUSTOM_PALETTE_NAME_MAX_LENGTH,
   CUSTOM_PALETTE_NAME_PATTERN,
   RESERVED_PALETTE_NAMES,
+  COMPONENT_DEFAULT_OPTIONS,
+  COMPONENT_DEFAULT_TARGETS,
 } from "~~/shared/constants/theme";
 import type { FontCategory } from "~~/shared/constants/theme";
 
@@ -38,6 +40,8 @@ export {
   CUSTOM_PALETTE_NAME_MAX_LENGTH,
   CUSTOM_PALETTE_NAME_PATTERN,
   RESERVED_PALETTE_NAMES,
+  COMPONENT_DEFAULT_OPTIONS,
+  COMPONENT_DEFAULT_TARGETS,
 };
 export type { FontCategory };
 
@@ -175,6 +179,49 @@ export interface TokenOverrides {
   border: BorderTokenOverrides;
 }
 
+// Component Defaults ──────────────────────────────────────────────────────
+
+/** A component group a theme can set default props for (see `COMPONENT_DEFAULT_OPTIONS`). */
+export type ComponentGroup = keyof typeof COMPONENT_DEFAULT_OPTIONS;
+
+type ComponentGroupOptions<G extends ComponentGroup> =
+  (typeof COMPONENT_DEFAULT_OPTIONS)[G];
+
+/** A prop of `G` that can have a default, such as `variant`. */
+export type ComponentDefaultProp<G extends ComponentGroup> =
+  keyof ComponentGroupOptions<G> & string;
+
+/** The values prop `P` of group `G` accepts. */
+export type ComponentDefaultValue<
+  G extends ComponentGroup,
+  P extends ComponentDefaultProp<G>,
+> = ComponentGroupOptions<G>[P] extends readonly (infer V)[] ? V : never;
+
+/** Default props per component group. Unset props keep Nuxt UI's defaults. */
+export type ComponentDefaults = {
+  [G in ComponentGroup]?: {
+    [P in ComponentDefaultProp<G>]?: ComponentDefaultValue<G, P>;
+  };
+};
+
+/**
+ * Drop unset props and empty groups. Returns `undefined` when nothing is
+ * set, so themes without component defaults serialize exactly as before.
+ */
+export function normalizeComponentDefaults(
+  defaults: ComponentDefaults | undefined,
+): ComponentDefaults | undefined {
+  if (!defaults) return undefined;
+  const result: Record<string, Record<string, string>> = {};
+  for (const group of Object.keys(COMPONENT_DEFAULT_OPTIONS) as ComponentGroup[]) {
+    const props = Object.entries(
+      (defaults[group] ?? {}) as Record<string, string | undefined>,
+    ).filter((entry): entry is [string, string] => typeof entry[1] === "string");
+    if (props.length) result[group] = Object.fromEntries(props);
+  }
+  return Object.keys(result).length ? (result as ComponentDefaults) : undefined;
+}
+
 export interface ThemeConfig {
   // Base / light mode settings
   colors: SemanticColors;
@@ -195,6 +242,9 @@ export interface ThemeConfig {
   // Shared by both modes. Omitted (not `[]`) when the theme has none, so
   // themes without custom palettes serialize exactly as before.
   customPalettes?: CustomPalette[];
+
+  // Default component props, shared by both modes. Omitted when none are set.
+  components?: ComponentDefaults;
 }
 
 export const PRESET_CATEGORIES = [
@@ -327,6 +377,24 @@ const semanticShadesSchema = z
   })
   .default(DEFAULT_COLOR_SHADES);
 
+const componentDefaultsSchema = z.object(
+  Object.fromEntries(
+    Object.entries(COMPONENT_DEFAULT_OPTIONS).map(([group, props]) => [
+      group,
+      z
+        .object(
+          Object.fromEntries(
+            Object.entries(props).map(([prop, values]) => [
+              prop,
+              z.enum(values as readonly [string, ...string[]]).optional(),
+            ]),
+          ),
+        )
+        .optional(),
+    ]),
+  ),
+) as unknown as z.ZodType<ComponentDefaults>;
+
 const rawThemeSchema = z.object({
   colors: semanticColorsSchema,
   colorShades: semanticShadesSchema,
@@ -345,6 +413,9 @@ const rawThemeSchema = z.object({
 
   // Custom palettes — optional for backward compatibility
   customPalettes: customPalettesSchema.optional(),
+
+  // Component defaults — optional for backward compatibility
+  components: componentDefaultsSchema.optional(),
 });
 
 /** Every semantic role must point at a built-in or a defined custom palette. */
@@ -372,9 +443,11 @@ const referencedPalettesSchema = rawThemeSchema.superRefine((data, ctx) => {
  * fills missing dark-mode values by mirroring the light-mode counterpart.
  * `customPalettes` stays absent when empty, so older themes (and saved
  * presets compared by JSON in `hasUnsavedChanges`) serialize unchanged.
+ * `components` is likewise omitted when no default is set.
  */
 export const ThemeConfigSchema = referencedPalettesSchema.transform((data) => {
-  const { customPalettes, ...rest } = data;
+  const { customPalettes, components: rawComponents, ...rest } = data;
+  const components = normalizeComponentDefaults(rawComponents);
   return {
     ...rest,
     darkColors: data.darkColors ?? { ...data.colors },
@@ -383,5 +456,6 @@ export const ThemeConfigSchema = referencedPalettesSchema.transform((data) => {
     darkRadius: data.darkRadius ?? data.radius,
     darkFont: data.darkFont ?? data.font,
     ...(customPalettes?.length ? { customPalettes } : {}),
+    ...(components ? { components } : {}),
   };
 });

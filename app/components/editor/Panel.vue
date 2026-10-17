@@ -40,6 +40,7 @@ const SECTION_KEYS = [
   "textColors",
   "bgColors",
   "borderColors",
+  "componentDefaults",
 ] as const;
 
 type SectionKey = (typeof SECTION_KEYS)[number];
@@ -409,6 +410,21 @@ onUnmounted(() => {
             @update:model-value="onBorderOverride(token, $event)"
           />
         </div>
+      </EditorSection>
+
+      <USeparator />
+
+      <!-- Component Defaults (shared by light and dark mode) -->
+      <EditorSection
+        v-model:open="sectionOpen.componentDefaults"
+        icon="i-lucide-component"
+        label="Component Defaults"
+      >
+        <EditorComponentDefaults
+          :model-value="store.config.components"
+          @update="store.setComponentDefault"
+          @reset="store.resetComponentDefaults()"
+        />
       </EditorSection>
     </div>
   </div>
