@@ -131,14 +131,6 @@ export interface PromptTemplate {
 
 // Server Route Types ─────────────────────────────────────────────────────
 
-export interface AiGenerateRequest {
-  prompt: string;
-  apiKey: string;
-  provider: AiProvider;
-  model: string;
-  conversationHistory?: Pick<AiMessage, "role" | "content">[];
-}
-
 export interface AiGenerateResponse {
   themeConfig: ThemeConfig;
   explanation: string;

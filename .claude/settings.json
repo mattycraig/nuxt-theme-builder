@@ -20,7 +20,6 @@
       "Bash(pnpm test:coverage)",
       "Bash(pnpm test:coverage *)",
       "Bash(pnpm test:e2e:smoke)",
-      "Bash(pnpm test:e2e:ci)",
       "Bash(pnpm vitest *)",
       "Bash(pnpm exec vitest *)",
       "Bash(pnpm exec eslint *)",

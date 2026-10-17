@@ -125,7 +125,6 @@ pnpm test:watch
 pnpm test:coverage
 pnpm test:e2e
 pnpm test:e2e:smoke
-pnpm test:e2e:ci
 pnpm test:e2e:full
 pnpm test:e2e:headed
 pnpm test:e2e:ui
@@ -155,7 +154,7 @@ See [`.claude/README.md`](./.claude/README.md) for setup and details.
 
 - **Unit:** Vitest with Nuxt environment (`happy-dom`)
 - **E2E:** Playwright (Chromium)
-- **CI E2E (fast path):** smoke suite only (`pnpm test:e2e:ci`)
+- **CI E2E (fast path):** smoke suite only (`pnpm test:e2e:smoke`)
 - **Manual full regression:** run `pnpm test:e2e:full` locally
 - Coverage output: `coverage/`
 - Playwright output: `playwright-report/`, `tests/e2e/test-results/`
@@ -194,7 +193,7 @@ Deployment:
 - For new design tools, add component → page → navigation registration → SEO description.
 - For new learn articles, add the markdown file to `content/learn/<category>/` and register it in `app/utils/navigation/learn.ts` and `shared/constants/routes.ts`.
 - Step-by-step checklists for these tasks live in `.claude/skills/*/SKILL.md` (usable with or without Claude Code).
-- Ensure `pnpm lint`, `pnpm typecheck`, `pnpm test`, and `pnpm test:e2e:ci` pass before merging.
+- Ensure `pnpm lint`, `pnpm typecheck`, `pnpm test`, and `pnpm test:e2e:smoke` pass before merging.
 
 ## License
 

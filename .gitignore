@@ -24,9 +24,6 @@ logs
 .env.*
 !.env.example
 
-# VS Code MCP config (contains API keys)
-.vscode/mcp.json
-
 # Claude Code personal overrides (shared config lives in .claude/settings.json and CLAUDE.md)
 .claude/settings.local.json
 CLAUDE.local.md

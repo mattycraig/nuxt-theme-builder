@@ -19,7 +19,7 @@ Verify every factual claim against the source. Anything unverifiable or wrong ge
 5. **Product facts**: palette, font, shade, and radius lists in `app/data/*.md`, `content/learn/**`, and `server/utils/aiSystemPrompt.ts` match `shared/constants/theme.ts`. AI model lists in docs match `app/types/ai.ts`.
 6. **Dependencies**: libraries named in docs (e.g. SECURITY.md's "DOMPurify", "Renovate") are actually installed or configured and used.
 7. **Claude setup**: skills and agents named in CLAUDE.md and `.claude/README.md` exist; `.claude/rules/*` `paths:` globs match real files; hooks referenced in `.claude/settings.json` exist.
-8. **Config hygiene**: `.prettierignore`, `.gitignore`, `knip.json`, `eslint.config.mjs`, `.github/labeler.yml`, and `.github/CODEOWNERS` don't reference paths that no longer exist.
+8. **Config hygiene**: `.prettierignore`, `.gitignore`, the `knip` key in `package.json`, `eslint.config.mjs`, `.github/labeler.yml`, and `.github/CODEOWNERS` don't reference paths that no longer exist.
 
 ## Output
 
