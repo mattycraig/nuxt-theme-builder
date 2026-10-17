@@ -1,0 +1,30 @@
+# Version updates. Security updates are enabled separately in repo settings.
+# Majors are left to manual upgrades (see .claude/skills/maintenance).
+version: 2
+updates:
+  - package-ecosystem: npm
+    directory: /
+    schedule:
+      interval: weekly
+    labels: [dependencies]
+    commit-message:
+      prefix: chore
+      prefix-development: chore
+      include: scope
+    groups:
+      non-major:
+        update-types: [minor, patch]
+    ignore:
+      - dependency-name: "*"
+        update-types: [version-update:semver-major]
+
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly
+    labels: [dependencies]
+    commit-message:
+      prefix: ci
+    groups:
+      actions:
+        patterns: ["*"]
