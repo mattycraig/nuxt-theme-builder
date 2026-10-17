@@ -44,7 +44,7 @@ Project skills (plain Markdown checklists you can also follow by hand):
 | `/docs-sync`          | Audit docs and config against the code and fix drift                          |
 | `/maintenance`        | Periodic health check (validation, deps, audit, drift), with one PR if needed |
 
-Vendored reference skills (third-party; see each `SKILL.md` for its origin and license): `nuxt`, `nuxt-ui`, `nuxt-content`, `nuxt-seo`, `vue`, `vueuse`, `reka-ui`, `vite`, `vitest`, `pnpm`, `frontend-design`, `web-design-guidelines`, `document-writer`, `audit-website` (needs the [squirrel CLI](https://squirrelscan.com/download); config in `squirrel.toml`). They're excluded from ESLint, Prettier, and knip so they stay identical to upstream. Refresh them by re-copying from their source repositories.
+Vendored reference skills (third-party; see each `SKILL.md` for its origin and license): `nuxt`, `nuxt-ui`, `nuxt-content`, `nuxt-seo`, `vue`, `vueuse`, `reka-ui`, `vite`, `vitest`, `pnpm`, `frontend-design`, `web-design-guidelines`, and `document-writer`. They're excluded from ESLint, Prettier, and knip so they stay identical to upstream. Refresh them by re-copying from their source repositories.
 
 Security reviews use Claude Code's built-in `/security-review`. `/code-review` and `/simplify` are built in too.
 

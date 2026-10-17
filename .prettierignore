@@ -9,7 +9,6 @@
 *.jsx
 
 # Vendored third-party Claude Code skills (kept identical to upstream)
-.claude/skills/audit-website/
 .claude/skills/document-writer/
 .claude/skills/frontend-design/
 .claude/skills/nuxt/
