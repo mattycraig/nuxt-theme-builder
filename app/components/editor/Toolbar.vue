@@ -11,6 +11,7 @@ const emit = defineEmits<{
 
 const store = useThemeStore();
 const { openSaveAs, quickSave } = useSaveThemeModal();
+const { copyShareLink } = useThemeShare();
 
 // Saved presets come from localStorage (client-only), so defer anything that
 // depends on them until mounted to keep SSR and hydration output identical.
@@ -118,6 +119,18 @@ const saveTooltipText = computed(() => {
     </UTooltip>
 
     <USeparator orientation="vertical" class="h-5 mx-1" />
+
+    <!-- Share link -->
+    <UTooltip text="Copy share link">
+      <UButton
+        icon="i-lucide-link"
+        aria-label="Copy share link"
+        variant="ghost"
+        color="neutral"
+        size="sm"
+        @click="copyShareLink()"
+      />
+    </UTooltip>
 
     <!-- Reset -->
     <UTooltip text="Reset to defaults">

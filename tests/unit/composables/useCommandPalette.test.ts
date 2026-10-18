@@ -42,6 +42,11 @@ mockNuxtImport("useSaveThemeModal", () => {
   });
 });
 
+const mockCopyShareLink = vi.fn();
+mockNuxtImport("useThemeShare", () => {
+  return () => ({ copyShareLink: mockCopyShareLink });
+});
+
 mockNuxtImport("useLayoutNavigation", () => {
   return () => ({
     allNavItems: computed(() => [
@@ -120,6 +125,12 @@ describe("useCommandPalette", () => {
 
     it("includes Save Theme As action", () => {
       expect(getAction("Save Theme As...")).toBeDefined();
+    });
+
+    it("copies a share link from the Copy Share Link action", () => {
+      mockCopyShareLink.mockClear();
+      getAction("Copy Share Link").onSelect();
+      expect(mockCopyShareLink).toHaveBeenCalledOnce();
     });
 
     describe("color mode toggle", () => {
