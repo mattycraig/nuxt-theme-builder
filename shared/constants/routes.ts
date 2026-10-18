@@ -196,6 +196,7 @@ export const TOOL_ROUTES = [
 
 export const TEMPLATE_ROUTES = [
   "/templates/blog",
+  "/templates/booking",
   "/templates/changelog",
   "/templates/chat",
   "/templates/checkout",
@@ -203,8 +204,11 @@ export const TEMPLATE_ROUTES = [
   "/templates/docs",
   "/templates/editor",
   "/templates/error-page",
+  "/templates/inbox",
+  "/templates/kanban",
   "/templates/landing",
   "/templates/login",
+  "/templates/portfolio",
   "/templates/pricing",
   "/templates/settings",
 ] as const;

@@ -243,6 +243,14 @@ export const PAGE_DESCRIPTIONS: Record<string, string> = {
     "Preview an account settings template styled with your theme — profile forms, notification switches, security options, billing usage, and a danger zone.",
   "/templates/checkout":
     "Preview an e-commerce template styled with your theme — product gallery, variant pickers, cart drawer, checkout form, and order summary.",
+  "/templates/inbox":
+    "Preview an inbox template styled with your theme — mail folders, an unread-aware message list, a reading pane, and a reply box.",
+  "/templates/booking":
+    "Preview a booking template styled with your theme — a calendar date picker, available time slots, a details form, and a confirmation screen.",
+  "/templates/kanban":
+    "Preview a kanban board template styled with your theme — draggable task cards across columns, labels, progress, assignees, and a task detail panel.",
+  "/templates/portfolio":
+    "Preview a portfolio template styled with your theme — personal hero, selected work grid, experience timeline, testimonials, and a contact form.",
 
   // ── Utility pages ──────────────────────────────────────────────────────
   "/privacy":
