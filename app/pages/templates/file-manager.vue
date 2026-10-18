@@ -489,6 +489,15 @@ const tableMeta = {
 const uploadOpen = ref(false);
 const uploadFiles = ref<File[] | null>(null);
 
+// Uploads land in the open folder in My files, and in My files from any other view.
+const uploadTargetId = computed(() => (section.value === "my-files" ? currentFolderId.value : ROOT));
+const uploadTargetName = computed(() => byId(uploadTargetId.value)?.name ?? "My files");
+
+// Start each upload with an empty selection, including after Cancel.
+watch(uploadOpen, (open) => {
+  if (!open) uploadFiles.value = null;
+});
+
 function confirmUpload() {
   const added = uploadFiles.value ?? [];
   for (const file of added) {
@@ -496,7 +505,7 @@ function confirmUpload() {
       id: `upload-${++createdCount}`,
       name: file.name,
       kind: kindFromName(file.name),
-      parentId: section.value === "my-files" ? currentFolderId.value : ROOT,
+      parentId: uploadTargetId.value,
       owner: ME,
       modified: "Just now",
       modifiedRank: 0,
@@ -505,8 +514,7 @@ function confirmUpload() {
       sharedWith: [],
     });
   }
-  toast.add({ title: `Uploaded ${added.length} ${added.length === 1 ? "file" : "files"}`, description: `to ${pageTitle.value}`, icon: "i-lucide-circle-check", color: "success" });
-  uploadFiles.value = null;
+  toast.add({ title: `Uploaded ${added.length} ${added.length === 1 ? "file" : "files"}`, description: `to ${uploadTargetName.value}`, icon: "i-lucide-circle-check", color: "success" });
   uploadOpen.value = false;
 }
 
@@ -1017,7 +1025,7 @@ const [DefineDetails, ReuseDetails] = createReusableTemplate();
     <UModal
       v-model:open="uploadOpen"
       title="Upload files"
-      :description="`Files will be added to ${section === 'my-files' ? pageTitle : 'My files'}.`"
+      :description="`Files will be added to ${uploadTargetName}.`"
     >
       <template #body>
         <UFileUpload
