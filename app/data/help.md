@@ -23,6 +23,7 @@ The sidebar organizes every design decision into collapsible sections — expand
 - **Custom Palettes** — Generate a full 50–950 palette from one brand color, then use it like any Tailwind palette. See [Custom Palettes](#custom-palettes).
 - **Semantic Colors** — Assign a Tailwind color palette or one of your custom palettes to each semantic slot: primary, secondary, success, info, warning, and error.
 - **Neutral Color** — Pick the gray scale (slate, gray, zinc, neutral, stone, taupe, mauve, mist, olive) for text, backgrounds, and borders.
+- **Contrast Check** — Live WCAG contrast ratios for the current color mode. See [Contrast Check](#contrast-check).
 - **Text Colors** — Control which neutral shade maps to highlighted, default, muted, dimmed, and toned text tokens.
 - **Background Colors** — Override neutral shades for default, elevated, accented, and inverted backgrounds.
 - **Border Colors** — Override neutral shades for default and accented borders.
@@ -91,6 +92,12 @@ Exports the full `ThemeConfig` object — every color, shade override, radius, a
 **To use it:** save as `theme.json` to back up your work, share with teammates, or re-import later.
 
 ---
+
+## Sharing a Theme by Link
+
+Click the **link** icon in the sidebar toolbar, choose **Copy Share Link** in the command palette, or use **Copy share link** at the top of the Export / Import panel. The link opens the page you're on with your theme loaded, so you can share a theme on a specific template or component.
+
+The theme is compressed into the link's `?theme=` parameter, and nothing is uploaded. Opening a link replaces the current theme, and **Undo** brings the previous one back.
 
 ## Importing Themes
 
@@ -178,6 +185,20 @@ The builder lists the main colors it finds, ignoring transparency and anti-alias
 
 With **Use exact colors** on, the colors become custom palettes named `logo-primary` and `logo-secondary`, so your exact hex values appear in the theme. Turn it off to use the closest Tailwind palettes instead. **Apply to theme** sets both light and dark mode in one step, so a single **Undo** reverts it.
 
+---
+
+## Contrast Check
+
+The **Contrast Check** section measures the color pairs your theme actually renders in the mode you're editing, against WCAG AA (4.5:1 for normal text):
+
+- Body and muted text on the page background and on cards (`bg-elevated`)
+- Each semantic color's solid button label (`text-inverted` on the color)
+- Each semantic color used as text or links on the page background
+
+Pairs below 4.5:1 are listed first with their ratio. When a nearby shade fixes the pair, a **Use** button applies it: for a semantic color it changes that color's shade, and for text it changes the text token. Every fix is a normal edit, so **Undo** reverts it. Switch color mode to check the other mode, and use the [Contrast Checker](/tools/contrast-checker) tool to test any two colors.
+
+---
+
 ## Custom Palettes
 
 Use a custom palette when no Tailwind palette matches your brand, for example the exact yellow from your logo.
@@ -251,4 +272,4 @@ Click **Reset to defaults** in the sidebar toolbar to revert all tokens to their
 
 ### Can I share a theme with a link?
 
-Not via URL at this time. Export your theme as JSON, share the file, and the recipient can import it through the Import panel.
+Yes. Click the **link** icon in the sidebar toolbar, or **Copy share link** in the Export / Import panel, and send the link. Whoever opens it lands on the same page with your theme loaded. The whole theme is packed into the link itself, so nothing is uploaded or stored on a server.

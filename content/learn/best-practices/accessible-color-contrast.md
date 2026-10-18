@@ -78,7 +78,9 @@ UI component boundaries must have 3:1 contrast against adjacent colors:
 
 ### In the Theme Builder
 
-The Theme Builder previews your theme across 125+ real components. When evaluating contrast:
+The sidebar's **Contrast Check** section measures your theme as you edit it. It lists every body text, muted text, button label, and colored text pair below 4.5:1 in the current color mode, and offers the nearest shade that passes as a one-click fix.
+
+The Theme Builder also previews your theme across 125+ real components. When reviewing them by eye:
 
 1. **Check body text** - paragraphs, labels, and descriptions should be clearly legible
 2. **Check muted text** - timestamps, help text, and secondary content

@@ -15,6 +15,8 @@ import {
 import { capitalize } from "~/utils/helpers";
 import { generatePalette } from "~/utils/paletteGenerator";
 import type { LogoSuggestion } from "~/utils/imagePalette";
+import type { ContrastFix } from "~/utils/themeContrast";
+import { getThemeContrastChecks } from "~/utils/themeContrast";
 import { useThemeModeAccessors } from "~/composables/useThemeModeAccessors";
 
 const store = useThemeStore();
@@ -39,6 +41,7 @@ const SECTION_KEYS = [
   "customPalettes",
   "semanticColors",
   "neutralColor",
+  "contrast",
   "textColors",
   "bgColors",
   "borderColors",
@@ -54,6 +57,7 @@ const DEFAULT_OPEN_SECTIONS: SectionKey[] = [
   "customPalettes",
   "semanticColors",
   "neutralColor",
+  "contrast",
 ];
 
 const sectionOpen = reactive<Record<SectionKey, boolean>>(
@@ -190,6 +194,18 @@ function onLogoApply(suggestion: LogoSuggestion, exact: boolean) {
 function onRadiusChange(val: number) {
   store.setRadiusVisualForMode(mode.value, val);
   _scheduleRadiusCommit(val);
+}
+
+const contrastChecks = computed(() =>
+  getThemeContrastChecks(store.config, mode.value),
+);
+
+function onContrastFix(fix: ContrastFix) {
+  if (fix.kind === "role") {
+    store.setSemanticShadeForMode(mode.value, fix.role, fix.shade);
+  } else {
+    store.setTextOverride(mode.value, fix.token, fix.shade);
+  }
 }
 
 function onTextOverride(token: TextTokenKey, shade: NeutralShade) {
@@ -376,6 +392,27 @@ onUnmounted(() => {
           label="Neutral"
           @update:model-value="store.setNeutralForMode(mode, $event)"
         />
+      </EditorSection>
+
+      <USeparator />
+
+      <!-- Contrast Check (computed from the color mode, which is client-only) -->
+      <EditorSection
+        v-model:open="sectionOpen.contrast"
+        icon="i-lucide-scan-eye"
+        label="Contrast Check"
+        :mode-badge="mode"
+        default-open
+      >
+        <ClientOnly>
+          <EditorContrastCheck
+            :checks="contrastChecks"
+            @fix="onContrastFix"
+          />
+          <template #fallback>
+            <p class="text-xs text-(--ui-text-muted)">Checking contrast…</p>
+          </template>
+        </ClientOnly>
       </EditorSection>
 
       <USeparator />
