@@ -41,6 +41,13 @@ export const TEMPLATE_CATEGORIES: TemplateCategory[] = [
         to: "/templates/error-page",
         badge: "new" as const,
       },
+      {
+        label: "Booking",
+        icon: "i-lucide-calendar-check",
+        description: "Scheduling page with calendar, time slots, and confirmation.",
+        to: "/templates/booking",
+        badge: "new" as const,
+      },
     ],
   },
   {
