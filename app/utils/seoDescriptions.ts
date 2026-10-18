@@ -237,6 +237,22 @@ export const PAGE_DESCRIPTIONS: Record<string, string> = {
     "Preview an authentication template styled with your theme — login and registration forms with social sign-in options.",
   "/templates/changelog":
     "Preview a changelog template styled with your theme — version history, release notes, update timeline, and semantic versioning display.",
+  "/templates/docs":
+    "Preview a documentation template styled with your theme — sidebar navigation, search, long-form guides with code blocks, callouts, and an on-this-page table of contents.",
+  "/templates/settings":
+    "Preview an account settings template styled with your theme — profile forms, notification switches, security options, billing usage, and a danger zone.",
+  "/templates/checkout":
+    "Preview an e-commerce template styled with your theme — product gallery, variant pickers, cart drawer, checkout form, and order summary.",
+  "/templates/inbox":
+    "Preview an inbox template styled with your theme — mail folders, an unread-aware message list, a reading pane, and a reply box.",
+  "/templates/booking":
+    "Preview a booking template styled with your theme — a calendar date picker, available time slots, a details form, and a confirmation screen.",
+  "/templates/kanban":
+    "Preview a kanban board template styled with your theme — draggable task cards across columns, labels, progress, assignees, and a task detail panel.",
+  "/templates/portfolio":
+    "Preview a portfolio template styled with your theme — personal hero, selected work grid, experience timeline, testimonials, and a contact form.",
+  "/templates/file-manager":
+    "Preview a file manager template styled with your theme — folder tree, grid and list views, file actions, storage usage, and a details panel.",
   "/templates/onboarding":
     "Preview an onboarding template styled with your theme — a multi-step signup with a stepper, email verification code, workspace setup, plan choice, and team invites.",
 

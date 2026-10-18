@@ -336,13 +336,31 @@ describe("cross-cutting navigation integrity", () => {
     }
   });
 
-  it("all template items have a 'new' badge", () => {
+  it("only the latest templates have a 'new' badge", () => {
+    const latest = new Set([
+      "/templates/booking",
+      "/templates/checkout",
+      "/templates/docs",
+      "/templates/file-manager",
+      "/templates/inbox",
+      "/templates/kanban",
+      "/templates/onboarding",
+      "/templates/portfolio",
+      "/templates/settings",
+    ]);
     for (const cat of TEMPLATE_CATEGORIES) {
       for (const item of cat.items) {
-        expect(
-          item.badge,
-          `Template item "${item.label}" should have badge: "new"`,
-        ).toBe("new");
+        if (latest.has(item.to)) {
+          expect(
+            item.badge,
+            `Template item "${item.label}" should have badge: "new"`,
+          ).toBe("new");
+        } else {
+          expect(
+            item.badge,
+            `Template item "${item.label}" is no longer new`,
+          ).toBeUndefined();
+        }
       }
     }
   });
