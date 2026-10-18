@@ -71,6 +71,7 @@ describe("generateThemeCSS", () => {
     config.darkColors = { ...config.colors };
     config.darkColorShades = { ...config.colorShades };
     config.darkNeutral = config.neutral;
+    config.lightOverrides = structuredClone(DEFAULT_LIGHT_OVERRIDES);
     const { darkCSS } = generateThemeCSS(
       config,
       DEFAULT_LIGHT_OVERRIDES,
@@ -133,6 +134,7 @@ describe("generateExportCSS", () => {
     config.darkColors = { ...config.colors };
     config.darkColorShades = { ...config.colorShades };
     config.darkNeutral = config.neutral;
+    config.lightOverrides = structuredClone(DEFAULT_LIGHT_OVERRIDES);
     const output = generateExportCSS(
       config,
       DEFAULT_LIGHT_OVERRIDES,
@@ -413,6 +415,7 @@ describe("generateThemeCSS — light-to-dark bleed-through prevention", () => {
     config.darkColors = { ...config.colors };
     config.darkColorShades = { ...config.colorShades };
     config.darkNeutral = config.neutral;
+    config.lightOverrides = structuredClone(DEFAULT_LIGHT_OVERRIDES);
     const { darkCSS } = generateThemeCSS(
       config,
       DEFAULT_LIGHT_OVERRIDES,
