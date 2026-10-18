@@ -105,6 +105,13 @@ export const TEMPLATE_CATEGORIES: TemplateCategory[] = [
         to: "/templates/docs",
         badge: "new" as const,
       },
+      {
+        label: "Portfolio",
+        icon: "i-lucide-briefcase",
+        description: "Personal portfolio with work, experience, and contact.",
+        to: "/templates/portfolio",
+        badge: "new" as const,
+      },
     ],
   },
   {
