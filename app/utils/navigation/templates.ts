@@ -41,6 +41,13 @@ export const TEMPLATE_CATEGORIES: TemplateCategory[] = [
         to: "/templates/error-page",
         badge: "new" as const,
       },
+      {
+        label: "File Manager",
+        icon: "i-lucide-folder-open",
+        description: "Cloud drive with folder tree, file grid, and details panel.",
+        to: "/templates/file-manager",
+        badge: "new" as const,
+      },
     ],
   },
   {
