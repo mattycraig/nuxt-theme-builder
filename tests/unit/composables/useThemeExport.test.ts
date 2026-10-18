@@ -213,4 +213,13 @@ describe("useThemeExport", () => {
       expect(parsed.darkNeutral).toBe("zinc");
     });
   });
+
+  describe("designTokensExport and tailwindExport", () => {
+    it("reflect store changes", () => {
+      store.setRadiusForMode("light", 1);
+      const tokens = JSON.parse(exportComposable.designTokensExport.value);
+      expect(tokens.light.radius.sm.$value).toBe("1rem");
+      expect(exportComposable.tailwindExport.value).toContain("--radius-sm: 1rem;");
+    });
+  });
 });

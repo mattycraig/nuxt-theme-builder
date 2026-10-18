@@ -7,15 +7,18 @@ import {
 } from "~/utils/defaults";
 import { generateExportCSS } from "~/utils/cssGenerator";
 import { generateAppConfigExport } from "~/utils/appConfigGenerator";
+import { generateDesignTokens, generateTailwindTheme } from "~/utils/tokenExport";
 import { downloadFile } from "~/utils/helpers";
 
 /**
  * Composable for exporting, importing, and sharing theme configurations.
  *
- * Provides computed export strings in three formats:
+ * Provides computed export strings in five formats:
  * - `appConfigExport` — Nuxt `app.config.ts` with color palette assignments
  * - `cssExport` — Tailwind CSS v4 stylesheet with custom properties
  * - `jsonExport` — Raw JSON of the full ThemeConfig
+ * - `designTokensExport` — Design Tokens JSON (Tokens Studio / Figma) for both modes
+ * - `tailwindExport` — Standalone Tailwind CSS v4 theme for projects without Nuxt UI
  *
  * Also provides `importJSON()` for loading a config from pasted JSON,
  * and `downloadFile()` for triggering browser file downloads.
@@ -38,6 +41,10 @@ export function useThemeExport() {
   const jsonExport = computed(() => {
     return JSON.stringify(store.config, null, 2);
   });
+
+  const designTokensExport = computed(() => generateDesignTokens(store.config));
+
+  const tailwindExport = computed(() => generateTailwindTheme(store.config));
 
   function importJSON(json: string): { success: boolean; error?: string } {
     try {
@@ -66,6 +73,8 @@ export function useThemeExport() {
     appConfigExport,
     cssExport,
     jsonExport,
+    designTokensExport,
+    tailwindExport,
     importJSON,
     downloadFile,
   };

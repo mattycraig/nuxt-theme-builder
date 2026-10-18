@@ -50,7 +50,7 @@ Every token change is tracked. Undo goes back up to 50 steps. History resets whe
 
 ## Exporting Your Theme
 
-Click the **Export / Import** button in the sidebar footer (or the toolbar on desktop) to open the export panel. Three formats are available — each with copy-to-clipboard and download buttons.
+Click the **Export / Import** button in the sidebar footer (or the toolbar on desktop) to open the export panel. Five formats are available — each with copy-to-clipboard and download buttons.
 
 ### app.config.ts
 
@@ -93,6 +93,22 @@ Produces a complete stylesheet containing:
 Exports the full `ThemeConfig` object — every color, shade override, radius, and font setting in one file.
 
 **To use it:** save as `theme.json` to back up your work, share with teammates, or re-import later.
+
+### Design Tokens
+
+Exports `tokens.json` in the W3C Design Tokens format (`$type` / `$value`) with one group per color mode, `light` and `dark`. Each group holds:
+
+- `color.<role>`: the 50–950 scale Nuxt UI renders for each semantic color, plus `DEFAULT` for its main color, and `color.neutral`
+- `text`, `bg`, and `border`: the resolved `--ui-text-*`, `--ui-bg-*`, and `--ui-border-*` colors
+- `radius` (xs to 3xl) and `font.sans`
+
+**To use it:** import it into Tokens Studio for Figma (each mode becomes a token set), or feed it to Style Dictionary. All colors are literal hex values.
+
+### Tailwind
+
+Exports a standalone `tailwind.css` for Tailwind CSS v4 projects that don't use Nuxt UI. It defines your colors, text, background, and border tokens, radius scale, and font with the same utility names Nuxt UI uses (`bg-primary`, `text-muted`, `bg-elevated`, `border-accented`, `rounded-md`). Dark mode values apply under a `.dark` class.
+
+**To use it:** use it as your main CSS file, or copy its `@theme` and `.dark` blocks into yours.
 
 ---
 
