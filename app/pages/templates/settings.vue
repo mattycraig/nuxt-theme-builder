@@ -117,9 +117,18 @@ async function onProfileSubmit(event: FormSubmitEvent<ProfileSchema>) {
   });
 }
 
-function createObjectUrl(file: File) {
-  return URL.createObjectURL(file);
-}
+// One object URL per selected file, revoked when the file changes or the page unmounts.
+const avatarUrl = ref<string>();
+
+watch(avatarFile, (file, _old, onCleanup) => {
+  if (!file) {
+    avatarUrl.value = undefined;
+    return;
+  }
+  const url = URL.createObjectURL(file);
+  avatarUrl.value = url;
+  onCleanup(() => URL.revokeObjectURL(url));
+});
 
 // Danger zone
 const deleteOpen = ref(false);
@@ -625,7 +634,7 @@ const invoiceColumns: TableColumn<Invoice>[] = [
                       <UAvatar
                         size="xl"
                         alt="Olivia Martin"
-                        :src="avatarFile ? createObjectUrl(avatarFile) : undefined"
+                        :src="avatarUrl"
                       />
                       <UButton
                         :label="avatarFile ? 'Change' : 'Upload'"
