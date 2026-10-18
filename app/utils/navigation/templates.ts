@@ -41,6 +41,13 @@ export const TEMPLATE_CATEGORIES: TemplateCategory[] = [
         to: "/templates/error-page",
         badge: "new" as const,
       },
+      {
+        label: "Account Settings",
+        icon: "i-lucide-settings",
+        description: "Profile, notifications, security, and billing forms.",
+        to: "/templates/settings",
+        badge: "new" as const,
+      },
     ],
   },
   {
