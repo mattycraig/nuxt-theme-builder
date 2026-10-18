@@ -5,6 +5,17 @@ import type { ChangelogCollectionItem } from "@nuxt/content";
 // File names start with the date, so this is newest first.
 const entries = await queryCollection("changelog").order("stem", "DESC").all();
 
+// Anchor for each entry, e.g. #2026-10-17-share-link.
+function entryId(entry: ChangelogCollectionItem) {
+  return entry.stem.split("/").pop()!;
+}
+
+const tocLinks = entries.map((entry) => ({
+  id: entryId(entry),
+  text: entry.title,
+  depth: 2,
+}));
+
 const BADGES: Record<ChangelogCollectionItem["badge"], BadgeProps> = {
   new: { label: "New", color: "primary", variant: "solid" },
   improved: { label: "Improved", color: "success", variant: "subtle" },
@@ -36,59 +47,79 @@ useSchemaOrg([
       />
 
       <UPageBody>
-        <UChangelogVersions
-          :indicator-motion="false"
-          :ui="{ indicator: 'inset-y-0' }"
-        >
-          <UChangelogVersion
-            v-for="entry in entries"
-            :key="entry.stem"
-            :title="entry.title"
-            :description="entry.description"
-            :date="entry.date"
-            :badge="BADGES[entry.badge]"
-            :image="
-              entry.image
-                ? {
-                    ...entry.image,
-                    width: 1600,
-                    height: 900,
-                    loading: 'lazy',
-                    decoding: 'async',
-                  }
-                : undefined
-            "
-            :ui="{
-              root: 'flex items-start',
-              container: 'max-w-2xl w-full mx-0 lg:ms-8',
-              title: 'text-2xl',
-              date: 'font-mono text-xs/9 text-(--ui-text-highlighted)',
-              indicator: 'sticky top-0 shrink-0 pt-6 -mt-6',
-              imageWrapper: 'ring ring-(--ui-border) bg-(--ui-bg-elevated)',
-            }"
+        <!-- Sized to the page panel, which shrinks and grows with the
+             editor sidebar, rather than to the window. -->
+        <div class="@container flex gap-8">
+          <UChangelogVersions
+            class="min-w-0 flex-1"
+            :indicator-motion="false"
+            :ui="{ indicator: 'inset-y-0' }"
           >
-            <template #body>
-              <div class="prose prose-sm dark:prose-invert max-w-none mt-5">
-                <ContentRenderer :value="entry" />
-              </div>
-            </template>
+            <UChangelogVersion
+              v-for="entry in entries"
+              :id="entryId(entry)"
+              :key="entry.stem"
+              :title="entry.title"
+              :description="entry.description"
+              :date="entry.date"
+              :badge="BADGES[entry.badge]"
+              :image="
+                entry.image
+                  ? {
+                      ...entry.image,
+                      width: 1600,
+                      height: 900,
+                      loading: 'lazy',
+                      decoding: 'async',
+                    }
+                  : undefined
+              "
+              :ui="{
+                root: 'flex items-start scroll-mt-8',
+                container: 'max-w-2xl w-full mx-0 lg:ms-8',
+                title: 'text-2xl',
+                date: 'font-mono text-xs/9 text-(--ui-text-highlighted)',
+                indicator: 'sticky top-0 shrink-0 pt-6 -mt-6',
+                imageWrapper: 'ring ring-(--ui-border) bg-(--ui-bg-elevated)',
+              }"
+            >
+              <template #body>
+                <div class="prose prose-sm dark:prose-invert max-w-none mt-5">
+                  <ContentRenderer :value="entry" />
+                </div>
+              </template>
 
-            <template v-if="entry.links?.length" #actions>
-              <div class="flex flex-wrap gap-2">
-                <UButton
-                  v-for="link in entry.links"
-                  :key="link.to"
-                  :label="link.label"
-                  :icon="link.icon"
-                  :to="link.to"
-                  color="neutral"
-                  variant="outline"
-                  size="sm"
-                />
-              </div>
-            </template>
-          </UChangelogVersion>
-        </UChangelogVersions>
+              <template v-if="entry.links?.length" #actions>
+                <div class="flex flex-wrap gap-2">
+                  <UButton
+                    v-for="link in entry.links"
+                    :key="link.to"
+                    :label="link.label"
+                    :icon="link.icon"
+                    :to="link.to"
+                    color="neutral"
+                    variant="outline"
+                    size="sm"
+                  />
+                </div>
+              </template>
+            </UChangelogVersion>
+          </UChangelogVersions>
+
+          <aside class="hidden @min-[60rem]:block w-64 shrink-0">
+            <div class="sticky top-0">
+              <!-- The page scrolls inside the editor's page panel, not the
+                   window, so cap the list to that panel's height. -->
+              <UContentToc
+                :links="tocLinks"
+                title="On this page"
+                highlight
+                color="primary"
+                :ui="{ root: 'max-h-[calc(100dvh-9rem)]' }"
+              />
+            </div>
+          </aside>
+        </div>
       </UPageBody>
     </UContainer>
   </UPage>
