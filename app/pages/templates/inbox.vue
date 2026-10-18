@@ -347,11 +347,13 @@ function count(folder: Folder) {
 function selectFolder(folder: Folder) {
   activeFolder.value = folder;
   activeLabel.value = null;
+  selectedId.value = visibleMails.value[0]?.id ?? null;
   mobileReading.value = false;
 }
 
 function selectLabel(name: string) {
   activeLabel.value = activeLabel.value === name ? null : name;
+  selectedId.value = visibleMails.value[0]?.id ?? null;
   mobileReading.value = false;
 }
 
@@ -446,8 +448,9 @@ function moveSelected(folder: "archive" | "trash") {
   const mail = selected.value;
   if (!mail) return;
   const index = visibleMails.value.findIndex((m) => m.id === mail.id);
+  const remaining = visibleMails.value.filter((m) => m.id !== mail.id);
   mail.folder = folder;
-  const next = visibleMails.value[index] ?? visibleMails.value[index - 1] ?? null;
+  const next = remaining[index] ?? remaining[index - 1] ?? null;
   selectedId.value = next?.id ?? null;
   if (!next) mobileReading.value = false;
   toast.add({
