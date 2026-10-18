@@ -380,8 +380,17 @@ function trashItem(item: DriveItem) {
     title: "Moved to trash",
     description: item.name,
     icon: "i-lucide-trash-2",
-    actions: [{ label: "Undo", color: "neutral", variant: "outline", onClick: () => { item.trashed = false; } }],
+    actions: [{ label: "Undo", color: "neutral", variant: "outline", onClick: () => restoreItem(item) }],
   });
+}
+
+function restoreItem(item: DriveItem) {
+  item.trashed = false;
+  // Its folder is still in the trash, so bring it back to the top level where it can be seen.
+  if (pathTo(item.parentId).some((folder) => folder.trashed)) {
+    item.parentId = ROOT;
+    toast.add({ title: "Restored to My files", description: `${item.name} was in a folder that's still in the trash.`, icon: "i-lucide-rotate-ccw" });
+  }
 }
 
 function deleteForever(item: DriveItem) {
@@ -422,7 +431,7 @@ function moveTargets(item: DriveItem): DropdownMenuItem[] {
 function actionsFor(item: DriveItem): DropdownMenuItem[][] {
   if (item.trashed) {
     return [
-      [{ label: "Restore", icon: "i-lucide-rotate-ccw", onSelect: () => { item.trashed = false; } }],
+      [{ label: "Restore", icon: "i-lucide-rotate-ccw", onSelect: () => restoreItem(item) }],
       [{ label: "Delete forever", icon: "i-lucide-trash-2", color: "error", onSelect: () => deleteForever(item) }],
     ];
   }
