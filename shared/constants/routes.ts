@@ -203,6 +203,7 @@ export const TEMPLATE_ROUTES = [
   "/templates/docs",
   "/templates/editor",
   "/templates/error-page",
+  "/templates/inbox",
   "/templates/landing",
   "/templates/login",
   "/templates/pricing",

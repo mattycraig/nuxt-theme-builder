@@ -243,6 +243,8 @@ export const PAGE_DESCRIPTIONS: Record<string, string> = {
     "Preview an account settings template styled with your theme — profile forms, notification switches, security options, billing usage, and a danger zone.",
   "/templates/checkout":
     "Preview an e-commerce template styled with your theme — product gallery, variant pickers, cart drawer, checkout form, and order summary.",
+  "/templates/inbox":
+    "Preview an inbox template styled with your theme — mail folders, an unread-aware message list, a reading pane, and a reply box.",
 
   // ── Utility pages ──────────────────────────────────────────────────────
   "/privacy":
