@@ -18,7 +18,7 @@ useSchemaOrg([
 
 <template>
   <UContainer>
-    <div class="space-y-8">
+    <div class="space-y-8 pb-24">
       <UPageHeader
         headline="Tools"
         :title="String(meta?.label ?? 'Contrast Checker')"

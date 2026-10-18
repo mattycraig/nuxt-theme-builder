@@ -87,7 +87,7 @@ const { previewPreset } = usePresetActions();
 
 <template>
   <UContainer>
-    <div class="space-y-10 py-2">
+    <div class="space-y-10 pt-2 pb-24">
       <UPageHeader
         headline="Themes"
         :title="`${preset!.name} Theme for Nuxt UI`"

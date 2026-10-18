@@ -70,7 +70,7 @@ function handleClearFilters() {
 
 <template>
   <UContainer>
-    <div class="space-y-8">
+    <div class="space-y-8 pb-24">
       <UPageHeader
         :headline="headline"
         :title="title"
@@ -200,7 +200,7 @@ function handleClearFilters() {
 
       <!-- Category sections -->
       <section
-        v-for="cat in filteredCategories"
+        v-for="(cat, index) in filteredCategories"
         :id="`category-${cat.slug}`"
         :key="cat.slug"
         :aria-labelledby="`heading-${cat.slug}`"
@@ -286,7 +286,10 @@ function handleClearFilters() {
           </ul>
         </slot>
 
-        <USeparator class="my-8" />
+        <USeparator
+          v-if="index < filteredCategories.length - 1 || $slots['after-content']"
+          class="my-8"
+        />
       </section>
 
       <slot name="after-content" />
