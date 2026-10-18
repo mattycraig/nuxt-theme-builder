@@ -100,6 +100,21 @@ export const TEMPLATE_CATEGORIES: TemplateCategory[] = [
       },
     ],
   },
+  {
+    label: "Commerce Templates",
+    icon: "i-lucide-shopping-cart",
+    slug: "commerce",
+    description: "Storefront pages for products, carts, and checkout.",
+    items: [
+      {
+        label: "Product & Checkout",
+        icon: "i-lucide-shopping-bag",
+        description: "Product page with gallery, cart, and checkout form.",
+        to: "/templates/checkout",
+        badge: "new" as const,
+      },
+    ],
+  },
 ];
 
 export const TEMPLATE_NAV_ITEMS: NavigationMenuItem[] = flattenCategories(

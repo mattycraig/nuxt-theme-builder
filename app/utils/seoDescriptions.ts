@@ -241,6 +241,8 @@ export const PAGE_DESCRIPTIONS: Record<string, string> = {
     "Preview a documentation template styled with your theme — sidebar navigation, search, long-form guides with code blocks, callouts, and an on-this-page table of contents.",
   "/templates/settings":
     "Preview an account settings template styled with your theme — profile forms, notification switches, security options, billing usage, and a danger zone.",
+  "/templates/checkout":
+    "Preview an e-commerce template styled with your theme — product gallery, variant pickers, cart drawer, checkout form, and order summary.",
 
   // ── Utility pages ──────────────────────────────────────────────────────
   "/privacy":
