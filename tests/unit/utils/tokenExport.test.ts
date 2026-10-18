@@ -1,3 +1,7 @@
+import { readFile } from "node:fs/promises";
+import { createRequire } from "node:module";
+import { dirname, resolve } from "node:path";
+import { compile } from "tailwindcss";
 import { describe, it, expect } from "vitest";
 import { DEFAULT_THEME, cloneTheme } from "~/utils/defaults";
 import {
@@ -114,6 +118,41 @@ describe("generateTailwindTheme", () => {
     // Same radius and font in both modes by default
     expect(dark).not.toContain("--radius-");
     expect(dark).not.toContain("--font-sans");
+  });
+
+  it("generates the documented utilities when compiled with Tailwind", async () => {
+    const twDir = dirname(
+      createRequire(import.meta.url).resolve("tailwindcss/package.json"),
+    );
+    const compiler = await compile(generateTailwindTheme(DEFAULT_THEME), {
+      base: twDir,
+      async loadStylesheet(id, base) {
+        const path =
+          id === "tailwindcss"
+            ? resolve(twDir, "index.css")
+            : resolve(base, id);
+        return { path, base: dirname(path), content: await readFile(path, "utf8") };
+      },
+    });
+    const tokens = resolveTokens(DEFAULT_THEME, "light");
+    const css = compiler.build([
+      "text-muted",
+      "bg-elevated",
+      "border-accented",
+      "bg-primary",
+      "rounded-md",
+    ]);
+
+    expect(css).toContain(`--text-color-muted: ${tokens.text.muted}`);
+    expect(css).toMatch(/\.text-muted \{\s*color: var\(--text-color-muted\);/);
+    expect(css).toMatch(
+      /\.bg-elevated \{\s*background-color: var\(--background-color-elevated\);/,
+    );
+    expect(css).toMatch(
+      /\.border-accented \{\s*border-color: var\(--border-color-accented\);/,
+    );
+    expect(css).toMatch(/\.bg-primary \{\s*background-color: var\(--color-primary\);/);
+    expect(css).toMatch(/\.rounded-md \{\s*border-radius: var\(--radius-md\);/);
   });
 
   it("quotes font names with spaces", () => {
