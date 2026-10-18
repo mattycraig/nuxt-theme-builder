@@ -21,6 +21,7 @@ export const PAGE_TITLES: Record<string, string> = {
   "/templates": "Nuxt UI Templates Preview — Nuxt UI Theme Builder",
   "/themes": "Free Nuxt UI Themes — Light and Dark Theme Gallery",
   "/tools": "Nuxt UI Theme Tools — Palette, Contrast, Conversion",
+  "/whats-new": "What's New in Nuxt UI Theme Builder — Features and Updates",
 };
 
 export const PAGE_DESCRIPTIONS: Record<string, string> = {
@@ -242,6 +243,8 @@ export const PAGE_DESCRIPTIONS: Record<string, string> = {
     "Privacy policy for the Nuxt UI Theme Builder — learn what data is stored locally and how your preferences are handled.",
   "/about":
     "Build Nuxt UI themes visually — pick colors, preview 125+ components live, and export production-ready code. Free and open source.",
+  "/whats-new":
+    "New features and improvements in the Nuxt UI Theme Builder — contrast checks, logo colors, share links, component defaults, design token exports, and more.",
   "/contact":
     "Get in touch with the Nuxt UI Theme Builder team — report bugs, request features, suggest improvements, or join the community on GitHub.",
 

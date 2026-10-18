@@ -210,13 +210,13 @@ describe("TOOL_NAV_ITEMS", () => {
 });
 
 describe("UTILITY_NAV_ITEMS", () => {
-  it("contains 4 items", () => {
-    expect(UTILITY_NAV_ITEMS).toHaveLength(4);
+  it("contains 5 items", () => {
+    expect(UTILITY_NAV_ITEMS).toHaveLength(5);
   });
 
-  it("has About, Help, Privacy, Contact", () => {
+  it("has What's new, About, Help, Privacy, Contact", () => {
     const labels = UTILITY_NAV_ITEMS.map((i) => i.label);
-    expect(labels).toEqual(["About", "Help", "Privacy", "Contact"]);
+    expect(labels).toEqual(["What's new", "About", "Help", "Privacy", "Contact"]);
   });
 
   it("all have correct icon prefix", () => {

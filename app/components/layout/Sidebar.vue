@@ -47,7 +47,7 @@ const footerLinks = UTILITY_NAV_ITEMS;
           <span v-if="index > 0" aria-hidden="true">&middot;</span>
           <NuxtLink
             :to="String(link.to)"
-            class="hover:text-(--ui-text-highlighted) transition-colors px-1 py-0.5 rounded focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--ui-primary)"
+            class="whitespace-nowrap hover:text-(--ui-text-highlighted) transition-colors px-1 py-0.5 rounded focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--ui-primary)"
           >
             {{ link.label }}
           </NuxtLink>
