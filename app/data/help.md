@@ -27,6 +27,7 @@ The sidebar organizes every design decision into collapsible sections — expand
 - **Text Colors** — Control which neutral shade maps to highlighted, default, muted, dimmed, and toned text tokens.
 - **Background Colors** — Override neutral shades for default, elevated, accented, and inverted backgrounds.
 - **Border Colors** — Override neutral shades for default and accented borders.
+- **Component Defaults** — Set the color, variant, and size that buttons, form fields, badges, and cards use when a page doesn't choose one. See [Component Defaults](#component-defaults).
 
 Click any section header to expand or collapse it. The **expand/collapse all** button in the toolbar toggles every section at once.
 
@@ -72,6 +73,8 @@ export default defineAppConfig({
 ```
 
 **To use it:** drop this into your project's `app.config.ts`. Nuxt UI reads these values at runtime and injects the CSS variables for you. If a slot uses a custom palette (for example `primary: "brand"`), also add the `@theme static` block from the CSS export, which defines that palette's shades.
+
+If you set [component defaults](#component-defaults), the block also includes a `defaultVariants` entry for each component, next to `colors`.
 
 ### CSS Custom Properties
 
@@ -212,6 +215,18 @@ Your exact base color lands on the shade with the closest lightness, marked with
 Custom palettes are shared by light and dark mode, and a theme can have up to six. Loading a built-in preset, randomizing, or applying an AI theme keeps them. Deleting one moves the colors that used it to the built-in palette it was based on.
 
 Names must be lowercase letters, numbers, and dashes, and can't reuse a built-in palette or semantic color name (like `yellow` or `primary`).
+
+---
+
+## Component Defaults
+
+Component defaults change how components look when a page doesn't set the prop itself, for example making every button soft and neutral, or every form field subtle.
+
+1. Open **Component Defaults** at the bottom of the sidebar.
+2. Pick a color, variant, or size for **Buttons**, **Form fields**, **Badges**, or **Cards**. **Default** keeps Nuxt UI's own default.
+3. The preview updates right away. Demo components that set a prop explicitly, such as a row showing every button variant, keep that value.
+
+**Form fields** covers inputs, textareas, selects, select menus, input menus, and number inputs. Component defaults are shared by light and dark mode, and loading a built-in preset, randomizing, or applying an AI theme keeps them. The `app.config.ts` export writes them as `defaultVariants`, which is how Nuxt UI sets component defaults in your own app. **Reset component defaults** clears them all.
 
 ---
 

@@ -1,10 +1,12 @@
 import { SEMANTIC_COLOR_KEYS } from "~/types/theme";
 import type { ThemeConfig } from "~/types/theme";
+import { getComponentDefaultVariants } from "~/utils/componentDefaults";
 
 /**
  * Serialize a theme's palette assignments as a Nuxt `app.config.ts`, with
  * comments pointing at the CSS export for anything app config can't express
- * (custom palettes, shade shifts, dark-mode palettes).
+ * (custom palettes, shade shifts, dark-mode palettes). Component defaults
+ * become `defaultVariants` entries next to `colors`.
  */
 export function generateAppConfigExport(cfg: ThemeConfig): string {
   const hasShadeOverrides = SEMANTIC_COLOR_KEYS.some(
@@ -27,6 +29,19 @@ export function generateAppConfigExport(cfg: ThemeConfig): string {
   lines.push(`      error: '${cfg.colors.error}',`);
   lines.push(`      neutral: '${cfg.neutral}',`);
   lines.push(`    },`);
+  for (const [key, variants] of Object.entries(
+    getComponentDefaultVariants(cfg.components),
+  )) {
+    const entries = Object.entries(variants);
+    if (!entries.length) continue;
+    lines.push(`    ${key}: {`);
+    lines.push(`      defaultVariants: {`);
+    for (const [prop, value] of entries) {
+      lines.push(`        ${prop}: '${value}',`);
+    }
+    lines.push(`      },`);
+    lines.push(`    },`);
+  }
   lines.push(`  },`);
   lines.push(`})`);
   const customPaletteNames = (cfg.customPalettes ?? []).map((p) => p.name);

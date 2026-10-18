@@ -11,7 +11,7 @@ import {
 
 import { SITE_URL, INDEXABLE_ROBOTS } from "~/utils/seoDescriptions";
 
-useThemeApply();
+useThemeApply({ componentDefaults: true });
 
 const store = useThemeStore();
 const colorMode = useColorMode();
