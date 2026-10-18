@@ -65,6 +65,13 @@ export const TEMPLATE_CATEGORIES: TemplateCategory[] = [
         to: "/templates/kanban",
         badge: "new" as const,
       },
+      {
+        label: "File Manager",
+        icon: "i-lucide-folder-open",
+        description: "Cloud drive with folder tree, file grid, and details panel.",
+        to: "/templates/file-manager",
+        badge: "new" as const,
+      },
     ],
   },
   {
@@ -125,6 +132,13 @@ export const TEMPLATE_CATEGORIES: TemplateCategory[] = [
         icon: "i-lucide-log-in",
         description: "Authentication with login and registration forms.",
         to: "/templates/login",
+      },
+      {
+        label: "Onboarding",
+        icon: "i-lucide-list-checks",
+        description: "Multi-step signup with verification, workspace, and plan steps.",
+        to: "/templates/onboarding",
+        badge: "new" as const,
       },
     ],
   },
