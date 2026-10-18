@@ -900,8 +900,8 @@ const [DefineDetails, ReuseDetails] = createReusableTemplate();
           </div>
         </div>
 
-        <section aria-labelledby="details-meta-heading" class="space-y-3">
-          <h3 id="details-meta-heading" class="text-sm font-semibold text-(--ui-text-highlighted)">File details</h3>
+        <section class="space-y-3">
+          <h3 class="text-sm font-semibold text-(--ui-text-highlighted)">File details</h3>
           <dl class="grid grid-cols-[6.5rem_1fr] gap-x-3 gap-y-2.5 text-sm">
             <dt class="text-(--ui-text-muted)">Type</dt>
             <dd class="text-(--ui-text-highlighted)">{{ kindMeta[selectedItem.kind].label }}</dd>
@@ -923,8 +923,8 @@ const [DefineDetails, ReuseDetails] = createReusableTemplate();
 
         <USeparator />
 
-        <section aria-labelledby="details-access-heading" class="space-y-3">
-          <h3 id="details-access-heading" class="text-sm font-semibold text-(--ui-text-highlighted)">Who has access</h3>
+        <section class="space-y-3">
+          <h3 class="text-sm font-semibold text-(--ui-text-highlighted)">Who has access</h3>
           <div class="flex items-center gap-3">
             <UAvatarGroup size="md" :max="4">
               <UAvatar :alt="selectedItem.owner" />
@@ -939,8 +939,8 @@ const [DefineDetails, ReuseDetails] = createReusableTemplate();
 
         <USeparator />
 
-        <section aria-labelledby="details-activity-heading" class="space-y-3">
-          <h3 id="details-activity-heading" class="text-sm font-semibold text-(--ui-text-highlighted)">Activity</h3>
+        <section class="space-y-3">
+          <h3 class="text-sm font-semibold text-(--ui-text-highlighted)">Activity</h3>
           <ol class="space-y-3">
             <li v-for="entry in selectedActivity" :key="entry.text" class="flex gap-3">
               <UAvatar :alt="entry.who" size="xs" class="shrink-0" />
