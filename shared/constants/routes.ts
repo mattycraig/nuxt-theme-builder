@@ -201,6 +201,7 @@ export const TEMPLATE_ROUTES = [
   "/templates/dashboard",
   "/templates/editor",
   "/templates/error-page",
+  "/templates/kanban",
   "/templates/landing",
   "/templates/login",
   "/templates/pricing",

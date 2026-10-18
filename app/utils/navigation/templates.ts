@@ -41,6 +41,13 @@ export const TEMPLATE_CATEGORIES: TemplateCategory[] = [
         to: "/templates/error-page",
         badge: "new" as const,
       },
+      {
+        label: "Kanban Board",
+        icon: "i-lucide-square-kanban",
+        description: "Project board with draggable task cards and task details.",
+        to: "/templates/kanban",
+        badge: "new" as const,
+      },
     ],
   },
   {
