@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { mountWithUApp } from "../../../setup/component";
+import { mountComponent, mountWithUApp } from "../../../setup/component";
 import CategoryIndex from "~/components/shared/CategoryIndex.vue";
 import type { ComponentCategory } from "~/types/components";
 
@@ -103,5 +103,47 @@ describe("CategoryIndex", () => {
     });
     const input = wrapper.find("#custom-search");
     expect(input.exists()).toBe(true);
+  });
+  it("leaves space below the last section", async () => {
+    const wrapper = await mountWithUApp(CategoryIndex, {
+      props: {
+        headline: "UI Library",
+        title: "Components",
+        itemLabel: "component",
+        categories: mockCategories,
+      },
+    });
+    // Pages render in a scroll container with no padding of its own, so the
+    // index must add it or its last card sits flush with the bottom edge.
+    expect(wrapper.find(".space-y-8").classes()).toContain("pb-24");
+  });
+
+  it("drops the separator after the last category", async () => {
+    const wrapper = await mountWithUApp(CategoryIndex, {
+      props: {
+        headline: "UI Library",
+        title: "Components",
+        itemLabel: "component",
+        categories: mockCategories,
+      },
+    });
+    const sections = wrapper.findAll("section[aria-labelledby]");
+    expect(sections).toHaveLength(2);
+    expect(sections[0]!.find('[role="separator"]').exists()).toBe(true);
+    expect(sections[1]!.find('[role="separator"]').exists()).toBe(false);
+  });
+
+  it("keeps the last separator when after-content follows", async () => {
+    const wrapper = await mountComponent(CategoryIndex, {
+      props: {
+        headline: "UI Library",
+        title: "Components",
+        itemLabel: "component",
+        categories: mockCategories,
+      },
+      slots: { "after-content": "<p>Workflow</p>" },
+    });
+    const sections = wrapper.findAll("section[aria-labelledby]");
+    expect(sections[1]!.find('[role="separator"]').exists()).toBe(true);
   });
 });

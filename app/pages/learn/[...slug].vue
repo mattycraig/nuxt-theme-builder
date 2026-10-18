@@ -79,7 +79,7 @@ const formatLabels: Record<string, string> = {
 <template>
   <UPage>
     <UContainer>
-      <article class="py-8">
+      <article class="pt-8 pb-24">
         <!-- Header -->
         <header class="mb-8">
           <div class="flex items-center gap-2 mb-3 flex-wrap">
