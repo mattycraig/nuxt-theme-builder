@@ -196,15 +196,22 @@ export const TOOL_ROUTES = [
 
 export const TEMPLATE_ROUTES = [
   "/templates/blog",
+  "/templates/booking",
   "/templates/changelog",
   "/templates/chat",
+  "/templates/checkout",
   "/templates/dashboard",
+  "/templates/docs",
   "/templates/editor",
   "/templates/error-page",
   "/templates/file-manager",
+  "/templates/inbox",
+  "/templates/kanban",
   "/templates/landing",
   "/templates/login",
+  "/templates/portfolio",
   "/templates/pricing",
+  "/templates/settings",
 ] as const;
 
 export const NOINDEX_DEMO_ROUTES = [
