@@ -237,6 +237,8 @@ export const PAGE_DESCRIPTIONS: Record<string, string> = {
     "Preview an authentication template styled with your theme — login and registration forms with social sign-in options.",
   "/templates/changelog":
     "Preview a changelog template styled with your theme — version history, release notes, update timeline, and semantic versioning display.",
+  "/templates/checkout":
+    "Preview an e-commerce template styled with your theme — product gallery, variant pickers, cart drawer, checkout form, and order summary.",
 
   // ── Utility pages ──────────────────────────────────────────────────────
   "/privacy":
