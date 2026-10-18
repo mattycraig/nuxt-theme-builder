@@ -777,7 +777,7 @@ const [DefineDetails, ReuseDetails] = createReusableTemplate();
                           <span class="truncate">{{ folder.name }}</span>
                           <UIcon v-if="folder.sharedWith.length" name="i-lucide-users" class="size-3.5 shrink-0 text-(--ui-text-muted)" aria-label="Shared" />
                         </span>
-                        <span class="block text-xs text-(--ui-text-muted)">{{ childCount(folder.id) }} items</span>
+                        <span class="block text-xs text-(--ui-text-muted)">{{ childCount(folder.id) }} {{ childCount(folder.id) === 1 ? "item" : "items" }}</span>
                       </span>
                     </button>
                     <UDropdownMenu :items="actionsFor(folder)" :content="{ align: 'end' }" :ui="{ content: 'w-56' }">
