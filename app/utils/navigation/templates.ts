@@ -37,6 +37,13 @@ export const TEMPLATE_CATEGORIES: TemplateCategory[] = [
         description: "Error state pages for HTTP status codes.",
         to: "/templates/error-page",
       },
+      {
+        label: "Account Settings",
+        icon: "i-lucide-settings",
+        description: "Profile, notifications, security, and billing forms.",
+        to: "/templates/settings",
+        badge: "new" as const,
+      },
     ],
   },
   {

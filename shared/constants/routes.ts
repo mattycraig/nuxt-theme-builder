@@ -205,6 +205,7 @@ export const TEMPLATE_ROUTES = [
   "/templates/landing",
   "/templates/login",
   "/templates/pricing",
+  "/templates/settings",
 ] as const;
 
 export const NOINDEX_DEMO_ROUTES = [
