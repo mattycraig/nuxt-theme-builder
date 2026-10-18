@@ -204,6 +204,7 @@ export const TEMPLATE_ROUTES = [
   "/templates/docs",
   "/templates/editor",
   "/templates/error-page",
+  "/templates/file-manager",
   "/templates/inbox",
   "/templates/kanban",
   "/templates/landing",

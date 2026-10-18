@@ -251,6 +251,8 @@ export const PAGE_DESCRIPTIONS: Record<string, string> = {
     "Preview a kanban board template styled with your theme — draggable task cards across columns, labels, progress, assignees, and a task detail panel.",
   "/templates/portfolio":
     "Preview a portfolio template styled with your theme — personal hero, selected work grid, experience timeline, testimonials, and a contact form.",
+  "/templates/file-manager":
+    "Preview a file manager template styled with your theme — folder tree, grid and list views, file actions, storage usage, and a details panel.",
 
   // ── Utility pages ──────────────────────────────────────────────────────
   "/privacy":
