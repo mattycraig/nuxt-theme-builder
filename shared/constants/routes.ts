@@ -196,6 +196,7 @@ export const TOOL_ROUTES = [
 
 export const TEMPLATE_ROUTES = [
   "/templates/blog",
+  "/templates/booking",
   "/templates/changelog",
   "/templates/chat",
   "/templates/checkout",

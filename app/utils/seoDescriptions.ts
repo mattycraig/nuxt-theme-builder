@@ -245,6 +245,8 @@ export const PAGE_DESCRIPTIONS: Record<string, string> = {
     "Preview an e-commerce template styled with your theme — product gallery, variant pickers, cart drawer, checkout form, and order summary.",
   "/templates/inbox":
     "Preview an inbox template styled with your theme — mail folders, an unread-aware message list, a reading pane, and a reply box.",
+  "/templates/booking":
+    "Preview a booking template styled with your theme — a calendar date picker, available time slots, a details form, and a confirmation screen.",
 
   // ── Utility pages ──────────────────────────────────────────────────────
   "/privacy":
