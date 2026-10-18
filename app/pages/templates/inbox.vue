@@ -328,7 +328,8 @@ const visibleMails = computed(() => {
     } else if (!inFolder(mail, activeFolder.value)) {
       return false;
     }
-    if (readFilter.value === "unread" && !mail.unread) return false;
+    // Keep the open message listed after it's marked read, so it doesn't vanish while being read.
+    if (readFilter.value === "unread" && !mail.unread && mail.id !== selectedId.value) return false;
     if (!q) return true;
     return [mail.from.name, mail.subject, mail.body.join(" ")].some((s) =>
       s.toLowerCase().includes(q),
@@ -449,7 +450,7 @@ function moveSelected(folder: "archive" | "trash") {
   const index = visibleMails.value.findIndex((m) => m.id === mail.id);
   const remaining = visibleMails.value.filter((m) => m.id !== mail.id);
   mail.folder = folder;
-  const next = remaining[index] ?? remaining[index - 1] ?? null;
+  const next = index < 0 ? (remaining[0] ?? null) : (remaining[index] ?? remaining[index - 1] ?? null);
   selectedId.value = next?.id ?? null;
   if (!next) mobileReading.value = false;
   toast.add({
