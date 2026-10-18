@@ -41,6 +41,13 @@ export const TEMPLATE_CATEGORIES: TemplateCategory[] = [
         to: "/templates/error-page",
         badge: "new" as const,
       },
+      {
+        label: "Inbox",
+        icon: "i-lucide-inbox",
+        description: "Mail client with folders, message list, and reading pane.",
+        to: "/templates/inbox",
+        badge: "new" as const,
+      },
     ],
   },
   {
