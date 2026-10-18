@@ -70,6 +70,13 @@ export const TEMPLATE_CATEGORIES: TemplateCategory[] = [
         description: "Version history and release notes.",
         to: "/templates/changelog",
       },
+      {
+        label: "Docs",
+        icon: "i-lucide-book-open",
+        description: "Documentation page with sidebar, search, and table of contents.",
+        to: "/templates/docs",
+        badge: "new" as const,
+      },
     ],
   },
   {

@@ -199,6 +199,7 @@ export const TEMPLATE_ROUTES = [
   "/templates/changelog",
   "/templates/chat",
   "/templates/dashboard",
+  "/templates/docs",
   "/templates/editor",
   "/templates/error-page",
   "/templates/landing",
