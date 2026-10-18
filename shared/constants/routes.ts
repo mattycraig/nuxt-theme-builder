@@ -198,13 +198,16 @@ export const TEMPLATE_ROUTES = [
   "/templates/blog",
   "/templates/changelog",
   "/templates/chat",
+  "/templates/checkout",
   "/templates/dashboard",
+  "/templates/docs",
   "/templates/editor",
   "/templates/error-page",
   "/templates/inbox",
   "/templates/landing",
   "/templates/login",
   "/templates/pricing",
+  "/templates/settings",
 ] as const;
 
 export const NOINDEX_DEMO_ROUTES = [

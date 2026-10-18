@@ -237,6 +237,12 @@ export const PAGE_DESCRIPTIONS: Record<string, string> = {
     "Preview an authentication template styled with your theme — login and registration forms with social sign-in options.",
   "/templates/changelog":
     "Preview a changelog template styled with your theme — version history, release notes, update timeline, and semantic versioning display.",
+  "/templates/docs":
+    "Preview a documentation template styled with your theme — sidebar navigation, search, long-form guides with code blocks, callouts, and an on-this-page table of contents.",
+  "/templates/settings":
+    "Preview an account settings template styled with your theme — profile forms, notification switches, security options, billing usage, and a danger zone.",
+  "/templates/checkout":
+    "Preview an e-commerce template styled with your theme — product gallery, variant pickers, cart drawer, checkout form, and order summary.",
   "/templates/inbox":
     "Preview an inbox template styled with your theme — mail folders, an unread-aware message list, a reading pane, and a reply box.",
 
