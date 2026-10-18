@@ -145,9 +145,6 @@ function ownerLabel(owner: string) {
   return owner === ME ? "me" : owner;
 }
 
-function childCount(folderId: string) {
-  return items.value.filter((item) => item.parentId === folderId && !item.trashed).length;
-}
 
 function pathTo(folderId: string) {
   const path: DriveItem[] = [];
@@ -157,6 +154,15 @@ function pathTo(folderId: string) {
     folder = byId(folder.parentId);
   }
   return path;
+}
+
+// An item counts as trashed when it, or any folder above it, is in the trash.
+function isTrashed(item: DriveItem) {
+  return !!item.trashed || pathTo(item.parentId).some((folder) => folder.trashed);
+}
+
+function childCount(folderId: string) {
+  return items.value.filter((item) => item.parentId === folderId && !isTrashed(item)).length;
 }
 
 function kindFromName(name: string): FileKind {
@@ -174,7 +180,7 @@ function kindFromName(name: string): FileKind {
 // ---------------------------------------------------------------------------
 
 const visibleItems = computed(() => {
-  const live = items.value.filter((item) => !item.trashed);
+  const live = items.value.filter((item) => !isTrashed(item));
   if (query.value.trim()) {
     const q = query.value.trim().toLowerCase();
     return live.filter((item) => item.name.toLowerCase().includes(q));
@@ -211,7 +217,7 @@ const showQuickAccess = computed(
 
 const quickAccess = computed(() =>
   items.value
-    .filter((item) => item.kind !== "folder" && !item.trashed)
+    .filter((item) => item.kind !== "folder" && !isTrashed(item))
     .sort((a, b) => a.modifiedRank - b.modifiedRank)
     .slice(0, 4),
 );
@@ -278,7 +284,7 @@ const breadcrumbItems = computed<BreadcrumbItem[]>(() => {
 
 function toTree(parentId: string): TreeItem[] {
   return items.value
-    .filter((item) => item.kind === "folder" && item.parentId === parentId && !item.trashed)
+    .filter((item) => item.kind === "folder" && item.parentId === parentId && !isTrashed(item))
     .sort((a, b) => a.name.localeCompare(b.name))
     .map((folder) => {
       const children = toTree(folder.id);
@@ -403,7 +409,7 @@ function createItem(kind: FileKind) {
 
 /** Folders an item can be moved into: not itself, not its own descendants. */
 function moveTargets(item: DriveItem): DropdownMenuItem[] {
-  const all = items.value.filter((f) => f.kind === "folder" && !f.trashed && f.id !== item.id && !pathTo(f.id).some((p) => p.id === item.id));
+  const all = items.value.filter((f) => f.kind === "folder" && !isTrashed(f) && f.id !== item.id && !pathTo(f.id).some((p) => p.id === item.id));
   return [
     { label: "My files", icon: "i-lucide-hard-drive", disabled: item.parentId === ROOT, onSelect: () => moveItem(item, ROOT) },
     ...all.map((folder) => ({ label: folder.name, icon: "i-lucide-folder", disabled: item.parentId === folder.id, onSelect: () => moveItem(item, folder.id) })),
@@ -831,13 +837,17 @@ const [DefineDetails, ReuseDetails] = createReusableTemplate();
               @contextmenu="(_e: Event, row: TableRow<DriveItem>) => onItemContextMenu(row.original)"
             >
               <template #name-cell="{ row }">
-                <div class="flex items-center gap-3 min-w-0">
+                <button
+                  type="button"
+                  class="flex items-center gap-3 min-w-0 max-w-full text-left rounded-(--ui-radius) focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
+                  @click.stop="onActivate(row.original)"
+                >
                   <span class="size-8 rounded-(--ui-radius) flex items-center justify-center shrink-0" :class="kindMeta[row.original.kind].tile">
                     <UIcon :name="kindMeta[row.original.kind].icon" class="size-4" aria-hidden="true" />
                   </span>
                   <span class="font-medium text-(--ui-text-highlighted) truncate">{{ row.original.name }}</span>
                   <UIcon v-if="row.original.starred" name="i-lucide-star" class="size-3.5 shrink-0 text-warning" aria-label="Starred" />
-                </div>
+                </button>
               </template>
               <template #owner-cell="{ row }">
                 <div class="flex items-center gap-2">
