@@ -231,7 +231,7 @@ function cancelBooking() {
       </div>
     </header>
 
-    <main class="flex flex-1 items-start justify-center px-4 pb-10 sm:px-6 lg:items-center">
+    <div class="flex flex-1 items-start justify-center px-4 pb-10 sm:px-6 lg:items-center">
       <!-- Step 1 & 2: booking card -->
       <div
         v-if="step !== 'confirmed'"
@@ -654,7 +654,7 @@ function cancelBooking() {
           />
         </p>
       </div>
-    </main>
+    </div>
 
     <footer class="pb-6 text-center text-xs text-(--ui-text-muted)">
       Powered by Acme Scheduling
