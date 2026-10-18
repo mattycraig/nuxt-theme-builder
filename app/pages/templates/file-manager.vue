@@ -385,7 +385,10 @@ function trashItem(item: DriveItem) {
 }
 
 function deleteForever(item: DriveItem) {
-  items.value = items.value.filter((entry) => entry.id !== item.id);
+  // Deleting a folder also deletes everything inside it.
+  const inside = (entry: DriveItem) => entry.id === item.id || pathTo(entry.parentId).some((folder) => folder.id === item.id);
+  if (selectedItem.value && inside(selectedItem.value)) selectedId.value = null;
+  items.value = items.value.filter((entry) => !inside(entry));
   toast.add({ title: "Deleted forever", description: item.name, icon: "i-lucide-trash-2", color: "error" });
 }
 
