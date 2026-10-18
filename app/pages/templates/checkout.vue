@@ -442,7 +442,7 @@ function continueShopping() {
       </UContainer>
     </header>
 
-    <main class="flex-1">
+    <div class="flex-1">
       <UContainer class="py-6 sm:py-8">
         <UBreadcrumb
           :items="breadcrumb"
@@ -1178,7 +1178,7 @@ function continueShopping() {
           </div>
         </template>
       </UContainer>
-    </main>
+    </div>
 
     <footer class="border-t border-(--ui-border) mt-16">
       <UContainer
