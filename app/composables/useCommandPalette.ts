@@ -9,6 +9,7 @@ export function useCommandPalette() {
   const colorMode = useColorMode();
   const store = useThemeStore();
   const { smartSave, openSaveAs } = useSaveThemeModal();
+  const { copyShareLink } = useThemeShare();
   const { allNavItems } = useLayoutNavigation();
 
   const searchGroups = computed(() => [
@@ -79,6 +80,12 @@ export function useCommandPalette() {
         suffix: "Save as a new theme with a name",
         kbds: ["meta", "shift", "S"],
         onSelect: () => openSaveAs(),
+      },
+      {
+        label: "Copy Share Link",
+        icon: "i-lucide-link",
+        suffix: "Copy a link that opens this theme",
+        onSelect: () => copyShareLink(),
       },
     ];
   }
