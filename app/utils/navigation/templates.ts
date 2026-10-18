@@ -93,6 +93,13 @@ export const TEMPLATE_CATEGORIES: TemplateCategory[] = [
         to: "/templates/login",
         badge: "new" as const,
       },
+      {
+        label: "Onboarding",
+        icon: "i-lucide-list-checks",
+        description: "Multi-step signup with verification, workspace, and plan steps.",
+        to: "/templates/onboarding",
+        badge: "new" as const,
+      },
     ],
   },
 ];
