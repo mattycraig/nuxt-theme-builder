@@ -88,18 +88,24 @@ export const DEFAULT_THEME: ThemeConfig = {
     warning: "amber",
     error: "rose",
   },
+  // Light shades and muted text are picked so solid buttons and muted text on
+  // cards meet WCAG AA (4.5:1). DEFAULT_LIGHT_OVERRIDES stays Nuxt UI's own
+  // values because the CSS generator diffs against it.
   colorShades: {
     primary: "600",
-    secondary: "600",
-    success: "600",
+    secondary: "700",
+    success: "700",
     info: "600",
-    warning: "600",
+    warning: "700",
     error: "600",
   },
   neutral: "zinc",
   radius: 0.375,
   font: DEFAULT_FONT,
-  lightOverrides: { ...DEFAULT_LIGHT_OVERRIDES },
+  lightOverrides: {
+    ...DEFAULT_LIGHT_OVERRIDES,
+    text: { ...DEFAULT_LIGHT_OVERRIDES.text, muted: "600" },
+  },
   darkOverrides: { ...DEFAULT_DARK_OVERRIDES },
 
   // Dark mode defaults — same as light
