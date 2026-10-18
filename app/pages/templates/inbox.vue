@@ -419,7 +419,6 @@ function openMail(mail: Mail) {
   selectedId.value = mail.id;
   mail.unread = false;
   mobileReading.value = true;
-  replyState.body = "";
 }
 
 function toggleStar(mail: Mail) {
@@ -506,6 +505,13 @@ const replySchema = z.object({
 type ReplySchema = z.output<typeof replySchema>;
 
 const replyState = reactive<Partial<ReplySchema>>({ body: "" });
+const replyForm = useTemplateRef("replyForm");
+
+// A draft belongs to one conversation: start fresh whenever the selection changes.
+watch(selectedId, () => {
+  replyState.body = "";
+  replyForm.value?.clear();
+});
 
 function onReply(event: FormSubmitEvent<ReplySchema>) {
   const mail = selected.value;
@@ -925,6 +931,7 @@ function onCompose(event: FormSubmitEvent<ComposeSchema>) {
 
           <!-- Reply box -->
           <UForm
+            ref="replyForm"
             :schema="replySchema"
             :state="replyState"
             class="sticky bottom-0 max-w-3xl w-full mx-auto pt-6 bg-(--ui-bg)"
