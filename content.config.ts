@@ -24,5 +24,31 @@ export default defineContentConfig({
         featured: z.boolean().default(false),
       }),
     }),
+    // One entry per user-facing feature on /whats-new, newest first by file
+    // name (YYYY-MM-DD-slug.md).
+    changelog: defineCollection({
+      type: "page",
+      source: "changelog/*.md",
+      schema: z.object({
+        date: z.string().regex(/^\d{4}-\d{2}-\d{2}$/),
+        description: z.string(),
+        badge: z.enum(["new", "improved", "fixed"]),
+        image: z
+          .object({
+            src: z.string(),
+            alt: z.string(),
+          })
+          .optional(),
+        links: z
+          .array(
+            z.object({
+              label: z.string(),
+              to: z.string(),
+              icon: z.string().optional(),
+            }),
+          )
+          .optional(),
+      }),
+    }),
   },
 });

@@ -275,6 +275,7 @@ export default defineNuxtConfig({
     "/help": { prerender: true },
     "/privacy": { prerender: true },
     "/contact": { prerender: true },
+    "/whats-new": { prerender: true },
 
     // Blank page every preview iframe starts on (see PREVIEW_SHELL_PATH)
     [PREVIEW_SHELL_PATH]: {

@@ -230,6 +230,7 @@ export const PUBLIC_STATIC_ROUTES = [
   "/templates",
   "/themes",
   "/tools",
+  "/whats-new",
 ] as const;
 
 /** All dynamic routes that need to be included in the sitemap. */

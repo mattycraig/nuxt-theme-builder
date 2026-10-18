@@ -4,6 +4,11 @@ import type { NavigationMenuItem } from "@nuxt/ui";
 
 export const UTILITY_NAV_ITEMS: NavigationMenuItem[] = [
   {
+    label: "What's new",
+    icon: "i-lucide-megaphone",
+    to: "/whats-new",
+  },
+  {
     label: "About",
     icon: "i-lucide-info",
     to: "/about",

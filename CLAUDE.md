@@ -36,6 +36,7 @@ app/pages/               components/[slug], blocks/[slug] (data-driven), templat
 server/api/              ai/generate.post.ts, auth/launch.post.ts, highlight.post.ts, source/[...path].get.ts
 modules/source-code-embed.ts  Embeds app/pages/**/*.vue as a Nitro virtual module for /api/source
 content/learn/           Nuxt Content articles (schema in content.config.ts)
+content/changelog/       What's new entries for /whats-new, one file per feature (YYYY-MM-DD-slug.md)
 ```
 
 Only demo routes use the preview iframe (`isFramedRoute` in `shared/constants/routes.ts`: component, block, and template pages, plus `/ai`). Every other page renders directly in the editor so search engines see its content; the iframe document is `noindex`. Preview iframes start on the prerendered `/preview` shell and are moved to the current route with `NAVIGATE` after the ready handshake, so the theme is applied before the demo page renders.
@@ -63,6 +64,7 @@ Data flow: editor controls call store setters → `useThemeApply()` writes seman
 - Icons: `i-lucide-*` (`i-simple-icons-*` for brands).
 - Formatting: there is **no** formatter for `.ts`/`.vue` (ESLint `@stylistic` is not enabled). Match the surrounding style: double quotes, semicolons, trailing commas, 2-space indent. Prettier covers JSON/MD/YAML/CSS.
 - Setup-style Pinia stores; prefer extending existing composables over page-level ad-hoc state.
+- A user-facing `feat` PR adds its own entry in `content/changelog/` (plus a 1600×900 screenshot in `public/changelog/` when it has a visible UI). Describe what the user can now do, in plain prose, never the commit message.
 - Commits: Conventional Commits enforced by commitlint (lowercase subject, header ≤ 100 chars). Types: `feat fix docs style refactor perf test build ci chore revert`. Scopes in use: `editor preview ai tools learn store api types test seo deps ci`.
 - Branch from `master`, PR back to `master`. Husky runs lint-staged (ESLint --fix, Prettier) on commit. Never bypass it with `--no-verify`.
 

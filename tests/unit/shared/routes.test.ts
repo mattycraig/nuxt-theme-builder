@@ -1,4 +1,6 @@
 import { describe, it, expect } from "vitest";
+import { readdirSync } from "node:fs";
+import { resolve } from "node:path";
 import {
   BLOCK_ROUTES,
   COMPONENT_ROUTES,
@@ -75,6 +77,19 @@ describe("shared/constants/routes", () => {
       ...LEARN_ROUTES,
       ...THEME_ROUTES,
     ]);
+  });
+
+  it("has no public folder with the same path as a static page", () => {
+    // The static file server redirects /foo to /foo/ when public/foo is a
+    // folder, so the page at /foo would never render.
+    const publicDirs = readdirSync(resolve(__dirname, "../../../public"), {
+      withFileTypes: true,
+    })
+      .filter((entry) => entry.isDirectory())
+      .map((entry) => `/${entry.name}`);
+    for (const dir of publicDirs) {
+      expect(PUBLIC_STATIC_ROUTES, dir).not.toContain(dir);
+    }
   });
 
   it("has no duplicate routes", () => {
