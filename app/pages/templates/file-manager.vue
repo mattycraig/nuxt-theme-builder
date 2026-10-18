@@ -375,7 +375,7 @@ function moveItem(item: DriveItem, folderId: string) {
 
 function trashItem(item: DriveItem) {
   item.trashed = true;
-  if (selectedId.value === item.id) selectedId.value = null;
+  if (selectedItem.value && isTrashed(selectedItem.value)) selectedId.value = null;
   toast.add({
     title: "Moved to trash",
     description: item.name,
