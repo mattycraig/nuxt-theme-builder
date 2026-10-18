@@ -553,9 +553,13 @@ type ComposeSchema = z.output<typeof composeSchema>;
 
 const composeState = reactive<Partial<ComposeSchema>>({ to: "", subject: "", body: "" });
 
+// Sending, Discard, the close button and Esc all close the modal; each starts the next message empty.
+watch(composeOpen, (open) => {
+  if (!open) Object.assign(composeState, { to: "", subject: "", body: "" });
+});
+
 function onCompose(event: FormSubmitEvent<ComposeSchema>) {
   composeOpen.value = false;
-  Object.assign(composeState, { to: "", subject: "", body: "" });
   toast.add({
     title: "Message sent",
     description: `“${event.data.subject}” was sent to ${event.data.to}.`,
