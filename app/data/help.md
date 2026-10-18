@@ -17,6 +17,7 @@ The sidebar organizes every design decision into collapsible sections — expand
 
 - **My Themes** — Load, rename, duplicate, export, or delete your saved theme configurations.
 - **Presets** — Start fast with a built-in preset like Coastal, Forest, or Sunset, then customize from there.
+- **Start From a Logo** — Build a theme from the colors in a logo or brand image. See [Start From a Logo](#start-from-a-logo).
 - **Color Mode** — Switch between light and dark mode to preview your theme in each context.
 - **Layout** — Set the global border radius (in rem) and choose a font family.
 - **Custom Palettes** — Generate a full 50–950 palette from one brand color, then use it like any Tailwind palette. See [Custom Palettes](#custom-palettes).
@@ -172,6 +173,20 @@ For example, if your light mode muted text looks too faint, bump it from shade 4
 
 ---
 
+## Start From a Logo
+
+Open **Start From a Logo** in the sidebar and choose a PNG, JPG, WebP, GIF, or SVG image (up to 5 MB). The image is read in your browser and never uploaded.
+
+The builder lists the main colors it finds, ignoring transparency and anti-aliased edges, and suggests:
+
+- **Primary**: the most common brand color. Click any other swatch to use it instead.
+- **Secondary**: the next color with a clearly different hue. If there isn't one, secondary stays as it is.
+- **Neutral**: a gray scale that matches a gray in the image, or one tinted toward the primary hue.
+
+With **Use exact colors** on, the colors become custom palettes named `logo-primary` and `logo-secondary`, so your exact hex values appear in the theme. Turn it off to use the closest Tailwind palettes instead. **Apply to theme** sets both light and dark mode in one step, so a single **Undo** reverts it.
+
+---
+
 ## Contrast Check
 
 The **Contrast Check** section measures the color pairs your theme actually renders in the mode you're editing, against WCAG AA (4.5:1 for normal text):
@@ -181,6 +196,8 @@ The **Contrast Check** section measures the color pairs your theme actually rend
 - Each semantic color used as text or links on the page background
 
 Pairs below 4.5:1 are listed first with their ratio. When a nearby shade fixes the pair, a **Use** button applies it: for a semantic color it changes that color's shade, and for text it changes the text token. Every fix is a normal edit, so **Undo** reverts it. Switch color mode to check the other mode, and use the [Contrast Checker](/tools/contrast-checker) tool to test any two colors.
+
+---
 
 ## Custom Palettes
 

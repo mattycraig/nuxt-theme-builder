@@ -11,6 +11,8 @@ featured: false
 
 Nuxt UI semantic colors take a **palette name**, not a hex value. `primary: '#ff5a1f'` doesn't work, because every component needs the whole 50–950 scale for hover states, soft variants, and dark mode. To use your exact brand color, turn it into a palette first.
 
+If you only have the logo, open **Start From a Logo** in the [Theme Builder](/) sidebar. It reads the logo's colors in your browser and creates these palettes for you.
+
 ## 1. Define the palette
 
 Add eleven `--color-<name>-*` variables to your main CSS file inside `@theme static`:

@@ -14,6 +14,7 @@ import {
 } from "~/types/theme";
 import { capitalize } from "~/utils/helpers";
 import { generatePalette } from "~/utils/paletteGenerator";
+import type { LogoSuggestion } from "~/utils/imagePalette";
 import type { ContrastFix } from "~/utils/themeContrast";
 import { getThemeContrastChecks } from "~/utils/themeContrast";
 import { useThemeModeAccessors } from "~/composables/useThemeModeAccessors";
@@ -34,6 +35,7 @@ const {
 const SECTION_KEYS = [
   "myThemes",
   "presets",
+  "logo",
   "colorMode",
   "layout",
   "customPalettes",
@@ -172,6 +174,23 @@ function onAssignPalette(name: string, role: SemanticColorKey) {
   store.setSemanticColorForMode(mode.value, role, name);
 }
 
+function onLogoApply(suggestion: LogoSuggestion, exact: boolean) {
+  _flushPaletteColorCommit();
+  const result = store.applyLogoColors(suggestion, { exact });
+  if (!result.success) {
+    showPaletteError(result.error);
+    return;
+  }
+  toast.add({
+    title: "Logo colors applied",
+    description: result.usedBuiltIn
+      ? "You already have the most custom palettes a theme can hold, so the closest Tailwind palettes were used."
+      : "Primary, secondary, and neutral now follow your logo. Undo to go back.",
+    icon: "i-lucide-wand-sparkles",
+    color: "success",
+  });
+}
+
 function onRadiusChange(val: number) {
   store.setRadiusVisualForMode(mode.value, val);
   _scheduleRadiusCommit(val);
@@ -255,6 +274,17 @@ onUnmounted(() => {
         default-open
       >
         <EditorPresetSelector />
+      </EditorSection>
+
+      <USeparator />
+
+      <!-- Start from a logo (sets both modes) -->
+      <EditorSection
+        v-model:open="sectionOpen.logo"
+        icon="i-lucide-image"
+        label="Start From a Logo"
+      >
+        <EditorLogoColors @apply="onLogoApply" />
       </EditorSection>
 
       <USeparator />
