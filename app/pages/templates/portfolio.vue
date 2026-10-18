@@ -266,7 +266,7 @@ const services = [
 const testimonials = [
   {
     quote:
-      "Maya has a rare ability to hold the whole system in her head while sweating the smallest interaction. Our clinicians noticed the difference in week one.",
+      "Jane has a rare ability to hold the whole system in her head while sweating the smallest interaction. Our clinicians noticed the difference in week one.",
     name: "Jonas Reyes",
     role: "VP Product, Halcyon Health",
   },
@@ -283,13 +283,13 @@ const testimonials = [
   },
   {
     quote:
-      "Maya's prototypes answered questions we didn't know we had. We cut two months of back-and-forth by testing her clickable flows with real travellers.",
+      "Jane's prototypes answered questions we didn't know we had. We cut two months of back-and-forth by testing her clickable flows with real travellers.",
     name: "Lena Fischer",
     role: "CEO, Wayfarer",
   },
   {
     quote:
-      "Kiln is one of the friendliest open-source projects I've contributed to, and that starts with how Maya reviews pull requests.",
+      "Kiln is one of the friendliest open-source projects I've contributed to, and that starts with how Jane reviews pull requests.",
     name: "Sam Adeyemi",
     role: "Open-source contributor",
   },
@@ -344,7 +344,7 @@ const writingLinks: ButtonProps[] = [
 const contactMethods = [
   {
     label: "Email",
-    value: "hello@mayaokafor.design",
+    value: "hello@janedoe.design",
     icon: "i-lucide-mail",
   },
   {
@@ -399,9 +399,9 @@ function onContactSubmit(event: FormSubmitEvent<ContactSchema>) {
           class="flex items-center gap-2.5 rounded-(--ui-radius) focus-visible:outline-2 focus-visible:outline-primary"
           @click="scrollToSection('top')"
         >
-          <UAvatar alt="Maya Okafor" color="primary" size="sm" />
+          <UAvatar alt="Jane Doe" color="primary" size="sm" />
           <span class="font-semibold text-(--ui-text-highlighted)">
-            Maya Okafor
+            Jane Doe
           </span>
         </button>
       </template>
@@ -456,7 +456,7 @@ function onContactSubmit(event: FormSubmitEvent<ContactSchema>) {
       </template>
 
       <template #description>
-        I'm Maya, a design engineer in Lisbon. For nine years I've helped
+        I'm Jane, a design engineer in Lisbon. For nine years I've helped
         product teams turn tangled workflows into calm, accessible software,
         and I write the front-end code to ship it.
       </template>
@@ -500,14 +500,14 @@ function onContactSubmit(event: FormSubmitEvent<ContactSchema>) {
         <UPageCard variant="outline" class="relative bg-(--ui-bg)">
           <div class="flex items-center gap-4">
             <UAvatar
-              alt="Maya Okafor"
+              alt="Jane Doe"
               color="primary"
               size="3xl"
               class="size-16 text-2xl ring-4 ring-primary/15"
             />
             <div class="min-w-0">
               <p class="text-lg font-semibold text-(--ui-text-highlighted)">
-                Maya Okafor
+                Jane Doe
               </p>
               <p class="text-sm text-(--ui-text-muted)">
                 Design engineer · Product & systems
@@ -879,7 +879,7 @@ function onContactSubmit(event: FormSubmitEvent<ContactSchema>) {
             <UFormField label="Name" name="name" required>
               <UInput
                 v-model="contactState.name"
-                placeholder="Jane Cooper"
+                placeholder="Alex Cooper"
                 autocomplete="name"
                 class="w-full"
               />
@@ -888,7 +888,7 @@ function onContactSubmit(event: FormSubmitEvent<ContactSchema>) {
               <UInput
                 v-model="contactState.email"
                 type="email"
-                placeholder="jane@company.com"
+                placeholder="alex@company.com"
                 autocomplete="email"
                 class="w-full"
               />
@@ -902,7 +902,7 @@ function onContactSubmit(event: FormSubmitEvent<ContactSchema>) {
           >
             <UTextarea
               v-model="contactState.message"
-              placeholder="Hi Maya, we're redesigning our onboarding and..."
+              placeholder="Hi Jane, we're redesigning our onboarding and..."
               :rows="5"
               autoresize
               class="w-full"
@@ -923,7 +923,7 @@ function onContactSubmit(event: FormSubmitEvent<ContactSchema>) {
     <UFooter class="border-t border-(--ui-border)">
       <template #left>
         <p class="text-sm text-(--ui-text-muted)">
-          © 2026 Maya Okafor. Designed and built in Lisbon.
+          © 2026 Jane Doe. Designed and built in Lisbon.
         </p>
       </template>
 
