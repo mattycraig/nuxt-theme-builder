@@ -4,8 +4,14 @@ import {
   DEFAULT_DARK_OVERRIDES,
 } from "~/utils/defaults";
 import { generateThemeCSS, isCleanCSS } from "~/utils/cssGenerator";
+import { applyComponentDefaults } from "~/utils/componentDefaults";
 
-export function useThemeApply() {
+/**
+ * Apply the theme to this document. `componentDefaults` also writes the
+ * theme's default component props into app config; only the preview
+ * iframe enables it, so the editor's own controls keep their styling.
+ */
+export function useThemeApply(options: { componentDefaults?: boolean } = {}) {
   const store = useThemeStore();
   const appConfig = useAppConfig();
 
@@ -34,6 +40,21 @@ export function useThemeApply() {
     },
     { immediate: true },
   );
+
+  if (options.componentDefaults) {
+    watch(
+      () => JSON.stringify(store.config.components ?? {}),
+      () => {
+        if (appConfig.ui) {
+          applyComponentDefaults(
+            appConfig.ui as Record<string, unknown>,
+            store.config.components,
+          );
+        }
+      },
+      { immediate: true },
+    );
+  }
 
   // CSS injection covers radius, font, token overrides, shade-shifted palette overrides,
   // AND dark-mode-specific palette/neutral/radius/font overrides

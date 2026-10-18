@@ -24,6 +24,72 @@ describe("useThemeStore", () => {
     });
   });
 
+  describe("component defaults", () => {
+    it("sets a default with one history entry", () => {
+      store.setComponentDefault("button", "variant", "soft");
+      expect(store.config.components).toEqual({ button: { variant: "soft" } });
+      store.undo();
+      expect(store.config.components).toBeUndefined();
+    });
+
+    it("drops the group and field when the last default is cleared", () => {
+      store.setComponentDefault("button", "variant", "soft");
+      store.setComponentDefault("card", "variant", "subtle");
+      store.setComponentDefault("button", "variant", undefined);
+      expect(store.config.components).toEqual({ card: { variant: "subtle" } });
+      store.setComponentDefault("card", "variant", undefined);
+      expect(store.config.components).toBeUndefined();
+    });
+
+    it("ignores props and values outside the allowed options", () => {
+      store.setComponentDefault("card", "size", "lg");
+      store.setComponentDefault("button", "variant", "huge");
+      expect(store.config.components).toBeUndefined();
+    });
+
+    it("resets every default at once", () => {
+      store.setComponentDefault("button", "size", "lg");
+      store.setComponentDefault("badge", "color", "neutral");
+      store.resetComponentDefaults();
+      expect(store.config.components).toBeUndefined();
+      store.undo();
+      expect(store.config.components).toEqual({
+        button: { size: "lg" },
+        badge: { color: "neutral" },
+      });
+    });
+
+    it("keeps component defaults across built-in presets, randomize, and generated themes", () => {
+      store.setComponentDefault("button", "variant", "outline");
+      store.loadPreset(BUILT_IN_PRESETS[1]!);
+      expect(store.config.components).toEqual({ button: { variant: "outline" } });
+      store.randomizeTheme();
+      expect(store.config.components).toEqual({ button: { variant: "outline" } });
+      store.loadConfig(cloneTheme(DEFAULT_THEME), { keepCustomPalettes: true });
+      expect(store.config.components).toEqual({ button: { variant: "outline" } });
+    });
+
+    it("replaces them on a plain import and keeps a generated theme's own", () => {
+      store.setComponentDefault("button", "variant", "outline");
+      store.loadConfig({
+        ...cloneTheme(DEFAULT_THEME),
+        components: { card: { variant: "soft" } },
+      }, { keepCustomPalettes: true });
+      expect(store.config.components).toEqual({ card: { variant: "soft" } });
+      store.loadConfig(cloneTheme(DEFAULT_THEME));
+      expect(store.config.components).toBeUndefined();
+    });
+
+    it("round-trips through saved themes", () => {
+      store.setComponentDefault("field", "variant", "subtle");
+      store.savePreset("Fields");
+      store.resetToDefaults();
+      store.loadPreset(store.savedPresets.find((p) => p.name === "Fields")!);
+      expect(store.config.components).toEqual({ field: { variant: "subtle" } });
+      expect(store.hasUnsavedChanges).toBe(false);
+    });
+  });
+
   describe("setSemanticColorForMode", () => {
     it("updates a semantic color", () => {
       store.setSemanticColorForMode("light", "primary", "red");

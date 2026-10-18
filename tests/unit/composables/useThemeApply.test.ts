@@ -1,7 +1,8 @@
-import { describe, it, expect } from "vitest";
+import { describe, it, expect, afterEach } from "vitest";
 import { mountSuspended } from "@nuxt/test-utils/runtime";
 import { useThemeStore } from "~/stores/theme";
 import { DEFAULT_THEME } from "~/utils/defaults";
+import UButton from "@nuxt/ui/runtime/components/Button.vue";
 
 /**
  * Tests for useThemeApply composable.
@@ -126,5 +127,66 @@ describe("useThemeApply", () => {
     expect(appConfig.ui?.colors?.primary).toBe("indigo");
     expect(appConfig.ui?.colors?.secondary).toBe("purple");
     expect(appConfig.ui?.colors?.success).toBe("emerald");
+  });
+
+  describe("component defaults", () => {
+    async function mountWithButton(options?: { componentDefaults?: boolean }) {
+      const { useThemeApply } = await import("~/composables/useThemeApply");
+      const wrapper = await mountSuspended(
+        defineComponent({
+          components: { UButton },
+          setup() {
+            useThemeApply(options);
+            const store = useThemeStore();
+            const appConfig = useAppConfig();
+            return { store, appConfig };
+          },
+          template: `<UButton label="Save" />`,
+        }),
+      );
+      mounted = wrapper;
+      return wrapper as typeof wrapper & {
+        vm: {
+          store: ReturnType<typeof useThemeStore>;
+          appConfig: { ui: Record<string, { defaultVariants?: object }> };
+        };
+      };
+    }
+
+    let mounted: { unmount: () => void } | undefined;
+
+    afterEach(() => {
+      mounted?.unmount();
+      mounted = undefined;
+      useThemeStore().resetToDefaults();
+    });
+
+    it("writes defaults into app config and restyles components", async () => {
+      const wrapper = await mountWithButton({ componentDefaults: true });
+      const { store, appConfig } = wrapper.vm;
+      expect(wrapper.find("button").classes()).toContain("bg-primary");
+
+      store.setComponentDefault("button", "variant", "outline");
+      store.setComponentDefault("field", "size", "lg");
+      await nextTick();
+
+      expect(appConfig.ui.button?.defaultVariants).toEqual({ variant: "outline" });
+      expect(appConfig.ui.selectMenu?.defaultVariants).toEqual({ size: "lg" });
+      expect(wrapper.find("button").classes()).not.toContain("bg-primary");
+      expect(wrapper.find("button").classes()).toContain("ring-primary/50");
+
+      store.resetComponentDefaults();
+      await nextTick();
+      expect(appConfig.ui.button?.defaultVariants).toEqual({});
+      expect(wrapper.find("button").classes()).toContain("bg-primary");
+    });
+
+    it("leaves app config alone unless enabled", async () => {
+      const wrapper = await mountWithButton();
+      const { store, appConfig } = wrapper.vm;
+      store.setComponentDefault("badge", "variant", "soft");
+      await nextTick();
+      expect(appConfig.ui.badge?.defaultVariants ?? {}).toEqual({});
+    });
   });
 });
