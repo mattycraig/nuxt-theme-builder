@@ -416,6 +416,8 @@ function createItem(kind: FileKind) {
     sharedWith: [],
   };
   items.value.push(item);
+  // Show the folder it landed in, so it's visible even when created from Starred, Trash or a search.
+  openFolder(item.parentId);
   startRename(item);
 }
 
@@ -509,12 +511,13 @@ watch(uploadOpen, (open) => {
 
 function confirmUpload() {
   const added = uploadFiles.value ?? [];
+  const targetId = uploadTargetId.value;
   for (const file of added) {
     items.value.push({
       id: `upload-${++createdCount}`,
       name: file.name,
       kind: kindFromName(file.name),
-      parentId: uploadTargetId.value,
+      parentId: targetId,
       owner: ME,
       modified: "Just now",
       modifiedRank: 0,
@@ -525,6 +528,7 @@ function confirmUpload() {
   }
   toast.add({ title: `Uploaded ${added.length} ${added.length === 1 ? "file" : "files"}`, description: `to ${uploadTargetName.value}`, icon: "i-lucide-circle-check", color: "success" });
   uploadOpen.value = false;
+  openFolder(targetId);
 }
 
 // ---------------------------------------------------------------------------
