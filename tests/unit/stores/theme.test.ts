@@ -812,6 +812,96 @@ describe("useThemeStore", () => {
     });
   });
 
+  describe("applyLogoColors", () => {
+    it("adds exact logo palettes and assigns them in both modes", () => {
+      const result = store.applyLogoColors(
+        { primary: "#E4002B", secondary: "#0057B8", neutral: "stone" },
+        { exact: true },
+      );
+
+      expect(result).toEqual({ success: true, usedBuiltIn: false });
+      expect(store.config.customPalettes).toEqual([
+        { name: "logo-primary", color: "#e4002b" },
+        { name: "logo-secondary", color: "#0057b8" },
+      ]);
+      for (const mode of ["colors", "darkColors"] as const) {
+        expect(store.config[mode].primary).toBe("logo-primary");
+        expect(store.config[mode].secondary).toBe("logo-secondary");
+      }
+      expect(store.config.colorShades.primary).toBe(
+        generatePalette("#e4002b")!.anchor,
+      );
+      expect(store.config.neutral).toBe("stone");
+      expect(store.config.darkNeutral).toBe("stone");
+    });
+
+    it("uses the closest built-in palettes when not exact", () => {
+      store.applyLogoColors(
+        { primary: "#e4002b", neutral: "zinc" },
+        { exact: false },
+      );
+
+      const generated = generatePalette("#e4002b")!;
+      expect(store.config.customPalettes).toBeUndefined();
+      expect(store.config.colors.primary).toBe(generated.reference);
+      expect(store.config.darkColorShades.primary).toBe(generated.anchor);
+      // No secondary color: the role keeps its palette
+      expect(store.config.colors.secondary).toBe(DEFAULT_THEME.colors.secondary);
+    });
+
+    it("updates existing logo palettes instead of adding more", () => {
+      store.applyLogoColors({ primary: "#e4002b", neutral: "zinc" }, { exact: true });
+      store.applyLogoColors({ primary: "#00a651", neutral: "zinc" }, { exact: true });
+
+      expect(store.config.customPalettes).toEqual([
+        { name: "logo-primary", color: "#00a651" },
+      ]);
+    });
+
+    it("falls back to built-in palettes at the custom palette limit", () => {
+      for (let i = 0; i < CUSTOM_PALETTE_MAX; i++) {
+        store.addCustomPalette(`brand-${i}`, "#336699");
+      }
+
+      const result = store.applyLogoColors(
+        { primary: "#e4002b", neutral: "zinc" },
+        { exact: true },
+      );
+
+      expect(result.usedBuiltIn).toBe(true);
+      expect(store.config.customPalettes).toHaveLength(CUSTOM_PALETTE_MAX);
+      expect(store.config.colors.primary).toBe(
+        generatePalette("#e4002b")!.reference,
+      );
+    });
+
+    it("is one undo step and clears the active preset", () => {
+      store.activePresetName = "Default";
+      const before = cloneTheme(store.config);
+
+      store.applyLogoColors(
+        { primary: "#e4002b", secondary: "#0057b8", neutral: "slate" },
+        { exact: true },
+      );
+      expect(store.activePresetName).toBe("");
+
+      store.undo();
+      expect(store.config).toEqual(before);
+    });
+
+    it("rejects an invalid color without changing the theme", () => {
+      const before = cloneTheme(store.config);
+
+      const result = store.applyLogoColors(
+        { primary: "#e4002b", secondary: "not-a-color", neutral: "slate" },
+        { exact: true },
+      );
+
+      expect(result.success).toBe(false);
+      expect(store.config).toEqual(before);
+    });
+  });
+
   describe("persistence", () => {
     function readThemeCookie(): string {
       const match = document.cookie.match(/(?:^|;\s*)theme=([^;]*)/);

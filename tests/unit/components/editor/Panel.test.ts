@@ -39,6 +39,7 @@ describe("EditorPanel", () => {
     expect(html).toContain("Layout");
     expect(html).toContain("Semantic Colors");
     expect(html).toContain("Neutral Color");
+    expect(html).toContain("Contrast Check");
   });
 
   it("renders collapsed sections for token overrides", async () => {
