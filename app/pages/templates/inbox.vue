@@ -345,17 +345,22 @@ function count(folder: Folder) {
   return mails.value.filter((m) => inFolder(m, folder)).length;
 }
 
-function selectFolder(folder: Folder) {
-  activeFolder.value = folder;
-  activeLabel.value = null;
+function selectFirst() {
+  // Clear first: the list keeps the selected message even when it's read, under the Unread filter.
+  selectedId.value = null;
   selectedId.value = visibleMails.value[0]?.id ?? null;
   mobileReading.value = false;
 }
 
+function selectFolder(folder: Folder) {
+  activeFolder.value = folder;
+  activeLabel.value = null;
+  selectFirst();
+}
+
 function selectLabel(name: string) {
   activeLabel.value = activeLabel.value === name ? null : name;
-  selectedId.value = visibleMails.value[0]?.id ?? null;
-  mobileReading.value = false;
+  selectFirst();
 }
 
 // ---------------------------------------------------------------------------
@@ -514,16 +519,24 @@ watch(selectedId, () => {
   replyForm.value?.clear();
 });
 
+// Replying to your own sent message goes to its recipients, not back to you.
+function replyRecipients(mail: Mail) {
+  return mail.from.email === me.email ? mail.to : [mail.from.name];
+}
+
+const replyTo = computed(() => (selected.value ? replyRecipients(selected.value).join(", ") : ""));
+
 function onReply(event: FormSubmitEvent<ReplySchema>) {
   const mail = selected.value;
   if (!mail) return;
+  const to = replyRecipients(mail);
   mails.value.push({
     id: `reply-${mails.value.length + 1}`,
     folder: "sent",
     from: me,
-    to: [mail.from.name],
+    to,
     subject: mail.subject.startsWith("Re:") ? mail.subject : `Re: ${mail.subject}`,
-    body: [`Hi ${mail.from.name.split(" ")[0]},`, event.data.body],
+    body: [`Hi ${to[0]?.split(" ")[0] ?? "there"},`, event.data.body],
     time: "Just now",
     date: "Just now",
     unread: false,
@@ -533,7 +546,7 @@ function onReply(event: FormSubmitEvent<ReplySchema>) {
   replyState.body = "";
   toast.add({
     title: "Reply sent",
-    description: `Your reply to ${mail.from.name} is on its way.`,
+    description: `Your reply to ${to.join(", ")} is on its way.`,
     icon: "i-lucide-send",
     color: "success",
   });
@@ -945,12 +958,12 @@ function onCompose(event: FormSubmitEvent<ComposeSchema>) {
             <div class="rounded-(--ui-radius) border border-default bg-(--ui-bg) shadow-sm">
               <UFormField
                 name="body"
-                :label="`Reply to ${selected.from.name}`"
+                :label="`Reply to ${replyTo}`"
                 :ui="{ label: 'sr-only', error: 'px-3 pb-2' }"
               >
                 <UTextarea
                   v-model="replyState.body"
-                  :placeholder="`Reply to ${selected.from.name}…`"
+                  :placeholder="`Reply to ${replyTo}…`"
                   :rows="3"
                   autoresize
                   :maxrows="8"
