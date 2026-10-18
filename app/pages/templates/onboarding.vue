@@ -469,7 +469,7 @@ const highlights = [
     </aside>
 
     <!-- Form area -->
-    <main class="flex min-h-screen flex-col">
+    <div class="flex min-h-screen flex-col">
       <header
         class="flex items-center justify-between gap-4 px-4 py-4 sm:px-8 lg:px-12"
       >
@@ -942,6 +942,6 @@ const highlights = [
           </div>
         </UForm>
       </div>
-    </main>
+    </div>
   </div>
 </template>
