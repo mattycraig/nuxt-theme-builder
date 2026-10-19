@@ -165,6 +165,7 @@ useSchemaOrg(
 <template>
   <UDashboardGroup unit="px" storage-key="theme-builder">
     <a href="#maincontent" class="skip-link">Skip to main content</a>
+    <PreviewColorVisionFilters />
 
     <!-- Sidebar (Theme Editor) -->
     <LayoutSidebar />

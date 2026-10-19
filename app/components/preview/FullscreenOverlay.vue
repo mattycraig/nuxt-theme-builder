@@ -32,6 +32,7 @@ const {
 } = useSourceCode();
 
 const { currentPageLabel } = useLayoutNavigation();
+const { filter: colorVisionFilter } = useColorVision();
 
 // The iframe starts on the prerendered preview shell (PREVIEW_SHELL_PATH)
 // and is navigated to iframeSrc once it reports PREVIEW_READY.
@@ -225,6 +226,8 @@ onUnmounted(() => {
           <div class="flex items-center gap-2">
             <UColorModeSwitch />
 
+            <PreviewColorVisionBadge />
+
             <USeparator
               orientation="vertical"
               class="h-6 mx-1"
@@ -287,6 +290,7 @@ onUnmounted(() => {
               width="100%"
               height="100%"
               class="w-full h-full border-0"
+              :style="{ filter: colorVisionFilter }"
               @load="handleFrameLoad"
             >
               Your browser does not support iframes. Please use a modern browser
