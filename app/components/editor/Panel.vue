@@ -56,6 +56,8 @@ function copyFromOtherMode() {
   });
 }
 
+const { mode: colorVisionMode } = useColorVision();
+
 const SECTION_KEYS = [
   "myThemes",
   "presets",
@@ -453,6 +455,8 @@ onUnmounted(() => {
             :checks="contrastChecks"
             @fix="onContrastFix"
           />
+          <USeparator class="my-4" />
+          <EditorColorVisionSelect v-model="colorVisionMode" />
           <template #fallback>
             <p class="text-xs text-(--ui-text-muted)">Checking contrast…</p>
           </template>

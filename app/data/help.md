@@ -180,8 +180,6 @@ The main content area renders a live, interactive preview of your theme. Navigat
 
 Resize the preview viewport with the toolbar controls — desktop, tablet, and mobile presets, or enter a custom width. Toggle **Code** to view the source code of the current preview page.
 
-The **eye** button shows the preview the way people with color vision deficiencies see it: protanopia, deuteranopia, tritanopia, or achromatopsia (no color at all). Use it to check that success, warning, and error states don't rely on color alone. The simulation only changes the preview, never your theme or its export, and it switches off when you reload the page.
-
 ---
 
 ## Shade Overrides
@@ -217,6 +215,8 @@ The **Contrast Check** section measures the color pairs your theme actually rend
 - Each semantic color used as text or links on the page background
 
 Pairs below 4.5:1 are listed first with their ratio. When a nearby shade fixes the pair, a **Use** button applies it: for a semantic color it changes that color's shade, and for text it changes the text token. Every fix is a normal edit, so **Undo** reverts it. Switch color mode to check the other mode, and use the [Contrast Checker](/tools/contrast-checker) tool to test any two colors.
+
+Below the list, **Preview as** shows the component, block, and template previews the way people with a color vision deficiency see them: protanopia, deuteranopia, tritanopia, or achromatopsia (no color at all). Use it to check that success, warning, and error states don't rely on color alone. While a simulation is on, the preview toolbar shows its name; click it to turn the simulation off. It only changes the preview, never your theme or its export, and it switches off when you reload the page.
 
 ---
 

@@ -226,7 +226,7 @@ onUnmounted(() => {
           <div class="flex items-center gap-2">
             <UColorModeSwitch />
 
-            <PreviewColorVisionMenu />
+            <PreviewColorVisionBadge />
 
             <USeparator
               orientation="vertical"

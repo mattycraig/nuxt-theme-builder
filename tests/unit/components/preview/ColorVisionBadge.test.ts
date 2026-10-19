@@ -1,29 +1,29 @@
 import { describe, it, expect, beforeEach } from "vitest";
 import { mountWithUApp } from "../../../setup/component";
-import ColorVisionMenu from "~/components/preview/ColorVisionMenu.vue";
+import ColorVisionBadge from "~/components/preview/ColorVisionBadge.vue";
 import ColorVisionFilters from "~/components/preview/ColorVisionFilters.vue";
 import { useColorVision } from "~/composables/useColorVision";
 
-describe("PreviewColorVisionMenu", () => {
+describe("PreviewColorVisionBadge", () => {
   beforeEach(() => {
     useColorVision().setMode("none");
   });
 
-  it("renders an unlabeled trigger for normal vision", async () => {
-    const wrapper = await mountWithUApp(ColorVisionMenu);
-    const button = wrapper.find('button[aria-label="Simulate color vision"]');
-    expect(button.exists()).toBe(true);
-    expect(button.text()).toBe("");
+  it("renders nothing for normal vision", async () => {
+    const wrapper = await mountWithUApp(ColorVisionBadge);
+    expect(wrapper.find("button").exists()).toBe(false);
   });
 
-  it("names the active simulation on the trigger", async () => {
+  it("names the active simulation and turns it off on click", async () => {
     useColorVision().setMode("tritanopia");
-    const wrapper = await mountWithUApp(ColorVisionMenu);
+    const wrapper = await mountWithUApp(ColorVisionBadge);
     const button = wrapper.find("button");
     expect(button.text()).toContain("Tritanopia");
     expect(button.attributes("aria-label")).toBe(
-      "Color vision simulation: Tritanopia",
+      "Simulating Tritanopia. Turn off color vision simulation",
     );
+    await button.trigger("click");
+    expect(useColorVision().mode.value).toBe("none");
   });
 });
 
