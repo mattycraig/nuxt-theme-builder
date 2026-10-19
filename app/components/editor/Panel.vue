@@ -60,6 +60,7 @@ const SECTION_KEYS = [
   "myThemes",
   "presets",
   "logo",
+  "random",
   "colorMode",
   "layout",
   "customPalettes",
@@ -310,6 +311,20 @@ onUnmounted(() => {
         label="Start From a Logo"
       >
         <EditorLogoColors @apply="onLogoApply" />
+      </EditorSection>
+
+      <USeparator />
+
+      <!-- Random theme, with locks for the parts to keep -->
+      <EditorSection
+        v-model:open="sectionOpen.random"
+        icon="i-lucide-dices"
+        label="Random Theme"
+      >
+        <EditorRandomTheme
+          v-model="store.randomizeLocks"
+          @randomize="store.randomizeTheme()"
+        />
       </EditorSection>
 
       <USeparator />

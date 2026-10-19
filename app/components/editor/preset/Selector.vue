@@ -151,37 +151,29 @@ function onPresetSelect(name: string) {
 
 <template>
   <div class="space-y-2">
-    <div class="flex items-center gap-2">
-      <USelectMenu
-        :model-value="selectedPresetName"
-        :items="presetItems"
-        value-key="value"
-        class="w-full"
-        placeholder="Select a preset..."
-        aria-label="Select a preset"
-        :ui="{
-          label: 'text-muted uppercase text-xs',
-        }"
-        @update:model-value="onPresetSelect($event as string)"
-      >
-        <!-- Custom dropdown items: swatches + name -->
-        <template #item="{ item }">
-          <div
-            v-if="item && typeof item === 'object' && 'config' in item"
-            class="flex items-center gap-2 min-w-0 w-full py-0.5"
-          >
-            <EditorSwatchStrip :config="item.config" />
-            <span class="text-sm truncate">{{ item.label }}</span>
-          </div>
-        </template>
-      </USelectMenu>
-
-      <!-- Random theme, with locks for the parts to keep -->
-      <EditorRandomizeButton
-        v-model="store.randomizeLocks"
-        @randomize="store.randomizeTheme()"
-      />
-    </div>
+    <USelectMenu
+      :model-value="selectedPresetName"
+      :items="presetItems"
+      value-key="value"
+      class="w-full"
+      placeholder="Select a preset..."
+      aria-label="Select a preset"
+      :ui="{
+        label: 'text-muted uppercase text-xs',
+      }"
+      @update:model-value="onPresetSelect($event as string)"
+    >
+      <!-- Custom dropdown items: swatches + name -->
+      <template #item="{ item }">
+        <div
+          v-if="item && typeof item === 'object' && 'config' in item"
+          class="flex items-center gap-2 min-w-0 w-full py-0.5"
+        >
+          <EditorSwatchStrip :config="item.config" />
+          <span class="text-sm truncate">{{ item.label }}</span>
+        </div>
+      </template>
+    </USelectMenu>
 
     <!-- Selected preset swatch preview below (only when preset selected and no saved theme active) -->
     <div v-if="selectedPreset" class="flex items-center gap-2 px-1">
