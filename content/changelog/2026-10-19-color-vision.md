@@ -12,6 +12,6 @@ links:
     icon: i-lucide-book-open
 ---
 
-About one in twelve men has some form of color blindness. The **Contrast Check** section now has a **Preview as** choice that shows any component, block, or template page the way they see it. Pick protanopia, deuteranopia, or tritanopia (no red, green, or blue cones), or achromatopsia (no color at all).
+About one in twelve men has some form of color blindness. The **Contrast Check** section now has a **Preview as** choice that shows the page next to the editor the way they see it, whether that's a component, block, or template preview or any other page. Pick protanopia, deuteranopia, or tritanopia (no red, green, or blue cones), or achromatopsia (no color at all).
 
 It's a quick way to catch states that rely on color alone. Under deuteranopia, for example, green success and orange warning badges can look almost the same. While a simulation is on, the preview toolbar shows which one, and clicking it turns it off. The simulation also works in fullscreen. It only changes the preview, never your theme or its export.

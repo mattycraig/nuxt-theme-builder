@@ -28,8 +28,8 @@ const items = COLOR_VISION_OPTIONS.map((o) => ({
       class="w-full"
     />
     <p :id="hintId" class="mt-1.5 text-xs text-(--ui-text-muted)">
-      Shows the component, block, and template previews the way people with a
-      color vision deficiency see them. Your theme isn't changed.
+      Shows the page next to the editor the way people with a color vision
+      deficiency see it. Your theme isn't changed.
     </p>
   </div>
 </template>

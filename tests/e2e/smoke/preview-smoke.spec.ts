@@ -118,3 +118,39 @@ test.describe("Smoke - Indexable pages", () => {
     });
   }
 });
+
+// The simulation filters whatever the main area shows: the iframe on demo
+// routes, the page container everywhere else.
+test.describe("Smoke - Color vision preview", () => {
+  test.describe.configure({ timeout: 120_000 });
+
+  for (const { path, target } of [
+    { path: "/components/button", target: 'iframe[title="Theme preview"]' },
+    { path: "/", target: '[data-testid="page-container"]' },
+  ]) {
+    test(`filters ${path} and turns off from the toolbar`, async ({ page }) => {
+      await page.goto(path);
+      await page.waitForSelector(
+        '[data-testid="theme-editor"][data-hydrated="true"]',
+        { state: "visible", timeout: 60_000 },
+      );
+
+      const select = page.getByLabel("Preview as");
+      await select.scrollIntoViewIfNeeded();
+      await select.click();
+      await page.getByRole("option", { name: /Deuteranopia/ }).click();
+
+      const filtered = page.locator(target);
+      await expect(filtered).toHaveCSS(
+        "filter",
+        'url("#color-vision-deuteranopia")',
+      );
+
+      await page
+        .getByRole("button", { name: /Turn off color vision simulation/ })
+        .click();
+      await expect(filtered).toHaveCSS("filter", "none");
+      await expect(select).toContainText("Normal vision");
+    });
+  }
+});
