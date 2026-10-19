@@ -43,6 +43,10 @@ const {
   handleIframeLoad,
 } = usePreviewIframe();
 
+// Color vision simulation: demo routes filter the iframe (PreviewFrame),
+// every other page filters its own container here.
+const { filter: colorVisionFilter } = useColorVision();
+
 // Direct pages scroll inside the page container, which the router's
 // window-based scroll behavior doesn't reach.
 const pageScroll = useTemplateRef<HTMLElement>("pageScroll");
@@ -235,6 +239,8 @@ useSchemaOrg(
       >
         <div
           ref="pageScroll"
+          data-testid="page-container"
+          :style="isFramed ? undefined : { filter: colorVisionFilter }"
           :class="
             isFramed
               ? undefined
