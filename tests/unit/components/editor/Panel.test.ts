@@ -110,6 +110,11 @@ describe("EditorPanel", () => {
     expect(wrapper.text()).toContain("already match dark mode");
   });
 
+  it("offers the color vision preview in the Contrast Check section", async () => {
+    const wrapper = await mountPanel();
+    expect(wrapper.text()).toContain("Preview as");
+  });
+
   it("renders the custom palettes section", async () => {
     const wrapper = await mountPanel();
     expect(wrapper.html()).toContain("Custom Palettes");
