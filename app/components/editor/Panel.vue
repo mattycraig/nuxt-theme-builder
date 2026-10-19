@@ -32,6 +32,30 @@ const {
   overrides,
 } = useThemeModeAccessors();
 
+// Copy from the other color mode ──────────────────────────────────
+
+const otherMode = computed(() => (mode.value === "light" ? "dark" : "light"));
+
+const modesMatch = computed(() => {
+  const c = store.config;
+  return (
+    SEMANTIC_COLOR_KEYS.every((key) => c.colors[key] === c.darkColors[key]) &&
+    c.neutral === c.darkNeutral &&
+    c.radius === c.darkRadius &&
+    c.font === c.darkFont
+  );
+});
+
+function copyFromOtherMode() {
+  const from = otherMode.value;
+  store.copyModeSettings(from);
+  toast.add({
+    title: `Copied from ${from} mode`,
+    description: "Undo to go back.",
+    icon: "i-lucide-copy-check",
+  });
+}
+
 const SECTION_KEYS = [
   "myThemes",
   "presets",
@@ -307,6 +331,25 @@ onUnmounted(() => {
             mode settings
           </span>
         </div>
+        <ClientOnly>
+          <UButton
+            class="mt-3"
+            icon="i-lucide-copy"
+            size="xs"
+            color="neutral"
+            variant="outline"
+            :label="`Copy from ${otherMode} mode`"
+            :disabled="modesMatch"
+            @click="copyFromOtherMode"
+          />
+          <p class="mt-1.5 text-xs text-[var(--ui-text-muted)]">
+            {{
+              modesMatch
+                ? `Colors, neutral, radius, and font already match ${otherMode} mode.`
+                : `Uses ${otherMode} mode's colors, neutral, radius, and font. Shades and token overrides stay tuned for ${mode} mode.`
+            }}
+          </p>
+        </ClientOnly>
       </EditorSection>
 
       <USeparator />

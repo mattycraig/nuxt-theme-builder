@@ -178,17 +178,29 @@ export const useThemeStore = defineStore(
       const colors = config.value[_modeField(mode, "colors", "darkColors")];
       const shades =
         config.value[_modeField(mode, "colorShades", "darkColorShades")];
+      _assignRolePalette(colors, shades, key, value);
+      _pushHistory();
+    }
+
+    /**
+     * Point a role at a palette. A custom palette puts its exact base color on
+     * the role's main shade; leaving one for a built-in palette drops that
+     * automatic shade again.
+     */
+    function _assignRolePalette(
+      colors: SemanticColors,
+      shades: SemanticShades,
+      key: SemanticColorKey,
+      value: PaletteName,
+    ) {
       const previous = colors[key];
       colors[key] = value;
-      // A custom palette puts its exact base color on the role's main shade.
-      // Leaving one for a built-in palette drops that automatic shade again.
       const anchor = getCustomPaletteAnchor(value, config.value.customPalettes);
       if (anchor) {
         shades[key] = anchor;
       } else if (!isBuiltInPalette(previous) && previous !== value) {
         shades[key] = DEFAULT_COLOR_SHADES[key];
       }
-      _pushHistory();
     }
 
     function setSemanticShadeForMode(
@@ -245,6 +257,30 @@ export const useThemeStore = defineStore(
       shade: NeutralShade,
     ) {
       _overrides(mode).border[token] = shade;
+      _pushHistory();
+    }
+
+    /**
+     * Copy one mode's palettes, neutral, radius, and font onto the other mode.
+     * Shades and text/background/border overrides stay as they are, because
+     * they're tuned for each mode's background.
+     */
+    function copyModeSettings(from: "light" | "dark") {
+      const to = from === "light" ? "dark" : "light";
+      const sourceColors =
+        config.value[_modeField(from, "colors", "darkColors")];
+      const colors = config.value[_modeField(to, "colors", "darkColors")];
+      const shades =
+        config.value[_modeField(to, "colorShades", "darkColorShades")];
+      for (const key of SEMANTIC_COLOR_KEYS) {
+        _assignRolePalette(colors, shades, key, sourceColors[key]);
+      }
+      config.value[_modeField(to, "neutral", "darkNeutral")] =
+        config.value[_modeField(from, "neutral", "darkNeutral")];
+      config.value[_modeField(to, "radius", "darkRadius")] =
+        config.value[_modeField(from, "radius", "darkRadius")];
+      config.value[_modeField(to, "font", "darkFont")] =
+        config.value[_modeField(from, "font", "darkFont")];
       _pushHistory();
     }
 
@@ -709,6 +745,7 @@ export const useThemeStore = defineStore(
       setTextOverride,
       setBgOverride,
       setBorderOverride,
+      copyModeSettings,
 
       // Custom palettes
       addCustomPalette,

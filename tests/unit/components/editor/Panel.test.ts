@@ -67,6 +67,30 @@ describe("EditorPanel", () => {
     expect(html).toContain("Info");
   });
 
+  it("copies the other mode's colors from the Color Mode section", async () => {
+    const store = useThemeStore();
+    store.setSemanticColorForMode("dark", "primary", "lime");
+    const wrapper = await mountPanel();
+    const button = wrapper
+      .findAll("button")
+      .find((b) => b.text().includes("Copy from dark mode"));
+    expect(button).toBeDefined();
+    await button!.trigger("click");
+    expect(store.config.colors.primary).toBe("lime");
+    expect(store.config.colors.warning).toBe(store.config.darkColors.warning);
+  });
+
+  it("disables copying when both modes already match", async () => {
+    const store = useThemeStore();
+    store.copyModeSettings("light");
+    const wrapper = await mountPanel();
+    const button = wrapper
+      .findAll("button")
+      .find((b) => b.text().includes("Copy from dark mode"));
+    expect(button?.attributes("disabled")).toBeDefined();
+    expect(wrapper.text()).toContain("already match dark mode");
+  });
+
   it("renders the custom palettes section", async () => {
     const wrapper = await mountPanel();
     expect(wrapper.html()).toContain("Custom Palettes");
