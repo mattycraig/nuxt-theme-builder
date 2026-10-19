@@ -18,7 +18,7 @@ The sidebar organizes every design decision into collapsible sections — expand
 - **My Themes** — Load, rename, duplicate, export, or delete your saved theme configurations.
 - **Presets** — Start fast with a built-in preset like Coastal, Forest, or Sunset, then customize from there.
 - **Start From a Logo** — Build a theme from the colors in a logo or brand image. See [Start From a Logo](#start-from-a-logo).
-- **Color Mode** — Switch between light and dark mode to preview your theme in each context.
+- **Color Mode** — Switch between light and dark mode to preview your theme in each context. **Copy from light mode** (or dark) gives the mode you're editing the other mode's colors, neutral, radius, and font in one undoable step. Shades and text, background, and border overrides stay tuned for each mode.
 - **Layout** — Set the global border radius (in rem) and choose a font family.
 - **Custom Palettes** — Generate a full 50–950 palette from one brand color, then use it like any Tailwind palette. See [Custom Palettes](#custom-palettes).
 - **Semantic Colors** — Assign a Tailwind color palette or one of your custom palettes to each semantic slot: primary, secondary, success, info, warning, and error.
