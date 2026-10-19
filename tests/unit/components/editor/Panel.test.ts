@@ -50,6 +50,25 @@ describe("EditorPanel", () => {
     expect(html).toContain("Border Colors");
   });
 
+  it("randomizes from its own Random Theme section, not Theme Presets", async () => {
+    const store = useThemeStore();
+    store.randomizeLocks = [];
+    const wrapper = await mountPanel();
+    const header = wrapper
+      .findAll("button")
+      .find((b) => b.text().includes("Random Theme"));
+    expect(header).toBeDefined();
+    await header!.trigger("click");
+
+    const before = JSON.stringify(store.config);
+    const generate = wrapper
+      .findAll("button")
+      .find((b) => b.text() === "Generate random theme");
+    expect(generate).toBeDefined();
+    await generate!.trigger("click");
+    expect(JSON.stringify(store.config)).not.toBe(before);
+  });
+
   it("contains font picker and radius slider in Layout section", async () => {
     const wrapper = await mountPanel();
     expect(wrapper.html()).toContain("Font Family");

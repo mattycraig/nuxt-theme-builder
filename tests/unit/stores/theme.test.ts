@@ -13,6 +13,7 @@ describe("useThemeStore", () => {
     store = useThemeStore();
     store.resetToDefaults();
     store.savedPresets.splice(0);
+    store.randomizeLocks = [];
   });
 
   describe("initial state", () => {
@@ -142,6 +143,58 @@ describe("useThemeStore", () => {
     it("updates dark font independently", () => {
       store.setFontForMode("dark", "Geist");
       expect(store.config.darkFont).toBe("Geist");
+    });
+  });
+
+  describe("randomizeTheme locks", () => {
+    beforeEach(() => {
+      store.setSemanticColorForMode("light", "primary", "lime");
+      store.setSemanticColorForMode("dark", "primary", "teal");
+      store.setSemanticShadeForMode("light", "primary", "700");
+      store.setSemanticShadeForMode("dark", "primary", "300");
+      store.setNeutralForMode("light", "olive");
+      store.setNeutralForMode("dark", "mist");
+      store.setFontForMode("light", "Roboto");
+      store.setFontForMode("dark", "Roboto");
+      store.setRadiusForMode("light", 1.75);
+      store.setRadiusForMode("dark", 1.75);
+    });
+
+    it("keeps locked roles, neutral, font, and radius in both modes", () => {
+      store.randomizeLocks = ["primary", "neutral", "font", "radius"];
+      for (let i = 0; i < 10; i++) {
+        store.randomizeTheme();
+        expect(store.config.colors.primary).toBe("lime");
+        expect(store.config.darkColors.primary).toBe("teal");
+        expect(store.config.colorShades.primary).toBe("700");
+        expect(store.config.darkColorShades.primary).toBe("300");
+        expect(store.config.neutral).toBe("olive");
+        expect(store.config.darkNeutral).toBe("mist");
+        expect(store.config.font).toBe("Roboto");
+        expect(store.config.darkFont).toBe("Roboto");
+        expect(store.config.radius).toBe(1.75);
+        expect(store.config.darkRadius).toBe(1.75);
+      }
+    });
+
+    it("still randomizes the parts that aren't locked", () => {
+      store.randomizeLocks = ["primary"];
+      const seen = new Set<string>();
+      for (let i = 0; i < 20; i++) {
+        store.randomizeTheme();
+        seen.add(store.config.colors.secondary);
+      }
+      expect(seen.size).toBeGreaterThan(1);
+    });
+
+    it("resets an unlocked role's shades", () => {
+      store.randomizeTheme();
+      expect(store.config.colorShades.primary).toBe(
+        DEFAULT_THEME.colorShades.primary,
+      );
+      expect(store.config.darkColorShades.primary).toBe(
+        DEFAULT_THEME.darkColorShades.primary,
+      );
     });
   });
 

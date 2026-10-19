@@ -24,12 +24,9 @@ describe("EditorPresetSelector", () => {
     expect(html).toContain("Select a preset");
   });
 
-  it("renders random theme button", async () => {
+  it("leaves random themes to the Random Theme section", async () => {
     const wrapper = await mountSelector();
-    const button = wrapper.find(
-      'button[aria-label="Generate random theme"]',
-    );
-    expect(button.exists()).toBe(true);
+    expect(wrapper.text()).not.toContain("Generate random theme");
   });
 
   it("auto-loads first preset for fresh store", async () => {
