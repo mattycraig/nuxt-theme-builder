@@ -170,7 +170,7 @@ Presets are a starting point, not a ceiling. Once loaded, change any token you l
 
 ### Random Themes
 
-The **dice** button next to the presets dropdown builds a random theme. To keep part of your current theme, open the **lock** menu beside it and tick what randomize should leave alone: any semantic color, the neutral, the font, or the radius. A locked color keeps its palette and shades in both light and dark mode. The button shows how many parts are locked, and **Unlock all** clears them. Locks also apply to **Feeling lucky**, and they reset when you reload the page.
+The split button next to the presets dropdown builds a random theme. Click its **dice** half to roll. To keep part of your current theme, open its **lock** half and tick what randomize should leave alone: any semantic color, the neutral, the font, or the radius. A locked color keeps its palette and shades in both light and dark mode. The button shows how many parts are locked, and **Unlock all** clears them. Locks also apply to **Feeling lucky**, and they reset when you reload the page.
 
 ---
 

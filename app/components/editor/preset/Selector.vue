@@ -176,18 +176,11 @@ function onPresetSelect(name: string) {
         </template>
       </USelectMenu>
 
-      <!-- Random theme -->
-      <UTooltip text="Generate random theme">
-        <UButton
-          icon="i-lucide-dices"
-          aria-label="Generate random theme"
-          variant="ghost"
-          color="neutral"
-          size="md"
-          @click="store.randomizeTheme()"
-        />
-      </UTooltip>
-      <EditorRandomizeLocks v-model="store.randomizeLocks" />
+      <!-- Random theme, with locks for the parts to keep -->
+      <EditorRandomizeButton
+        v-model="store.randomizeLocks"
+        @randomize="store.randomizeTheme()"
+      />
     </div>
 
     <!-- Selected preset swatch preview below (only when preset selected and no saved theme active) -->

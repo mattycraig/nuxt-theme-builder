@@ -4,7 +4,13 @@ import type { RandomizeLockKey } from "~/types/theme";
 import { RANDOMIZE_LOCK_KEYS } from "~/types/theme";
 import { capitalize } from "~/utils/helpers";
 
+/**
+ * Split button: the main half generates a random theme, the menu half
+ * chooses which parts of the current theme randomize keeps.
+ */
 const locks = defineModel<RandomizeLockKey[]>({ required: true });
+
+const emit = defineEmits<{ randomize: [] }>();
 
 function toggle(key: RandomizeLockKey) {
   locks.value = locks.value.includes(key)
@@ -34,7 +40,7 @@ const items = computed<DropdownMenuItem[][]>(() => [
   ],
 ]);
 
-const ariaLabel = computed(() =>
+const menuLabel = computed(() =>
   locks.value.length
     ? `Choose what randomize keeps (${locks.value.length} locked)`
     : "Choose what randomize keeps",
@@ -42,16 +48,30 @@ const ariaLabel = computed(() =>
 </script>
 
 <template>
-  <UDropdownMenu :items="items" :content="{ align: 'end' }">
-    <UTooltip text="Keep parts when randomizing">
+  <UFieldGroup role="group" aria-label="Random theme">
+    <UTooltip text="Generate random theme">
       <UButton
-        :icon="locks.length ? 'i-lucide-lock' : 'i-lucide-lock-open'"
-        :label="locks.length ? String(locks.length) : undefined"
-        :aria-label="ariaLabel"
-        :color="locks.length ? 'primary' : 'neutral'"
-        variant="ghost"
+        icon="i-lucide-dices"
+        aria-label="Generate random theme"
+        variant="outline"
+        color="neutral"
         size="md"
+        @click="emit('randomize')"
       />
     </UTooltip>
-  </UDropdownMenu>
+    <UDropdownMenu :items="items" :content="{ align: 'end' }">
+      <UTooltip text="Keep parts when randomizing">
+        <UButton
+          :icon="locks.length ? 'i-lucide-lock' : 'i-lucide-lock-open'"
+          :label="locks.length ? String(locks.length) : undefined"
+          trailing-icon="i-lucide-chevron-down"
+          :aria-label="menuLabel"
+          :color="locks.length ? 'primary' : 'neutral'"
+          variant="outline"
+          size="md"
+          :ui="{ trailingIcon: 'size-3.5' }"
+        />
+      </UTooltip>
+    </UDropdownMenu>
+  </UFieldGroup>
 </template>
