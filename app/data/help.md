@@ -180,6 +180,8 @@ The main content area renders a live, interactive preview of your theme. Navigat
 
 Resize the preview viewport with the toolbar controls — desktop, tablet, and mobile presets, or enter a custom width. Toggle **Code** to view the source code of the current preview page.
 
+The **eye** button shows the preview the way people with color vision deficiencies see it: protanopia, deuteranopia, tritanopia, or achromatopsia (no color at all). Use it to check that success, warning, and error states don't rely on color alone. The simulation only changes the preview, never your theme or its export, and it switches off when you reload the page.
+
 ---
 
 ## Shade Overrides

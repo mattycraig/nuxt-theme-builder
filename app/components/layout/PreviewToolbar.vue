@@ -48,6 +48,8 @@ const exportPanel = useExportPanel();
     <div class="flex items-center gap-2">
       <PreviewViewModeToggle v-if="hasSourcePage" v-model="viewMode" />
 
+      <PreviewColorVisionMenu v-if="framed" />
+
       <!-- Fullscreen toggle -->
       <UTooltip
         v-if="framed"

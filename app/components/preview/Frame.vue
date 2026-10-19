@@ -18,6 +18,8 @@ const emit = defineEmits<{
 const previewFrame = defineModel<HTMLIFrameElement | undefined>("previewFrame");
 const previewArea = defineModel<HTMLElement | undefined>("previewArea");
 
+const { filter: colorVisionFilter } = useColorVision();
+
 const numericWidth = computed(() => {
   const w = props.currentPreviewWidth;
   const parsed = parseInt(w, 10);
@@ -110,6 +112,7 @@ function handleHeightDragKeydown(event: KeyboardEvent) {
           height="100%"
           class="w-full h-full border-0"
           :class="{ 'pointer-events-none': isDragging }"
+          :style="{ filter: colorVisionFilter }"
           @load="emit('iframeLoad')"
         >
           Your browser does not support iframes. Please use a modern browser to
