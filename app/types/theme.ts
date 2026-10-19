@@ -167,6 +167,16 @@ export const BORDER_TOKEN_KEYS = [
 
 export type BorderTokenKey = (typeof BORDER_TOKEN_KEYS)[number];
 
+/** Theme parts "randomize" can be told to keep: each semantic role, plus neutral, font, and radius. */
+export const RANDOMIZE_LOCK_KEYS = [
+  ...SEMANTIC_COLOR_KEYS,
+  "neutral",
+  "font",
+  "radius",
+] as const;
+
+export type RandomizeLockKey = (typeof RANDOMIZE_LOCK_KEYS)[number];
+
 // Core Interfaces ─────────────────────────────────────────────────────────
 
 export type TextTokenOverrides = Record<TextTokenKey, NeutralShade>;

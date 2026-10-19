@@ -168,6 +168,10 @@ Don't want to start from a blank canvas? The **Presets** dropdown in the sidebar
 
 Presets are a starting point, not a ceiling. Once loaded, change any token you like — your edits diverge from the preset. Save the result as a new named theme to keep your version.
 
+### Random Themes
+
+The **dice** button next to the presets dropdown builds a random theme. To keep part of your current theme, open the **lock** menu beside it and tick what randomize should leave alone: any semantic color, the neutral, the font, or the radius. A locked color keeps its palette and shades in both light and dark mode. The button shows how many parts are locked, and **Unlock all** clears them. Locks also apply to **Feeling lucky**, and they reset when you reload the page.
+
 ---
 
 ## Preview Pages

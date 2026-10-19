@@ -187,6 +187,7 @@ function onPresetSelect(name: string) {
           @click="store.randomizeTheme()"
         />
       </UTooltip>
+      <EditorRandomizeLocks v-model="store.randomizeLocks" />
     </div>
 
     <!-- Selected preset swatch preview below (only when preset selected and no saved theme active) -->

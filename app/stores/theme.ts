@@ -14,6 +14,7 @@ import type {
   BgTokenKey,
   BorderTokenKey,
   ComponentGroup,
+  RandomizeLockKey,
 } from "~/types/theme";
 import {
   ThemeConfigSchema,
@@ -57,6 +58,8 @@ export const useThemeStore = defineStore(
     const config = ref<ThemeConfig>(cloneTheme(DEFAULT_THEME));
     const savedPresets = shallowRef<ThemePreset[]>([]);
     const activePresetName = ref<string>("");
+    /** Parts of the theme `randomizeTheme` keeps. Not persisted. */
+    const randomizeLocks = ref<RandomizeLockKey[]>([]);
 
     // Undo / Redo History ────────────────────────────────────────────
 
@@ -500,7 +503,7 @@ export const useThemeStore = defineStore(
         darkColors[key] = pickForKey(key);
       }
 
-      config.value = _withCurrentAdditions({
+      const next = _withCurrentAdditions({
         ...cloneTheme(DEFAULT_THEME),
         colors: lightColors as ThemeConfig["colors"],
         darkColors: darkColors as ThemeConfig["darkColors"],
@@ -511,6 +514,31 @@ export const useThemeStore = defineStore(
         font,
         darkFont: font,
       });
+
+      // Locked parts keep their current light and dark values
+      const current = config.value;
+      const locks = new Set(randomizeLocks.value);
+      for (const key of SEMANTIC_COLOR_KEYS) {
+        if (!locks.has(key)) continue;
+        next.colors[key] = current.colors[key];
+        next.darkColors[key] = current.darkColors[key];
+        next.colorShades[key] = current.colorShades[key];
+        next.darkColorShades[key] = current.darkColorShades[key];
+      }
+      if (locks.has("neutral")) {
+        next.neutral = current.neutral;
+        next.darkNeutral = current.darkNeutral;
+      }
+      if (locks.has("font")) {
+        next.font = current.font;
+        next.darkFont = current.darkFont;
+      }
+      if (locks.has("radius")) {
+        next.radius = current.radius;
+        next.darkRadius = current.darkRadius;
+      }
+
+      config.value = next;
       activePresetName.value = "";
       _pushHistory();
     }
@@ -689,6 +717,7 @@ export const useThemeStore = defineStore(
       savedPresets,
       activePresetName,
       hasUnsavedChanges,
+      randomizeLocks,
 
       // History
       canUndo,
