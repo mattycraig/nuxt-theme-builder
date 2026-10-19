@@ -145,6 +145,58 @@ describe("useThemeStore", () => {
     });
   });
 
+  describe("copyModeSettings", () => {
+    beforeEach(() => {
+      store.setSemanticColorForMode("light", "primary", "lime");
+      store.setNeutralForMode("light", "stone");
+      store.setRadiusForMode("light", 1);
+      store.setFontForMode("light", "Roboto");
+      store.setSemanticShadeForMode("dark", "primary", "300");
+      store.setTextOverride("dark", "default", "100");
+    });
+
+    it("copies light palettes, neutral, radius, and font to dark", () => {
+      store.copyModeSettings("light");
+      expect(store.config.darkColors).toEqual(store.config.colors);
+      expect(store.config.darkNeutral).toBe("stone");
+      expect(store.config.darkRadius).toBe(1);
+      expect(store.config.darkFont).toBe("Roboto");
+    });
+
+    it("keeps the target mode's shades and token overrides", () => {
+      store.copyModeSettings("light");
+      expect(store.config.darkColorShades.primary).toBe("300");
+      expect(store.config.darkOverrides.text.default).toBe("100");
+    });
+
+    it("copies dark to light without touching dark", () => {
+      store.setSemanticColorForMode("dark", "secondary", "pink");
+      const dark = cloneTheme(store.config);
+      store.copyModeSettings("dark");
+      expect(store.config.colors.secondary).toBe("pink");
+      expect(store.config.neutral).toBe(DEFAULT_THEME.darkNeutral);
+      expect(store.config.darkColors).toEqual(dark.darkColors);
+      expect(store.config.darkNeutral).toBe(dark.darkNeutral);
+    });
+
+    it("puts a custom palette's anchor shade on the copied role", () => {
+      store.addCustomPalette("brand", "#f5c518");
+      store.setSemanticColorForMode("light", "primary", "brand");
+      store.copyModeSettings("light");
+      expect(store.config.darkColors.primary).toBe("brand");
+      expect(store.config.darkColorShades.primary).toBe(
+        store.config.colorShades.primary,
+      );
+    });
+
+    it("is one undoable step", () => {
+      const before = cloneTheme(store.config);
+      store.copyModeSettings("light");
+      store.undo();
+      expect(store.config).toEqual(before);
+    });
+  });
+
   describe("token overrides", () => {
     it("sets a light text override", () => {
       store.setTextOverride("light", "highlighted", "900");
