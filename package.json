@@ -48,7 +48,7 @@
     "ai": "^7.0.145",
     "better-sqlite3": "^13.0.3",
     "dompurify": "^3.4.17",
-    "nuxt": "^4.6.2",
+    "nuxt": "^4.6.4",
     "nuxt-llms": "^0.2.0",
     "nuxt-schema-org": "^6.4.3",
     "nuxt-security": "^2.6.0",
